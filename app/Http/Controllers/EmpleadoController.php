@@ -9,11 +9,9 @@ class EmpleadoController extends Controller
 {
     public function index()
     {
-        $empleados = \App\Models\Empleado::all();
-        return view('empleados.index', compact('empleados')); // Debe coincidir con la ruta de la vista
+        $empleados = Empleado::all();
+        return view('empleados.index', compact('empleados'));
     }
-
-
 
     public function create()
     {
@@ -30,14 +28,7 @@ class EmpleadoController extends Controller
             'fecha_ingreso' => 'required|date',
         ]);
 
-        Empleado::create([
-            'nombre' => $request->nombre,
-            'apellido' => $request->apellido,
-            'dni' => $request->dni,
-            'cargo' => $request->cargo,
-            'fecha_ingreso' => $request->fecha_ingreso,
-            'estado' => 'Activo',
-        ]);
+        Empleado::create($request->all() + ['estado' => 'Activo']);
 
         return redirect()->route('empleados.index')->with('success', 'Empleado registrado correctamente.');
     }
@@ -58,8 +49,7 @@ class EmpleadoController extends Controller
             'fecha_ingreso' => 'required|date',
         ]);
 
-        $empleado = Empleado::findOrFail($id);
-        $empleado->update($request->only(['nombre','apellido','dni','cargo','fecha_ingreso']));
+        Empleado::findOrFail($id)->update($request->only(['nombre','apellido','dni','cargo','fecha_ingreso']));
 
         return redirect()->route('empleados.index')->with('success', 'Empleado actualizado correctamente.');
     }

@@ -2,21 +2,31 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+
+// Controladores
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\RegistroUsuarioController;
+use App\Http\Controllers\EmpleadoController;
 
-// Ruta principal - redirige al login
+// ======================================================
+// RUTA PRINCIPAL
+// ======================================================
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+// ======================================================
+// RECURSO EMPLEADOS
+// ======================================================
 Route::resource('empleados', EmpleadoController::class);
+Route::put('empleados/{id}/toggle', [EmpleadoController::class, 'toggleEstado'])->name('empleados.toggle');
 
 
-// ====================================
-// RUTAS DE AUTENTICACIÓN (HU1)
-// ====================================
+// ======================================================
+// RUTAS DE AUTENTICACIÓN
+// ======================================================
 
 // Login
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -26,12 +36,12 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
-// Ruta alternativa de registro (si la necesitas)
+// Ruta alternativa de registro (opcional)
 Route::get('/registro', function () {
     return view('Vista_registro.create');
 })->name('registro');
 
-// Password Reset - AQUÍ ESTÁ LA SOLUCIÓN
+// Password Reset
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
 Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
 Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
@@ -40,17 +50,17 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// ====================================
+// ======================================================
 // RUTAS PROTEGIDAS PARA CLIENTES
-// ====================================
+// ======================================================
 Route::middleware(['auth', 'user.active'])->prefix('cliente')->group(function () {
     Route::get('/perfil', [ClienteController::class, 'perfil'])->name('cliente.perfil');
     Route::get('/reservas', [ClienteController::class, 'reservas'])->name('cliente.reservas');
 });
 
-// ====================================
-// RUTAS PROTEGIDAS PARA ADMIN (HU24)
-// ====================================
+// ======================================================
+// RUTAS PROTEGIDAS PARA ADMIN
+// ======================================================
 Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios');
