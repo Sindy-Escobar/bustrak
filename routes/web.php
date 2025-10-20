@@ -3,9 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use App\Http\Controllers\EmpleadoHU5Controller;
 
 // Controladores
+use App\Http\Controllers\EmpleadoHU5Controller;
+use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClienteController;
@@ -18,6 +19,11 @@ use App\Http\Controllers\EmpleadoController;
 Route::get('/', function () {
     return redirect()->route('login'); // mantenemos la redirección a login
 })->name('home');
+
+// ======================================================
+// CONSULTA DE EMPRESAS
+// ======================================================
+Route::get('empresas', [EmpresaController::class, 'index'])->name('empresas.index');
 
 // ======================================================
 // RECURSO EMPLEADOS
@@ -78,6 +84,3 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/empleados-hu5', [EmpleadoHU5Controller::class, 'index'])->name('empleados.hu5');
 });
-
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
