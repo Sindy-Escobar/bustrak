@@ -18,6 +18,7 @@ class EmpleadoFactory extends Factory
             'cargo' => $this->faker->randomElement(['Chofer', 'Aseo', 'Servicio al cliente', 'Gerente de área', 'Técnico IT']),
             'fecha_ingreso' => $this->faker->date('Y-m-d', '2025-12-31'),
             'estado' => $this->faker->randomElement(['Activo', 'Inactivo']),
+            'rol' => $this->faker->randomElement(['Empleado', 'Administrador']),
             'created_at' => now(),
             'updated_at' => now(),
         ];
