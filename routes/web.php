@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use App\Http\Controllers\EmpleadoHU5Controller;
 
 // Controladores
 use App\Http\Controllers\AuthController;
@@ -14,15 +16,14 @@ use App\Http\Controllers\EmpleadoController;
 // RUTA PRINCIPAL
 // ======================================================
 Route::get('/', function () {
-    return redirect()->route('login');
-});
+    return redirect()->route('login'); // mantenemos la redirección a login
+})->name('home');
 
 // ======================================================
 // RECURSO EMPLEADOS
 // ======================================================
 Route::resource('empleados', EmpleadoController::class);
 Route::put('empleados/{id}/toggle', [EmpleadoController::class, 'toggleEstado'])->name('empleados.toggle');
-
 
 // ======================================================
 // RUTAS DE AUTENTICACIÓN
@@ -66,3 +67,17 @@ Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
     Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios');
     Route::post('/usuarios/{id}/cambiar-estado', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
 });
+
+// ======================================================
+// RUTAS DE INERTIA / FRANCIS_5
+// ======================================================
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('dashboard', function () {
+        return Inertia::render('dashboard');
+    })->name('dashboard');
+
+    Route::get('/empleados-hu5', [EmpleadoHU5Controller::class, 'index'])->name('empleados.hu5');
+});
+
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';
