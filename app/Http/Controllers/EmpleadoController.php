@@ -9,7 +9,7 @@ class EmpleadoController extends Controller
 {
     public function index()
     {
-        $empleados = Empleado::all();
+        $empleados = Empleado::paginate(10);
         return view('empleados.index', compact('empleados'));
     }
 
@@ -21,14 +21,23 @@ class EmpleadoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required',
-            'apellido' => 'required',
+            'nombre' => 'required|string|max:100',
+            'apellido' => 'required|string|max:100',
             'dni' => 'required|unique:empleados,dni|digits:13',
-            'cargo' => 'required',
+            'cargo' => 'required|string|max:50',
             'fecha_ingreso' => 'required|date',
+            'rol' => 'required|in:Empleado,Administrador',
         ]);
 
-        Empleado::create($request->all() + ['estado' => 'Activo']);
+        Empleado::create([
+            'nombre' => $request->nombre,
+            'apellido' => $request->apellido,
+            'dni' => $request->dni,
+            'cargo' => $request->cargo,
+            'fecha_ingreso' => $request->fecha_ingreso,
+            'estado' => 'Activo',
+            'rol' => $request->rol,
+        ]);
 
         return redirect()->route('empleados.index')->with('success', 'Empleado registrado correctamente.');
     }
@@ -42,14 +51,16 @@ class EmpleadoController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nombre' => 'required',
-            'apellido' => 'required',
-            'dni' => 'required|unique:empleados,dni,' . $id . '|digits:13',
-            'cargo' => 'required',
+            'nombre' => 'required|string|max:100',
+            'apellido' => 'required|string|max:100',
+            'dni' => 'required|digits:13|unique:empleados,dni,' . $id,
+            'cargo' => 'required|string|max:50',
             'fecha_ingreso' => 'required|date',
+            'rol' => 'required|in:Empleado,Administrador',
         ]);
 
-        Empleado::findOrFail($id)->update($request->only(['nombre','apellido','dni','cargo','fecha_ingreso']));
+        $empleado = Empleado::findOrFail($id);
+        $empleado->update($request->only(['nombre','apellido','dni','cargo','fecha_ingreso','rol']));
 
         return redirect()->route('empleados.index')->with('success', 'Empleado actualizado correctamente.');
     }
