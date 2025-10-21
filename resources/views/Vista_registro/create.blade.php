@@ -68,14 +68,12 @@
 </head>
 <body>
 <div class="container mt-5">
-    <!-- Mensaje de éxito -->
     <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;">
         <i class="fas fa-check-circle me-2"></i>
         Registro exitoso
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
     </div>
 
-    <!-- Mensaje de errores -->
     <div class="alert alert-danger" style="display: none;">
         <i class="fas fa-exclamation-circle me-2"></i>
         <strong>Por favor corrige los siguientes errores:</strong>
@@ -93,10 +91,8 @@
                 </div>
                 <div class="card-body p-4">
                     <form method="POST" action="/registro">
-                        <!-- CSRF Token (para Laravel) -->
-                        <input type="hidden" name="_token" value="csrf_token_here">
 
-                        <!-- Nombre Completo -->
+                        @csrf
                         <div class="mb-3">
                             <label for="nombre_completo" class="form-label">Nombre Completo</label>
                             <div class="input-group">
@@ -107,7 +103,6 @@
                             </div>
                         </div>
 
-                        <!-- DNI -->
                         <div class="mb-3">
                             <label for="dni" class="form-label">DNI</label>
                             <div class="input-group">
@@ -118,7 +113,6 @@
                             </div>
                         </div>
 
-                        <!-- Correo Electrónico -->
                         <div class="mb-3">
                             <label for="email" class="form-label">Correo Electrónico</label>
                             <div class="input-group">
@@ -129,7 +123,6 @@
                             </div>
                         </div>
 
-                        <!-- Teléfono -->
                         <div class="mb-3">
                             <label for="telefono" class="form-label">Teléfono</label>
                             <div class="input-group">
@@ -140,7 +133,6 @@
                             </div>
                         </div>
 
-                        <!-- Contraseña -->
                         <div class="mb-4">
                             <label for="password" class="form-label">Contraseña</label>
                             <div class="input-group">
@@ -150,15 +142,22 @@
                                 <input type="password" class="form-control" id="password" name="password" placeholder="Crea una contraseña segura" required>
                             </div>
                         </div>
+                        <div class="mb-4">
+                            <label for="password_confirmation" class="form-label">Confirmar Contraseña</label>
+                            <div class="input-group">
+                              <span class="input-group-text">
+                                <i class="fas fa-lock"></i>
+                              </span>
+                                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Confirma tu contraseña" required>
+                            </div>
+                        </div>
 
-                        <!-- Botón de Registro -->
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-lg">
                                 <i class="fas fa-user-check me-2"></i>Registrarse
                             </button>
                         </div>
 
-                        <!-- Enlace adicional (opcional) -->
                         <div class="text-center mt-3">
                             <small class="text-muted">¿Ya tienes cuenta? <a href="/login" class="text-decoration-none">Inicia sesión aquí</a></small>
                         </div>
