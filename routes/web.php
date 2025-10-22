@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\RegistroTeminalController;
+use App\Models\RegistroTerminal;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
@@ -54,3 +56,6 @@ Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
     Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios');
     Route::post('/usuarios/{id}/cambiar-estado', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
 });
+
+Route::resource('terminales', RegistroTeminalController::class);
+
