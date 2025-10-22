@@ -45,8 +45,10 @@ Route::post('/register', [AuthController::class, 'register']);
 
 // Ruta alternativa de registro (opcional)
 Route::get('/registro', function () {
-    return view('Vista_registro.create');
-})->name('registro');
+    return view('Vista_registro.create');})->name('registro');
+Route::post('registro', [RegistroUsuarioController::class, 'registro']);
+
+Route::resource('usuarios', RegistroUsuarioController::class);
 
 // Password Reset
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
