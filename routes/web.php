@@ -7,6 +7,7 @@ use Inertia\Inertia;
 // Controladores
 use App\Http\Controllers\EmpleadoHU5Controller;
 use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\EmpresaBusController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClienteController;
@@ -26,6 +27,11 @@ Route::get('/', function () {
 Route::get('empresas', [EmpresaController::class, 'index'])->name('empresas.index');
 
 // ======================================================
+// REGISTRO DE EMPRESAS DE BUSES
+// ======================================================
+Route::match(['get', 'post'], '/empresa', [EmpresaBusController::class, 'form'])->name('empresa.form');
+
+
 // RECURSO EMPLEADOS
 // ======================================================
 Route::resource('empleados', EmpleadoController::class);
