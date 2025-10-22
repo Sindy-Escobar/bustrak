@@ -52,7 +52,7 @@ Route::post('/register', [AuthController::class, 'register']);
 // Ruta alternativa de registro (opcional)
 Route::get('/registro', function () {
     return view('Vista_registro.create');})->name('registro');
-Route::post('registro', [RegistroUsuarioController::class, 'registro']);
+Route::post('registro', [RegistroUsuarioController::class, 'store']);
 
 Route::resource('usuarios', RegistroUsuarioController::class);
 
