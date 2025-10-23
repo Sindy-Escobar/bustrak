@@ -37,6 +37,11 @@ Route::match(['get', 'post'], '/empresa', [EmpresaBusController::class, 'form'])
 // ======================================================
 Route::resource('empleados', EmpleadoController::class);
 Route::put('empleados/{id}/toggle', [EmpleadoController::class, 'toggleEstado'])->name('empleados.toggle');
+Route::put('/empleados/{id}/desactivar', [App\Http\Controllers\EmpleadoController::class, 'desactivar'])
+    ->name('empleados.desactivar');
+
+Route::put('/empleados/{id}/activar', [App\Http\Controllers\EmpleadoController::class, 'activar'])
+    ->name('empleados.activar');
 
 // ======================================================
 // RUTAS DE AUTENTICACIÓN

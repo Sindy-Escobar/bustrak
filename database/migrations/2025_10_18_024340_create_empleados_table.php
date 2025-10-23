@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('dni', 20)->unique();
             $table->string('cargo', 50);
             $table->date('fecha_ingreso');
+            $table->string('foto')->nullable();
             $table->enum('estado', ['Activo', 'Inactivo'])->default('Activo');
+            $table->string('estado')->default('Activo');
             $table->timestamps();
         });
     }
