@@ -10,9 +10,6 @@ class EmpleadoHU5Controller extends Controller
 
     public function index(Request $request)
     {
-        if (auth()->user()->rol !== 'Administrador') {
-            abort(403, 'Acceso no autorizado');
-        }
 
         $query = Empleado::query();
 
