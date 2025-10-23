@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RegistroTeminalController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -92,3 +93,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/empleados-hu5', [EmpleadoHU5Controller::class, 'index'])->name('empleados.hu5');
 });
+
+Route::resource('terminales', RegistroTeminalController::class);
