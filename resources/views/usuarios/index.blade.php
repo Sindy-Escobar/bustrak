@@ -118,6 +118,7 @@
         </form>
 
         <a href="{{ url('/registro') }}" class="btn btn-primary mb-3">Registrar Nuevo Usuario</a>
+        <a href="{{ route('usuarios.index') }}" class="btn btn-primary mb-3">Consultar Usuarios</a>
 
         <table class="table table-striped">
             <thead>
@@ -126,7 +127,7 @@
                 <th>email</th>
                 <th>DNI</th>
                 <!-- AÑADIMOS LA COLUMNA DE ACCIONES -->
-                <th>Informacion</th>
+                <th>Acciones</th>
             </tr>
             </thead>
             <tbody>
