@@ -84,12 +84,9 @@ Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
 });
 
 // ======================================================
-// RUTAS DE INERTIA / FRANCIS_5
+// RUTAS empleado-hu5
 // ======================================================
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+Route::middleware(['auth', 'user.active'])->group(function () {
 
     Route::get('/empleados-hu5', [EmpleadoHU5Controller::class, 'index'])->name('empleados.hu5');
 });
