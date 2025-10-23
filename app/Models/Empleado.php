@@ -17,6 +17,8 @@ class Empleado extends Model
         'fecha_ingreso',
         'estado',
         'rol',
+        'foto'
     ];
+
     public $timestamps = true;
 }
