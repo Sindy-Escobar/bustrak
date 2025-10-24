@@ -117,8 +117,12 @@
             </div>
         </form>
 
-        <a href="{{ url('/registro') }}" class="btn btn-primary mb-3">Registrar Nuevo Usuario</a>
-        <a href="{{ route('usuarios.index') }}" class="btn btn-primary mb-3">Consultar Usuarios</a>
+        <div class="d-flex mb-3 gap-2">
+            <a href="{{ url('/registro') }}" class="btn btn-primary">Registrar Nuevo Usuario</a>
+            <a href="{{ route('usuarios.consultar') }}" class="btn btn-primary">Consultar Usuarios</a>
+        </div>
+
+
 
         <table class="table table-striped">
             <thead>
