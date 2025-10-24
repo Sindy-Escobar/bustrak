@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 // Controladores
+use App\Http\Controllers\EmpresaHU11Controller;
 use App\Http\Controllers\EmpleadoHU5Controller;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EmpresaBusController;
@@ -95,9 +96,16 @@ Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
 // ======================================================
 // RUTAS empleado-hu5
 // ======================================================
-Route::middleware(['auth', 'user.active'])->group(function () {
+
 
     Route::get('/empleados-hu5', [EmpleadoHU5Controller::class, 'index'])->name('empleados.hu5');
-});
+
+// ======================================================
+// RUTAS EMPRESAS HU11 (Editar / Actualizar)
+// ======================================================
+Route::get('/empresa-hu11/{id}/editar', [EmpresaHU11Controller::class, 'edit'])->name('empresa.edit.hu11');
+Route::put('/empresa-hu11/{id}', [EmpresaHU11Controller::class, 'update'])->name('empresa.update.hu11');
+
+
 
 Route::resource('terminales', RegistroTeminalController::class);
