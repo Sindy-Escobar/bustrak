@@ -15,6 +15,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\RegistroUsuarioController;
 use App\Http\Controllers\EmpleadoController;
 
+
 // ======================================================
 // RUTA PRINCIPAL
 // ======================================================
@@ -55,7 +56,10 @@ Route::get('/registro', function () {
     return view('Vista_registro.create');})->name('registro');
 Route::post('registro', [RegistroUsuarioController::class, 'store']);
 
+Route::get('/usuarios/consultar', [RegistroUsuarioController::class, 'consultar'])->name('usuarios.consultar');
+
 Route::resource('usuarios', RegistroUsuarioController::class);
+
 
 // Password Reset
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');

@@ -75,6 +75,25 @@ class RegistroUsuarioController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+
+    // Dentro de RegistroUsuarioController
+    public function consultar(Request $request)
+    {
+        $search = $request->input('search');
+
+        $usuarios = Usuario::query()
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nombre_completo', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('dni', 'like', "%{$search}%");
+                });
+            })
+            ->paginate(10);
+
+        return view('usuarios.consultar', compact('usuarios'));
+    }
+
     public function edit(string $id)
     {
         //
