@@ -15,7 +15,10 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\RegistroUsuarioController;
 use App\Http\Controllers\EmpleadoController;
+use App\Http\Controllers\ConsultaParadaController;
 
+//consulta-paradas
+Route::get('consulta-paradas', [ConsultaParadaController::class, 'index'])->name('consulta-paradas.index');
 
 // ======================================================
 // RUTA PRINCIPAL
@@ -109,3 +112,6 @@ Route::put('/empresa-hu11/{id}', [EmpresaHU11Controller::class, 'update'])->name
 
 
 Route::resource('terminales', RegistroTeminalController::class);
+
+//consulta-paradas
+Route::get('consulta-paradas', [ConsultaParadaController::class, 'index'])->name('consulta-paradas.index');
