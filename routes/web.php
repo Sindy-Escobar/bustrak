@@ -115,3 +115,9 @@ Route::resource('terminales', RegistroTeminalController::class);
 
 //consulta-paradas
 Route::get('consulta-paradas', [ConsultaParadaController::class, 'index'])->name('consulta-paradas.index');
+
+// ======================================================
+// RUTA HU10 - VISUALIZAR EMPRESAS DE BUSES
+// ======================================================
+Route::get('/hu10/empresas-buses', [EmpresaBusController::class, 'index'])
+    ->name('hu10.empresas.buses');
