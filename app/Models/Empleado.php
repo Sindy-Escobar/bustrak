@@ -17,7 +17,13 @@ class Empleado extends Model
         'fecha_ingreso',
         'estado',
         'rol',
-        'foto'
+        'foto',
+        'motivo_baja',
+        'fecha_desactivacion',
+    ];
+
+    protected $casts = [
+        'fecha_desactivacion' => 'datetime',
     ];
 
     public $timestamps = true;

@@ -3,7 +3,6 @@
 use App\Http\Controllers\RegistroTeminalController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 
 // Controladores
 use App\Http\Controllers\EmpresaHU11Controller;
@@ -16,12 +15,11 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\RegistroUsuarioController;
 use App\Http\Controllers\EmpleadoController;
 
-
 // ======================================================
 // RUTA PRINCIPAL
 // ======================================================
 Route::get('/', function () {
-    return redirect()->route('login'); // mantenemos la redirección a login
+    return redirect()->route('login');
 })->name('home');
 
 // ======================================================
@@ -34,16 +32,15 @@ Route::get('empresas', [EmpresaController::class, 'index'])->name('empresas.inde
 // ======================================================
 Route::match(['get', 'post'], '/empresa', [EmpresaBusController::class, 'form'])->name('empresa.form');
 
-
+// ======================================================
 // RECURSO EMPLEADOS
 // ======================================================
 Route::resource('empleados', EmpleadoController::class);
-Route::put('empleados/{id}/toggle', [EmpleadoController::class, 'toggleEstado'])->name('empleados.toggle');
-Route::put('/empleados/{id}/desactivar', [App\Http\Controllers\EmpleadoController::class, 'desactivar'])
-    ->name('empleados.desactivar');
 
-Route::put('/empleados/{id}/activar', [App\Http\Controllers\EmpleadoController::class, 'activar'])
-    ->name('empleados.activar');
+// Rutas adicionales para activar/desactivar empleados
+Route::get('/empleados/{id}/desactivar', [EmpleadoController::class, 'formDesactivar'])->name('empleados.formDesactivar');
+Route::put('/empleados/{id}/desactivar', [EmpleadoController::class, 'guardarDesactivacion'])->name('empleados.desactivar');
+Route::put('/empleados/{id}/activar', [EmpleadoController::class, 'activar'])->name('empleados.activar');
 
 // ======================================================
 // RUTAS DE AUTENTICACIÓN
@@ -59,13 +56,15 @@ Route::post('/register', [AuthController::class, 'register']);
 
 // Ruta alternativa de registro (opcional)
 Route::get('/registro', function () {
-    return view('Vista_registro.create');})->name('registro');
+    return view('Vista_registro.create');
+})->name('registro');
 Route::post('registro', [RegistroUsuarioController::class, 'store']);
 
+// Consultar usuarios
 Route::get('/usuarios/consultar', [RegistroUsuarioController::class, 'consultar'])->name('usuarios.consultar');
 
+// Recurso usuarios
 Route::resource('usuarios', RegistroUsuarioController::class);
-
 
 // Password Reset
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
@@ -94,11 +93,9 @@ Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
 });
 
 // ======================================================
-// RUTAS empleado-hu5
+// RUTAS EMPLEADO-HU5
 // ======================================================
-
-
-    Route::get('/empleados-hu5', [EmpleadoHU5Controller::class, 'index'])->name('empleados.hu5');
+Route::get('/empleados-hu5', [EmpleadoHU5Controller::class, 'index'])->name('empleados.hu5');
 
 // ======================================================
 // RUTAS EMPRESAS HU11 (Editar / Actualizar)
@@ -106,6 +103,7 @@ Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
 Route::get('/empresa-hu11/{id}/editar', [EmpresaHU11Controller::class, 'edit'])->name('empresa.edit.hu11');
 Route::put('/empresa-hu11/{id}', [EmpresaHU11Controller::class, 'update'])->name('empresa.update.hu11');
 
-
-
+// ======================================================
+// RUTAS TERMINALES
+// ======================================================
 Route::resource('terminales', RegistroTeminalController::class);
