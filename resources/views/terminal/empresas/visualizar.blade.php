@@ -356,6 +356,53 @@
             border-top: 1px solid var(--border-color);
         }
 
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-edit {
+            padding: 0.875rem;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(72, 187, 120, 0.3);
+        }
+
+        .btn-validate {
+            padding: 0.875rem;
+            background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-validate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(246, 173, 85, 0.3);
+        }
+
         .btn-close {
             width: 100%;
             padding: 0.875rem;
@@ -426,6 +473,20 @@
         </div>
         <div id="modalBody" class="modal-body"></div>
         <div class="modal-footer">
+            <div class="action-buttons">
+                <button class="btn-edit" id="editBtn">
+                    <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    Editar
+                </button>
+                <button class="btn-validate" id="validateBtn">
+                    <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Validar
+                </button>
+            </div>
             <button class="btn-close" id="closeModalBtn">Cerrar</button>
         </div>
     </div>
@@ -446,6 +507,7 @@
     }
 
     let allCompanies = [];
+    let currentCompanyId = null;
 
     document.addEventListener('DOMContentLoaded', () => {
         initializeApp();
@@ -456,6 +518,8 @@
         document.getElementById('searchInput').addEventListener('input', handleSearch);
         document.getElementById('closeModal').addEventListener('click', closeModal);
         document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+        document.getElementById('editBtn').addEventListener('click', handleEdit);
+        document.getElementById('validateBtn').addEventListener('click', handleValidate);
         document.getElementById('detailsModal').addEventListener('click', (e) => {
             if (e.target.id === 'detailsModal') closeModal();
         });
@@ -466,6 +530,52 @@
     }
 
     async function loadCompanies() {
+        // DATOS DE PRUEBA - ELIMINAR DESPUÉS
+        allCompanies = [
+            {
+                id: 1,
+                name: "Transportes El Rey",
+                phone: "+504 2234-5678",
+                email: "contacto@elrey.hn",
+                address: "Barrio El Centro, Tegucigalpa",
+                rtn: "08019012345678",
+                status: "active",
+                registrationDate: "2024-01-15"
+            },
+            {
+                id: 2,
+                name: "Buses Norteños",
+                phone: "+504 2245-6789",
+                email: "info@nortenos.hn",
+                address: "Colonia Kennedy, San Pedro Sula",
+                rtn: "08019023456789",
+                status: "active",
+                registrationDate: "2024-02-20"
+            },
+            {
+                id: 3,
+                name: "Express del Valle",
+                phone: "+504 2256-7890",
+                email: "express@valle.hn",
+                address: "Boulevard Morazán, Tegucigalpa",
+                rtn: "08019034567890",
+                status: "inactive",
+                registrationDate: "2023-11-10"
+            },
+            {
+                id: 4,
+                name: "Rápidos del Sur",
+                phone: "+504 2267-8901",
+                email: "ventas@rapidossur.hn",
+                address: "Barrio La Hoya, Choluteca",
+                rtn: "08019045678901",
+                status: "active",
+                registrationDate: "2024-03-05"
+            }
+        ];
+        displayCompanies(allCompanies);
+
+        /* CÓDIGO ORIGINAL - DESCOMENTAR PARA USAR CON DATOS REALES
         try {
             const result = await window.storage.list('company:');
 
@@ -484,6 +594,7 @@
         } catch (error) {
             console.error('Error:', error);
         }
+        */
     }
 
     function displayCompanies(companies) {
@@ -548,6 +659,8 @@
         const modal = document.getElementById('detailsModal');
         const body = document.getElementById('modalBody');
 
+        currentCompanyId = company.id;
+
         body.innerHTML = `
             <div class="detail-row">
                 <div class="detail-label">Nombre de la Empresa</div>
@@ -586,6 +699,19 @@
 
     function closeModal() {
         document.getElementById('detailsModal').classList.remove('active');
+        currentCompanyId = null;
+    }
+
+    function handleEdit() {
+        if (currentCompanyId) {
+            window.location.href = `/empresa-hu11/${currentCompanyId}/editar`;
+        }
+    }
+
+    function handleValidate() {
+        if (currentCompanyId) {
+            window.location.href = `/empresa-hu11/${currentCompanyId}/validar`;
+        }
     }
 </script>
 </body>
