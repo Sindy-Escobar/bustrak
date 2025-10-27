@@ -14,8 +14,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',   // ahora puede ser 'Empleado', 'Administrador', 'Cliente'
-        'estado',
+        'role',
+        'estado',  // ← Asegúrate de que esté aquí
     ];
 
     protected $hidden = [
@@ -23,32 +23,16 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+
+    // Opcional: Agregar valor por defecto
+    protected $attributes = [
+        'estado' => 'activo',
     ];
-
-    // Verificar si es admin
-    public function isAdmin()
-    {
-        return strtolower($this->role) === 'administrador';
-    }
-
-    // Verificar si es cliente
-    public function isCliente()
-    {
-        return strtolower($this->role) === 'cliente';
-    }
-
-    // Verificar si está activo
-    public function isActive()
-    {
-        return strtolower($this->estado) === 'activo';
-    }
-
-    // Verificar si está inactivo
-    public function isInactive()
-    {
-        return strtolower($this->estado) === 'inactivo';
-    }
 }
