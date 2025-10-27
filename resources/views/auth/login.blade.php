@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - BusTrak</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -27,29 +23,11 @@
             width: 100%;
             max-width: 420px;
         }
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .logo h1 {
-            color: #667eea;
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-        .logo p {
-            color: #666;
-            font-size: 14px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 600;
-            font-size: 14px;
-        }
+        .logo { text-align: center; margin-bottom: 30px; }
+        .logo h1 { color: #667eea; font-size: 32px; margin-bottom: 10px; }
+        .logo p { color: #666; font-size: 14px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #555; font-weight: 600; font-size: 14px; }
         input {
             width: 100%;
             padding: 12px 15px;
@@ -58,19 +36,15 @@
             font-size: 16px;
             transition: border-color 0.3s;
         }
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        .error {
-            background: #fee;
-            border: 1px solid #fcc;
-            color: #c33;
+        input:focus { outline: none; border-color: #667eea; }
+        .error, .success {
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 20px;
             font-size: 14px;
         }
+        .error { background: #fee; border: 1px solid #fcc; color: #c33; }
+        .success { background: #e6ffed; border: 1px solid #4CAF50; color: #256029; }
         .remember-forgot {
             display: flex;
             justify-content: space-between;
@@ -78,21 +52,10 @@
             margin-bottom: 20px;
             font-size: 14px;
         }
-        .remember-me {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .remember-me input[type="checkbox"] {
-            width: auto;
-        }
-        .forgot-link {
-            color: #667eea;
-            text-decoration: none;
-        }
-        .forgot-link:hover {
-            text-decoration: underline;
-        }
+        .remember-me { display: flex; align-items: center; gap: 8px; }
+        .remember-me input[type="checkbox"] { width: auto; }
+        .forgot-link { color: #667eea; text-decoration: none; }
+        .forgot-link:hover { text-decoration: underline; }
         .btn {
             width: 100%;
             padding: 14px;
@@ -105,32 +68,27 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-        .register-link {
-            text-align: center;
-            margin-top: 20px;
-            color: #666;
-            font-size: 14px;
-        }
-        .register-link a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .register-link a:hover {
-            text-decoration: underline;
-        }
+        .btn:hover { transform: translateY(-2px); }
+        .register-link { text-align: center; margin-top: 20px; color: #666; font-size: 14px; }
+        .register-link a { color: #667eea; text-decoration: none; font-weight: 600; }
+        .register-link a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 <div class="login-container">
     <div class="logo">
-        <h1> BusTrak</h1>
+        <h1>BusTrak</h1>
         <p>Sistema de Gestión de Reservas</p>
     </div>
 
+    {{-- Mensaje de éxito (por ejemplo después de registrarse) --}}
+    @if(session('success'))
+        <div class="success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    {{-- Errores de login --}}
     @if ($errors->any())
         <div class="error">
             {{ $errors->first() }}
@@ -178,7 +136,7 @@
     </form>
 
     <div class="register-link">
-        ¿No tienes cuenta? <a href="{{ route('register') }}">Regístrate aquí</a>
+        ¿No tienes cuenta? <a href="{{ route('registro') }}">Regístrate aquí</a>
     </div>
 </div>
 </body>

@@ -94,7 +94,7 @@
             </div>
         @endif
 
-        <h2 class="mb-4">Lista de Usuarios</h2>
+        <h2 class="mb-4">Usuarios Registrados</h2>
 
         <!-- BARRA DE BÚSQUEDA -->
         <form method="GET" action="{{ url('/usuarios') }}" class="mb-4">
@@ -117,16 +117,20 @@
             </div>
         </form>
 
-        <a href="{{ url('/registro') }}" class="btn btn-primary mb-3">Registrar Nuevo Usuario</a>
+        <div class="d-flex mb-3 gap-2">
+            <a href="{{ url('/registro') }}" class="btn btn-primary">Registrar Nuevo Usuario</a>
+            <a href="{{ route('usuarios.consultar') }}" class="btn btn-primary">Consultar Usuarios</a>
+        </div>
+
+
 
         <table class="table table-striped">
             <thead>
             <tr>
                 <th>Nombre Completo</th>
-                <th>email</th>
+                <th>Email</th>
                 <th>DNI</th>
-                <!-- AÑADIMOS LA COLUMNA DE ACCIONES -->
-                <th>Informacion</th>
+                <th>Detalles</th>
             </tr>
             </thead>
             <tbody>
@@ -145,10 +149,14 @@
                         <td>{{ $usuario->nombre_completo }}</td>
                         <td>{{ $usuario->email }}</td>
                         <td>{{ $usuario->dni }}</td>
+
                         <!-- AÑADIMOS EL BOTÓN VER -->
                         <td>
-                            <a href="{{ route('usuarios.show', $usuario->id) }}" class="btn btn-info btn-sm">
+                            <a href="{{ route('usuarios.show', $usuario->id) }}" class="btn btn-primary">
                                 <i class="fas fa-eye"></i> Ver
+                            </a>
+                            <a href="{{route ('usuarios.edit', $usuario->id)}}" class="btn btn-primary">
+                                <i class ="fas fa-edit"></i> Editar
                             </a>
                         </td>
                     </tr>
@@ -161,6 +169,5 @@
         {{ $usuarios->appends(['search' => request('search')])->links() }}
     </div>
 @endsection
-
 
 

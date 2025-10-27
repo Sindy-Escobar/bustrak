@@ -4,13 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Empleado;
+use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class EmpleadoController extends Controller
 {
     public function index()
     {
         $empleados = Empleado::paginate(10);
-        return view('empleados.index', compact('empleados'));
+
+        $total_activos = Empleado::where('estado', 'Activo')->count();
+        $total_inactivos = Empleado::where('estado', 'Inactivo')->count();
+        $total_empleados = Empleado::count();
+
+        return view('empleados.index', compact('empleados', 'total_activos', 'total_inactivos', 'total_empleados'));
     }
 
     public function create()
@@ -27,19 +37,58 @@ class EmpleadoController extends Controller
             'cargo' => 'required|string|max:50',
             'fecha_ingreso' => 'required|date',
             'rol' => 'required|in:Empleado,Administrador',
+            'foto' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        Empleado::create([
+        $fotoPath = $request->file('foto')->store('empleados', 'public');
+
+        // Generar correo y contraseña aleatoria
+        $baseEmail = strtolower($request->nombre . '.' . $request->apellido);
+        $email = $baseEmail . '@bustrak.com';
+        $counter = 1;
+
+        while (User::where('email', $email)->exists()) {
+            $email = $baseEmail . $counter . '@bustrak.com';
+            $counter++;
+        }
+
+        $password_initial = Str::random(8);
+
+        // Crear el empleado
+        $empleado = Empleado::create([
             'nombre' => $request->nombre,
             'apellido' => $request->apellido,
             'dni' => $request->dni,
             'cargo' => $request->cargo,
             'fecha_ingreso' => $request->fecha_ingreso,
-            'estado' => 'Activo',
             'rol' => $request->rol,
+            'estado' => 'Activo',
+            'foto' => $fotoPath,
+            'email' => $email,
+            'password_initial' => $password_initial,
         ]);
 
-        return redirect()->route('empleados.index')->with('success', 'Empleado registrado correctamente.');
+        // Crear usuario en tabla users
+        User::create([
+            'name' => $empleado->nombre . ' ' . $empleado->apellido,
+            'email' => $email,
+            'password' => Hash::make($password_initial),
+            'role' => $empleado->rol, // Coincide con ENUM: 'Empleado' o 'Administrador'
+            'estado' => 'activo',
+        ]);
+
+        return redirect()->route('empleados.show', $empleado->id)
+            ->with('success', "Empleado registrado correctamente. Correo: $email | Contraseña: $password_initial");
+    }
+
+    public function show($id)
+    {
+        $empleado = Empleado::findOrFail($id);
+
+        // Mostrar contraseña inicial solo si existe
+        $password_display = $empleado->password_initial ?? '*******';
+
+        return view('empleados.show', compact('empleado', 'password_display'));
     }
 
     public function edit($id)
@@ -50,6 +99,8 @@ class EmpleadoController extends Controller
 
     public function update(Request $request, $id)
     {
+        $empleado = Empleado::findOrFail($id);
+
         $request->validate([
             'nombre' => 'required|string|max:100',
             'apellido' => 'required|string|max:100',
@@ -57,20 +108,70 @@ class EmpleadoController extends Controller
             'cargo' => 'required|string|max:50',
             'fecha_ingreso' => 'required|date',
             'rol' => 'required|in:Empleado,Administrador',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $empleado = Empleado::findOrFail($id);
-        $empleado->update($request->only(['nombre','apellido','dni','cargo','fecha_ingreso','rol']));
+        $data = $request->only(['nombre', 'apellido', 'dni', 'cargo', 'fecha_ingreso', 'rol']);
 
-        return redirect()->route('empleados.index')->with('success', 'Empleado actualizado correctamente.');
+        if ($request->hasFile('foto')) {
+            if ($empleado->foto && Storage::disk('public')->exists($empleado->foto)) {
+                Storage::disk('public')->delete($empleado->foto);
+            }
+            $data['foto'] = $request->file('foto')->store('empleados', 'public');
+        }
+
+        $empleado->update($data);
+
+        return redirect()->route('empleados.show', $empleado->id)
+            ->with('success', 'Empleado actualizado correctamente.');
     }
 
-    public function toggleEstado($id)
+    public function formDesactivar($id)
     {
         $empleado = Empleado::findOrFail($id);
-        $empleado->estado = $empleado->estado === 'Activo' ? 'Inactivo' : 'Activo';
-        $empleado->save();
+        return view('empleados.desactivar', compact('empleado'));
+    }
 
-        return redirect()->route('empleados.index')->with('success', 'Estado del empleado actualizado.');
+    public function guardarDesactivacion(Request $request, $id)
+    {
+        $empleado = Empleado::findOrFail($id);
+
+        $request->validate([
+            'motivo_baja' => 'required|string|max:255',
+        ]);
+
+        $empleado->update([
+            'estado' => 'Inactivo',
+            'motivo_baja' => $request->motivo_baja,
+            'fecha_desactivacion' => Carbon::now(),
+        ]);
+
+        // Desactivar usuario también
+        $user = User::where('email', $empleado->email)->first();
+        if ($user) {
+            $user->update(['estado' => 'inactivo']);
+        }
+
+        return redirect()->route('empleados.show', $empleado->id)
+            ->with('success', 'Empleado desactivado correctamente.');
+    }
+
+    public function activar($id)
+    {
+        $empleado = Empleado::findOrFail($id);
+        $empleado->update([
+            'estado' => 'Activo',
+            'motivo_baja' => null,
+            'fecha_desactivacion' => null,
+        ]);
+
+        // Activar usuario también
+        $user = User::where('email', $empleado->email)->first();
+        if ($user) {
+            $user->update(['estado' => 'activo']);
+        }
+
+        return redirect()->route('empleados.show', $empleado->id)
+            ->with('success', 'Empleado activado correctamente.');
     }
 }

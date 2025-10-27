@@ -10,6 +10,16 @@ class EmpresaBusController extends Controller
     /**
      * Muestra el formulario y guarda la empresa en una sola ruta.
      */
+
+
+    // HU10 VISUALIZAR EMPRESAS DE BUSES
+    public function index()
+    {
+        // MODIFICACIÓN: Obtener todas las empresas y pasarlas a la vista
+        $empresas = EmpresaBus::all();
+        return view('terminal.empresas.visualizar', compact('empresas'));
+    }
+
     public function form(Request $request)
     {
         if ($request->isMethod('post')) {
@@ -20,10 +30,10 @@ class EmpresaBusController extends Controller
                 'email' => 'nullable|email|max:255', // solo este NO es obligatorio
                 'propietario' => 'required|max:255',
             ],
-            [
-                'nombre.unique' => 'El nombre de la empresa ya ha sido registrado.',
-                'nombre.required' => 'El campo nombre es obligatorio.',
-            ]);
+                [
+                    'nombre.unique' => 'El nombre de la empresa ya ha sido registrado.',
+                    'nombre.required' => 'El campo nombre es obligatorio.',
+                ]);
 
 
             EmpresaBus::create($request->all());
@@ -34,4 +44,5 @@ class EmpresaBusController extends Controller
         // Si es GET, solo muestra el formulario
         return view('empresa.create');
     }
+
 }

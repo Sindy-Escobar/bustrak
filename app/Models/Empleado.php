@@ -15,8 +15,17 @@ class Empleado extends Model
         'dni',
         'cargo',
         'fecha_ingreso',
-        'estado',
         'rol',
+        'estado',
+        'foto',
+        'email',             // <--- asegúrate de incluir esto
+        'password_initial',  // <--- y esto si quieres mostrar la contraseña
     ];
+
+
+    protected $casts = [
+        'fecha_desactivacion' => 'datetime',
+    ];
+
     public $timestamps = true;
 }

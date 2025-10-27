@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\usuario;
+use App\Models\Usuario;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class RegistroUsuarioController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -28,71 +27,104 @@ class RegistroUsuarioController extends Controller
         return view('usuarios.index', compact('usuarios'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Cambiado para usar la vista correcta
     public function create()
     {
-     return view ('usuarios.create');
+        return view('Vista_registro.create'); // <- vista real de tu proyecto
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        request()->validate([
+        $request->validate([
             'nombre_completo' => 'required|string|max:255',
             'dni' => 'required|string|unique:usuarios,dni',
-            'email' => 'required|email|unique:usuarios,email',
+            'email' => 'required|email|unique:usuarios,email|unique:users,email',
             'telefono' => 'required|string|max:20',
             'password' => 'required|string|min:8|confirmed',
         ]);
-        $nuevoUsuario = new Usuario();
 
-        $nuevoUsuario -> nombre_completo = request('nombre_completo');
-        $nuevoUsuario -> dni = request('dni');
-        $nuevoUsuario ->email = request('email');
-        $nuevoUsuario -> telefono  = request('telefono');
-        $nuevoUsuario -> password = Hash::make(request('password'));
+        // Guardar en tabla usuarios
+        $usuario = new Usuario();
+        $usuario->nombre_completo = $request->nombre_completo;
+        $usuario->dni = $request->dni;
+        $usuario->email = $request->email;
+        $usuario->telefono = $request->telefono;
+        $usuario->password = Hash::make($request->password);
+        $usuario->save();
 
-        if($nuevoUsuario -> save()){
-            return redirect()->route('usuarios.index')->with('success', 'El usuario se ha registrado exitosamente');
-        }else{
-            //No pudo guardar
-        }
+        // Crear también en tabla users para login
+        User::create([
+            'name' => $usuario->nombre_completo,
+            'email' => $usuario->email,
+            'password' => Hash::make($request->password),
+            'role' => 'Empleado', // Asegúrate de que coincida con tu enum en la migración
+            'estado' => 'activo',
+        ]);
+
+        // Redirigir mostrando mensaje de éxito
+        return redirect()
+            ->back()
+            ->with('success', 'Usuario registrado correctamente. Ya puedes iniciar sesión.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $usuario = Usuario::findOrFail($id);
         return view('usuarios.show', compact('usuario'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    public function consultar(Request $request)
+    {
+        $search = $request->input('search');
+
+        $usuarios = Usuario::query()
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nombre_completo', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('dni', 'like', "%{$search}%");
+                });
+            })
+            ->paginate(10);
+
+        return view('usuarios.consultar', compact('usuarios'));
+    }
+
     public function edit(string $id)
     {
-        //
+        $usuario = Usuario::findOrFail($id);
+        return view('usuarios.Editar', compact('usuario'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Usuario $usuario)
     {
-        //
-    }
+        $request->validate([
+            'nombre_completo' => 'required|string|max:255',
+            'dni' => ['required','string', Rule::unique('usuarios','dni')->ignore($usuario->id)],
+            'email' => ['required','email', Rule::unique('usuarios','email')->ignore($usuario->id)],
+            'telefono' => 'required|string|max:20',
+            'password' => 'nullable|string|min:8|confirmed',
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $data = $request->except(['_token','_method','password','password_confirmation']);
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        $usuario->update($data);
+
+        // Sincronizar cambios con tabla users
+        $user = User::where('email', $usuario->email)->first();
+        if ($user) {
+            $user->name = $usuario->nombre_completo;
+            $user->email = $usuario->email;
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->password);
+            }
+            $user->save();
+        }
+
+        return redirect()->route('usuarios.show', $usuario)
+            ->with('success', 'Usuario actualizado exitosamente.');
     }
 }

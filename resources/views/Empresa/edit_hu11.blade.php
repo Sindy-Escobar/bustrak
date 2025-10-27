@@ -2,7 +2,7 @@
 
 @section('styles')
     <style>
-        /* Botón primario con gradiente morado/azul */
+
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
             border: none !important;
@@ -15,7 +15,7 @@
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
-        /* Estilo para el formulario con gradiente */
+
         .form-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 10px;
@@ -60,9 +60,9 @@
 @section('contenido')
     <div class="container mt-4">
         <div class="form-card mx-auto" style="max-width: 600px;">
-            <h2 class="mb-4 text-center">Registrar Empresa de Buses</h2>
+            <h2 class="mb-4 text-center">Editar Empresa de Buses</h2>
 
-            {{-- Mensaje de éxito --}}
+
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ session('success') }}
@@ -70,7 +70,7 @@
                 </div>
             @endif
 
-            {{-- Errores de validación --}}
+
             @if($errors->any())
                 <div class="alert alert-danger">
                     <ul class="mb-0">
@@ -81,39 +81,41 @@
                 </div>
             @endif
 
-            <form action="{{ route('empresa.form') }}" method="POST">
+            <form action="{{ route('empresa.update.hu11', $empresa->id) }}" method="POST">
                 @csrf
+                @method('PUT')
 
                 <div class="mb-3">
-                    <label class="form-label">Nombre de la empresa *</label>
-                    <input type="text" name="nombre" class="form-control" value="{{ old('nombre') }}" required>
+                    <label class="form-label">Nombre de la Empresa *</label>
+                    <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $empresa->nombre) }}" required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Propietario *</label>
-                    <input type="text" name="propietario" class="form-control" value="{{ old('propietario') }}" required>
+                    <input type="text" name="propietario" class="form-control" value="{{ old('propietario', $empresa->propietario) }}" required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Teléfono *</label>
-                    <input type="text" name="telefono" class="form-control" value="{{ old('telefono') }}" required>
+                    <input type="text" name="telefono" class="form-control" value="{{ old('telefono', $empresa->telefono) }}" required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Correo Electrónico</label>
-                    <input type="email" name="email" class="form-control" value="{{ old('email') }}">
+                    <input type="email" name="email" class="form-control" value="{{ old('email', $empresa->email) }}">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Dirección *</label>
-                    <input type="text" name="direccion" class="form-control" value="{{ old('direccion') }}" required>
+                    <input type="text" name="direccion" class="form-control" value="{{ old('direccion', $empresa->direccion) }}" required>
                 </div>
 
                 <div class="d-flex justify-content-between">
-                    <button type="submit" class="btn btn-primary">Guardar Empresa</button>
+
+                    <a href="{{ url('/hu10/empresas-buses') }}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 </div>
             </form>
         </div>
     </div>
 @endsection
-
