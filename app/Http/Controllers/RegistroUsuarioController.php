@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class RegistroUsuarioController extends Controller
 {
@@ -96,15 +97,37 @@ class RegistroUsuarioController extends Controller
 
     public function edit(string $id)
     {
-        //
+        $usuario = Usuario::findOrFail($id);
+    return view('usuarios.Editar', compact('usuario'));
+
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Usuario $usuario)
     {
-        //
+        request()->validate(['nombre_completo' => 'required|string|max:255',
+        'dni' => ['required','string',
+        Rule::unique('usuarios','dni')->ignore($usuario->id),],
+        'Email' => ['required','email',
+        Rule::unique('usuarios', 'email')->ignore ($usuario->id),],
+        'telefono' => 'required|string|max:20',
+            'password' => 'nullable|string|min:8|confirmed',
+    ]);
+        $data = $request->except(['_token', '_method', 'password', 'password_confirmation']);
+
+        // Si se proporciona una nueva contraseña, la hasheamos y la añadimos a los datos.
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->input('password'));
+        }
+
+        // Actualiza el modelo Usuario
+        $usuario->update($data);
+
+        // Redirige al detalle del usuario con un mensaje de éxito
+        return redirect()->route('usuarios.show', $usuario)->with('success', 'Usuario actualizado exitosamente.');
     }
 
     /**

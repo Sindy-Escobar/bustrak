@@ -149,7 +149,6 @@
                 <th>Área</th>
                 <th>Permiso</th>
                 <th>Fecha Registro</th>
-                <th>Acciones</th>
             </tr>
             </thead>
             <tbody>
@@ -168,11 +167,7 @@
                         <td>{{ $usuario->area ?? '-' }}</td>
                         <td>{{ $usuario->permiso ?? '-' }}</td>
                         <td>{{ $usuario->created_at->format('d/m/Y') }}</td>
-                        <td>
-                            <a href="{{ route('usuarios.show', $usuario->id) }}" class="btn btn-info btn-sm">
-                                <i class="fas fa-eye"></i> Ver
-                            </a>
-                        </td>
+
                     </tr>
                 @endforeach
             @endif
