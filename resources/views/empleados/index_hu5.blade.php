@@ -255,6 +255,21 @@
 
     </div>
 
+    <div class="mb-4 text-start">
+        <a href="{{ url('/empleados') }}"
+           class="btn btn-gradient shadow-sm px-4 py-2 rounded-pill text-white"
+           style="background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%); transition: 0.3s;">
+            <i class="fas fa-arrow-left me-2"></i> Regresar
+        </a>
+    </div>
+
+    <style>
+        .btn-gradient:hover {
+            opacity: 0.9;
+            transform: translateX(-3px);
+        }
+    </style>
+
 
     <div class="filter-card">
         <form method="GET" action="{{ route('empleados.hu5') }}">
@@ -267,8 +282,8 @@
                     <label class="form-label fw-600 mb-2"><i class="fas fa-toggle-on"></i> Estado</label>
                     <select name="estado" class="form-select">
                         <option value="">-- Estado --</option>
-                        <option value="activo" {{ request('estado') == 'activo' ? 'selected' : '' }}>Activo</option>
-                        <option value="inactivo" {{ request('estado') == 'inactivo' ? 'selected' : '' }}>Inactivo</option>
+                        <option value="Activo" {{ request('estado') == 'Activo' ? 'selected' : '' }}>Activo</option>
+                        <option value="Inactivo" {{ request('estado') == 'Inactivo' ? 'selected' : '' }}>Inactivo</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -314,7 +329,7 @@
                             <td>{{ $empleado->cargo }}</td>
                             <td>{{ \Carbon\Carbon::parse($empleado->fecha_ingreso)->format('d/m/Y') }}</td>
                             <td>
-                                @if($empleado->estado == 'activo')
+                                @if($empleado->estado == 'Activo')
                                     <span class="badge bg-success">
                                                 <i class="fas fa-check-circle"></i> Activo
                                             </span>
