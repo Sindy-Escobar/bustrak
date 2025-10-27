@@ -113,10 +113,11 @@ Route::put('/empresa-hu11/{id}', [EmpresaHU11Controller::class, 'update'])->name
 // ======================================================
 Route::resource('terminales', RegistroTeminalController::class);
 
+//visualizacion de terminales
+Route::get('/ver_terminales', [RegistroTeminalController::class, 'ver_terminales'])->name('terminales.ver_terminales');
+
 // ======================================================
 // RUTA HU10 - VISUALIZAR EMPRESAS DE BUSES
 // ======================================================
 Route::get('/hu10/empresas-buses', [EmpresaBusController::class, 'index'])
     ->name('hu10.empresas.buses');
-
-
