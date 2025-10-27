@@ -135,4 +135,30 @@ class RegistroTeminalController extends Controller
     {
 
     }
+
+    public function ver_terminales(Request $request)
+    {
+        $search = $request->get('search');
+        $estado = $request->get('estado'); // "activo" o "inactivo"
+
+        $query = RegistroTerminal::query();
+
+        // Buscar por nombre o municipio
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('nombre', 'like', "%{$search}%")
+                    ->orWhere('municipio', 'like', "%{$search}%");
+            });
+        }
+
+        // Filtrar por estado si existe columna 'estado'
+        if ($estado) {
+            $query->where('estado', $estado);
+        }
+
+        // Ordenar y paginar
+        $terminales = $query->orderBy('nombre')->paginate(10)->withQueryString();
+
+        return view('terminales.ver_terminales', compact('terminales', 'search', 'estado'));
+    }
 }

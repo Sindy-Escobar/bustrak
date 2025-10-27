@@ -75,20 +75,39 @@ class RegistroUsuarioController extends Controller
 
     public function consultar(Request $request)
     {
-        $search = $request->input('search');
+        $usuarios = Usuario::query();
 
-        $usuarios = Usuario::query()
-            ->when($search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('nombre_completo', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%")
-                        ->orWhere('dni', 'like', "%{$search}%");
-                });
-            })
-            ->paginate(10);
+        // Filtro por rol
+        if ($request->filled('rol')) {
+            $usuarios->where('rol', $request->rol);
+        }
+
+        // Filtro por estado
+        if ($request->filled('estado')) {
+            $usuarios->where('estado', $request->estado);
+        }
+
+        // Filtro por área
+        if ($request->filled('area')) {
+            $usuarios->where('area', 'like', "%{$request->area}%");
+        }
+
+        // Filtro por permiso
+        if ($request->filled('permiso')) {
+            $usuarios->where('permiso', 'like', "%{$request->permiso}%");
+        }
+
+        // Filtro por fechas
+        if ($request->filled('fecha_registro')) {
+            $usuarios->whereDate('created_at', $request->fecha_registro);
+        }
+
+        // Paginar y mantener filtros en la URL
+        $usuarios = $usuarios->paginate(10)->appends($request->all());
 
         return view('usuarios.consultar', compact('usuarios'));
     }
+
 
     public function edit(string $id)
     {
