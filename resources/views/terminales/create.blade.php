@@ -71,9 +71,8 @@
         }
         .form-group input[type="text"],
         .form-group input[type="email"],
-        .form-group input[type="time"],
         .form-group textarea,
-        .form-group select {
+        .form-group select:not(.hour-select):not(.minute-select):not(.ampm-select) {
             width: 100%;
             padding: 12px;
             border: 1px solid #ccc;
@@ -90,12 +89,62 @@
 
         .form-group input:focus,
         .form-group textarea:focus,
-        .form-group select:focus {
+        .form-group select:focus:not(.hour-select):not(.minute-select):not(.ampm-select) {
             border-color: #667eea;
             outline: none;
         }
 
 
+        .time-12hr-picker {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 0;
+            background-color: white;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .time-12hr-picker[style*="border-color: rgb(229, 62, 62)"] {
+            border-color: #e53e3e !important;
+        }
+        .form-group:has(.time-12hr-picker:focus-within) .time-12hr-picker {
+            border-color: #667eea;
+            outline: none;
+        }
+        .time-12hr-picker select {
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            background: transparent;
+            -webkit-appearance: menulist;
+            -moz-appearance: menulist;
+            appearance: menulist;
+        }
+
+        .time-12hr-picker select:focus {
+            outline: none;
+            background: #f0f4ff;
+        }
+        .time-12hr-picker span {
+            font-weight: bold;
+            color: #444;
+        }
+
+        .hour-select, .minute-select {
+            width: 30%;
+        }
+
+        .ampm-select {
+            width: 40%;
+            border-left: 1px solid #eee;
+            padding-left: 10px;
+        }
         .form-group textarea {
             resize: none;
             overflow: hidden;
@@ -207,6 +256,12 @@
                     <label for="departamento">Departamento</label>
                     <select id="departamento" name="departamento" required>
                         <option value="">-- Seleccione un departamento --</option>
+                        {{-- Simulación de datos para demostración --}}
+                        <option value="Atlántida" {{ old('departamento') == 'Atlántida' ? 'selected' : '' }}>Atlántida</option>
+                        <option value="Colón" {{ old('departamento') == 'Colón' ? 'selected' : '' }}>Colón</option>
+                        <option value="Cortés" {{ old('departamento') == 'Cortés' ? 'selected' : '' }}>Cortés</option>
+                        <option value="Francisco Morazán" {{ old('departamento') == 'Francisco Morazán' ? 'selected' : '' }}>Francisco Morazán</option>
+                        {{-- Fin simulación --}}
                         @isset($departamentos)
                             @foreach($departamentos as $depto)
                                 <option value="{{ $depto }}" {{ old('departamento') == $depto ? 'selected' : '' }}>
@@ -257,13 +312,31 @@
 
             <div class="grid-half">
                 <div class="form-group">
-                    <label for="horario_apertura">Horario de apertura</label>
-                    <input type="time" id="horario_apertura" name="horario_apertura" value="{{ old('horario_apertura') }}" required>
+                    <label>Horario de apertura</label>
+                    <div class="time-12hr-picker" id="picker-apertura">
+                        <input type="hidden" id="horario_apertura" name="horario_apertura" value="{{ old('horario_apertura') }}" required data-target-id="picker-apertura">
+                        <select class="hour-select"></select>
+                        <span>:</span>
+                        <select class="minute-select"></select>
+                        <select class="ampm-select">
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
+                    </div>
                     <div id="error-horario_apertura" class="error-message"></div>
                 </div>
                 <div class="form-group">
-                    <label for="horario_cierre">Horario de cierre</label>
-                    <input type="time" id="horario_cierre" name="horario_cierre" value="{{ old('horario_cierre') }}" required>
+                    <label>Horario de cierre</label>
+                    <div class="time-12hr-picker" id="picker-cierre">
+                        <input type="hidden" id="horario_cierre" name="horario_cierre" value="{{ old('horario_cierre') }}" required data-target-id="picker-cierre">
+                        <select class="hour-select"></select>
+                        <span>:</span>
+                        <select class="minute-select"></select>
+                        <select class="ampm-select">
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
+                    </div>
                     <div id="error-horario_cierre" class="error-message"></div>
                 </div>
             </div>
@@ -282,7 +355,6 @@
                 <div class="action-group">
                     <button type="button" class="reset-btn">Limpiar formulario</button>
                     <button type="submit" class="submit-btn">Guardar</button>
-
                 </div>
             </div>
         </form>
@@ -298,26 +370,45 @@
         const nombreInput = document.getElementById('nombre');
         const resetButton = document.querySelector('.reset-btn');
 
-
         const direccionTextarea = document.getElementById('direccion');
         const descripcionTextarea = document.getElementById('descripcion');
 
-
         function showError(field, message) {
-            const errorElement = document.getElementById(`error-${field.id}`);
+            const fieldId = field.id;
+            const errorElement = document.getElementById(`error-${fieldId}`);
             if (errorElement) {
                 errorElement.textContent = message;
-                field.style.borderColor = '#e53e3e';
+
+                if (field.type === 'hidden' && (fieldId === 'horario_apertura' || fieldId === 'horario_cierre')) {
+                    const pickerId = field.getAttribute('data-target-id');
+                    const picker = document.getElementById(pickerId);
+                    if (picker) {
+                        picker.style.borderColor = '#e53e3e';
+                    }
+                } else {
+                    field.style.borderColor = '#e53e3e';
+                }
             }
         }
 
         function clearError(field) {
-            const errorElement = document.getElementById(`error-${field.id}`);
+            const fieldId = field.id;
+            const errorElement = document.getElementById(`error-${fieldId}`);
             if (errorElement) {
                 errorElement.textContent = '';
-                field.style.borderColor = '';
+
+                if (field.type === 'hidden' && (fieldId === 'horario_apertura' || fieldId === 'horario_cierre')) {
+                    const pickerId = field.getAttribute('data-target-id');
+                    const picker = document.getElementById(pickerId);
+                    if (picker) {
+                        picker.style.borderColor = '';
+                    }
+                } else {
+                    field.style.borderColor = '';
+                }
             }
         }
+
         function autoResize() {
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
@@ -355,10 +446,9 @@
                 const municipios = municipiosData[selectedDepto].sort();
 
                 municipios.forEach(municipio => {
-                    const option = new Option(municipio, municipio);
-                    if (option.value === "{{ old('municipio') }}") {
-                        option.selected = true;
-                    }
+
+                    const isSelected = municipio === "{{ old('municipio') }}";
+                    const option = new Option(municipio, municipio, false, isSelected);
                     municipioSelect.appendChild(option);
                 });
             } else {
@@ -385,6 +475,94 @@
             clearError(codigoInput);
         }
 
+        function formatTimeComponent(value) {
+            return String(value).padStart(2, '0');
+        }
+
+        function convertTo24Hour(hour, minute, ampm) {
+            let h = parseInt(hour, 10);
+            const m = formatTimeComponent(minute);
+
+            if (ampm === 'PM' && h < 12) {
+                h += 12;
+            } else if (ampm === 'AM' && h === 12) {
+                h = 0; // Medianoche (12 AM) es 00
+            }
+            return `${formatTimeComponent(h)}:${m}`;
+        }
+
+        function updateHiddenTime(container) {
+            const hourSelect = container.querySelector('.hour-select');
+            const minuteSelect = container.querySelector('.minute-select');
+            const ampmSelect = container.querySelector('.ampm-select');
+            const hiddenInput = container.querySelector('input[type="hidden"]');
+
+            if (hourSelect.value && minuteSelect.value && ampmSelect.value) {
+                hiddenInput.value = convertTo24Hour(
+                    hourSelect.value,
+                    minuteSelect.value,
+                    ampmSelect.value
+                );
+                clearError(hiddenInput);
+            } else {
+                hiddenInput.value = '';
+            }
+        }
+
+        function populateTimeSelects(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const hourSelect = container.querySelector('.hour-select');
+            const minuteSelect = container.querySelector('.minute-select');
+            const hiddenInput = container.querySelector('input[type="hidden"]');
+            const ampmSelect = container.querySelector('.ampm-select');
+
+
+            for (let i = 1; i <= 12; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                hourSelect.appendChild(option);
+            }
+
+
+            for (let i = 0; i < 60; i += 5) {
+                const minuteValue = formatTimeComponent(i);
+                const option = document.createElement('option');
+                option.value = minuteValue;
+                option.textContent = minuteValue;
+                minuteSelect.appendChild(option);
+            }
+
+            const initialValue24hr = hiddenInput.value;
+            if (initialValue24hr) {
+                const [hour24, minute] = initialValue24hr.split(':').map(val => parseInt(val, 10));
+
+                let hour12 = hour24 % 12 || 12;
+                let ampm = hour24 < 12 ? 'AM' : 'PM';
+
+                hourSelect.value = hour12;
+                minuteSelect.value = formatTimeComponent(minute);
+                ampmSelect.value = ampm;
+            } else {
+
+                hourSelect.value = 8;
+                minuteSelect.value = '00';
+                ampmSelect.value = 'AM';
+                updateHiddenTime(container); // Sincroniza el hidden input
+            }
+
+
+            [hourSelect, minuteSelect, ampmSelect].forEach(select => {
+                select.addEventListener('change', () => updateHiddenTime(container));
+                select.addEventListener('focus', () => clearError(hiddenInput));
+            });
+        }
+
+        populateTimeSelects('picker-apertura');
+        populateTimeSelects('picker-cierre');
+
 
         departamentoSelect.addEventListener('change', loadMunicipios);
         municipioSelect.addEventListener('change', updateCodigo);
@@ -394,9 +572,8 @@
         direccionTextarea.addEventListener('input', autoResize);
         descripcionTextarea.addEventListener('input', autoResize);
 
-
         const fields = document.querySelectorAll(
-            'input[type="text"], input[type="email"], input[type="time"], textarea'
+            'input[type="text"], input[type="email"], textarea'
         );
         fields.forEach(field => {
             field.addEventListener('keydown', function(event) {
@@ -417,23 +594,36 @@
             clearError(this);
         });
 
+
         if (resetButton) {
             resetButton.addEventListener('click', function() {
-
                 terminalForm.querySelectorAll(
-                    'input[type="text"], input[type="email"], input[type="time"], textarea'
+                    'input[type="text"], input[type="email"], textarea'
                 ).forEach(field => {
                     field.value = '';
                 });
+
                 departamentoSelect.value = "";
                 municipioSelect.disabled = true;
-                municipioSelect.innerHTML = '';
-                municipioSelect.appendChild(new Option('-- Seleccione primero un departamento --', ''));
+                municipioSelect.innerHTML = '<option value="">-- Seleccione primero un departamento --</option>';
                 codigoInput.value = '';
 
 
+                ['picker-apertura', 'picker-cierre'].forEach(id => {
+                    const container = document.getElementById(id);
+                    if (container) {
+                        container.querySelector('.hour-select').value = 8;
+                        container.querySelector('.minute-select').value = '00';
+                        container.querySelector('.ampm-select').value = 'AM';
+                        updateHiddenTime(container); // Sincroniza el campo oculto
+                    }
+                });
+
+
                 terminalForm.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-                terminalForm.querySelectorAll('[required], input[type="text"], input[type="email"], input[type="time"], textarea, select').forEach(el => el.style.borderColor = '');
+                terminalForm.querySelectorAll('[required], input[type="text"], input[type="email"], textarea, select').forEach(el => el.style.borderColor = '');
+                terminalForm.querySelectorAll('.time-12hr-picker').forEach(el => el.style.borderColor = '');
+
 
 
                 direccionTextarea.style.height = 'auto';
@@ -442,14 +632,14 @@
         }
 
 
-
         terminalForm.addEventListener('submit', function(event) {
             let isValid = true;
             let firstInvalidField = null;
 
 
             terminalForm.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-            terminalForm.querySelectorAll('[required], input[type="text"], input[type="email"], input[type="time"], textarea, select').forEach(el => el.style.borderColor = '');
+            terminalForm.querySelectorAll('[required], input[type="text"], input[type="email"], textarea, select').forEach(el => el.style.borderColor = '');
+            terminalForm.querySelectorAll('.time-12hr-picker').forEach(el => el.style.borderColor = '');
 
 
             const requiredFields = terminalForm.querySelectorAll('[required]');
@@ -459,9 +649,18 @@
                 const value = field.value.trim();
                 const fieldId = field.id;
 
+
+                if ((fieldId === 'horario_apertura' || fieldId === 'horario_cierre') && value && !/^\d{2}:\d{2}$/.test(value)) {
+                    message = 'El horario es obligatorio y debe ser válido.';
+                    isValid = false;
+                    if (!firstInvalidField) {
+                        firstInvalidField = field;
+                    }
+                }
+
                 if (value === '' || (field.tagName === 'SELECT' && value === '')) {
-                    const labelText = field.previousElementSibling.textContent;
-                    message = `El campo de ${labelText.toLowerCase()} es obligatorio.`;
+                    const labelText = field.closest('.form-group').querySelector('label').textContent;
+                    message = `El campo ${labelText.toLowerCase()} es obligatorio.`;
 
                     isValid = false;
                     if (!firstInvalidField) {
@@ -491,7 +690,13 @@
             if (!isValid) {
                 event.preventDefault();
                 if (firstInvalidField) {
-                    firstInvalidField.focus();
+
+                    if (firstInvalidField.type === 'hidden') {
+                        const pickerId = firstInvalidField.getAttribute('data-target-id');
+                        document.getElementById(pickerId).querySelector('.hour-select').focus();
+                    } else {
+                        firstInvalidField.focus();
+                    }
                 }
             }
         });
@@ -503,6 +708,5 @@
         updateCodigo();
     });
 </script>
-
 </body>
 </html>
