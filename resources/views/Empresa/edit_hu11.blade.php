@@ -111,8 +111,8 @@
                 </div>
 
                 <div class="d-flex justify-content-between">
-                    {{-- Cancelar temporal: vuelve atrás en el navegador --}}
-                    <a href="javascript:history.back()" class="btn btn-secondary">Cancelar</a>
+
+                    <a href="{{ url('/hu10/empresas-buses') }}" class="btn btn-secondary">Cancelar</a>
                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 </div>
             </form>
