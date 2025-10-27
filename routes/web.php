@@ -90,10 +90,11 @@ Route::middleware(['auth', 'user.active'])->prefix('cliente')->group(function ()
 // ======================================================
 // RUTAS PROTEGIDAS PARA ADMIN
 // ======================================================
-Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios');
-    Route::post('/usuarios/{id}/cambiar-estado', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
+
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('usuarios');
+    Route::patch('/usuarios/{id}/estado', [AdminController::class, 'cambiarEstado'])->name('usuarios.cambiarEstado');
 });
 
 // ======================================================
@@ -117,3 +118,5 @@ Route::resource('terminales', RegistroTeminalController::class);
 // ======================================================
 Route::get('/hu10/empresas-buses', [EmpresaBusController::class, 'index'])
     ->name('hu10.empresas.buses');
+
+
