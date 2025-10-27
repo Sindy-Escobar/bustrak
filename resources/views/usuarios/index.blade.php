@@ -94,7 +94,7 @@
             </div>
         @endif
 
-        <h2 class="mb-4">Lista de Usuarios</h2>
+        <h2 class="mb-4">Usuarios Registrados</h2>
 
         <!-- BARRA DE BÚSQUEDA -->
         <form method="GET" action="{{ url('/usuarios') }}" class="mb-4">
@@ -128,10 +128,9 @@
             <thead>
             <tr>
                 <th>Nombre Completo</th>
-                <th>email</th>
+                <th>Email</th>
                 <th>DNI</th>
-                <!-- AÑADIMOS LA COLUMNA DE ACCIONES -->
-                <th>Acciones</th>
+                <th>Detalles</th>
             </tr>
             </thead>
             <tbody>
@@ -150,11 +149,15 @@
                         <td>{{ $usuario->nombre_completo }}</td>
                         <td>{{ $usuario->email }}</td>
                         <td>{{ $usuario->dni }}</td>
+
                         <!-- AÑADIMOS EL BOTÓN VER -->
                         <td>
-                            <a href="{{ route('usuarios.show', $usuario->id) }}" class="btn btn-info btn-sm">
-                                <i class="fas fa-eye"></i> Ver
-                            </a>
+                                <a href="{{ route('usuarios.show', $usuario->id) }}" class="btn btn-primary">
+                                    <i class="fas fa-eye"></i> Ver
+                                </a>
+                                <a href="{{route ('usuarios.edit', $usuario->id)}}" class="btn btn-primary">
+                                <i class ="fas fa-edit"></i> Editar
+                                </a>
                         </td>
                     </tr>
                 @endforeach
