@@ -152,12 +152,12 @@
 
                         <!-- AÑADIMOS EL BOTÓN VER -->
                         <td>
-                                <a href="{{ route('usuarios.show', $usuario->id) }}" class="btn btn-primary">
-                                    <i class="fas fa-eye"></i> Ver
-                                </a>
-                                <a href="{{route ('usuarios.edit', $usuario->id)}}" class="btn btn-primary">
+                            <a href="{{ route('usuarios.show', $usuario->id) }}" class="btn btn-primary">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                            <a href="{{route ('usuarios.edit', $usuario->id)}}" class="btn btn-primary">
                                 <i class ="fas fa-edit"></i> Editar
-                                </a>
+                            </a>
                         </td>
                     </tr>
                 @endforeach
@@ -169,6 +169,5 @@
         {{ $usuarios->appends(['search' => request('search')])->links() }}
     </div>
 @endsection
-
 
 

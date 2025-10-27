@@ -14,7 +14,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
+        'role',   // ahora puede ser 'Empleado', 'Administrador', 'Cliente'
         'estado',
     ];
 
@@ -31,24 +31,24 @@ class User extends Authenticatable
     // Verificar si es admin
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        return strtolower($this->role) === 'administrador';
     }
 
     // Verificar si es cliente
     public function isCliente()
     {
-        return $this->role === 'cliente';
+        return strtolower($this->role) === 'cliente';
     }
 
     // Verificar si está activo
     public function isActive()
     {
-        return $this->estado === 'activo';
+        return strtolower($this->estado) === 'activo';
     }
 
     // Verificar si está inactivo
     public function isInactive()
     {
-        return $this->estado === 'inactivo';
+        return strtolower($this->estado) === 'inactivo';
     }
 }

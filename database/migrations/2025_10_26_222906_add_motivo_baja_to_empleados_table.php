@@ -11,16 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('empleados', function (Blueprint $table) {
-            $table->string('motivo_baja')->nullable()->after('estado');
-        });
+        // Solo agrega la columna si no existe
+        if (!Schema::hasColumn('empleados', 'motivo_baja')) {
+            Schema::table('empleados', function (Blueprint $table) {
+                $table->string('motivo_baja')->nullable()->after('estado');
+            });
+        }
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::table('empleados', function (Blueprint $table) {
-            $table->dropColumn('motivo_baja');
-        });
+        if (Schema::hasColumn('empleados', 'motivo_baja')) {
+            Schema::table('empleados', function (Blueprint $table) {
+                $table->dropColumn('motivo_baja');
+            });
+        }
     }
-
 };

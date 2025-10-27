@@ -44,6 +44,8 @@
     </div>
 
     <div class="info">
+        <p><strong>Correo:</strong> {{ $empleado->email }}</p>
+        <p><strong>Contraseña inicial:</strong> {{ $password_display }}</p>
         <p><strong>Rol:</strong> {{ $empleado->rol }}</p>
         <p><strong>DNI:</strong> {{ $empleado->dni }}</p>
         <p><strong>Fecha ingreso:</strong> {{ $empleado->fecha_ingreso }}</p>

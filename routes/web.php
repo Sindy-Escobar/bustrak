@@ -54,23 +54,23 @@ Route::put('/empleados/{id}/activar', [EmpleadoController::class, 'activar'])->n
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
-// Register
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
+// ======================================================
+// SOLO USAMOS /registro PARA REGISTRO DE USUARIOS
+// ======================================================
+Route::get('/registro', [RegistroUsuarioController::class, 'create'])->name('registro');
+Route::post('/registro', [RegistroUsuarioController::class, 'store']);
 
-// Ruta alternativa de registro (opcional)
-Route::get('/registro', function () {
-    return view('Vista_registro.create');
-})->name('registro');
-Route::post('registro', [RegistroUsuarioController::class, 'store']);
-
-// Consultar usuarios
+// ======================================================
+// CONSULTAR USUARIOS
+// ======================================================
 Route::get('/usuarios/consultar', [RegistroUsuarioController::class, 'consultar'])->name('usuarios.consultar');
 
 // Recurso usuarios
 Route::resource('usuarios', RegistroUsuarioController::class);
 
-// Password Reset
+// ======================================================
+// PASSWORD RESET
+// ======================================================
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
 Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
 Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
@@ -111,9 +111,6 @@ Route::put('/empresa-hu11/{id}', [EmpresaHU11Controller::class, 'update'])->name
 // RUTAS TERMINALES
 // ======================================================
 Route::resource('terminales', RegistroTeminalController::class);
-
-//consulta-paradas
-Route::get('consulta-paradas', [ConsultaParadaController::class, 'index'])->name('consulta-paradas.index');
 
 // ======================================================
 // RUTA HU10 - VISUALIZAR EMPRESAS DE BUSES
