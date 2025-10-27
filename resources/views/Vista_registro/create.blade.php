@@ -68,19 +68,28 @@
 </head>
 <body>
 <div class="container mt-5">
-    <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;">
-        <i class="fas fa-check-circle me-2"></i>
-        Registro exitoso
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-    </div>
+    <!-- Mensaje de éxito -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    @endif
 
-    <div class="alert alert-danger" style="display: none;">
-        <i class="fas fa-exclamation-circle me-2"></i>
-        <strong>Por favor corrige los siguientes errores:</strong>
-        <ul class="mb-0 mt-2">
-            <li>Error de ejemplo</li>
-        </ul>
-    </div>
+    <!-- Mensajes de error -->
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <strong>Por favor corrige los siguientes errores:</strong>
+            <ul class="mb-0 mt-2">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    @endif
 
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
@@ -90,65 +99,53 @@
                     <p class="mb-0 mt-2">Completa el formulario para crear tu cuenta</p>
                 </div>
                 <div class="card-body p-4">
-                    <form method="POST" action="/registro">
-
+                    <form method="POST" action="{{ url('/registro') }}">
                         @csrf
                         <div class="mb-3">
                             <label for="nombre_completo" class="form-label">Nombre Completo</label>
                             <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-user"></i>
-                                    </span>
-                                <input type="text" class="form-control" id="nombre_completo" name="nombre_completo" placeholder="Ingresa tu nombre completo" required>
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="nombre_completo" name="nombre_completo" value="{{ old('nombre_completo') }}" required>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="dni" class="form-label">DNI</label>
                             <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-id-card"></i>
-                                    </span>
-                                <input type="text" class="form-control" id="dni" name="dni" placeholder="Ingresa tu DNI" required>
+                                <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                <input type="text" class="form-control" id="dni" name="dni" value="{{ old('dni') }}" required>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Correo Electrónico</label>
                             <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-envelope"></i>
-                                    </span>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="correo@ejemplo.com" required>
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="telefono" class="form-label">Teléfono</label>
                             <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-phone"></i>
-                                    </span>
-                                <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingresa tu teléfono" required>
+                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                <input type="text" class="form-control" id="telefono" name="telefono" value="{{ old('telefono') }}" required>
                             </div>
                         </div>
 
                         <div class="mb-4">
                             <label for="password" class="form-label">Contraseña</label>
                             <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-lock"></i>
-                                    </span>
-                                <input type="password" class="form-control" id="password" name="password" placeholder="Crea una contraseña segura" required>
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="password" name="password" required>
                             </div>
                         </div>
+
                         <div class="mb-4">
                             <label for="password_confirmation" class="form-label">Confirmar Contraseña</label>
                             <div class="input-group">
-                              <span class="input-group-text">
-                                <i class="fas fa-lock"></i>
-                              </span>
-                                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Confirma tu contraseña" required>
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
                             </div>
                         </div>
 
@@ -159,7 +156,10 @@
                         </div>
 
                         <div class="text-center mt-3">
-                            <small class="text-muted">¿Ya tienes cuenta? <a href="/login" class="text-decoration-none">Inicia sesión aquí</a></small>
+                            <small class="text-muted">
+                                ¿Ya tienes cuenta?
+                                <a href="{{ url('/login') }}" class="text-decoration-none">Inicia sesión aquí</a>
+                            </small>
                         </div>
                     </form>
                 </div>
@@ -171,4 +171,3 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

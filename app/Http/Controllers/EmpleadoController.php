@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Empleado;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class EmpleadoController extends Controller
@@ -19,7 +22,6 @@ class EmpleadoController extends Controller
 
         return view('empleados.index', compact('empleados', 'total_activos', 'total_inactivos', 'total_empleados'));
     }
-
 
     public function create()
     {
@@ -40,7 +42,20 @@ class EmpleadoController extends Controller
 
         $fotoPath = $request->file('foto')->store('empleados', 'public');
 
-        Empleado::create([
+        // Generar correo y contraseña aleatoria
+        $baseEmail = strtolower($request->nombre . '.' . $request->apellido);
+        $email = $baseEmail . '@bustrak.com';
+        $counter = 1;
+
+        while (User::where('email', $email)->exists()) {
+            $email = $baseEmail . $counter . '@bustrak.com';
+            $counter++;
+        }
+
+        $password_initial = Str::random(8);
+
+        // Crear el empleado
+        $empleado = Empleado::create([
             'nombre' => $request->nombre,
             'apellido' => $request->apellido,
             'dni' => $request->dni,
@@ -49,16 +64,31 @@ class EmpleadoController extends Controller
             'rol' => $request->rol,
             'estado' => 'Activo',
             'foto' => $fotoPath,
+            'email' => $email,
+            'password_initial' => $password_initial,
         ]);
 
-        return redirect()->route('empleados.index')
-            ->with('success', 'Empleado registrado correctamente.');
+        // Crear usuario en tabla users
+        User::create([
+            'name' => $empleado->nombre . ' ' . $empleado->apellido,
+            'email' => $email,
+            'password' => Hash::make($password_initial),
+            'role' => $empleado->rol, // Coincide con ENUM: 'Empleado' o 'Administrador'
+            'estado' => 'activo',
+        ]);
+
+        return redirect()->route('empleados.show', $empleado->id)
+            ->with('success', "Empleado registrado correctamente. Correo: $email | Contraseña: $password_initial");
     }
 
     public function show($id)
     {
         $empleado = Empleado::findOrFail($id);
-        return view('empleados.show', compact('empleado'));
+
+        // Mostrar contraseña inicial solo si existe
+        $password_display = $empleado->password_initial ?? '*******';
+
+        return view('empleados.show', compact('empleado', 'password_display'));
     }
 
     public function edit($id)
@@ -92,7 +122,7 @@ class EmpleadoController extends Controller
 
         $empleado->update($data);
 
-        return redirect()->route('empleados.index')
+        return redirect()->route('empleados.show', $empleado->id)
             ->with('success', 'Empleado actualizado correctamente.');
     }
 
@@ -116,6 +146,12 @@ class EmpleadoController extends Controller
             'fecha_desactivacion' => Carbon::now(),
         ]);
 
+        // Desactivar usuario también
+        $user = User::where('email', $empleado->email)->first();
+        if ($user) {
+            $user->update(['estado' => 'inactivo']);
+        }
+
         return redirect()->route('empleados.show', $empleado->id)
             ->with('success', 'Empleado desactivado correctamente.');
     }
@@ -127,8 +163,13 @@ class EmpleadoController extends Controller
             'estado' => 'Activo',
             'motivo_baja' => null,
             'fecha_desactivacion' => null,
-
         ]);
+
+        // Activar usuario también
+        $user = User::where('email', $empleado->email)->first();
+        if ($user) {
+            $user->update(['estado' => 'activo']);
+        }
 
         return redirect()->route('empleados.show', $empleado->id)
             ->with('success', 'Empleado activado correctamente.');

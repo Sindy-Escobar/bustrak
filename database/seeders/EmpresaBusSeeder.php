@@ -10,6 +10,6 @@ class EmpresaBusSeeder extends Seeder
     public function run()
     {
 
-        EmpresaBus::factory()->count(5)->create();
+        EmpresaBus::factory()->count(50)->create();
     }
 }
