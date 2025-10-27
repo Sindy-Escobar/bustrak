@@ -10,6 +10,14 @@ class EmpresaBusController extends Controller
     /**
      * Muestra el formulario y guarda la empresa en una sola ruta.
      */
+
+
+  // HU10 VISUALIZAR EMPRESAS DE BUSES
+    public function index()
+    {
+        return view('terminal.empresas.visualizar');
+    }
+
     public function form(Request $request)
     {
         if ($request->isMethod('post')) {
