@@ -18,13 +18,15 @@ class Empleado extends Model
         'rol',
         'estado',
         'foto',
-        'email',             // <--- asegúrate de incluir esto
-        'password_initial',  // <--- y esto si quieres mostrar la contraseña
+        'email',             // Incluido
+        'password_initial',  // Incluido
+        'motivo_baja',       // <--- agregado
+        'fecha_desactivacion', // <--- agregado también para permitir update
     ];
 
-
     protected $casts = [
-        'fecha_desactivacion' => 'datetime',
+        'fecha_ingreso' => 'date',          // opcional, útil para formatear
+        'fecha_desactivacion' => 'datetime', // ya está
     ];
 
     public $timestamps = true;
