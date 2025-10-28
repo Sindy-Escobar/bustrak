@@ -136,3 +136,8 @@ Route::get('/ver_terminales', [RegistroTeminalController::class, 'ver_terminales
 // ======================================================
 Route::get('/hu10/empresas-buses', [EmpresaBusController::class, 'index'])
     ->name('hu10.empresas.buses');
+
+// RUTA VALIDACIÓN DE EMPLEADOS
+Route::get('/validacion-empleados', function () {
+    return view('validacion-empleados.index');
+})->name('validacion-empleados.index');
