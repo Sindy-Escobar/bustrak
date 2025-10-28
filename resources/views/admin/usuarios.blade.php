@@ -1,248 +1,198 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-4" style="min-height:100vh; background: linear-gradient(135deg, #7c6fd0 0%, #8b7fd8 100%);">
         <div class="row">
-            <div class="col-12">
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="mb-0">
-                                <i class="fas fa-users-cog"></i> Gestión de Usuarios
-                            </h4>
-                            <span class="badge bg-light text-dark">
+            <div class="col-12 px-5">
+
+                {{-- Header grande blanco sobre el gradiente --}}
+                <div style="background: white; border-radius: 16px; padding: 30px; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 style="margin:0; color:#8b7fd8; font-weight:700; font-size:2rem;">
+                                Validación de Usuarios
+                            </h2>
+                        </div>
+
+                        <div style="background:#8b7fd8; color:#fff; padding:12px 24px; border-radius:12px; font-weight:700; font-size:1.1rem;">
                             Total: {{ $usuarios->count() }}
-                        </span>
                         </div>
-                    </div>
-
-                    <div class="card-body">
-                        {{-- Mensajes --}}
-                        @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <i class="fas fa-check-circle me-2"></i>
-                                <strong>¡Éxito!</strong> {{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        @endif
-
-                        @if(session('error'))
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                <strong>Error:</strong> {{ session('error') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        @endif
-
-                        {{-- Filtros --}}
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <div class="input-group">
-                                <span class="input-group-text bg-light">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                                    <input type="text"
-                                           id="searchInput"
-                                           class="form-control"
-                                           placeholder="Buscar por nombre o email...">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="btn-group w-100" role="group">
-                                    <button type="button"
-                                            class="btn btn-outline-success active"
-                                            onclick="filtrarPorEstado('todos')">
-                                        <i class="fas fa-list"></i> Todos
-                                    </button>
-                                    <button type="button"
-                                            class="btn btn-outline-success"
-                                            onclick="filtrarPorEstado('activo')">
-                                        <i class="fas fa-check-circle"></i> Activos
-                                    </button>
-                                    <button type="button"
-                                            class="btn btn-outline-danger"
-                                            onclick="filtrarPorEstado('inactivo')">
-                                        <i class="fas fa-ban"></i> Inactivos
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Tabla --}}
-                        <div class="table-responsive">
-                            <table class="table table-hover table-striped align-middle" id="tablaUsuarios">
-                                <thead class="table-dark">
-                                <tr>
-                                    <th style="width: 60px;">ID</th>
-                                    <th>Nombre</th>
-                                    <th>Email</th>
-                                    <th style="width: 120px;" class="text-center">Estado</th>
-                                    <th style="width: 140px;">Fecha Registro</th>
-                                    <th style="width: 180px;" class="text-center">Acciones</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @forelse($usuarios as $usuario)
-                                    <tr data-estado="{{ $usuario->estado }}" data-nombre="{{ strtolower($usuario->name) }}" data-email="{{ strtolower($usuario->email) }}">
-                                        <td><strong>#{{ $usuario->id }}</strong></td>
-                                        <td>
-                                            <i class="fas fa-user text-secondary me-2"></i>
-                                            {{ $usuario->name }}
-                                        </td>
-                                        <td>
-                                            <i class="fas fa-envelope text-secondary me-2"></i>
-                                            <small>{{ $usuario->email }}</small>
-                                        </td>
-                                        <td class="text-center">
-                                            @if($usuario->estado === 'activo')
-                                                <span class="badge bg-success px-3 py-2">
-                                                <i class="fas fa-check-circle"></i> Activo
-                                            </span>
-                                            @else
-                                                <span class="badge bg-danger px-3 py-2">
-                                                <i class="fas fa-times-circle"></i> Inactivo
-                                            </span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <small class="text-muted">
-                                                <i class="far fa-calendar me-1"></i>
-                                                {{ $usuario->created_at->format('d/m/Y') }}
-                                            </small>
-                                        </td>
-                                        <td class="text-center">
-                                            <form action="{{ route('admin.usuarios.cambiarEstado', $usuario->id) }}"
-                                                  method="POST"
-                                                  class="d-inline"
-                                                  onsubmit="return confirmarCambio('{{ $usuario->name }}', '{{ $usuario->estado }}');">
-                                                @csrf
-                                                @method('PATCH')
-
-                                                @if($usuario->estado === 'activo')
-                                                    <button type="submit"
-                                                            class="btn btn-sm btn-warning"
-                                                            title="Inactivar usuario">
-                                                        <i class="fas fa-ban"></i> Inactivar
-                                                    </button>
-                                                @else
-                                                    <button type="submit"
-                                                            class="btn btn-sm btn-success"
-                                                            title="Activar usuario">
-                                                        <i class="fas fa-check"></i> Activar
-                                                    </button>
-                                                @endif
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="text-center py-5">
-                                            <i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>
-                                            <p class="text-muted mb-0">No hay usuarios registrados en el sistema</p>
-                                        </td>
-                                    </tr>
-                                @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {{-- Resumen --}}
-                        @if($usuarios->count() > 0)
-                            <div class="row mt-4">
-                                <div class="col-12">
-                                    <div class="alert alert-info mb-0">
-                                        <div class="row text-center">
-                                            <div class="col-md-4">
-                                                <h5 class="mb-0">
-                                                    <i class="fas fa-users me-2"></i>
-                                                    <strong>{{ $usuarios->count() }}</strong>
-                                                </h5>
-                                                <small>Total Usuarios</small>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <h5 class="mb-0 text-success">
-                                                    <i class="fas fa-check-circle me-2"></i>
-                                                    <strong>{{ $usuarios->where('estado', 'activo')->count() }}</strong>
-                                                </h5>
-                                                <small>Activos</small>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <h5 class="mb-0 text-danger">
-                                                    <i class="fas fa-ban me-2"></i>
-                                                    <strong>{{ $usuarios->where('estado', 'inactivo')->count() }}</strong>
-                                                </h5>
-                                                <small>Inactivos</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
                     </div>
                 </div>
+
+                {{-- Franja buscador blanca con buscador y filtros a la derecha --}}
+                <div style="margin-top:20px; background:#ffffff; padding:24px; border-radius:16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                    <div class="d-flex align-items-center">
+                        <div style="flex:1;">
+                            <div class="input-group" style="max-width:820px;">
+                                <input id="searchInput" type="text" class="form-control" placeholder="Buscar por Nombre Completo, DNI o Email..." style="background:#f3f4f6; border:2px solid #e5e7eb; padding:14px 20px; border-radius:12px; font-size:1rem;">
+                            </div>
+                        </div>
+
+                        <div style="margin-left:20px;">
+                            <div class="btn-group" role="group" aria-label="Filtros">
+                                <button class="btn filtro active" data-filter="todos" style="background:#8b7fd8; color:white; font-weight:700; border-radius:12px; padding:12px 24px; font-size:1rem;">Todos</button>
+                                <button class="btn filtro" data-filter="activo" style="background:#10b981; color:white; font-weight:700; border-radius:12px; padding:12px 24px; margin-left:10px; font-size:1rem;">Activos</button>
+                                <button class="btn filtro" data-filter="inactivo" style="background:#ef4444; color:white; font-weight:700; border-radius:12px; padding:12px 24px; margin-left:10px; font-size:1rem;">Inactivos</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Tabla con estilo actualizado --}}
+                <div style="margin-top:20px; background:white; border-radius:16px; padding:0; box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow:hidden;">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0" id="tablaUsuarios">
+                            <thead style="background:#f9fafb; color:#111827; border-bottom:2px solid #e5e7eb;">
+                            <tr>
+                                <th style="padding:18px; border:none; width:70px; font-weight:700; font-size:1rem;">#</th>
+                                <th style="padding:18px; border:none; font-weight:700; font-size:1rem;">Nombre</th>
+                                <th style="padding:18px; border:none; font-weight:700; font-size:1rem;">Correo electrónico</th>
+                                <th style="padding:18px; border:none; width:120px; font-weight:700; font-size:1rem;">Estado</th>
+                                <th style="padding:18px; border:none; width:140px; font-weight:700; font-size:1rem;">Fecha Registro</th>
+                                <th style="padding:18px; border:none; width:160px; font-weight:700; font-size:1rem;" class="text-center">Acciones</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            @if($usuarios->count() > 0)
+                                @foreach($usuarios->sortByDesc('id') as $usuario)
+                                    @php $estado = $usuario->estado ?? 'activo'; @endphp
+                                    <tr data-estado="{{ $estado }}" data-nombre="{{ strtolower($usuario->name) }}" data-email="{{ strtolower($usuario->email) }}" style="border-bottom:1px solid #f3f4f6;">
+                                        <td style="padding:18px;">
+                                            <strong style="color:#8b7fd8; font-size:1rem;">#{{ $loop->iteration }}</strong>
+                                        </td>
+
+                                        <td style="padding:18px; font-weight:700; color:#111827; font-size:1rem;">
+                                            {{ $usuario->name }}
+                                        </td>
+
+                                        <td style="padding:18px; color:#6b7280; font-size:1rem;">{{ $usuario->email }}</td>
+
+                                        <td style="padding:18px;">
+                                            @if($estado === 'activo')
+                                                <span style="background:#10b981; color:white; padding:8px 16px; border-radius:999px; font-weight:700; font-size:0.9rem;">Activo</span>
+                                            @else
+                                                <span style="background:#f97316; color:white; padding:8px 16px; border-radius:999px; font-weight:700; font-size:0.9rem;">Inactivo</span>
+                                            @endif
+                                        </td>
+
+                                        <td style="padding:18px; color:#6b7280; font-size:1rem;">
+                                            {{ optional($usuario->created_at)->format('d/m/Y') }}
+                                        </td>
+
+                                        <td style="padding:18px;" class="text-center">
+                                            <div class="d-flex justify-content-center gap-2">
+                                                {{-- SOLO el botón toggle (Inactivar / Activar) --}}
+                                                <form action="{{ route('admin.cambiarEstado', $usuario->id) }}" method="POST" onsubmit="return confirmarCambio('{{ addslashes($usuario->name) }}', '{{ $estado }}');">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    @if($estado === 'activo')
+                                                        <button type="submit" class="btn" style="background:#f59e0b; color:white; padding:10px 20px; border-radius:12px; font-weight:700; font-size:1rem;">
+                                                            Inactivar
+                                                        </button>
+                                                    @else
+                                                        <button type="submit" class="btn" style="background:#10b981; color:white; padding:10px 20px; border-radius:12px; font-weight:700; font-size:1rem;">
+                                                            Activar
+                                                        </button>
+                                                    @endif
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="6" class="text-center py-5">
+                                        <div style="padding:40px; color:#9ca3af;">
+                                            <i class="fas fa-inbox" style="font-size:3rem; color:#d1d5db;"></i>
+                                            <p style="margin-top:12px;">No hay usuarios registrados</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
-    @push('scripts')
-        <script>
-            // Confirmar cambio de estado
-            function confirmarCambio(nombre, estadoActual) {
-                const accion = estadoActual === 'activo' ? 'INACTIVAR' : 'ACTIVAR';
-                const advertencia = estadoActual === 'activo'
-                    ? 'El usuario NO podrá acceder al sistema.'
-                    : 'El usuario podrá acceder nuevamente al sistema.';
+    <style>
+        .table tbody tr:hover { background-color: rgba(139,127,216,0.05); }
+        .btn { border: none; }
+        .filtro {
+            border: none;
+            color:#fff;
+            transition: all 0.3s ease;
+        }
+        .filtro:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .filtro.active {
+            box-shadow: 0 4px 12px rgba(139,127,216,0.3);
+        }
+        .form-control:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(139,127,216,0.1);
+            border-color: #8b7fd8;
+        }
+    </style>
 
-                return confirm(`¿Estás seguro de ${accion} a "${nombre}"?\n\n${advertencia}`);
-            }
+    <script>
+        // Confirm dialog for toggle estado
+        function confirmarCambio(nombre, estadoActual) {
+            const accion = estadoActual === 'activo' ? 'INACTIVAR' : 'ACTIVAR';
+            const advertencia = estadoActual === 'activo'
+                ? 'El usuario NO podrá acceder al sistema.'
+                : 'El usuario podrá acceder nuevamente al sistema.';
+            return confirm(`¿Estás seguro de ${accion} a "${nombre}"?\n\n${advertencia}`);
+        }
 
-            // Búsqueda en tiempo real
-            document.getElementById('searchInput')?.addEventListener('keyup', function() {
-                const searchTerm = this.value.toLowerCase();
-                const rows = document.querySelectorAll('#tablaUsuarios tbody tr');
-
-                rows.forEach(row => {
-                    const nombre = row.getAttribute('data-nombre') || '';
-                    const email = row.getAttribute('data-email') || '';
-
-                    if (nombre.includes(searchTerm) || email.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-
-            // Filtrar por estado
-            function filtrarPorEstado(estado) {
-                const rows = document.querySelectorAll('#tablaUsuarios tbody tr');
-                const buttons = document.querySelectorAll('.btn-group button');
-
-                // Actualizar botones activos
-                buttons.forEach(btn => btn.classList.remove('active'));
-                event.target.classList.add('active');
-
-                rows.forEach(row => {
-                    const estadoUsuario = row.getAttribute('data-estado');
-
-                    if (estado === 'todos' || estadoUsuario === estado) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            }
-
-            // Auto-ocultar alertas después de 5 segundos
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(function() {
-                    const alerts = document.querySelectorAll('.alert-dismissible');
-                    alerts.forEach(alert => {
-                        const bsAlert = bootstrap.Alert.getInstance(alert) || new bootstrap.Alert(alert);
-                        bsAlert.close();
+        document.addEventListener('DOMContentLoaded', function () {
+            // Buscador: filtra por nombre / email / dni (si tienes dni en la tabla)
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function () {
+                    const term = this.value.trim().toLowerCase();
+                    const rows = document.querySelectorAll('#tablaUsuarios tbody tr');
+                    rows.forEach(row => {
+                        // si fila es "no hay usuarios", la ignoramos
+                        if (row.querySelector('.fa-inbox')) return;
+                        const nombre = row.getAttribute('data-nombre') || '';
+                        const email = row.getAttribute('data-email') || '';
+                        const dni = (row.cells[3] && row.cells[3].innerText) ? row.cells[3].innerText.toLowerCase() : '';
+                        if (!term || nombre.includes(term) || email.includes(term) || dni.includes(term)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
                     });
-                }, 5000);
+                });
+            }
+
+            // Filtros (Todos / Activo / Inactivo)
+            const filtros = document.querySelectorAll('.filtro');
+            filtros.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    filtros.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const filtro = this.getAttribute('data-filter');
+                    const rows = document.querySelectorAll('#tablaUsuarios tbody tr');
+                    rows.forEach(row => {
+                        if (row.querySelector('.fa-inbox')) return;
+                        const estado = row.getAttribute('data-estado') || 'activo';
+                        if (filtro === 'todos' || estado === filtro) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
             });
-        </script>
-    @endpush
+        });
+    </script>
 @endsection
