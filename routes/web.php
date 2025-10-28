@@ -91,11 +91,19 @@ Route::middleware(['auth', 'user.active'])->prefix('cliente')->group(function ()
 // ======================================================
 // RUTAS PROTEGIDAS PARA ADMIN
 // ======================================================
+Route::middleware('auth')->group(function () {
 
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('usuarios');
-    Route::patch('/usuarios/{id}/estado', [AdminController::class, 'cambiarEstado'])->name('usuarios.cambiarEstado');
+    // Mostrar usuarios (lista principal)
+    Route::get('/admin/usuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios');
+
+    // Vista de validación (muestra la misma vista que admin.usuarios)
+    Route::get('/admin/usuarios/validar', [AdminController::class, 'indexValidar'])->name('admin.usuarios.validar');
+
+    // Toggle activar/inactivar
+    Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
+
+    // Validar usuario (PATCH) - si usas este método
+    Route::patch('/admin/usuarios/{id}/validar', [AdminController::class, 'validar'])->name('admin.validar');
 });
 
 // ======================================================

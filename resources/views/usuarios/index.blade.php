@@ -118,8 +118,15 @@
         </form>
 
         <div class="d-flex mb-3 gap-2">
-            <a href="{{ url('/registro') }}" class="btn btn-primary">Registrar Nuevo Usuario</a>
-            <a href="{{ route('usuarios.consultar') }}" class="btn btn-primary">Consultar Usuarios</a>
+            <a href="{{ url('/registro') }}" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Registrar Nuevo Usuario
+            </a>
+            <a href="{{ route('usuarios.consultar') }}" class="btn btn-primary">
+                <i class="fas fa-search"></i> Consultar Usuarios
+            </a>
+            <a href="{{ route('admin.usuarios') }}" class="btn btn-primary">
+                <i class="fas fa-user-check"></i> Validar Usuarios
+            </a>
         </div>
 
 
@@ -152,10 +159,10 @@
 
                         <!-- AÑADIMOS EL BOTÓN VER -->
                         <td>
-                            <a href="{{ route('usuarios.show', $usuario->id) }}" class="btn btn-primary">
+                            <a href="{{ route('usuarios.show', $usuario->id) }}" class="btn btn-primary btn-sm">
                                 <i class="fas fa-eye"></i> Ver
                             </a>
-                            <a href="{{route ('usuarios.edit', $usuario->id)}}" class="btn btn-primary">
+                            <a href="{{route ('usuarios.edit', $usuario->id)}}" class="btn btn-primary btn-sm">
                                 <i class ="fas fa-edit"></i> Editar
                             </a>
                         </td>
@@ -169,5 +176,3 @@
         {{ $usuarios->appends(['search' => request('search')])->links() }}
     </div>
 @endsection
-
-

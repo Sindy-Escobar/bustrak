@@ -578,7 +578,7 @@
     // Validar empresa
     function validateCompany() {
         if (currentEmpresaId) {
-            window.location.href = `/empresa-hu11/${currentEmpresaId}/validar`;
+            window.location.href = `/validar-empresas`;
         }
     }
 
