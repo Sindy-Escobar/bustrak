@@ -62,6 +62,14 @@
         <div class="form-card mx-auto" style="max-width: 600px;">
             <h2 class="mb-4 text-center">Editar Empresa de Buses</h2>
 
+            @if(session('success'))
+                <div class="mb-3 text-end">
+                    <a href="{{ url('/hu10/empresas-buses') }}" class="btn btn-info">
+                        Empresa actualizada
+                    </a>
+                </div>
+            @endif
+
 
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">

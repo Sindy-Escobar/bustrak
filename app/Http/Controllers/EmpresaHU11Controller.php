@@ -43,6 +43,7 @@ class EmpresaHU11Controller extends Controller
         $empresa->update($request->all());
 
 
-        return redirect('/hu10/empresas-buses')->with('success', 'Empresa actualizada correctamente');
+        return redirect()->route('empresa.edit.hu11', $empresa->id)
+            ->with('success', 'Empresa actualizada correctamente');
     }
 }
