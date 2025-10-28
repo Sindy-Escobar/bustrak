@@ -469,13 +469,13 @@
         const status = document.getElementById('location-status');
         const btn = document.getElementById(buttonId);
 
-        status.textContent = '📍 Detectando tu ubicación...';
+        status.textContent = 'Detectando tu ubicación...';
         status.className = 'text-warning';
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Detectando...';
 
         if (!navigator.geolocation) {
-            status.textContent = '❌ Tu navegador no soporta geolocalización';
+            status.textContent = 'Tu navegador no soporta geolocalización';
             status.className = 'text-danger';
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-location-arrow me-1"></i>Mi Ubicación';
@@ -491,7 +491,7 @@
                 document.getElementById('input-lat').value = lat;
                 document.getElementById('input-lng').value = lng;
 
-                status.textContent = '✅ Ubicación detectada! Recargando resultados...';
+                status.textContent = 'Ubicación detectada! Recargando resultados...';
                 status.className = 'text-success';
 
                 // Enviar el formulario de búsqueda con las nuevas coordenadas
@@ -500,7 +500,7 @@
                 }, 1000);
             },
             function(error) {
-                let message = '❌ Error: ';
+                let message = 'Error: ';
                 switch(error.code) {
                     case error.PERMISSION_DENIED:
                         message += 'Permiso de ubicación denegado';
