@@ -350,10 +350,10 @@
                 </table>
             </div>
 
-
             <div class="pagination-wrapper">
-                {{ $empleados->links() }}
+                {{ $empleados->appends(request()->query())->links('vendor.pagination.bootstrap-5') }}
             </div>
+
         </div>
     @else
         <div class="empty-state">

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 // Controladores
+use App\Http\Controllers\ValidarEmpresaController2;
 use App\Http\Controllers\EmpresaHU11Controller;
 use App\Http\Controllers\EmpleadoHU5Controller;
 use App\Http\Controllers\EmpresaController;
@@ -109,14 +110,21 @@ Route::get('/empresa-hu11/{id}/editar', [EmpresaHU11Controller::class, 'edit'])-
 Route::put('/empresa-hu11/{id}', [EmpresaHU11Controller::class, 'update'])->name('empresa.update.hu11');
 
 // ======================================================
+// RUTAS VALIDAR EMPRESAS
+// ======================================================
+Route::get('/validar-empresas', [ValidarEmpresaController2::class, 'index'])
+    ->name('empresas.validar');
+
+// ======================================================
 // RUTAS TERMINALES
 // ======================================================
 Route::resource('terminales', RegistroTeminalController::class);
+
+//visualizacion de terminales
+Route::get('/ver_terminales', [RegistroTeminalController::class, 'ver_terminales'])->name('terminales.ver_terminales');
 
 // ======================================================
 // RUTA HU10 - VISUALIZAR EMPRESAS DE BUSES
 // ======================================================
 Route::get('/hu10/empresas-buses', [EmpresaBusController::class, 'index'])
     ->name('hu10.empresas.buses');
-
-
