@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -82,7 +83,6 @@
         .create-btn:hover {
             opacity: 0.9;
         }
-
         .table-responsive {
             overflow-x: auto;
         }
@@ -109,8 +109,7 @@
         .terminal-table tbody tr:last-child td {
             border-bottom: none;
         }
-
-        .actions a, .actions button {
+        .actions a {
             display: inline-block;
             padding: 6px 10px;
             border-radius: 6px;
@@ -118,7 +117,6 @@
             margin-right: 5px;
             text-decoration: none;
             cursor: pointer;
-            border: none;
             transition: background 0.2s;
         }
         .view-btn {
@@ -134,13 +132,6 @@
         }
         .edit-btn:hover {
             background-color: #e0a800;
-        }
-         {
-            background-color: #dc3545;
-            color: white;
-        }
-        :hover {
-            background-color: #c82333;
         }
         .no-data {
             text-align: center;
@@ -158,12 +149,38 @@
             color: #155724;
             border: 1px solid #c3e6cb;
         }
+        /* 🔹 Estilos de paginación */
+        .pagination {
+            display: inline-flex;
+            list-style: none;
+            gap: 8px;
+            padding: 0;
+            margin-top: 25px;
+        }
+        .pagination li a, .pagination li span {
+            display: block;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #667eea;
+            background-color: #f1f1f1;
+            font-weight: 600;
+            transition: background 0.3s, color 0.3s;
+        }
+        .pagination li.active span {
+            background-color: #667eea;
+            color: white;
+        }
+        .pagination li a:hover {
+            background-color: #667eea;
+            color: white;
+        }
     </style>
 </head>
 <body>
 
 <nav class="navbar">
-    <h1> BusTrak</h1>
+    <h1>BusTrak</h1>
     <div class="nav-links">
         <a href="/">Inicio</a>
         <a href="#">Mi Perfil</a>
@@ -175,7 +192,6 @@
     </div>
 </nav>
 
-
 <div class="container">
     @if (session('success'))
         <div class="alert alert-success">
@@ -186,9 +202,7 @@
     <div class="card">
         <div class="header-content">
             <h2>Gestión de Terminales</h2>
-            <a href="{{ route('terminales.create') }}" class="create-btn">
-                + Nueva Terminal
-            </a>
+            <a href="{{ route('terminales.create') }}" class="create-btn">+ Nueva Terminal</a>
         </div>
 
         <div class="table-responsive">
@@ -224,7 +238,6 @@
                         <td class="actions">
                             <a href="{{ route('terminales.show', $terminal) }}" class="view-btn">Ver</a>
                             <a href="{{ route('terminales.edit', $terminal) }}" class="edit-btn">Editar</a>
-
                         </td>
                     </tr>
                 @empty
@@ -234,9 +247,38 @@
                 @endforelse
                 </tbody>
             </table>
-        </div>
-    </div>
-</div>
+            {{-- 🔹 Paginación Laravel --}}
+            @if ($terminales->hasPages())
+                <div style="text-align: center; margin-top: 20px;">
+                    <ul class="pagination">
+                        {{-- Página anterior --}}
+                        @if ($terminales->onFirstPage())
+                            <li><span>&laquo;</span></li>
+                        @else
+                            <li><a href="{{ $terminales->previousPageUrl() }}" rel="prev">&laquo;</a></li>
+                        @endif
+
+                        {{-- Números de página --}}
+                        @foreach ($terminales->getUrlRange(1, $terminales->lastPage()) as $page => $url)
+                            @if ($page == $terminales->currentPage())
+                                <li class="active"><span>{{ $page }}</span></li>
+                            @else
+                                <li><a href="{{ $url }}">{{ $page }}</a></li>
+                            @endif
+                        @endforeach
+
+                        {{-- Página siguiente --}}
+                        @if ($terminales->hasMorePages())
+                            <li><a href="{{ $terminales->nextPageUrl() }}" rel="next">&raquo;</a></li>
+                        @else
+                            <li><span>&raquo;</span></li>
+                        @endif
+                    </ul>
+                </div>
+@endif
+
 
 </body>
 </html>
+
+

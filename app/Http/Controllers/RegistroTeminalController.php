@@ -20,10 +20,16 @@ class RegistroTeminalController extends Controller
 
      */
     public function index()
+
     {
-        $terminales = RegistroTerminal::all();
+        // Obtiene 5 terminales por página (podés cambiar el número)
+        $terminales = RegistroTerminal::paginate(5);
+
+        // Retorna a la vista con los datos paginados
         return view('terminales.index', compact('terminales'));
     }
+
+
 
     /**
 
