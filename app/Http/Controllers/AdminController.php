@@ -7,49 +7,33 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    /**
-     * Mostrar listado de usuarios (HU24) - ahora muestra TODOS los usuarios
-     */
-    public function usuarios(Request $request)
+    // Dashboard del administrador
+    public function dashboard()
     {
-        $usuarios = User::orderBy('estado', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $totalUsuarios = User::where('role', 'cliente')->count();
+        $usuariosActivos = User::where('role', 'cliente')->where('estado', 'activo')->count();
+        $usuariosInactivos = User::where('role', 'cliente')->where('estado', 'inactivo')->count();
 
+        return view('admin.dashboard', compact('totalUsuarios', 'usuariosActivos', 'usuariosInactivos'));
+    }
+
+    // HU24: Listado de usuarios para validación
+    public function usuarios()
+    {
+        $usuarios = User::where('role', 'cliente')->get();
         return view('admin.usuarios', compact('usuarios'));
     }
 
-    /**
-     * Cambiar estado del usuario (activo/inactivo) - HU24
-     */
+    // HU24: Cambiar estado del usuario (activo/inactivo)
     public function cambiarEstado(Request $request, $id)
     {
-        try {
-            $usuario = User::findOrFail($id);
+        $usuario = User::findOrFail($id);
 
-            $usuario->estado = ($usuario->estado ?? 'activo') === 'activo' ? 'inactivo' : 'activo';
-            $usuario->save();
+        // Cambiar el estado
+        $nuevoEstado = $usuario->estado === 'activo' ? 'inactivo' : 'activo';
+        $usuario->estado = $nuevoEstado;
+        $usuario->save();
 
-            $mensaje = $usuario->estado === 'activo'
-                ? "Usuario {$usuario->name} ACTIVADO exitosamente."
-                : "Usuario {$usuario->name} INACTIVADO exitosamente.";
-
-            return redirect()->route('admin.usuarios')->with('success', $mensaje);
-
-        } catch (\Exception $e) {
-            return redirect()->route('admin.usuarios')->with('error', 'Error al actualizar el estado del usuario: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Vista de validación: ahora reutiliza la misma consulta y muestra TODOS los usuarios
-     */
-    public function indexValidar()
-    {
-        $usuarios = User::orderBy('estado', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return view('admin.usuarios', compact('usuarios'));
+        return redirect()->route('admin.usuarios')->with('success', "Usuario {$usuario->name} ahora está {$nuevoEstado}");
     }
 }

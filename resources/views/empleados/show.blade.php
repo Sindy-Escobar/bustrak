@@ -50,8 +50,8 @@
         <p><strong>DNI:</strong> {{ $empleado->dni }}</p>
         <p><strong>Fecha ingreso:</strong> {{ $empleado->fecha_ingreso }}</p>
         <p><strong>Estado:</strong>
-            <span class="{{ strtolower($empleado->estado) === 'activo' ? 'estado-activo' : 'estado-inactivo' }}">
-                {{ ucfirst($empleado->estado) }}
+            <span class="{{ $empleado->estado === 'Activo' ? 'estado-activo' : 'estado-inactivo' }}">
+                {{ $empleado->estado }}
             </span>
         </p>
     </div>
@@ -59,23 +59,22 @@
     <div class="text-center">
         <a href="{{ route('empleados.edit', $empleado->id) }}" class="btn btn-warning">Editar</a>
 
-        @if(strtolower($empleado->estado) === 'activo')
-            <!-- Botón para abrir modal de desactivación -->
+        @if($empleado->estado === 'Activo')
             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#desactivarModal">
                 Desactivar
             </button>
         @else
-            <!-- Botón para activar empleado -->
             <form action="{{ route('empleados.activar', $empleado->id) }}" method="POST" style="display:inline;">
                 @csrf
                 @method('PUT')
                 <button type="submit" class="btn btn-success">Activar</button>
             </form>
 
-            <!-- Botón para ver motivo de baja -->
-            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#motivoModal">
-                Ver motivo de baja
-            </button>
+            @if($empleado->motivo_baja)
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#motivoModal">
+                    Ver motivo de baja
+                </button>
+            @endif
         @endif
 
         <a href="{{ route('empleados.index') }}" class="btn btn-secondary">Volver al listado</a>
@@ -110,25 +109,27 @@
 </div>
 
 <!-- Modal motivo de baja -->
-<div class="modal fade" id="motivoModal" tabindex="-1" aria-labelledby="motivoModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="motivoModalLabel">Motivo de baja</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                <p><strong>Fecha y hora de desactivación:</strong>
-                    {{ $empleado->fecha_desactivacion instanceof \Carbon\Carbon ? $empleado->fecha_desactivacion->format('d/m/Y H:i:s') : $empleado->fecha_desactivacion ?? 'No registrada' }}
-                </p>
-                <p><strong>Motivo de baja:</strong> {{ $empleado->motivo_baja ?? 'No registrado' }}</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+@if($empleado->estado === 'Inactivo' && $empleado->motivo_baja)
+    <div class="modal fade" id="motivoModal" tabindex="-1" aria-labelledby="motivoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="motivoModalLabel">Motivo de baja</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Fecha y hora de desactivación:</strong>
+                        {{ $empleado->fecha_desactivacion instanceof \Carbon\Carbon ? $empleado->fecha_desactivacion->format('d/m/Y H:i:s') : $empleado->fecha_desactivacion ?? 'No registrada' }}
+                    </p>
+                    <p><strong>Motivo de baja:</strong> {{ $empleado->motivo_baja }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+@endif
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
