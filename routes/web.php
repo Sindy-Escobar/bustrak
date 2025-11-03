@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 // Controladores
+use App\Http\Controllers\ValidarEmpresaController2;
 use App\Http\Controllers\EmpresaHU11Controller;
 use App\Http\Controllers\EmpleadoHU5Controller;
 use App\Http\Controllers\EmpresaController;
@@ -15,6 +16,32 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\RegistroUsuarioController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\ConsultaParadaController;
+
+
+// Toggle activar/inactivar
+Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
+
+// Validar usuario (PATCH) - si usas este método
+Route::patch('/admin/usuarios/{id}/validar', [AdminController::class, 'validar'])->name('admin.validar');
+
+
+// ======================================================
+// RUTAS VALIDAR EMPRESAS
+// ======================================================
+Route::get('/validar-empresas', [ValidarEmpresaController2::class, 'index'])
+    ->name('empresas.validar');
+
+
+//visualizacion de terminales
+Route::get('/ver_terminales', [RegistroTeminalController::class, 'ver_terminales'])->name('terminales.ver_terminales');
+
+
+
+// RUTA VALIDACIÓN DE EMPLEADOS
+Route::get('/validacion-empleados', function () {
+    return view('validacion-empleados.index');
+})->name('validacion-empleados.index');
+
 
 //consulta-paradas
 Route::get('consulta-paradas', [ConsultaParadaController::class, 'index'])->name('consulta-paradas.index');
