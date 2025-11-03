@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 // Controladores
-use App\Http\Controllers\ValidarEmpresaController2;
 use App\Http\Controllers\EmpresaHU11Controller;
 use App\Http\Controllers\EmpleadoHU5Controller;
 use App\Http\Controllers\EmpresaController;
@@ -91,20 +90,16 @@ Route::middleware(['auth', 'user.active'])->prefix('cliente')->group(function ()
 // ======================================================
 // RUTAS PROTEGIDAS PARA ADMIN
 // ======================================================
-Route::middleware('auth')->group(function () {
-
-    // Mostrar usuarios (lista principal)
-    Route::get('/admin/usuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios');
-
-    // Vista de validación (muestra la misma vista que admin.usuarios)
-    Route::get('/admin/usuarios/validar', [AdminController::class, 'indexValidar'])->name('admin.usuarios.validar');
-
-    // Toggle activar/inactivar
-    Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
-
-    // Validar usuario (PATCH) - si usas este método
-    Route::patch('/admin/usuarios/{id}/validar', [AdminController::class, 'validar'])->name('admin.validar');
+Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
+    Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios');
+    Route::post('/usuarios/{id}/cambiar-estado', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
 });
+
+Route::middleware('auth')->get('/admin/pagina', function () {
+    return view('interfaces.admin');
+})->name('admin.dashboard');
+
+
 
 // ======================================================
 // RUTAS EMPLEADO-HU5
@@ -118,18 +113,9 @@ Route::get('/empresa-hu11/{id}/editar', [EmpresaHU11Controller::class, 'edit'])-
 Route::put('/empresa-hu11/{id}', [EmpresaHU11Controller::class, 'update'])->name('empresa.update.hu11');
 
 // ======================================================
-// RUTAS VALIDAR EMPRESAS
-// ======================================================
-Route::get('/validar-empresas', [ValidarEmpresaController2::class, 'index'])
-    ->name('empresas.validar');
-
-// ======================================================
 // RUTAS TERMINALES
 // ======================================================
 Route::resource('terminales', RegistroTeminalController::class);
-
-//visualizacion de terminales
-Route::get('/ver_terminales', [RegistroTeminalController::class, 'ver_terminales'])->name('terminales.ver_terminales');
 
 // ======================================================
 // RUTA HU10 - VISUALIZAR EMPRESAS DE BUSES
@@ -137,7 +123,4 @@ Route::get('/ver_terminales', [RegistroTeminalController::class, 'ver_terminales
 Route::get('/hu10/empresas-buses', [EmpresaBusController::class, 'index'])
     ->name('hu10.empresas.buses');
 
-// RUTA VALIDACIÓN DE EMPLEADOS
-Route::get('/validacion-empleados', function () {
-    return view('validacion-empleados.index');
-})->name('validacion-empleados.index');
+

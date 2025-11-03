@@ -43,11 +43,15 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
-            // Redirigir según rol
-            if ($user->role === 'administrador') {
-                return redirect()->route('admin.dashboard');
-            } else {
-                return redirect()->route('cliente.perfil');
+            // 🔥 Convertimos el rol a minúsculas para evitar errores de coincidencia
+            $rol = strtolower($user->role);
+
+            switch ($rol) {
+                case 'administrador':
+                    return redirect()->route('admin.dashboard');
+                case 'cliente':
+                default:
+                    return redirect()->route('cliente.perfil');
             }
         }
 
@@ -71,6 +75,7 @@ class AuthController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
+        // 🔥 Forzar el rol a minúsculas por coherencia
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
