@@ -33,8 +33,11 @@
             align-items:center;
             justify-content:space-between;
             gap:20px;
-            position:relative;
-            z-index:50;
+            position: fixed;  /* Fijo arriba */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
         }
         .brand {
             display:flex;
@@ -137,8 +140,9 @@
 
         main.container-main{
             max-width:1200px;
-            margin: -60px auto 60px;
-            padding: 0 28px;
+            margin: 0 auto 60px;
+            padding: 28px;
+            padding-top: 110px; /* espacio suficiente para topbar + hero si hay */
         }
 
         .cards-grid{
@@ -203,10 +207,28 @@
     @yield('styles')
     <header class="topbar">
         <div class="brand">
-            <div class="brand-logo">B</div>
-            <div>
+            <div class="brand">
+                <div class="brand">
+                    <div class="brand-logo" style="
+    width: 70px;   /* antes 42px */
+    height: 70px;  /* antes 42px */
+    background: var(--blue-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px; /* un poco más redondeado */
+    overflow: hidden;
+">
+                        <img src="{{ asset('images/logo-bustrak.jpg') }}" alt="BusTrak Logo" style="
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    ">
+                    </div>
+
+                </div>
+
                 <div class="brand-text">BusTrak</div>
-                <div class="brand-sub">Administrador</div>
             </div>
         </div>
 
@@ -229,7 +251,6 @@
             <div class="profile-box d-flex align-items-center gap-3">
                 <div class="d-flex flex-column text-end">
                     <span class="profile-name fw-semibold" style="color:#1e293b;">{{ Auth::user()->name }}</span>
-                    <span style="font-size:0.78rem;color:#6b7280;">Administrador</span>
                 </div>
 
                 <div class="avatar-wrap position-relative">
