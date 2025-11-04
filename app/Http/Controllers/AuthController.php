@@ -43,7 +43,6 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
-            // 🔥 Convertimos el rol a minúsculas para evitar errores de coincidencia
             $rol = strtolower($user->role);
 
             switch ($rol) {
@@ -60,13 +59,11 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    // Mostrar formulario de registro (opcional, si solo se crean desde empleados)
     public function showRegister()
     {
         return view('auth.register');
     }
 
-    // Procesar registro manual (opcional)
     public function register(Request $request)
     {
         $validated = $request->validate([
@@ -75,7 +72,6 @@ class AuthController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        // 🔥 Forzar el rol a minúsculas por coherencia
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],

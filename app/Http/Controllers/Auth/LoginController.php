@@ -23,14 +23,12 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        // 🔹 Revisar si es empleado (o admin) en la tabla empleados
         $empleado = Empleado::where('email', $user->email)->first();
 
         if ($empleado) {
             $rol = strtolower($empleado->rol);
 
             if ($rol === 'administrador') {
-                // 🔸 Redirige al panel visual (no al controlador)
                 return redirect()->to('/admin/pagina');
             }
 
@@ -39,7 +37,6 @@ class LoginController extends Controller
             }
         }
 
-        // 🔹 Si viene de la tabla users
         $rolUser = strtolower($user->role);
 
         if ($rolUser === 'administrador') {
@@ -51,7 +48,6 @@ class LoginController extends Controller
             return redirect()->route('empleado.dashboard');
         }
 
-        // 🔹 Por defecto, cliente
         return redirect()->route('cliente.perfil');
     }
 }

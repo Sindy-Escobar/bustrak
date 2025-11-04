@@ -150,4 +150,9 @@ Route::resource('terminales', RegistroTeminalController::class);
 Route::get('/hu10/empresas-buses', [EmpresaBusController::class, 'index'])
     ->name('hu10.empresas.buses');
 
+Route::get('/principal', function () {
+    return view('interfaces.principal');
+});
+
+
 
