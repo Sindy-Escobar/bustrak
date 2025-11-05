@@ -17,7 +17,9 @@ class EmpresaBus extends Model
         'telefono',
         'email',
         'propietario',
-        'estado_validacion'
+        'estado_validacion',
+        'validado_por',
+        'fecha_validacion',
     ];
 }
 
