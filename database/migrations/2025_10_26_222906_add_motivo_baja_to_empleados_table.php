@@ -24,6 +24,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Solo elimina la columna si existe
         if (Schema::hasColumn('empleados', 'motivo_baja')) {
             Schema::table('empleados', function (Blueprint $table) {
                 $table->dropColumn('motivo_baja');
