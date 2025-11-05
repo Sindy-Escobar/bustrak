@@ -9,9 +9,9 @@
 
     <style>
         :root{
-            --blue-600: #1e63b8; /* franja azul oscuro */
-            --blue-500: #1976d2; /* iconos / acentos */
-            --bg: #f3f7fb;       /* fondo general */
+            --blue-600: #1e63b8;
+            --blue-500: #1976d2;
+            --bg: #f3f7fb;
             --card-bg: #ffffff;
             --muted: #6b7280;
         }
@@ -33,7 +33,7 @@
             align-items:center;
             justify-content:space-between;
             gap:20px;
-            position: fixed;  /* Fijo arriba */
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -67,7 +67,6 @@
             font-weight:600;
         }
 
-        /* avatar / profile box (derecha) */
         .profile-box{
             display:flex;
             align-items:center;
@@ -101,7 +100,6 @@
             border-radius:8px;
             object-fit:cover;
         }
-        /* small online dot */
         .avatar-dot{
             position:absolute;
             right:6px;
@@ -109,20 +107,22 @@
             width:10px;
             height:10px;
             border-radius:50%;
-            background:#16a34a; /* verde */
+            background:#16a34a;
             border:2px solid #fff;
             box-shadow:0 1px 3px rgba(0,0,0,0.15);
         }
 
-        /* HERO / franja azul grande (similar a la imagen) */
         .hero {
-            background: linear-gradient(180deg,var(--blue-600),var(--blue-500));
+            position: sticky;
+            top: 50px;
+            background: linear-gradient(180deg, var(--blue-600), var(--blue-500));
             padding: 36px 28px;
             border-bottom-left-radius: 14px;
             border-bottom-right-radius: 14px;
             margin: 16px 28px 0 28px;
             color: #fff;
             box-shadow: 0 6px 18px rgba(29,78,216,0.08);
+            z-index: 900;
         }
         .hero .hero-inner{
             max-width:1200px;
@@ -142,7 +142,7 @@
             max-width:1200px;
             margin: 0 auto 60px;
             padding: 28px;
-            padding-top: 110px; /* espacio suficiente para topbar + hero si hay */
+            padding-top: 50px;
         }
 
         .cards-grid{
@@ -210,13 +210,13 @@
             <div class="brand">
                 <div class="brand">
                     <div class="brand-logo" style="
-    width: 70px;   /* antes 42px */
-    height: 70px;  /* antes 42px */
+    width: 70px;
+    height: 70px;
     background: var(--blue-600);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 14px; /* un poco más redondeado */
+    border-radius: 100px;
     overflow: hidden;
 ">
                         <img src="{{ asset('images/logo-bustrak.jpg') }}" alt="BusTrak Logo" style="
