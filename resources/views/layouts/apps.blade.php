@@ -210,25 +210,21 @@
             <div class="brand">
                 <div class="brand">
                     <div class="brand-logo" style="
-    width: 70px;
-    height: 70px;
+    width: 200px;   /* antes 42px */
+    height: 105px;  /* antes 42px */
     background: var(--blue-600);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 100px;
+    border-radius: 10px; /* un poco más redondeado */
     overflow: hidden;
-">
-                        <img src="{{ asset('images/logo-bustrak.jpg') }}" alt="BusTrak Logo" style="
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+"><img src="{{ asset('imagenes/bustrak-logo.jpg') }}" alt="BusTrak Logo" style="
+        width: 90%;
+        height: 90%;
     ">
                     </div>
-
                 </div>
 
-                <div class="brand-text">BusTrak</div>
             </div>
         </div>
 
@@ -252,6 +248,7 @@
                 <div class="d-flex flex-column text-end">
                     <span class="profile-name fw-semibold" style="color:#1e293b;">{{ Auth::user()->name }}</span>
                 </div>
+                <div class="brand-text">Administrador</div>
 
                 <div class="avatar-wrap position-relative">
                     <img src="{{ $foto }}" alt="avatar" class="rounded-circle border border-2 border-primary" style="width:45px;height:45px;object-fit:cover;">

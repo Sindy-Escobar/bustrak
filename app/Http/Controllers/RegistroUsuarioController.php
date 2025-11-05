@@ -57,7 +57,7 @@ class RegistroUsuarioController extends Controller
             'name' => $usuario->nombre_completo,
             'email' => $usuario->email,
             'password' => Hash::make($request->password),
-            'role' => 'Empleado', // Asegúrate de que coincida con tu enum en la migración
+            'role' => 'cliente', // Asegúrate de que coincida con tu enum en la migración
             'estado' => 'activo',
         ]);
 
@@ -75,16 +75,19 @@ class RegistroUsuarioController extends Controller
 
     public function consultar(Request $request)
     {
-        $usuarios = Usuario::query();
+        $usuarios = Usuario::query()
+            // Necesitas unir (join) o relacionar (whereHas) con la tabla users
+            ->join('users', 'usuarios.email', '=', 'users.email') // Usando email como nexo temporal
+            ->select('usuarios.*', 'users.role', 'users.estado'); // Selecciona las columnas de ambas tablas
 
         // Filtro por rol
         if ($request->filled('rol')) {
-            $usuarios->where('rol', $request->rol);
+            $usuarios->where('users.rol', $request->rol);
         }
 
         // Filtro por estado
         if ($request->filled('estado')) {
-            $usuarios->where('estado', $request->estado);
+            $usuarios->where('users.estado', $request->estado);
         }
 
         // Filtro por área
