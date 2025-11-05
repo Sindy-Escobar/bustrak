@@ -3,9 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Usuarios')</title>
+    <title>Bustrak - Sistema de Gestión</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -15,121 +14,259 @@
             box-sizing: border-box;
         }
 
-        body {
-            min-height: 100vh;
-            background: #f5f7fa;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            padding-top: 76px;
+        :root {
+            --color-primary: #1e63b8;
+            --color-secondary: #1976d2;
+            --color-light: #f3f7fb;
+            --color-white: #ffffff;
+            --color-dark: #01579b;
+            --color-success: #87cbeb;
+            --color-warning: #87cbeb;
+            --color-danger: #87cbeb;
         }
 
-        /* Navbar con gradiente morado/azul */
-        .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        body {
+            min-height: 100vh;
+            background: var(--color-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #2c3e50;
+        }
+
+        .top-bar {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            padding: 0.75rem 2rem;
+            box-shadow: 0 2px 15px rgba(30, 99, 184, 0.2);
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            z-index: 1030;
-            padding: 1rem 0;
+            z-index: 1000;
         }
 
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: white !important;
-            transition: all 0.3s ease;
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            width: 100%;
         }
 
-        .navbar-brand:hover {
-            transform: scale(1.05);
+        .logo-image {
+            height: 120px;
+            width: 165px;
+            object-fit: cover;
+            border-radius:20%;
+            border: 4px solid var(--color-white);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            background: var(--color-white);
         }
 
-        .nav-link {
-            color: rgba(255, 255, 255, 0.9) !important;
-            font-weight: 500;
-            padding: 0.5rem 1rem !important;
-            border-radius: 8px;
-            margin: 0 0.2rem;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link:hover {
-            background: rgba(255, 255, 255, 0.2);
-            color: white !important;
-        }
-
-        .nav-link.active {
-            background: rgba(255, 255, 255, 0.25);
-            color: white !important;
-        }
-
-        .nav-link.disabled {
-            color: rgba(255, 255, 255, 0.4) !important;
-            cursor: not-allowed;
-        }
-
-        .navbar-toggler {
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-        }
-
-        .container {
-            min-height: calc(100vh - 76px);
-            padding-top: 2rem;
-            padding-bottom: 2rem;
-        }
-
-        /* Estilos para el contenido */
-        .content-wrapper {
-            background: white;
-            border-radius: 10px;
+        .main-content {
+            margin-top: 130px;
             padding: 2rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            min-height: calc(100vh - 130px);
         }
 
-        /* Botones primarios con gradiente */
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
             border: none;
             color: white;
             font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
             transition: all 0.3s ease;
+            height: 45px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(30, 99, 184, 0.4);
+            background: linear-gradient(135deg, var(--color-dark) 0%, var(--color-primary) 100%);
         }
 
-        /* Scrollbar personalizada */
-        ::-webkit-scrollbar {
-            width: 10px;
+        .btn-secondary {
+            background: #6c757d;
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            height: 45px;
         }
 
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 5px;
+        .btn-success {
+            background: var(--color-success);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            height: 45px;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #764ba2;
+        .btn-warning {
+            background: var(--color-warning);
+            border: none;
+            color: #000;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            height: 45px;
         }
 
-        /* Media queries para responsive */
-        @media (max-width: 991px) {
-            .navbar-collapse {
-                background: rgba(0, 0, 0, 0.1);
+        .btn-danger {
+            background: var(--color-danger);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            height: 45px;
+        }
+
+        .btn-outline-secondary {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+            height: 45px;
+        }
+
+        .btn-outline-secondary:hover {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+        }
+
+        .btn-outline-danger {
+            height: 45px;
+        }
+
+        .form-control,
+        .form-select {
+            height: 45px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 0.2rem rgba(30, 99, 184, 0.25);
+        }
+
+        textarea.form-control {
+            height: auto;
+            min-height: 100px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+
+        .card {
+            background: var(--color-white);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(30, 99, 184, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+            padding: 1.5rem;
+            border: none;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .table thead {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: white;
+        }
+
+        .table thead th {
+            border: none;
+            padding: 1rem;
+            font-weight: 600;
+        }
+
+        .table tbody tr {
+            border-bottom: 1px solid #e9ecef;
+            transition: background 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(30, 99, 184, 0.05);
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+        .pagination .page-link {
+            color: var(--color-primary);
+            border-color: #dee2e6;
+        }
+
+        .pagination .page-link:hover {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+        }
+
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            border-color: transparent;
+        }
+
+        .badge {
+            padding: 0.5rem 0.75rem;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+
+        h1, h2, h3 {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .top-bar {
+                padding: 0.5rem 1rem;
+            }
+
+            .logo-image {
+                height: 80px;
+                width: 80px;
+            }
+
+            .main-content {
+                margin-top: 100px;
                 padding: 1rem;
-                border-radius: 8px;
-                margin-top: 1rem;
             }
         }
     </style>
@@ -137,19 +274,14 @@
     @yield('styles')
 </head>
 <body>
-<nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url('/') }}">
-            <i class="bi bi-box-seam"></i> Bustrak
-        </a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<div class="top-bar">
+    <div class="logo-section">
+        <img src="{{ asset('Imagenes/bustrak-logo.jpg') }}" alt="Bustrak Logo" class="logo-image">
+        <span class="text-white fw-bold fs-6 ms-2">Sistema de Gestión</span>
     </div>
-</nav>
+</div>
 
-<div class="container">
+<div class="main-content">
     @yield('contenido')
 </div>
 
