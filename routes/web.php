@@ -3,6 +3,9 @@
 use App\Http\Controllers\RegistroTeminalController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Empleado;
+use App\Models\User;
+
 
 // Controladores
 use App\Http\Controllers\ValidarEmpresaController2;
@@ -16,6 +19,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\RegistroUsuarioController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\ConsultaParadaController;
+
 
 
 // Toggle activar/inactivar
@@ -123,10 +127,21 @@ Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
 });
 
 Route::middleware('auth')->get('/admin/pagina', function () {
-    return view('interfaces.admin');
+    // Totales empleados
+    $total_activos = Empleado::where('estado', 'Activo')->count();
+    $total_inactivos = Empleado::where('estado', 'Inactivo')->count();
+    $total_empleados = Empleado::count();
+
+    // Totales usuarios
+    $totalUsuarios = User::count();
+    $usuariosActivos = User::where('estado', 'activo')->count();
+    $usuariosInactivos = User::where('estado', 'inactivo')->count();
+
+    return view('interfaces.admin', compact(
+        'total_activos', 'total_inactivos', 'total_empleados',
+        'totalUsuarios', 'usuariosActivos', 'usuariosInactivos'
+    ));
 })->name('admin.dashboard');
-
-
 
 // ======================================================
 // RUTAS EMPLEADO-HU5
@@ -156,3 +171,20 @@ Route::get('/principal', function () {
 
 
 
+Route::get('/demo-dashboard', function () {
+    // Totales de empleados
+    $total_activos = Empleado::where('estado', 'Activo')->count();
+    $total_inactivos = Empleado::where('estado', 'Inactivo')->count();
+    $total_empleados = Empleado::count();
+
+    // Totales de usuarios
+    $totalUsuarios = User::count();
+    $usuariosActivos = User::where('estado', 'activo')->count();
+    $usuariosInactivos = User::where('estado', 'inactivo')->count();
+
+    // Retorna la vista
+    return view('admin.dashboard', compact(
+        'total_activos', 'total_inactivos', 'total_empleados',
+        'totalUsuarios', 'usuariosActivos', 'usuariosInactivos'
+    ));
+});

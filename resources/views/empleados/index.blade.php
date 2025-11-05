@@ -1,4 +1,4 @@
-@extends('layouts.apps')
+@extends('layouts.notocar')
 
 @section('title', 'Listado de Empleados')
 
