@@ -1,4 +1,4 @@
-@extends('layouts.notocar')
+@extends('layouts.layoutadmin')
 
 @section('title', 'Listado de Empleados')
 
@@ -12,7 +12,7 @@
             padding: 25px 0;
             border-radius: 10px;
             margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .header-bar h1 {
@@ -49,6 +49,7 @@
             align-items: center;
             margin-bottom: 15px;
         }
+
         /* Contenedor derecho con espacio entre botones */
         .top-btn .btn-group-right {
             display: flex;
@@ -96,7 +97,7 @@
             background: white;
             border-radius: 15px;
             padding: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
             text-align: center;
             font-size: 13px;
             cursor: pointer;
@@ -125,7 +126,7 @@
         }
 
         .pagination .page-item .page-link {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             color: black;
             border: none;
         }
@@ -179,9 +180,11 @@
                 <a href="{{ route('empleados.show', $empleado->id) }}" style="text-decoration:none;">
                     <div class="employee-card">
                         @if($empleado->foto && file_exists(storage_path('app/public/'.$empleado->foto)))
-                            <img src="{{ asset('storage/'.$empleado->foto) }}" alt="Foto de {{ $empleado->nombre }}" style="width:100px; height:100px; object-fit:cover; border-radius:50%; margin-bottom:10px;">
+                            <img src="{{ asset('storage/'.$empleado->foto) }}" alt="Foto de {{ $empleado->nombre }}"
+                                 style="width:100px; height:100px; object-fit:cover; border-radius:50%; margin-bottom:10px;">
                         @else
-                            <img src="https://via.placeholder.com/100?text=Sin+Foto" alt="Sin foto" style="width:100px; height:100px; object-fit:cover; border-radius:50%; margin-bottom:10px;">
+                            <img src="https://via.placeholder.com/100?text=Sin+Foto" alt="Sin foto"
+                                 style="width:100px; height:100px; object-fit:cover; border-radius:50%; margin-bottom:10px;">
                         @endif
                         <h5>{{ $empleado->nombre }} {{ $empleado->apellido }}</h5>
                         <p><strong>Cargo:</strong> {{ $empleado->cargo }}</p>

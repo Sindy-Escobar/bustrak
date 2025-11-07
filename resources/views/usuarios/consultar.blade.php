@@ -1,4 +1,4 @@
-@extends('layouts.apps')
+@extends('layouts.layoutadmin')
 
 @section('content')
     <div class="container">
@@ -15,9 +15,12 @@
                             <label class="form-label">Rol</label>
                             <select name="rol" class="form-select">
                                 <option value="">Todos los roles</option>
-                                <option value="admin" {{ request('rol')=='admin' ? 'selected' : '' }}>Administrador</option>
-                                <option value="empleado" {{ request('rol')=='empleado' ? 'selected' : '' }}>Empleado</option>
-                                <option value="cliente" {{ request('rol')=='cliente' ? 'selected' : '' }}>Cliente</option>
+                                <option value="admin" {{ request('rol')=='admin' ? 'selected' : '' }}>Administrador
+                                </option>
+                                <option value="empleado" {{ request('rol')=='empleado' ? 'selected' : '' }}>Empleado
+                                </option>
+                                <option value="cliente" {{ request('rol')=='cliente' ? 'selected' : '' }}>Cliente
+                                </option>
                             </select>
                         </div>
 
@@ -25,24 +28,30 @@
                             <label class="form-label">Estado</label>
                             <select name="estado" class="form-select">
                                 <option value="">Todos los estados</option>
-                                <option value="activo" {{ request('estado')=='activo' ? 'selected' : '' }}>Activo</option>
-                                <option value="inactivo" {{ request('estado')=='inactivo' ? 'selected' : '' }}>Inactivo</option>
+                                <option value="activo" {{ request('estado')=='activo' ? 'selected' : '' }}>Activo
+                                </option>
+                                <option value="inactivo" {{ request('estado')=='inactivo' ? 'selected' : '' }}>
+                                    Inactivo
+                                </option>
                             </select>
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Area Asignada</label>
-                            <input type="text" name="area" class="form-control" placeholder="Ingrese area" value="{{ request('area') }}">
+                            <input type="text" name="area" class="form-control" placeholder="Ingrese area"
+                                   value="{{ request('area') }}">
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Permiso</label>
-                            <input type="text" name="permiso" class="form-control" placeholder="Ingrese permiso" value="{{ request('permiso') }}">
+                            <input type="text" name="permiso" class="form-control" placeholder="Ingrese permiso"
+                                   value="{{ request('permiso') }}">
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label">Fecha de Registro</label>
-                            <input type="date" name="fecha_registro" class="form-control" value="{{ request('fecha_registro') }}">
+                            <input type="date" name="fecha_registro" class="form-control"
+                                   value="{{ request('fecha_registro') }}">
                         </div>
 
                         <div class="col-md-8 d-flex align-items-end gap-2">
