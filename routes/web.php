@@ -19,6 +19,8 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\RegistroUsuarioController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\ConsultaParadaController;
+use App\Http\Controllers\CatalogoController;
+
 
 
 
@@ -165,10 +167,14 @@ Route::resource('terminales', RegistroTeminalController::class);
 Route::get('/hu10/empresas-buses', [EmpresaBusController::class, 'index'])
     ->name('hu10.empresas.buses');
 
+// ======================================================
+// RUTA PRINCIPAL (del main)
+// ======================================================
 Route::get('/principal', function () {
     return view('interfaces.principal');
 });
 
+<<<<<<< Updated upstream
 
 
 Route::get('/demo-dashboard', function () {
@@ -188,3 +194,9 @@ Route::get('/demo-dashboard', function () {
         'totalUsuarios', 'usuariosActivos', 'usuariosInactivos'
     ));
 });
+=======
+// ======================================================
+// RUTA HU17 - Catalogo (tu ruta)
+// ======================================================
+Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
+>>>>>>> Stashed changes

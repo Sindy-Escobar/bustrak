@@ -3,141 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - BusTrak</title>
+    <title>BusTrak - Login</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            height: 100vh;
+            overflow: hidden;
         }
-        .login-container {
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a7d6f 0%, #0f5d55 100%);
+            overflow: hidden;
+        }
+
+        .bus-background {
+            position: absolute;
+            right: -200px;
+            bottom: -100px;
+            width: 800px;
+            height: 600px;
+            opacity: 0.08;
+            pointer-events: none;
+            font-size: 600px;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+
+        .circle1 {
+            width: 300px;
+            height: 300px;
             background: white;
+            top: -100px;
+            left: -100px;
+        }
+
+        .circle2 {
+            width: 200px;
+            height: 200px;
+            background: white;
+            bottom: -50px;
+            right: 100px;
+        }
+
+        .login-card {
+            position: relative;
+            z-index: 10;
+            background: white;
+            padding: 50px 45px;
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             width: 100%;
             max-width: 420px;
+            animation: slideUp 0.6s ease-out;
         }
-        .logo { text-align: center; margin-bottom: 30px; }
-        .logo h1 { color: #667eea; font-size: 32px; margin-bottom: 10px; }
-        .logo p { color: #666; font-size: 14px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #555; font-weight: 600; font-size: 14px; }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, #00a8cc 0%, #0092a3 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 168, 204, 0.3);
+        }
+
+        .logo-text {
+            color: #1a7d6f;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 13px;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
+
         input {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        input:focus { outline: none; border-color: #667eea; }
-        .error, .success {
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
             font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
         }
-        .error { background: #fee; border: 1px solid #fcc; color: #c33; }
-        .success { background: #e6ffed; border: 1px solid #4CAF50; color: #256029; }
-        .remember-forgot {
+
+        input:focus {
+            outline: none;
+            border-color: #00a8cc;
+            box-shadow: 0 0 0 4px rgba(0, 168, 204, 0.1);
+        }
+
+        input::placeholder {
+            color: #aaa;
+        }
+
+        .checkbox-group {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            font-size: 14px;
+            margin: 20px 0 25px;
         }
-        .remember-me { display: flex; align-items: center; gap: 8px; }
-        .remember-me input[type="checkbox"] { width: auto; }
-        .forgot-link { color: #667eea; text-decoration: none; }
-        .forgot-link:hover { text-decoration: underline; }
-        .btn {
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            cursor: pointer;
+            accent-color: #00a8cc;
+        }
+
+        .checkbox-text {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .forgot-link {
+            color: #00a8cc;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            margin-left: auto;
+        }
+
+        .forgot-link:hover {
+            color: #0092a3;
+        }
+
+        .btn-login {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #00a8cc 0%, #0092a3 100%);
             color: white;
             border: none;
             border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 168, 204, 0.3);
+            margin-bottom: 16px;
         }
-        .btn:hover { transform: translateY(-2px); }
-        .register-link { text-align: center; margin-top: 20px; color: #666; font-size: 14px; }
-        .register-link a { color: #667eea; text-decoration: none; font-weight: 600; }
-        .register-link a:hover { text-decoration: underline; }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0, 168, 204, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .register-section {
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+        }
+
+        .register-text {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .register-link {
+            color: #1a7d6f;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.3s;
+        }
+
+        .register-link:hover {
+            color: #00a8cc;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            z-index: 5;
+        }
+
+        @media (max-width: 600px) {
+            .login-card {
+                margin: 20px;
+                padding: 40px 25px;
+            }
+
+            .logo {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+            }
+
+            .logo-text {
+                font-size: 24px;
+            }
+        }
     </style>
 </head>
 <body>
-<div class="login-container">
-    <div class="logo">
-        <h1>BusTrak</h1>
-        <p>Sistema de Gestión de Reservas</p>
+<div class="container">
+    <div class="background">
+        <div class="circle circle1"></div>
+        <div class="circle circle2"></div>
+        <div class="bus-background">🚌</div>
     </div>
 
-    {{-- Mensaje de éxito (por ejemplo después de registrarse) --}}
-    @if(session('success'))
-        <div class="success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    {{-- Errores de login --}}
-    @if ($errors->any())
-        <div class="error">
-            {{ $errors->first() }}
-        </div>
-    @endif
-
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
-
-        <div class="form-group">
-            <label for="email">Correo Electrónico</label>
-            <input
-                type="email"
-                id="email"
-                name="email"
-                value="{{ old('email') }}"
-                required
-                autofocus
-                placeholder="tu@email.com"
-            >
+    <div class="login-card">
+        <div class="logo-container">
+            <div class="logo">🚌</div>
+            <div class="logo-text">BusTrak</div>
+            <div class="subtitle">Sistema de Gestión de Reservas</div>
         </div>
 
-        <div class="form-group">
-            <label for="password">Contraseña</label>
-            <input
-                type="password"
-                id="password"
-                name="password"
-                required
-                placeholder="••••••••"
-            >
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
+            <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="remember" name="remember">
+                <label for="remember" class="checkbox-text">Recuérdame</label>
+                <a href="/forgot-password" class="forgot-link">¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <button type="submit" class="btn-login">Iniciar Sesión</button>
+        </form>
+
+        <div class="register-section">
+                <span class="register-text">¿No tienes cuenta?
+                    <a href="/registro" class="register-link">Regístrate aquí</a>
+                </span>
         </div>
-
-        <div class="remember-forgot">
-            <label class="remember-me">
-                <input type="checkbox" name="remember">
-                <span>Recordarme</span>
-            </label>
-            <a href="{{ route('password.request') }}" class="forgot-link">
-                ¿Olvidaste tu contraseña?
-            </a>
-        </div>
-
-        <button type="submit" class="btn">Iniciar Sesión</button>
-    </form>
-
-    <div class="register-link">
-        ¿No tienes cuenta? <a href="{{ route('registro') }}">Regístrate aquí</a>
     </div>
+
+
 </div>
 </body>
 </html>
