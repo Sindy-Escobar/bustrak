@@ -36,21 +36,6 @@
                             </select>
                         </div>
 
-<<<<<<< HEAD
-=======
-                        <div class="col-md-3">
-                            <label class="form-label">Area Asignada</label>
-                            <input type="text" name="area" class="form-control" placeholder="Ingrese area"
-                                   value="{{ request('area') }}">
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label">Permiso</label>
-                            <input type="text" name="permiso" class="form-control" placeholder="Ingrese permiso"
-                                   value="{{ request('permiso') }}">
-                        </div>
-
->>>>>>> d6637c5fcc1928f0a236c8582db4aaae207afc3c
                         <div class="col-md-4">
                             <label class="form-label">Fecha de Registro</label>
                             <input type="date" name="fecha_registro" class="form-control"
