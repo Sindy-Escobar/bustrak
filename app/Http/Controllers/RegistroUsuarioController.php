@@ -76,13 +76,16 @@ class RegistroUsuarioController extends Controller
     public function consultar(Request $request)
     {
         $usuarios = Usuario::query()
-            // Necesitas unir (join) o relacionar (whereHas) con la tabla users
-            ->join('users', 'usuarios.email', '=', 'users.email') // Usando email como nexo temporal
-            ->select('usuarios.*', 'users.role', 'users.estado'); // Selecciona las columnas de ambas tablas
+            ->join('users', 'usuarios.email', '=', 'users.email')
+            ->select(
+                'usuarios.*',
+                'users.role as rol',
+                'users.estado'
+            );
 
-        // Filtro por rol
+        //  Filtro por rol
         if ($request->filled('rol')) {
-            $usuarios->where('users.rol', $request->rol);
+            $usuarios->where('users.role', $request->rol);
         }
 
         // Filtro por estado
@@ -90,22 +93,13 @@ class RegistroUsuarioController extends Controller
             $usuarios->where('users.estado', $request->estado);
         }
 
-        // Filtro por área
-        if ($request->filled('area')) {
-            $usuarios->where('area', 'like', "%{$request->area}%");
-        }
 
-        // Filtro por permiso
-        if ($request->filled('permiso')) {
-            $usuarios->where('permiso', 'like', "%{$request->permiso}%");
-        }
-
-        // Filtro por fechas
+        //  Filtro por fecha de registro (en tabla usuarios)
         if ($request->filled('fecha_registro')) {
-            $usuarios->whereDate('created_at', $request->fecha_registro);
+            $usuarios->whereDate('usuarios.created_at', $request->fecha_registro);
         }
 
-        // Paginar y mantener filtros en la URL
+        //  Paginar y mantener filtros
         $usuarios = $usuarios->paginate(10)->appends($request->all());
 
         return view('usuarios.consultar', compact('usuarios'));

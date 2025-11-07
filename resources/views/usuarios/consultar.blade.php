@@ -5,7 +5,7 @@
         <div class="card">
             <div class="card-header">
                 <h2 style="margin:0; color:#1e63b8; font-weight:600; font-size:2rem;">
-                    <i class="fas fa-user-edit me-2"></i>Consultar Usuarios con Filtros
+                    <i class="fas fa-user-edit me-2"></i>Usuarios
                 </h2>
             </div>
             <div class="card-body">
@@ -30,16 +30,6 @@
                             </select>
                         </div>
 
-                        <div class="col-md-3">
-                            <label class="form-label">Area Asignada</label>
-                            <input type="text" name="area" class="form-control" placeholder="Ingrese area" value="{{ request('area') }}">
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label">Permiso</label>
-                            <input type="text" name="permiso" class="form-control" placeholder="Ingrese permiso" value="{{ request('permiso') }}">
-                        </div>
-
                         <div class="col-md-4">
                             <label class="form-label">Fecha de Registro</label>
                             <input type="date" name="fecha_registro" class="form-control" value="{{ request('fecha_registro') }}">
@@ -51,9 +41,6 @@
                             </button>
                             <a href="{{ route('usuarios.consultar') }}" class="btn btn-outline-secondary">
                                 <i class="fas fa-redo me-1"></i>Limpiar
-                            </a>
-                            <a href="{{ route('usuarios.index') }}" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left me-1"></i>Volver
                             </a>
                         </div>
                     </div>
@@ -68,8 +55,6 @@
                             <th>DNI</th>
                             <th>Rol</th>
                             <th>Estado</th>
-                            <th>Area</th>
-                            <th>Permiso</th>
                             <th>Fecha Registro</th>
                         </tr>
                         </thead>
@@ -81,13 +66,11 @@
                                 <td>{{ $usuario->dni }}</td>
                                 <td>{{ $usuario->rol ?? '-' }}</td>
                                 <td>{{ $usuario->estado ?? 'Activo' }}</td>
-                                <td>{{ $usuario->area ?? '-' }}</td>
-                                <td>{{ $usuario->permiso ?? '-' }}</td>
                                 <td>{{ $usuario->created_at->format('d/m/Y') }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center text-muted py-4">
+                                <td colspan="6" class="text-center text-muted py-4">
                                     No se encontraron usuarios con los filtros aplicados
                                 </td>
                             </tr>

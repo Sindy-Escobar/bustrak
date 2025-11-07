@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* Fondo azul claro elegante */
+        /* Fondo sólido azul claro */
         body {
-            background: linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%);
+            background-color: #e0e7ff; /* azul muy claro */
         }
 
         main.container-main {
@@ -21,44 +21,20 @@
 
         /* Tarjeta del formulario */
         .form-card {
-            background: linear-gradient(180deg, #ffffff, #f8fbff);
+            background-color: #ffffff; /* blanco sólido */
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.15);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.1);
             border: 1px solid rgba(37, 99, 235, 0.08);
             padding: 2.5rem 3rem;
             width: 100%;
-            max-width: 850px;
+            max-width: 600px;
             position: relative;
-            overflow: hidden;
         }
 
-        .form-card::before {
-            content: '';
-            position: absolute;
-            top: -20%;
-            right: -20%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(37,99,235,0.15), transparent 70%);
-            border-radius: 50%;
-        }
-
-        .form-card::after {
-            content: '';
-            position: absolute;
-            bottom: -25%;
-            left: -25%;
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, rgba(96,165,250,0.2), transparent 70%);
-            border-radius: 50%;
-        }
-
-        /* Título */
         .form-card h2 {
             text-align: center;
             font-weight: 800;
-            color: #1e3a8a;
+            color: #1e3a8a; /* azul oscuro */
             margin-bottom: 1rem;
         }
 
@@ -68,7 +44,6 @@
             margin-bottom: 2rem;
         }
 
-        /* Estilo de iconos + inputs */
         .input-group-text {
             background-color: #f1f5f9;
             border: 1px solid #cbd5e1;
@@ -89,9 +64,9 @@
             box-shadow: 0 0 6px rgba(59,130,246,0.3);
         }
 
-        /* Botón principal */
+        /* Botón principal con tono sólido */
         .btn-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%) !important;
+            background-color: #1e40af !important; /* azul sólido */
             border: none !important;
             font-weight: 600;
             border-radius: 10px;
@@ -101,8 +76,8 @@
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(59,130,246,0.3);
+            background-color: #1d4ed8 !important; /* azul más claro al pasar el mouse */
+            box-shadow: 0 6px 16px rgba(37,99,235,0.25);
         }
 
         /* Alertas */
@@ -160,7 +135,7 @@
             @csrf
 
             <div class="row g-3">
-                <div class="col-md-6">
+                <div class="col-12">
                     <label class="form-label">Nombre de la empresa *</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-building"></i></span>
@@ -168,7 +143,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-12">
                     <label class="form-label">Propietario *</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
@@ -176,15 +151,21 @@
                     </div>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-12">
                     <label class="form-label">Teléfono *</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                        <input type="text" name="telefono" class="form-control" value="{{ old('telefono') }}" required>
+                        <input type="text"
+                               name="telefono"
+                               class="form-control"
+                               value="{{ old('telefono') }}"
+                               pattern="[839][0-9]{7}"
+                               title="El número debe comenzar con 8, 3 o 9 y tener 8 dígitos"
+                               required>
                     </div>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-12">
                     <label class="form-label">Correo Electrónico</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-envelope"></i></span>
@@ -209,3 +190,4 @@
         </form>
     </div>
 @endsection
+
