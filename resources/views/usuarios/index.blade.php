@@ -1,4 +1,4 @@
-@extends('layouts.apps')
+@extends('layouts.layoutadmin')
 
 @section('content')
     <div class="container">
@@ -78,10 +78,12 @@
                                     <td>{{ $usuario->dni }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
-                                            <a href="{{ route('usuarios.show', $usuario->id) }}" class="btn btn-primary">
+                                            <a href="{{ route('usuarios.show', $usuario->id) }}"
+                                               class="btn btn-primary">
                                                 <i class="fas fa-eyes"></i> Ver
                                             </a>
-                                            <a href="{{ route('usuarios.edit', $usuario->id) }}" class="btn btn-primary">
+                                            <a href="{{ route('usuarios.edit', $usuario->id) }}"
+                                               class="btn btn-primary">
                                                 <i class="fas fa-edit"></i> Editar
                                             </a>
                                         </div>
