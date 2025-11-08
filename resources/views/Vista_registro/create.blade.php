@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+@extends('layouts.PlantillaCRUD')
+@section('contenido')
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #e0e0e0 0%, #e0e0e0 100%);
             min-height: 100vh;
             padding: 20px 0;
         }
@@ -19,7 +20,7 @@
             overflow: hidden;
         }
         .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #667eea 100%);
             padding: 30px;
             text-align: center;
             border: none;
@@ -49,7 +50,7 @@
             border-radius: 0 10px 10px 0;
         }
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #667eea 100%);
             border: none;
             border-radius: 10px;
             padding: 12px 30px;
@@ -171,3 +172,4 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+@endsection

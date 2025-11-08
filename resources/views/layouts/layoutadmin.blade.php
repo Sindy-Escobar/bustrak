@@ -5,6 +5,8 @@
     <title>@yield('title', 'Panel Administrativo')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://kit.fontawesome.com/a2e0c8b2b1.js" crossorigin="anonymous"></script>
 
     <style>
@@ -147,6 +149,25 @@
                 margin-left: 0;
             }
         }
+        /* ===== Toggle Sidebar ===== */
+        .sidebar.collapsed {
+            width: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .content-area.expanded {
+            margin-left: 0;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        #toggleSidebar {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
     </style>
 
 </head>
@@ -186,8 +207,6 @@
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
             <div class="collapse btn-toggle-nav" id="usuarios">
-                <a href="{{ route('usuarios.index') }}" class="{{ request()->routeIs('usuarios.index') ? 'active' : '' }}">Ver usuarios</a>
-                <a href="{{ route('usuarios.create') }}" class="{{ request()->routeIs('usuarios.create') ? 'active' : '' }}">Registrar usuario</a>
                 <a href="{{ route('usuarios.consultar') }}" class="{{ request()->routeIs('usuarios.consultar') ? 'active' : '' }}">Consultar usuarios</a>
             </div>
         </div>
@@ -237,8 +256,16 @@
     </nav>
 
     <div class="content-area">
+        <!--  Botón para mostrar/ocultar la barra lateral -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <button id="toggleSidebar" class="btn btn-outline-primary">
+                <i class="fas fa-bars"></i> Menú
+            </button>
+        </div>
+
         @yield('content')
     </div>
+
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -267,6 +294,29 @@
                 openGroups = openGroups.filter(id => id !== group.id);
                 localStorage.setItem('sidebarOpenGroups', JSON.stringify(openGroups));
             });
+        });
+    });
+</script>
+<!-- 🔹 Script para ocultar/mostrar la barra lateral -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebar = document.querySelector('.sidebar');
+        const content = document.querySelector('.content-area');
+        const toggleBtn = document.getElementById('toggleSidebar');
+
+        toggleBtn.addEventListener('click', function () {
+            sidebar.classList.toggle('collapsed');
+            content.classList.toggle('expanded');
+
+            // Cambiar ícono dinámicamente
+            const icon = toggleBtn.querySelector('i');
+            if (sidebar.classList.contains('collapsed')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            } else {
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
         });
     });
 </script>

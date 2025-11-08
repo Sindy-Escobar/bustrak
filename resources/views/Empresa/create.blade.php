@@ -1,211 +1,144 @@
-@extends('layouts.apps')
+@extends('layouts.layoutadmin')
 
 @section('title', 'Registrar Empresa')
 
-@section('styles')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        /* Fondo azul claro elegante */
-        body {
-            background: linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%);
-        }
-
-        main.container-main {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: calc(100vh - 180px);
-            padding: 40px 20px;
-        }
-
-        /* Tarjeta del formulario */
-        .form-card {
-            background: linear-gradient(180deg, #ffffff, #f8fbff);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.15);
-            border: 1px solid rgba(37, 99, 235, 0.08);
-            padding: 2.5rem 3rem;
-            width: 100%;
-            max-width: 850px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .form-card::before {
-            content: '';
-            position: absolute;
-            top: -20%;
-            right: -20%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(37,99,235,0.15), transparent 70%);
-            border-radius: 50%;
-        }
-
-        .form-card::after {
-            content: '';
-            position: absolute;
-            bottom: -25%;
-            left: -25%;
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, rgba(96,165,250,0.2), transparent 70%);
-            border-radius: 50%;
-        }
-
-        /* Título */
-        .form-card h2 {
-            text-align: center;
-            font-weight: 800;
-            color: #1e3a8a;
-            margin-bottom: 1rem;
-        }
-
-        .form-card p {
-            text-align: center;
-            color: #475569;
-            margin-bottom: 2rem;
-        }
-
-        /* Estilo de iconos + inputs */
-        .input-group-text {
-            background-color: #f1f5f9;
-            border: 1px solid #cbd5e1;
-            color: #1e40af;
-            border-right: none;
-            border-radius: 8px 0 0 8px;
-        }
-
-        .input-group .form-control {
-            border-left: none;
-            border-radius: 0 8px 8px 0;
-            border: 1px solid #cbd5e1;
-            padding: 12px 14px;
-        }
-
-        .form-control:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 6px rgba(59,130,246,0.3);
-        }
-
-        /* Botón principal */
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%) !important;
-            border: none !important;
-            font-weight: 600;
-            border-radius: 10px;
-            padding: 12px 28px;
-            transition: all 0.3s ease;
-            color: #fff !important;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(59,130,246,0.3);
-        }
-
-        /* Alertas */
-        .alert-success {
-            background-color: #e0f2fe;
-            border: none;
-            color: #1e40af;
-            border-radius: 10px;
-        }
-
-        .alert-danger {
-            background-color: #fee2e2;
-            border: none;
-            color: #991b1b;
-            border-radius: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .form-card {
-                padding: 2rem;
-            }
-        }
-    </style>
-@endsection
-
 @section('content')
-    <div class="form-card">
-        <h2><i class="fas fa-building me-2"></i>Registro de Empresa de Buses</h2>
-        <p>Completa los datos para registrar una nueva empresa de transporte</p>
-
-        {{-- Mensaje de éxito --}}
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle me-2"></i>
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-            </div>
-        @endif
-
-        {{-- Errores de validación --}}
-        @if($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle me-2"></i>
-                <strong>Por favor corrige los siguientes errores:</strong>
-                <ul class="mb-0 mt-2">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-            </div>
-        @endif
-
-        <form action="{{ route('empresa.form') }}" method="POST">
-            @csrf
-
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">Nombre de la empresa *</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-building"></i></span>
-                        <input type="text" name="nombre" class="form-control" value="{{ old('nombre') }}" required>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Propietario *</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
-                        <input type="text" name="propietario" class="form-control" value="{{ old('propietario') }}" required>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Teléfono *</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                        <input type="text" name="telefono" class="form-control" value="{{ old('telefono') }}" required>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Correo Electrónico</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                        <input type="email" name="email" class="form-control" value="{{ old('email') }}">
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <label class="form-label">Dirección *</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                        <input type="text" name="direccion" class="form-control" value="{{ old('direccion') }}" required>
-                    </div>
-                </div>
+    <div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h2 class="mb-0" style="color:#00b7ff; font-weight:600; font-size:1.8rem;">
+                    Registrar Empresa
+                </h2>
+                <p class="mt-2 mb-0">Completa los datos para registrar una nueva empresa de transporte</p>
             </div>
 
-            <div class="d-flex justify-content-center mt-4">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save me-2"></i>Guardar Empresa
-                </button>
+            <div class="card-body">
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <!-- Icono Éxito -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#00b7ff" class="bi bi-check-circle me-2" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM7 11l-3-3 1-1 2 2 4-4 1 1-5 5z"/>
+                        </svg>
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <!-- Icono Error -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff4d4f" class="bi bi-exclamation-triangle me-2" viewBox="0 0 16 16">
+                            <path d="M8.982 1.566a1 1 0 0 1 1.036 0l6.857 3.95A1 1 0 0 1 16 6.382v7.236a1 1 0 0 1-.525.894l-6.857 3.95a1 1 0 0 1-1.036 0L1.525 14.512A1 1 0 0 1 1 13.618V6.382a1 1 0 0 1 .525-.894l6.857-3.95zM8 5c-.535 0-.954.462-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 5zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                        </svg>
+                        <strong>Por favor corrige los siguientes errores:</strong>
+                        <ul class="mb-0 mt-1">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
+                <form action="{{ route('empresa.form') }}" method="POST" class="needs-validation" novalidate>
+                    @csrf
+
+                    <!-- Nombre Empresa -->
+                    <div class="mb-3">
+                        <label class="form-label">Nombre de la empresa *</label>
+                        <div class="input-group">
+                        <span class="input-group-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#00b7ff" class="bi bi-building-fill" viewBox="0 0 16 16">
+                                <path d="M14 0H2a1 1 0 0 0-1 1v15h2V11h10v5h2V1a1 1 0 0 0-1-1zM4 2h2v2H4V2zm0 3h2v2H4V5zm0 3h2v2H4V8zm3-6h2v2H7V2zm0 3h2v2H7V5zm0 3h2v2H7V8zm3-6h2v2h-2V2zm0 3h2v2h-2V5zm0 3h2v2h-2V8z"/>
+                            </svg>
+                        </span>
+                            <input type="text" name="nombre" class="form-control" value="{{ old('nombre') }}" required>
+                            <div class="invalid-feedback">Por favor ingresa el nombre de la empresa.</div>
+                        </div>
+                    </div>
+
+                    <!-- Propietario -->
+                    <div class="mb-3">
+                        <label class="form-label">Propietario *</label>
+                        <div class="input-group">
+                        <span class="input-group-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#00b7ff" class="bi bi-person-fill" viewBox="0 0 16 16">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                            </svg>
+                        </span>
+                            <input type="text" name="propietario" class="form-control" value="{{ old('propietario') }}" required>
+                            <div class="invalid-feedback">Por favor ingresa el nombre del propietario.</div>
+                        </div>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="mb-3">
+                        <label class="form-label">Teléfono *</label>
+                        <div class="input-group">
+                        <span class="input-group-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#00b7ff" class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547c.52-.13.971-.014 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611L10.74 15c-.838.838-2.32-.288-5.322-3.322C2.083 8.36 1.055 6.88 1.879 6.052l.836-.836c.731-.73 1.956-.653 2.61.163l1.944 2.158z"/>
+                            </svg>
+                         </span>
+                            <input type="text" name="telefono" class="form-control" value="{{ old('telefono') }}" pattern="[839][0-9]{7}" title="El número debe comenzar con 8, 3 o 9 y tener 8 dígitos" required>
+                            <div class="invalid-feedback">Por favor ingresa un número válido (8, 3 o 9 seguido de 7 dígitos).</div>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label class="form-label">Correo Electrónico</label>
+                        <div class="input-group">
+                        <span class="input-group-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#00b7ff" class="bi bi-envelope" viewBox="0 0 16 16">
+                                <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v.217l-8 4.8-8-4.8V4zm0 1.383V12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5.383l-8 4.8-8-4.8z"/>
+                            </svg>
+                        </span>
+                            <input type="email" name="email" class="form-control" value="{{ old('email') }}">
+                            <div class="invalid-feedback">Por favor ingresa un correo válido.</div>
+                        </div>
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="mb-3">
+                        <label class="form-label">Dirección *</label>
+                        <div class="input-group">
+                        <span class="input-group-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#00b7ff" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                                <path d="M12 6a4 4 0 1 0-8 0c0 1.5 2 5 4 7 2-2 4-5.5 4-7zM8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
+                            </svg>
+                        </span>
+                            <input type="text" name="direccion" class="form-control" value="{{ old('direccion') }}" required>
+                            <div class="invalid-feedback">Por favor ingresa la dirección.</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ffffff" class="bi bi-save-fill me-2" viewBox="0 0 16 16">
+                                <path d="M8 0a2 2 0 0 0-2 2v1H2v11h12V3h-4V2a2 2 0 0 0-2-2z"/>
+                            </svg>
+                            Guardar Empresa
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
+
+    <script>
+        (() => {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
 @endsection

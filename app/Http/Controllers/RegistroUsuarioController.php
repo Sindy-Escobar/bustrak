@@ -75,14 +75,26 @@ class RegistroUsuarioController extends Controller
 
     public function consultar(Request $request)
     {
-        $usuarios = Usuario::query()
-            // Necesitas unir (join) o relacionar (whereHas) con la tabla users
-            ->join('users', 'usuarios.email', '=', 'users.email') // Usando email como nexo temporal
-            ->select('usuarios.*', 'users.role', 'users.estado'); // Selecciona las columnas de ambas tablas
+        $search = $request->input('search');
 
-        // Filtro por rol
+        $usuarios = Usuario::query()
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('usuarios.nombre_completo', 'like', "%{$search}%")
+                        ->orWhere('usuarios.email', 'like', "%{$search}%")
+                        ->orWhere('usuarios.dni', 'like', "%{$search}%");
+                });
+            })
+            ->join('users', 'usuarios.email', '=', 'users.email')
+            ->select(
+                'usuarios.*',
+                'users.role as rol',
+                'users.estado'
+            );
+
+        //  Filtro por rol
         if ($request->filled('rol')) {
-            $usuarios->where('users.rol', $request->rol);
+            $usuarios->where('users.role', $request->rol);
         }
 
         // Filtro por estado
@@ -90,22 +102,13 @@ class RegistroUsuarioController extends Controller
             $usuarios->where('users.estado', $request->estado);
         }
 
-        // Filtro por área
-        if ($request->filled('area')) {
-            $usuarios->where('area', 'like', "%{$request->area}%");
-        }
 
-        // Filtro por permiso
-        if ($request->filled('permiso')) {
-            $usuarios->where('permiso', 'like', "%{$request->permiso}%");
-        }
-
-        // Filtro por fechas
+        //  Filtro por fecha de registro (en tabla usuarios)
         if ($request->filled('fecha_registro')) {
-            $usuarios->whereDate('created_at', $request->fecha_registro);
+            $usuarios->whereDate('usuarios.created_at', $request->fecha_registro);
         }
 
-        // Paginar y mantener filtros en la URL
+        //  Paginar y mantener filtros
         $usuarios = $usuarios->paginate(10)->appends($request->all());
 
         return view('usuarios.consultar', compact('usuarios'));
@@ -140,13 +143,17 @@ class RegistroUsuarioController extends Controller
         if ($user) {
             $user->name = $usuario->nombre_completo;
             $user->email = $usuario->email;
+
+            if ($request->filled('estado')) {
+                $user->estado = $request->estado;
+            }
             if ($request->filled('password')) {
                 $user->password = Hash::make($request->password);
             }
             $user->save();
         }
 
-        return redirect()->route('usuarios.show', $usuario)
+        return redirect()->route('usuarios.consultar', $usuario)
             ->with('success', 'Usuario actualizado exitosamente.');
     }
 }
