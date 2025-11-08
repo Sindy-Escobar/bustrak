@@ -75,7 +75,16 @@ class RegistroUsuarioController extends Controller
 
     public function consultar(Request $request)
     {
+        $search = $request->input('search');
+
         $usuarios = Usuario::query()
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('usuarios.nombre_completo', 'like', "%{$search}%")
+                        ->orWhere('usuarios.email', 'like', "%{$search}%")
+                        ->orWhere('usuarios.dni', 'like', "%{$search}%");
+                });
+            })
             ->join('users', 'usuarios.email', '=', 'users.email')
             ->select(
                 'usuarios.*',
@@ -134,13 +143,17 @@ class RegistroUsuarioController extends Controller
         if ($user) {
             $user->name = $usuario->nombre_completo;
             $user->email = $usuario->email;
+
+            if ($request->filled('estado')) {
+                $user->estado = $request->estado;
+            }
             if ($request->filled('password')) {
                 $user->password = Hash::make($request->password);
             }
             $user->save();
         }
 
-        return redirect()->route('usuarios.show', $usuario)
+        return redirect()->route('usuarios.consultar', $usuario)
             ->with('success', 'Usuario actualizado exitosamente.');
     }
 }
