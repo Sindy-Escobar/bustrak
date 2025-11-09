@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'Panel Administrativo')</title>
+    <title>@yield('title', 'Bustrak - Panel de Usuario')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -55,16 +55,58 @@
             border-radius: 4px;
         }
 
+        /* ===== LOGO Y USUARIO ===== */
+        .brand-logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+        }
+
+        .brand-logo h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .brand-logo small {
+            display: block;
+            color: #5cb3ff;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
         .user-info {
             text-align: center;
             margin-bottom: 2rem;
         }
 
+        .user-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5cb3ff, #1e63b8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.8rem;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
         .user-info h3 {
-            font-size: 1.3rem;
-            font-weight: 700;
+            font-size: 1.1rem;
+            font-weight: 600;
             color: #ffffff;
             margin: 0;
+        }
+
+        .user-info small {
+            color: #9ca3af;
+            font-size: 0.85rem;
         }
 
         /* ===== NAVEGACIÓN ===== */
@@ -149,6 +191,7 @@
                 margin-left: 0;
             }
         }
+
         /* ===== Toggle Sidebar ===== */
         .sidebar.collapsed {
             width: 0;
@@ -167,114 +210,117 @@
             align-items: center;
             gap: 6px;
         }
-
     </style>
-
 </head>
 
 <body>
 <main>
     <nav class="sidebar">
-        <div class="user-info">
-            <h3>Admin</h3>
+        <!-- Logo de la Aplicación -->
+        <div class="brand-logo">
+            <h2>
+                <img src="{{ asset('Imagenes/bustrak-logo.jpg') }}" alt="Logo" style="height: 60px; vertical-align: middle;">
+            </h2>
+            <small>Sistema de Gestión</small>
         </div>
 
-        <!-- Empleados -->
+
+        <!-- Información del Usuario -->
+        <div class="user-info">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <h3>{{ Auth::user()->nombre_completo ?? 'Usuario' }}</h3>
+            <small><i class="fas fa-envelope me-1"></i>{{ Auth::user()->email ?? 'usuario@bustrak.com' }}</small>
+        </div>
+
+        <!-- Mi Cuenta -->
         <div class="nav-section">
             <button class="btn-toggle d-flex justify-content-between align-items-center"
                     data-bs-toggle="collapse"
-                    data-bs-target="#empleados"
-                    aria-expanded="{{ request()->routeIs('empleados.*') ? 'true' : 'false' }}">
-                <span><i class="fas fa-user-tie"></i> Empleados</span>
+                    data-bs-target="#miCuenta"
+                    aria-expanded="{{ request()->routeIs('usuario.perfil*') ? 'true' : 'false' }}">
+                <span><i class="fas fa-user-circle"></i> Cuenta</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
-
-            <div class="collapse btn-toggle-nav {{ request()->routeIs('empleados.*') ? 'show' : '' }}" id="empleados">
-                <a href="{{ route('empleados.hu5') }}" class="{{ request()->routeIs('empleados.hu5') ? 'active' : '' }}">
-                    Ver empleados
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.perfil*') ? 'show' : '' }}" id="miCuenta">
+                <a href="{{ route('cliente.perfil') }}" class="{{ request()->routeIs('cliente.perfil') ? 'active' : '' }}">
+                    Ver perfil
                 </a>
-                <a href="{{ route('empleados.create') }}" class="{{ request()->routeIs('empleados.create') ? 'active' : '' }}">
-                    Registrar empleado
-                </a>
-                <a href="{{ route('abordajes.historial') }}" class="{{ request()->routeIs('empleados.create') ? 'active' : '' }}">
-                    Check-in
+                <a href="{{ route('usuarios.create') }}" class="{{ request()->routeIs('usuarios.create') ? 'active' : '' }}">
+                    Registrar usuario
                 </a>
             </div>
         </div>
 
-
-        <!-- Usuarios -->
+        <!-- Mis Reservas -->
         <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#usuarios" aria-expanded="false">
-                <span><i class="fas fa-users"></i> Usuarios</span>
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#reservas" aria-expanded="{{ request()->routeIs('usuario.reservas*') ? 'true' : 'false' }}">
+                <span><i class="fas fa-ticket-alt"></i> Mis Reservas</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
-            <div class="collapse btn-toggle-nav" id="usuarios">
-                <a href="{{ route('usuarios.consultar') }}" class="{{ request()->routeIs('usuarios.consultar') ? 'active' : '' }}">Consultar usuarios</a>
-            </div>
-        </div>
-
-        <!-- Empresa -->
-        <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#empresa" aria-expanded="false">
-                <span><i class="fas fa-building"></i> Empresa</span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-            <div class="collapse btn-toggle-nav" id="empresa">
-                <a href="{{ route('empresas.index') }}" class="{{ request()->routeIs('empresas.index') ? 'active' : '' }}">Lista de empresas</a>
-                <a href="{{ route('empresas.validar') }}" class="{{ request()->routeIs('empresas.validar') ? 'active' : '' }}">Validar empresas</a>
-                <a href="{{ route('empresa.form') }}" class="{{ request()->routeIs('empresa.form') ? 'active' : '' }}">Registrar empresa</a>
-            </div>
-        </div>
-
-        <!-- Estadísticas -->
-        <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#estadisticas" aria-expanded="{{ request()->routeIs('admin.dashboard') ? 'true' : 'false' }}">
-                <span><i class="fas fa-chart-bar"></i> Estadísticas</span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-            <div class="collapse btn-toggle-nav {{ request()->routeIs('admin.dashboard') ? 'show' : '' }}" id="estadisticas">
-                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                    Ver Estadísticas
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.reservas*') ? 'show' : '' }}" id="reservas">
+                <a href="{{ route('cliente.reservas') }}" class="{{ request()->routeIs('cliente.reservas') ? 'active' : '' }}">
+                    Ver reservas
                 </a>
             </div>
         </div>
 
-        <!-- Terminales -->
+        <!-- Rutas y Horarios -->
         <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#terminales" aria-expanded="false">
-                <span><i class="fas fa-map-marker-alt"></i> Terminales</span>
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#rutas" aria-expanded="{{ request()->routeIs('usuario.rutas*') ? 'true' : 'false' }}">
+                <span><i class="fas fa-route"></i> Rutas y Horarios</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
-            <div class="collapse btn-toggle-nav" id="terminales">
-                <a href="{{ route('terminales.index') }}" class="{{ request()->routeIs('terminales.index') ? 'active' : '' }}">Ver terminales</a>
-                <a href="{{ route('terminales.create') }}" class="{{ request()->routeIs('terminales.create') ? 'active' : '' }}">Agregar terminal</a>
-                <a href="{{ route('terminales.ver_terminales') }}" class="{{ request()->routeIs('terminales.ver_terminales') ? 'active' : '' }}">Visualizar terminales</a>
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.rutas*') ? 'show' : '' }}" id="rutas">
+                <a href="{{ route('consulta-paradas.index') }}" class="{{ request()->routeIs('consulta-paradas.index') ? 'active' : '' }}">
+                    Ver rutas disponibles
+                </a>
             </div>
         </div>
 
-        <div class="mt-auto text-center p-3">
-            <a href="{{ route('logout') }}" class="btn btn-sm btn-danger">Cerrar sesión</a>
+        <!-- Notificaciones -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#notificaciones" aria-expanded="{{ request()->routeIs('usuario.notificaciones') ? 'true' : 'false' }}">
+                <span><i class="fas fa-bell"></i> Notificaciones</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.notificaciones') ? 'show' : '' }}" id="notificaciones">
+            </div>
+        </div>
+
+        <!-- Soporte -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#soporte" aria-expanded="{{ request()->routeIs('usuario.soporte*') ? 'true' : 'false' }}">
+                <span><i class="fas fa-headset"></i> Ayuda y Soporte </span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.soporte*') ? 'show' : '' }}" id="soporte">
+                <a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'active' : '' }}">
+                    Cerrar sesión
+                </a>
+            </div>
         </div>
     </nav>
 
     <div class="content-area">
-        <!--  Botón para mostrar/ocultar la barra lateral -->
+        <!-- Botón para mostrar/ocultar la barra lateral -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <button id="toggleSidebar" class="btn btn-outline-primary">
                 <i class="fas fa-bars"></i> Menú
             </button>
         </div>
 
-        @yield('content')
+        @yield('contenido')
     </div>
-
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Script para mantener grupos abiertos -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        let openGroups = JSON.parse(localStorage.getItem('sidebarOpenGroups') || '[]');
+        let openGroups = JSON.parse(localStorage.getItem('sidebarUserOpenGroups') || '[]');
 
         openGroups.forEach(id => {
             const el = document.querySelector(`#${id}`);
@@ -289,18 +335,19 @@
             group.addEventListener('shown.bs.collapse', () => {
                 if (!openGroups.includes(group.id)) {
                     openGroups.push(group.id);
-                    localStorage.setItem('sidebarOpenGroups', JSON.stringify(openGroups));
+                    localStorage.setItem('sidebarUserOpenGroups', JSON.stringify(openGroups));
                 }
             });
 
             group.addEventListener('hidden.bs.collapse', () => {
                 openGroups = openGroups.filter(id => id !== group.id);
-                localStorage.setItem('sidebarOpenGroups', JSON.stringify(openGroups));
+                localStorage.setItem('sidebarUserOpenGroups', JSON.stringify(openGroups));
             });
         });
     });
 </script>
-<!-- 🔹 Script para ocultar/mostrar la barra lateral -->
+
+<!-- Script para ocultar/mostrar sidebar -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const sidebar = document.querySelector('.sidebar');
@@ -311,7 +358,6 @@
             sidebar.classList.toggle('collapsed');
             content.classList.toggle('expanded');
 
-            // Cambiar ícono dinámicamente
             const icon = toggleBtn.querySelector('i');
             if (sidebar.classList.contains('collapsed')) {
                 icon.classList.remove('fa-bars');

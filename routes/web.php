@@ -19,6 +19,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\RegistroUsuarioController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\ConsultaParadaController;
+use App\Http\Controllers\AbordajeController;
 
 
 
@@ -187,4 +188,11 @@ Route::get('/demo-dashboard', function () {
         'total_activos', 'total_inactivos', 'total_empleados',
         'totalUsuarios', 'usuariosActivos', 'usuariosInactivos'
     ));
+});
+
+Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(AbordajeController::class)->group(function () {
+    Route::get('escanear', 'mostrarEscaner')->name('escanear');
+    Route::post('validar', 'validarCodigoQR')->name('validar');
+    Route::post('confirmar', 'confirmarAbordaje')->name('confirmar');
+    Route::get('historial', 'historial')->name('historial');
 });

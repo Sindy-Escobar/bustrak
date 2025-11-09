@@ -36,10 +36,13 @@ class RegistroUsuarioController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre_completo' => 'required|string|max:255',
-            'dni' => 'required|string|unique:usuarios,dni',
+            //  Solo letras (incluye acentos, ñ) y espacios
+            'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
+            //  DNI: 8 dígitos numéricos, único
+            'dni' => 'required|numeric|digits:13|unique:usuarios,dni',
             'email' => 'required|email|unique:usuarios,email|unique:users,email',
-            'telefono' => 'required|string|max:20',
+            //  Teléfono: 8 dígitos numéricos
+            'telefono' => 'required|numeric|digits:8',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
@@ -85,6 +88,7 @@ class RegistroUsuarioController extends Controller
                         ->orWhere('usuarios.dni', 'like', "%{$search}%");
                 });
             })
+            // El join hace que 'email' sea ambiguo, por eso se corrigió arriba.
             ->join('users', 'usuarios.email', '=', 'users.email')
             ->select(
                 'usuarios.*',
@@ -121,39 +125,70 @@ class RegistroUsuarioController extends Controller
         return view('usuarios.Editar', compact('usuario'));
     }
 
-    public function update(Request $request, Usuario $usuario)
+    public function update(Request $request, $id)
     {
-        $request->validate([
-            'nombre_completo' => 'required|string|max:255',
-            'dni' => ['required','string', Rule::unique('usuarios','dni')->ignore($usuario->id)],
-            'email' => ['required','email', Rule::unique('usuarios','email')->ignore($usuario->id)],
-            'telefono' => 'required|string|max:20',
-            'password' => 'nullable|string|min:8|confirmed',
-        ]);
+        $usuario = Usuario::findOrFail($id);
+        $originalEmail = $usuario->email;
 
-        $data = $request->except(['_token','_method','password','password_confirmation']);
+        $request->validate([
+            'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
+            'dni' => ['required', 'numeric', 'digits:13', Rule::unique('usuarios', 'dni')->ignore($usuario->id)],
+            'email' => ['required', 'email', Rule::unique('usuarios', 'email')->ignore($usuario->id)],
+            'telefono' => 'required|numeric|digits:8',
+            'password' => 'nullable|string|min:8|confirmed',
+            'estado' => 'required|in:activo,inactivo',
+        ], [
+            // Mensajes personalizados
+            'nombre_completo.required' => 'El campo nombre completo es obligatorio.',
+    'nombre_completo.regex' => 'El campo nombre completo solo puede contener letras y espacios.',
+    'nombre_completo.max' => 'El nombre completo no puede tener más de 255 caracteres.',
+
+    'dni.required' => 'El campo DNI es obligatorio.',
+    'dni.numeric' => 'El campo DNI debe ser numérico.',
+    'dni.digits' => 'El DNI debe tener :digits dígitos.',
+    'dni.unique' => 'El DNI ya está registrado.',
+
+    'email.required' => 'El campo email es obligatorio.',
+    'email.email' => 'El campo email debe ser una dirección válida.',
+    'email.unique' => 'El email ya está registrado.',
+
+    'telefono.required' => 'El campo teléfono es obligatorio.',
+    'telefono.numeric' => 'El teléfono debe contener solo números.',
+    'telefono.digits' => 'El teléfono debe tener :digits dígitos.',
+
+    'password.min' => 'La contraseña debe tener al menos :min caracteres.',
+    'password.confirmed' => 'La confirmación de la contraseña no coincide.',
+
+    'estado.required' => 'El estado es obligatorio.',
+    'estado.in' => 'El estado seleccionado no es válido.',
+]);
+
+        $usuario->nombre_completo = $request->nombre_completo;
+        $usuario->dni = $request->dni;
+        $usuario->email = $request->email;
+        $usuario->telefono = $request->telefono;
+
         if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
+            $usuario->password = $request->password; // el modelo lo encripta
         }
 
-        $usuario->update($data);
+        $usuario->save();
 
-        // Sincronizar cambios con tabla users
-        $user = User::where('email', $usuario->email)->first();
+        // Actualizar tabla users
+        $user = User::where('email', $originalEmail)->first();
         if ($user) {
             $user->name = $usuario->nombre_completo;
             $user->email = $usuario->email;
+            $user->estado = $request->estado;
 
-            if ($request->filled('estado')) {
-                $user->estado = $request->estado;
-            }
             if ($request->filled('password')) {
                 $user->password = Hash::make($request->password);
             }
+
             $user->save();
         }
 
-        return redirect()->route('usuarios.consultar', $usuario)
+        return redirect()->route('usuarios.consultar')
             ->with('success', 'Usuario actualizado exitosamente.');
     }
 }
