@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Empleado;
 use App\Models\User;
 
-
 // Controladores
 use App\Http\Controllers\ValidarEmpresaController2;
 use App\Http\Controllers\EmpresaHU11Controller;
@@ -20,9 +19,7 @@ use App\Http\Controllers\RegistroUsuarioController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\ConsultaParadaController;
 use App\Http\Controllers\CatalogoController;
-
-
-
+use App\Http\Controllers\AbordajeController;
 
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
@@ -30,24 +27,19 @@ Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEs
 // Validar usuario (PATCH) - si usas este método
 Route::patch('/admin/usuarios/{id}/validar', [AdminController::class, 'validar'])->name('admin.validar');
 
-
 // ======================================================
 // RUTAS VALIDAR EMPRESAS
 // ======================================================
 Route::get('/validar-empresas', [ValidarEmpresaController2::class, 'index'])
     ->name('empresas.validar');
 
-
 //visualizacion de terminales
 Route::get('/ver_terminales', [RegistroTeminalController::class, 'ver_terminales'])->name('terminales.ver_terminales');
-
-
 
 // RUTA VALIDACIÓN DE EMPLEADOS
 Route::get('/validacion-empleados', function () {
     return view('validacion-empleados.index');
 })->name('validacion-empleados.index');
-
 
 //consulta-paradas
 Route::get('consulta-paradas', [ConsultaParadaController::class, 'index'])->name('consulta-paradas.index');
@@ -148,7 +140,7 @@ Route::middleware('auth')->get('/admin/pagina', function () {
 // ======================================================
 // RUTAS EMPLEADO-HU5
 // ======================================================
-Route::get('/empleados-hu5', [EmpleadoHU5Controller::class, 'index'])->name('empleados.hu5');
+Route::get('/empleados-hu5', [EmpleadoController::class, 'index'])->name('empleados.hu5');
 
 // ======================================================
 // RUTAS EMPRESAS HU11 (Editar / Actualizar)
@@ -168,15 +160,15 @@ Route::get('/hu10/empresas-buses', [EmpresaBusController::class, 'index'])
     ->name('hu10.empresas.buses');
 
 // ======================================================
-// RUTA PRINCIPAL (del main)
+// RUTA PRINCIPAL
 // ======================================================
 Route::get('/principal', function () {
     return view('interfaces.principal');
 });
 
-<<<<<<< Updated upstream
-
-
+// ======================================================
+// DEMO DASHBOARD
+// ======================================================
 Route::get('/demo-dashboard', function () {
     // Totales de empleados
     $total_activos = Empleado::where('estado', 'Activo')->count();
@@ -194,9 +186,18 @@ Route::get('/demo-dashboard', function () {
         'totalUsuarios', 'usuariosActivos', 'usuariosInactivos'
     ));
 });
-=======
+
 // ======================================================
 // RUTA HU17 - Catalogo (tu ruta)
 // ======================================================
 Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
->>>>>>> Stashed changes
+
+// ======================================================
+// RUTAS ABORDAJES (del main)
+// ======================================================
+Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(AbordajeController::class)->group(function () {
+    Route::get('escanear', 'mostrarEscaner')->name('escanear');
+    Route::post('validar', 'validarCodigoQR')->name('validar');
+    Route::post('confirmar', 'confirmarAbordaje')->name('confirmar');
+    Route::get('historial', 'historial')->name('historial');
+});

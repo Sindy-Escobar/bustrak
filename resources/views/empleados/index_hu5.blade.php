@@ -1,196 +1,216 @@
 @extends('layouts.layoutadmin')
 
-@section('title', 'Listado de Empleados')
+@section('title', 'Panel Administrativo')
 
 @section('content')
     <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2 style="margin:0; color:#1e63b8; font-weight:600; font-size:2rem;">
+                    <i class="fas fa-users me-2"></i>Empleados
+                </h2>
+            </div>
 
-        <!-- Título -->
-        <div class="header-section text-center mb-4">
-            <h2 style="color: #000; font-weight: 700;">
-                <i class="fas fa-users"></i> Listado de Empleados
-            </h2>
-        </div>
+            <div class="card-body">
 
-        <!-- Filtros -->
-        <div class="filter-card">
-            <form method="GET" action="{{ route('empleados.hu5') }}">
-                <div class="row align-items-end">
-                    <div class="col-md-4">
-                        <label class="form-label fw-600 mb-2"><i class="fas fa-search"></i> Buscar</label>
-                        <input type="text" name="buscar" class="form-control" placeholder="Nombre, apellido o cargo"
-                               value="{{ request('buscar') }}">
+                {{-- Mensaje de éxito --}}
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                        <i class="fas fa-circle-check me-2"></i>
+                        <strong>¡Éxito!</strong> {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label fw-600 mb-2"><i class="fas fa-toggle-on"></i> Estado</label>
-                        <select name="estado" class="form-select">
-                            <option value="">-- Estado --</option>
-                            <option value="Activo" {{ request('estado') == 'Activo' ? 'selected' : '' }}>Activo</option>
-                            <option value="Inactivo" {{ request('estado') == 'Inactivo' ? 'selected' : '' }}>Inactivo
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label fw-600 mb-2"><i class="fas fa-user-shield"></i> Rol</label>
-                        <select name="rol" class="form-select">
-                            <option value="">-- Rol --</option>
-                            <option value="Administrador" {{ request('rol') == 'Administrador' ? 'selected' : '' }}>
-                                Administrador
-                            </option>
-                            <option value="Empleado" {{ request('rol') == 'Empleado' ? 'selected' : '' }}>Empleado
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-4 d-flex gap-2">
-                        <button type="submit" class="btn btn-filter text-white flex-grow-1">
-                            <i class="fas fa-filter"></i> Filtrar
-                        </button>
-                        <a href="{{ route('empleados.hu5') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-redo"></i>
-                        </a>
-                    </div>
-                </div>
-            </form>
-        </div>
+                @endif
 
-        <!-- Tabla de empleados -->
-        @if($empleados->count() > 0)
-            <div class="table-card">
+                {{-- Formulario de búsqueda y filtros --}}
+                <form method="GET" action="{{ route('empleados.hu5') }}" class="mb-4">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-7">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-search text-primary me-2"></i>Búsqueda General
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-primary text-white">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" name="buscar" class="form-control" placeholder="Buscar por nombre, apellido o cargo" value="{{ request('buscar') }}">
+                            </div>
+                        </div>
+                        <div class="col-md-5 d-flex align-items-end gap-2">
+                            <button class="btn btn-primary flex-fill" type="submit">
+                                <i class="fas fa-search me-2"></i>Buscar
+                            </button>
+                            <button class="btn btn-outline-primary flex-fill" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosAvanzados" aria-expanded="false">
+                                <i class="fas fa-sliders-h me-2"></i>Filtros
+                            </button>
+                            @if(request()->hasAny(['buscar','rol','estado','fecha_registro']))
+                                <a href="{{ route('empleados.hu5') }}" class="btn btn-outline-secondary flex-fill">
+                                    <i class="fas fa-times me-2"></i>Limpiar
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Filtros avanzados --}}
+                    <div class="collapse" id="filtrosAvanzados">
+                        <div class="card mb-3 bg-light border-primary">
+                            <div class="card-header bg-primary bg-opacity-10">
+                                <h6 class="mb-0 text-primary"><i class="fas fa-filter me-2"></i>Filtros Adicionales</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold"><i class="fas fa-user-tag text-primary me-2"></i>Rol</label>
+                                        <select name="rol" class="form-select">
+                                            <option value="">Todos</option>
+                                            <option value="Administrador" {{ request('rol')=='Administrador' ? 'selected' : '' }}>Administrador</option>
+                                            <option value="Empleado" {{ request('rol')=='Empleado' ? 'selected' : '' }}>Empleado</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold"><i class="fas fa-toggle-on text-success me-2"></i>Estado</label>
+                                        <select name="estado" class="form-select">
+                                            <option value="">Todos</option>
+                                            <option value="Activo" {{ request('estado')=='Activo' ? 'selected' : '' }}>Activo</option>
+                                            <option value="Inactivo" {{ request('estado')=='Inactivo' ? 'selected' : '' }}>Inactivo</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold"><i class="fas fa-calendar-alt text-info me-2"></i>Fecha de Registro</label>
+                                        <input type="date" name="fecha_registro" class="form-control" value="{{ request('fecha_registro') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+
                 <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+                    <table class="table table-hover table-bordered align-middle">
+                        <thead class="table-primary">
                         <tr>
-                            <th><i class="fas fa-user"></i> Nombre</th>
-                            <th><i class="fas fa-user"></i> Apellido</th>
-                            <th><i class="fas fa-briefcase"></i> Cargo</th>
-                            <th><i class="fas fa-calendar"></i> Fecha de Ingreso</th>
-                            <th><i class="fas fa-info-circle"></i> Estado</th>
-                            <th><i class="fas fa-key"></i> Rol</th>
+                            <th><i class="fas fa-user text-dark me-2"></i>Nombre</th>
+                            <th><i class="fas fa-user text-dark me-2"></i>Apellido</th>
+                            <th><i class="fas fa-briefcase text-dark me-2"></i>Cargo</th>
+                            <th><i class="fas fa-user-tag text-dark me-2"></i>Rol</th>
+                            <th><i class="fas fa-toggle-on text-dark me-2"></i>Estado</th>
+                            <th><i class="fas fa-calendar-alt text-dark me-2"></i>Fecha Ingreso</th>
+                            <th class="text-center"><i class="fas fa-cogs text-secondary me-2"></i>Acciones</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($empleados as $empleado)
+                        @forelse($empleados as $empleado)
                             <tr>
                                 <td>{{ $empleado->nombre }}</td>
                                 <td>{{ $empleado->apellido }}</td>
                                 <td>{{ $empleado->cargo }}</td>
-                                <td>{{ \Carbon\Carbon::parse($empleado->fecha_ingreso)->format('d/m/Y') }}</td>
+                                <td><span class="badge bg-primary">{{ $empleado->rol }}</span></td>
                                 <td>
                                     @if($empleado->estado == 'Activo')
-                                        <span class="badge bg-success">
-                                        <i class="fas fa-check-circle"></i> Activo
-                                    </span>
+                                        <span class="badge bg-success">Activo</span>
                                     @else
-                                        <span class="badge bg-secondary">
-                                        <i class="fas fa-times-circle"></i> Inactivo
-                                    </span>
+                                        <span class="badge bg-danger">Inactivo</span>
                                     @endif
                                 </td>
-                                <td>
-                                <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                                    color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
-                                    {{ $empleado->rol }}
-                                </span>
+                                <td>{{ \Carbon\Carbon::parse($empleado->fecha_ingreso)->format('d/m/Y') }}</td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editarEmpleadoModal{{ $empleado->id }}">
+                                        <i class="fas fa-edit me-1"></i>Editar
+                                    </button>
                                 </td>
                             </tr>
-                        @endforeach
+
+
+                            <div class="modal fade" id="editarEmpleadoModal{{ $empleado->id }}" tabindex="-1" aria-labelledby="editarEmpleadoLabel{{ $empleado->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="background-color:#1e63b8; color:white;">
+                                            <h5 class="modal-title"><i class="fas fa-user-edit me-2"></i>Editar Empleado</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <form action="{{ route('empleados.update', $empleado->id) }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                @method('PUT')
+
+                                                <div class="mb-3 border-bottom pb-2">
+                                                    <h6 class="fw-bold text-dark"><i class="fas fa-id-card me-2"></i>Información Personal</h6>
+                                                </div>
+                                                <div class="row g-3 mb-3">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label"><i class="fas fa-user text-dark me-2"></i>Nombre</label>
+                                                        <input type="text" name="nombre" class="form-control form-control-sm" value="{{ $empleado->nombre }}" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label"><i class="fas fa-user text-dark me-2"></i>Apellido</label>
+                                                        <input type="text" name="apellido" class="form-control form-control-sm" value="{{ $empleado->apellido }}" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label"><i class="fas fa-briefcase text-dark me-2"></i>Cargo</label>
+                                                        <input type="text" name="cargo" class="form-control form-control-sm" value="{{ $empleado->cargo }}" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label"><i class="fas fa-calendar-alt text-dark me-2"></i>Fecha de Ingreso</label>
+                                                        <input type="date" name="fecha_ingreso" class="form-control form-control-sm" value="{{ $empleado->fecha_ingreso->format('Y-m-d') }}">
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3 border-bottom pb-2">
+                                                    <h6 class="fw-bold text-dark"><i class="fas fa-user-shield me-2"></i>Estado del Usuario</h6>
+                                                </div>
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label"><i class="fas fa-user-tag text-dark me-2"></i>Rol</label>
+                                                        <select name="rol" class="form-select form-select-sm" required>
+                                                            <option value="Administrador" {{ $empleado->rol=='Administrador' ? 'selected' : '' }}>Administrador</option>
+                                                            <option value="Empleado" {{ $empleado->rol=='Empleado' ? 'selected' : '' }}>Empleado</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label"><i class="fas fa-toggle-on text-dark me-2"></i>Estado</label>
+                                                        <select name="estado" class="form-select form-select-sm">
+                                                            <option value="Activo" {{ $empleado->estado=='Activo' ? 'selected' : '' }}>Activo</option>
+                                                            <option value="Inactivo" {{ $empleado->estado=='Inactivo' ? 'selected' : '' }}>Inactivo</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label class="form-label"><i class="fas fa-camera text-dark me-2"></i>Foto (opcional)</label>
+                                                        <input type="file" name="foto" class="form-control form-control-sm">
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-4 text-end">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                                                        <i class="fas fa-times me-2"></i>Cancelar
+                                                    </button>
+                                                    <button type="submit" class="btn btn-primary btn-sm">
+                                                        <i class="fas fa-save me-2"></i>Guardar Cambios
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <i class="fas fa-users fa-2x mb-2 d-block"></i>No hay empleados registrados
+                                </td>
+                            </tr>
+                        @endforelse
                         </tbody>
                     </table>
                 </div>
 
-                <div class="pagination-wrapper">
-                    {{ $empleados->appends(request()->query())->links('vendor.pagination.bootstrap-5') }}
+
+                <div class="mt-4">
+                    {{ $empleados->appends(request()->all())->links() }}
                 </div>
             </div>
-        @else
-            <div class="empty-state text-center">
-                <i class="fas fa-inbox fa-3x text-warning mb-3"></i>
-                <h4 style="color:#333;">No hay empleados registrados</h4>
-            </div>
-        @endif
+        </div>
     </div>
-@endsection
-
-@section('styles')
-    <style>
-        body {
-            background: #f5f7fa;
-        }
-
-        .header-section h2 {
-            text-shadow: none;
-        }
-
-        .filter-card {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .btn-filter {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 10px;
-            padding: 0.75rem 2rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-filter:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .table-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .table thead {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .table tbody tr:hover {
-            background-color: #f8f9ff;
-        }
-
-        .empty-state {
-            background: white;
-            border-radius: 15px;
-            padding: 3rem;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .pagination-wrapper {
-            display: flex;
-            justify-content: center;
-            margin-top: 2rem;
-            padding-bottom: 1rem;
-        }
-
-        .pagination .page-link {
-            border-radius: 8px;
-            margin: 0 0.25rem;
-            border: none;
-            background-color: transparent;
-            color: #667eea;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .pagination .page-link:hover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .pagination .page-item.active .page-link {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-    </style>
 @endsection

@@ -170,7 +170,6 @@
                                         </button>
                                     </td>
                                 </tr>
-
                                 <!-- Modal de Edición -->
                                 <div class="modal fade" id="editarModal{{ $usuario->id }}" tabindex="-1" aria-labelledby="editarModalLabel{{ $usuario->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -186,6 +185,9 @@
                                                     @csrf
                                                     @method('PUT')
 
+                                                    <!-- Campo oculto para saber qué usuario editar -->
+                                                    <input type="hidden" name="id_usuario" value="{{ $usuario->id }}">
+
                                                     <!-- Información Personal -->
                                                     <div class="mb-4">
                                                         <h6 class="mb-3 text-primary">
@@ -200,10 +202,13 @@
                                                                     type="text"
                                                                     name="nombre_completo"
                                                                     id="nombre_completo{{ $usuario->id }}"
-                                                                    value="{{ $usuario->nombre_completo }}"
-                                                                    class="form-control"
+                                                                    value="{{ old('nombre_completo', $usuario->nombre_completo) }}"
+                                                                    class="form-control @error('nombre_completo') is-invalid @enderror"
                                                                     required
                                                                 >
+                                                                @error('nombre_completo')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                                @enderror
                                                             </div>
 
                                                             <div class="col-md-6">
@@ -214,10 +219,13 @@
                                                                     type="text"
                                                                     name="dni"
                                                                     id="dni{{ $usuario->id }}"
-                                                                    value="{{ $usuario->dni }}"
-                                                                    class="form-control"
+                                                                    value="{{ old('dni', $usuario->dni) }}"
+                                                                    class="form-control @error('dni') is-invalid @enderror"
                                                                     required
                                                                 >
+                                                                @error('dni')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                                @enderror
                                                             </div>
 
                                                             <div class="col-md-6">
@@ -228,10 +236,13 @@
                                                                     type="email"
                                                                     name="email"
                                                                     id="email{{ $usuario->id }}"
-                                                                    value="{{ $usuario->email }}"
-                                                                    class="form-control"
+                                                                    value="{{ old('email', $usuario->email) }}"
+                                                                    class="form-control @error('email') is-invalid @enderror"
                                                                     required
                                                                 >
+                                                                @error('email')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                                @enderror
                                                             </div>
 
                                                             <div class="col-md-6">
@@ -242,10 +253,13 @@
                                                                     type="text"
                                                                     name="telefono"
                                                                     id="telefono{{ $usuario->id }}"
-                                                                    value="{{ $usuario->telefono }}"
-                                                                    class="form-control"
+                                                                    value="{{ old('telefono', $usuario->telefono) }}"
+                                                                    class="form-control @error('telefono') is-invalid @enderror"
                                                                     required
                                                                 >
+                                                                @error('telefono')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                                @enderror
                                                             </div>
                                                         </div>
                                                     </div>
@@ -260,10 +274,17 @@
                                                                 <label for="estado{{ $usuario->id }}" class="form-label">
                                                                     <i class="fas fa-toggle-on me-1"></i>Cambiar estado
                                                                 </label>
-                                                                <select name="estado" id="estado{{ $usuario->id }}" class="form-select">
-                                                                    <option value="activo" {{ ($usuario->estado ?? 'activo') == 'activo' ? 'selected' : '' }}>Activo</option>
-                                                                    <option value="inactivo" {{ $usuario->estado == 'inactivo' ? 'selected' : '' }}>Inactivo</option>
+                                                                <select
+                                                                    name="estado"
+                                                                    id="estado{{ $usuario->id }}"
+                                                                    class="form-select @error('estado') is-invalid @enderror"
+                                                                >
+                                                                    <option value="activo" {{ old('estado', $usuario->estado ?? 'activo') == 'activo' ? 'selected' : '' }}>Activo</option>
+                                                                    <option value="inactivo" {{ old('estado', $usuario->estado) == 'inactivo' ? 'selected' : '' }}>Inactivo</option>
                                                                 </select>
+                                                                @error('estado')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                                @enderror
                                                             </div>
                                                         </div>
                                                     </div>
@@ -287,9 +308,12 @@
                                                                     type="password"
                                                                     name="password"
                                                                     id="password{{ $usuario->id }}"
-                                                                    class="form-control"
+                                                                    class="form-control @error('password') is-invalid @enderror"
                                                                     placeholder="Mínimo 8 caracteres"
                                                                 >
+                                                                @error('password')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                                @enderror
                                                             </div>
 
                                                             <div class="col-md-6">
