@@ -13,7 +13,7 @@
         /* ======== CONFIGURACIÓN GLOBAL ======== */
         html {
             height: 100%;
-            overflow-y: scroll; /* 🔹 Siempre deja espacio al scroll */
+            overflow-y: scroll;
         }
 
         body {
