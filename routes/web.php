@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RegistroRentaController;
 use App\Http\Controllers\RegistroTeminalController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -155,4 +156,4 @@ Route::get('/principal', function () {
 });
 
 
-
+Route::resource('rentas', RegistroRentaController::class);
