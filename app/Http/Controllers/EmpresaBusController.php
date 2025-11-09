@@ -26,7 +26,10 @@ class EmpresaBusController extends Controller
             $request->validate([
                 'nombre' => 'required|unique:empresa_buses|max:255',
                 'direccion' => 'required|max:255',
-                'telefono' => 'required|max:20',
+                'telefono' => [
+                    'required',
+                    'regex:/^[839]\d{7}$/', // ← inicia con 8, 3 o 9 y tiene 8 dígitos
+                ],
                 'email' => 'nullable|email|max:255', // solo este NO es obligatorio
                 'propietario' => 'required|max:255',
             ],

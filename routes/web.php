@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\RegistroRentaController;
 use App\Http\Controllers\RegistroTeminalController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -156,4 +155,28 @@ Route::get('/principal', function () {
 });
 
 
-Route::resource('rentas', RegistroRentaController::class);
+
+Route::get('/demo-dashboard', function () {
+    // Totales de empleados
+    $total_activos = Empleado::where('estado', 'Activo')->count();
+    $total_inactivos = Empleado::where('estado', 'Inactivo')->count();
+    $total_empleados = Empleado::count();
+
+    // Totales de usuarios
+    $totalUsuarios = User::count();
+    $usuariosActivos = User::where('estado', 'activo')->count();
+    $usuariosInactivos = User::where('estado', 'inactivo')->count();
+
+    // Retorna la vista
+    return view('admin.dashboard', compact(
+        'total_activos', 'total_inactivos', 'total_empleados',
+        'totalUsuarios', 'usuariosActivos', 'usuariosInactivos'
+    ));
+});
+
+Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(AbordajeController::class)->group(function () {
+    Route::get('escanear', 'mostrarEscaner')->name('escanear');
+    Route::post('validar', 'validarCodigoQR')->name('validar');
+    Route::post('confirmar', 'confirmarAbordaje')->name('confirmar');
+    Route::get('historial', 'historial')->name('historial');
+});

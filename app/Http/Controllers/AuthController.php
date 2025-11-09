@@ -51,6 +51,9 @@ class AuthController extends Controller
                 case 'cliente':
                 default:
                     return redirect()->route('cliente.perfil');
+                /* case 'empleado':
+                    return redirect()->route('empleado.perfil');
+                */
             }
         }
 
