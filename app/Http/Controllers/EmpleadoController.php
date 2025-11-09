@@ -12,16 +12,40 @@ use Carbon\Carbon;
 
 class EmpleadoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $empleados = Empleado::paginate(10);
+        $query = Empleado::query();
 
-        $total_activos = Empleado::where('estado', 'Activo')->count();
-        $total_inactivos = Empleado::where('estado', 'Inactivo')->count();
-        $total_empleados = Empleado::count();
 
-        return view('empleados.index', compact('empleados', 'total_activos', 'total_inactivos', 'total_empleados'));
+        if ($request->filled('buscar')) {
+            $buscar = $request->input('buscar');
+            $query->where(function ($q) use ($buscar) {
+                $q->where('nombre', 'like', "%$buscar%")
+                    ->orWhere('apellido', 'like', "%$buscar%")
+                    ->orWhere('cargo', 'like', "%$buscar%");
+            });
+        }
+
+
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->input('estado'));
+        }
+
+
+        if ($request->filled('rol')) {
+            $query->where('rol', $request->input('rol'));
+        }
+
+
+        if ($request->filled('fecha_registro')) {
+            $query->whereDate('fecha_ingreso', $request->input('fecha_registro'));
+        }
+
+        $empleados = $query->orderBy('nombre')->paginate(10);
+
+        return view('empleados.index_hu5', compact('empleados'));
     }
+
 
     public function create()
     {

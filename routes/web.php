@@ -147,7 +147,7 @@ Route::middleware('auth')->get('/admin/pagina', function () {
 // ======================================================
 // RUTAS EMPLEADO-HU5
 // ======================================================
-Route::get('/empleados-hu5', [EmpleadoHU5Controller::class, 'index'])->name('empleados.hu5');
+Route::get('/empleados-hu5', [EmpleadoController::class, 'index'])->name('empleados.hu5');
 
 // ======================================================
 // RUTAS EMPRESAS HU11 (Editar / Actualizar)
