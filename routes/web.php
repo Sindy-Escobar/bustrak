@@ -10,6 +10,7 @@ use App\Models\User;
 // Controladores
 use App\Http\Controllers\ValidarEmpresaController2;
 use App\Http\Controllers\EmpresaHU11Controller;
+use App\Http\Controllers\EstadisticasController;
 use App\Http\Controllers\EmpleadoHU5Controller;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EmpresaBusController;
@@ -149,6 +150,9 @@ Route::middleware('auth')->get('/admin/pagina', function () {
 // RUTAS EMPLEADO-HU5
 // ======================================================
 Route::get('/empleados-hu5', [EmpleadoController::class, 'index'])->name('empleados.hu5');
+
+Route::get('/estadisticahu46', [EstadisticasController::class, 'index'])
+    ->name('estadistica');
 
 // ======================================================
 // RUTAS EMPRESAS HU11 (Editar / Actualizar)
