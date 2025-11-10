@@ -85,6 +85,7 @@ Route::put('/empleados/{id}/activar', [EmpleadoController::class, 'activar'])->n
 Route::get('/empleados-hu5', [EmpleadoHU5Controller::class, 'index'])->name('empleados.hu5');
 Route::put('/empleados-hu5/{empleado}', [EmpleadoHU5Controller::class, 'update'])->name('empleados.hu5.update');
 
+Route::put('empresas/{id}', [EmpresaController::class, 'update'])->name('empresas.update');
 // ======================================================
 // EMPRESAS
 // ======================================================

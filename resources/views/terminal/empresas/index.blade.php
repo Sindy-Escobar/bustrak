@@ -117,11 +117,58 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <a href="{{ route('empresa.edit.hu11', $empresa->id) }}" class="btn btn-sm btn-primary text-white" title="Editar">
-                                        <i class="fas fa-edit"></i> Editar
-                                    </a>
+                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editarModal{{ $empresa->id }}">
+                                        <i class="fas fa-edit me-1"></i> Editar
+                                    </button>
                                 </td>
                             </tr>
+
+                            <!-- Modal de edición -->
+                            <div class="modal fade" id="editarModal{{ $empresa->id }}" tabindex="-1" aria-labelledby="editarModalLabel{{ $empresa->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="background-color:#1e63b8; color:white;">
+                                            <h5 class="modal-title" id="editarModalLabel{{ $empresa->id }}">
+                                                <i class="fas fa-building me-2"></i>Editar Empresa: {{ $empresa->nombre }}
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ route('empresas.update', $empresa->id) }}" method="POST" id="formEditar{{ $empresa->id }}">
+                                                @csrf
+                                                @method('PUT')
+
+                                                <div class="mb-3">
+                                                    <label for="nombre{{ $empresa->id }}" class="form-label">Nombre <span class="text-danger">*</span></label>
+                                                    <input type="text" name="nombre" id="nombre{{ $empresa->id }}" value="{{ old('nombre', $empresa->nombre) }}" class="form-control" required>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="email{{ $empresa->id }}" class="form-label">Correo <span class="text-danger">*</span></label>
+                                                    <input type="email" name="email" id="email{{ $empresa->id }}" value="{{ old('email', $empresa->email) }}" class="form-control" required>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="telefono{{ $empresa->id }}" class="form-label">Teléfono</label>
+                                                    <input type="text" name="telefono" id="telefono{{ $empresa->id }}" value="{{ old('telefono', $empresa->telefono) }}" class="form-control">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="estado{{ $empresa->id }}" class="form-label">Estado</label>
+                                                    <select name="estado" id="estado{{ $empresa->id }}" class="form-select">
+                                                        <option value="1" {{ $empresa->estado_validacion ? 'selected' : '' }}>Activa</option>
+                                                        <option value="0" {{ !$empresa->estado_validacion ? 'selected' : '' }}>Inactiva</option>
+                                                    </select>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i>Cancelar</button>
+                                            <button type="submit" form="formEditar{{ $empresa->id }}" class="btn btn-primary"><i class="fas fa-save me-1"></i>Guardar Cambios</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @empty
                             <tr>
                                 <td colspan="7" class="text-center text-muted py-4">
