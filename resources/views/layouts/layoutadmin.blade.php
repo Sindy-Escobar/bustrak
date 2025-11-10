@@ -253,8 +253,18 @@
             </div>
         </div>
 
-        <div class="mt-auto text-center p-3">
-            <a href="{{ route('logout') }}" class="btn btn-sm btn-danger">Cerrar sesión</a>
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#soporte" aria-expanded="false">
+                <span><i class="fas fa-headset"></i> Cerrar sesion</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav" id="soporte">
+                <a href="{{ route('logout') }}"
+                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    Cerrar sesión
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+            </div>
         </div>
     </nav>
 
@@ -300,7 +310,7 @@
         });
     });
 </script>
-<!-- 🔹 Script para ocultar/mostrar la barra lateral -->
+<!-- Script para ocultar/mostrar la barra lateral -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const sidebar = document.querySelector('.sidebar');
