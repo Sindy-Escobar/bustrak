@@ -240,6 +240,9 @@
                 <a href="{{ route('usuarios.create') }}" class="{{ request()->routeIs('usuarios.create') ? 'active' : '' }}">
                     Registrar usuario
                 </a>
+                <a href="{{ route('itinerario.index') }}" class="{{ request()->routeIs('itinerario.index') ? 'active' : '' }}">
+                    Itinerario
+                </a>
             </div>
         </div>
 
@@ -277,7 +280,7 @@
         <span>
             <i class="fas fa-bell"></i> Notificaciones
             @php
-                $pendientes = \App\Models\Notificacion::where('user_id', Auth::id())
+                $pendientes = \App\Models\Notificacion::where('usuario_id', Auth::id())
                     ->where('leida', false)->count();
             @endphp
             @if($pendientes > 0)
