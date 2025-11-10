@@ -22,6 +22,8 @@ use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\AbordajeController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\ConsultaController;
+use App\Http\Controllers\NotificacionController;
+use App\Http\Controllers\HistorialReservasController;
 
 
 // Toggle activar/inactivar
@@ -110,7 +112,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ======================================================
 Route::middleware(['auth', 'user.active'])->prefix('cliente')->group(function () {
     Route::get('/perfil', [ClienteController::class, 'perfil'])->name('cliente.perfil');
-    Route::get('/reservas', [ClienteController::class, 'reservas'])->name('cliente.reservas');
+    // NOTA: Se eliminó la ruta de reservas
 });
 
 // ======================================================
@@ -186,6 +188,7 @@ Route::get('/demo-dashboard', function () {
         'total_activos', 'total_inactivos', 'total_empleados',
         'totalUsuarios', 'usuariosActivos', 'usuariosInactivos'
     ));
+
 });
 
 // ======================================================
@@ -209,3 +212,19 @@ Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(A
 Route::get('/ayuda-soporte', [ConsultaController::class, 'index'])->name('consulta.formulario');
 Route::post('/ayuda-soporte', [ConsultaController::class, 'store'])->name('consulta.store');
 
+// ======================================================
+// RUTAS NOTIFICACIONES
+// ======================================================
+Route::middleware(['auth'])->group(function () {
+    Route::get('/notificaciones', [NotificacionController::class, 'index'])->name('usuario.notificaciones');
+    Route::get('/notificaciones/leida/{id}', [NotificacionController::class, 'marcarLeida'])->name('notificaciones.leida');
+    Route::delete('/notificaciones/eliminar/{id}', [NotificacionController::class, 'eliminar'])->name('notificaciones.eliminar');
+});
+
+// ======================================================
+// RUTAS Historial de viajes
+// ======================================================
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cliente/historial', [HistorialReservasController::class, 'index'])
+        ->name('cliente.historial');
+});
