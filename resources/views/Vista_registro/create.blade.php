@@ -6,7 +6,7 @@
     <div class="container mt-5">
         <div class="card shadow-sm">
             <div class="card-header bg-white">
-                <h2 class="mb-0" style="color:#00b7ff; font-weight:600; font-size:1.8rem;">
+                <h2 class="mb-0" style="color:#1e63b8; font-weight:600; font-size:1.8rem;">
                     Registro de Usuario
                 </h2>
                 <p class="mt-2 mb-0">Completa el formulario para crear tu cuenta</p>

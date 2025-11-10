@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Empleado;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -12,13 +13,17 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    // Mostrar formulario de login
+    /**
+     * Mostrar formulario de login
+     */
     public function showLogin()
     {
         return view('auth.login');
     }
 
-    // Procesar login
+    /**
+     * Procesar login
+     */
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -28,18 +33,21 @@ class AuthController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
+        // Validación: usuario no encontrado
         if (!$user) {
             return back()->withErrors([
                 'email' => 'Las credenciales no coinciden con nuestros registros.',
             ])->onlyInput('email');
         }
 
+        // Validación: usuario inactivo
         if ($user->estado === 'inactivo') {
             return back()->withErrors([
                 'email' => 'Tu cuenta está desactivada. Contacta al administrador.',
             ])->onlyInput('email');
         }
 
+        // Intento de autenticación
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
@@ -49,17 +57,19 @@ class AuthController extends Controller
                 $user->save();
             }
 
+            // Normalizamos el rol
             $rol = strtolower($user->role);
 
             switch ($rol) {
                 case 'administrador':
                     return redirect()->route('admin.dashboard');
+
+                case 'empleado':
+                    return redirect()->route('empleado.dashboard');
+
                 case 'cliente':
                 default:
                     return redirect()->route('cliente.perfil');
-                /* case 'empleado':
-                    return redirect()->route('empleado.perfil');
-                */
             }
         }
 
@@ -68,11 +78,17 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
+    /**
+     * Mostrar formulario de registro
+     */
     public function showRegister()
     {
         return view('auth.register');
     }
 
+    /**
+     * Procesar registro
+     */
     public function register(Request $request)
     {
         $validated = $request->validate([
@@ -86,7 +102,7 @@ class AuthController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'plain_password' => $validated['password'],
-            'role' => 'cliente',
+            'role' => 'Cliente', // Importante: con mayúscula según tu migración
             'estado' => 'activo',
         ]);
 
@@ -95,13 +111,17 @@ class AuthController extends Controller
         return redirect()->route('cliente.perfil');
     }
 
-    // Formulario de olvidar contraseña
+    /**
+     * Formulario de olvidar contraseña
+     */
     public function showForgotPassword()
     {
         return view('auth.forgot-password');
     }
 
-    // Enviar link de recuperación
+    /**
+     * Enviar link de recuperación
+     */
     public function sendResetLink(Request $request)
     {
         $request->validate(['email' => 'required|email']);
@@ -113,13 +133,20 @@ class AuthController extends Controller
             : back()->withErrors(['email' => 'No pudimos encontrar un usuario con ese correo electrónico.']);
     }
 
-    // Mostrar formulario para cambiar contraseña
+    /**
+     * Mostrar formulario para cambiar contraseña
+     */
     public function showResetPassword($token)
     {
-        return view('auth.reset-password', ['token' => $token, 'email' => request('email')]);
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => request('email'),
+        ]);
     }
 
-    // Procesar cambio de contraseña
+    /**
+     * Procesar cambio de contraseña
+     */
     public function resetPassword(Request $request)
     {
         $request->validate([
@@ -138,8 +165,8 @@ class AuthController extends Controller
 
                 $user->save();
 
-                // Marcar en empleados que la contraseña inicial ya no se muestra
-                $empleado = \App\Models\Empleado::where('email', $user->email)->first();
+                // Si es empleado, marcar que ya cambió su contraseña inicial
+                $empleado = Empleado::where('email', $user->email)->first();
                 if ($empleado) {
                     $empleado->update(['password_initial' => null]);
                 }
@@ -153,12 +180,15 @@ class AuthController extends Controller
             : back()->withErrors(['email' => 'No pudimos restablecer tu contraseña. Intenta nuevamente.']);
     }
 
-    // Cerrar sesión
+    /**
+     * Cerrar sesión
+     */
     public function logout(Request $request)
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect()->route('login');
     }
 }

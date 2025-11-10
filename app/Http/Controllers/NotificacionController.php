@@ -11,7 +11,7 @@ class NotificacionController extends Controller
     // Mostrar todas las notificaciones del usuario logueado
     public function index()
     {
-        $notificaciones = Notificacion::where('user_id', Auth::id())
+        $notificaciones = Notificacion::where('usuario_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -22,7 +22,7 @@ class NotificacionController extends Controller
     public function marcarLeida($id)
     {
         $notificacion = Notificacion::where('id', $id)
-            ->where('user_id', Auth::id())
+            ->where('usuario_id', Auth::id())
             ->firstOrFail();
 
         $notificacion->update(['leida' => true]);
@@ -31,10 +31,10 @@ class NotificacionController extends Controller
     }
 
     // Crear y enviar notificación
-    public static function crear($user_id, $titulo, $mensaje, $tipo = 'alerta')
+    public static function crear($usuario_id, $titulo, $mensaje, $tipo = 'alerta')
     {
         Notificacion::create([
-            'user_id' => $user_id,
+            'usuario_id' => $usuario_id,
             'titulo' => $titulo,
             'mensaje' => $mensaje,
             'tipo' => $tipo,
@@ -45,7 +45,7 @@ class NotificacionController extends Controller
     public function eliminar($id)
     {
         $notificacion = Notificacion::findOrFail($id);
-        if ($notificacion->user_id == Auth::id()) {
+        if ($notificacion->usuario_id == Auth::id()) {
             $notificacion->delete();
         }
         return redirect()->back()->with('success', 'Notificación eliminada.');

@@ -9,6 +9,7 @@ use App\Models\User;
 // Controladores
 use App\Http\Controllers\ValidarEmpresaController2;
 use App\Http\Controllers\EmpresaHU11Controller;
+use App\Http\Controllers\EstadisticasController;
 use App\Http\Controllers\EmpleadoHU5Controller;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EmpresaBusController;
@@ -24,7 +25,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\HistorialReservasController;
-
+use App\Http\Controllers\ItinerarioController;
 
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
@@ -84,6 +85,8 @@ Route::put('/empleados/{id}/activar', [EmpleadoController::class, 'activar'])->n
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::put('empresas/{id}', [EmpresaController::class, 'update'])->name('empresas.update');
+
 // ======================================================
 // SOLO USAMOS /registro PARA REGISTRO DE USUARIOS
 // ======================================================
@@ -98,19 +101,18 @@ Route::get('/usuarios/consultar', [RegistroUsuarioController::class, 'consultar'
 // Recurso usuarios
 Route::resource('usuarios', RegistroUsuarioController::class);
 
-
 // ======================================================
 // PASSWORD RESET
 // ======================================================
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showForm'])->name('password.request');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendReset'])->name('password.email');
+
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ======================================================
 // RUTAS PROTEGIDAS PARA CLIENTES
 // ======================================================
-// ✅ CAMBIO: Removido 'user.active' del middleware
 Route::middleware(['auth'])->prefix('cliente')->group(function () {
     Route::get('/perfil', [ClienteController::class, 'perfil'])->name('cliente.perfil');
 });
@@ -118,7 +120,6 @@ Route::middleware(['auth'])->prefix('cliente')->group(function () {
 // ======================================================
 // RUTAS PROTEGIDAS PARA ADMIN
 // ======================================================
-// ✅ CAMBIO: Removido 'user.active' del middleware
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios');
     Route::post('/usuarios/{id}/cambiar-estado', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
@@ -145,6 +146,12 @@ Route::middleware('auth')->get('/admin/pagina', function () {
 // RUTAS EMPLEADO-HU5
 // ======================================================
 Route::get('/empleados-hu5', [EmpleadoController::class, 'index'])->name('empleados.hu5');
+Route::put('/empleados-hu5/{id}', [EmpleadoController::class, 'update'])->name('empleados.hu5.update');
+Route::put('/empleados-hu5/{id}/activar', [EmpleadoController::class, 'activar'])->name('empleados.hu5.activar');
+Route::put('/empleados-hu5/{id}/desactivar', [EmpleadoController::class, 'guardarDesactivacion'])->name('empleados.hu5.desactivar');
+
+Route::get('/estadisticahu46', [EstadisticasController::class, 'index'])
+    ->name('estadistica');
 
 // ======================================================
 // RUTAS EMPRESAS HU11 (Editar / Actualizar)
@@ -189,16 +196,15 @@ Route::get('/demo-dashboard', function () {
         'total_activos', 'total_inactivos', 'total_empleados',
         'totalUsuarios', 'usuariosActivos', 'usuariosInactivos'
     ));
-
 });
 
 // ======================================================
-// RUTA HU17 - Catalogo (tu ruta)
+// RUTA HU17 - Catalogo
 // ======================================================
 Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
 
 // ======================================================
-// RUTAS ABORDAJES (del main)
+// RUTAS ABORDAJES
 // ======================================================
 Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(AbordajeController::class)->group(function () {
     Route::get('escanear', 'mostrarEscaner')->name('escanear');
@@ -228,4 +234,53 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/cliente/historial', [HistorialReservasController::class, 'index'])
         ->name('cliente.historial');
+});
+
+// ======================================================
+// RUTAS ITINERARIO
+// ======================================================
+Route::middleware('auth')->prefix('itinerario')->name('itinerario.')->controller(ItinerarioController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/pdf', 'descargarPDF')->name('pdf');
+    Route::get('/compartir/{id}', 'compartir')->name('compartir');
+    Route::post('/actualizar', 'actualizarItinerario')->name('actualizar');
+    Route::get('/historial', 'historialVisualizaciones')->name('historial');
+});
+
+// ======================================================
+// RUTAS DE EMPLEADOS INTERFAZ
+// ======================================================
+Route::prefix('empleado')->middleware(['auth', 'user.active'])->group(function() {
+    Route::get('/dashboard', [EmpleadoController::class, 'dashboard'])->name('empleado.dashboard');
+    Route::get('/viajes', [EmpleadoController::class, 'viajes'])->name('empleado.viajes');
+    Route::get('/pasajeros', [EmpleadoController::class, 'pasajeros'])->name('empleado.pasajeros');
+    Route::get('/confirmar', [EmpleadoController::class, 'confirmar'])->name('empleado.confirmar');
+    Route::get('/qr', [EmpleadoController::class, 'qr'])->name('empleado.qr');
+
+    // Reservas
+    Route::get('/reservas/create', [EmpleadoController::class, 'crearReserva'])->name('empleado.reservas.create');
+    Route::get('/reservas', [EmpleadoController::class, 'consultarReservas'])->name('empleado.reservas');
+    Route::get('/asientos', [EmpleadoController::class, 'asignarAsientos'])->name('empleado.asientos');
+    Route::get('/boletos', [EmpleadoController::class, 'boletos'])->name('empleado.boletos');
+
+    // Itinerarios
+    Route::get('/itinerarios', [EmpleadoController::class, 'itinerarios'])->name('empleado.itinerarios');
+
+    // Perfil
+    Route::get('/perfil', [EmpleadoController::class, 'perfil'])->name('empleado.perfil');
+});
+
+// ======================================================
+// RUTAS DE USUARIO INTERFAZ
+// ======================================================
+Route::prefix('usuario')->middleware(['auth', 'user.active'])->name('usuario.')->group(function() {
+    Route::get('/dashboard', function () {
+        return view('usuarios.dashboard');
+    })->name('dashboard');
+
+    Route::get('/viajes', [EmpleadoController::class, 'viajes'])->name('viajes');
+    Route::get('/pasajeros', [EmpleadoController::class, 'pasajeros'])->name('pasajeros');
+    Route::get('/confirmar', [EmpleadoController::class, 'confirmar'])->name('confirmar');
+    Route::get('/qr', [EmpleadoController::class, 'qr'])->name('qr');
+    Route::get('/perfil', [EmpleadoController::class, 'perfil'])->name('perfil');
 });
