@@ -32,7 +32,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #1a7d6f 0%, #0f5d55 100%);
+            background: linear-gradient(135deg, #1e63b8 0%, #1976d2 100%);
             overflow: hidden;
         }
 
@@ -98,21 +98,21 @@
         }
 
         .logo {
-            width: 80px;
+            width: 100px;
             height: 80px;
             margin: 0 auto 15px;
-            background: linear-gradient(135deg, #00a8cc 0%, #0092a3 100%);
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 40px;
             color: white;
-            box-shadow: 0 10px 30px rgba(0, 168, 204, 0.3);
+            box-shadow: 0 10px 30px rgba(25, 118, 210, 0.3);
         }
 
         .logo-text {
-            color: #1a7d6f;
+            color: #1976d2;
             font-size: 28px;
             font-weight: 700;
             letter-spacing: -0.5px;
@@ -150,8 +150,8 @@
 
         input:focus {
             outline: none;
-            border-color: #00a8cc;
-            box-shadow: 0 0 0 4px rgba(0, 168, 204, 0.1);
+            border-color: #1976d2;
+            box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.1);
         }
 
         input::placeholder {
@@ -169,7 +169,7 @@
             height: 18px;
             margin-right: 8px;
             cursor: pointer;
-            accent-color: #00a8cc;
+            accent-color: #1976d2;
         }
 
         .checkbox-text {
@@ -178,7 +178,7 @@
         }
 
         .forgot-link {
-            color: #00a8cc;
+            color: #1e63b8;
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s;
@@ -186,13 +186,13 @@
         }
 
         .forgot-link:hover {
-            color: #0092a3;
+            color: #1a4f90;
         }
 
         .btn-login {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #00a8cc 0%, #0092a3 100%);
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
             color: white;
             border: none;
             border-radius: 10px;
@@ -201,13 +201,13 @@
             letter-spacing: 0.5px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(0, 168, 204, 0.3);
+            box-shadow: 0 10px 25px rgba(25, 118, 210, 0.3);
             margin-bottom: 16px;
         }
 
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(0, 168, 204, 0.4);
+            box-shadow: 0 15px 35px rgba(25, 118, 210, 0.4);
         }
 
         .btn-login:active {
@@ -226,14 +226,14 @@
         }
 
         .register-link {
-            color: #1a7d6f;
+            color: #1976d2;
             text-decoration: none;
             font-weight: 700;
             transition: color 0.3s;
         }
 
         .register-link:hover {
-            color: #00a8cc;
+            color: #1565c0;
         }
 
         .footer {
@@ -273,7 +273,7 @@
 
     <div class="login-card">
         <div class="logo-container">
-            <div class="logo">🚌</div>
+            <div class="logo"><img src="/Imagenes/bustrak-logo.jpg" alt="BusTrak" style="width: 100%; height: 100%;"></div>
             <div class="logo-text">BusTrak</div>
             <div class="subtitle">Sistema de Gestión de Reservas</div>
         </div>

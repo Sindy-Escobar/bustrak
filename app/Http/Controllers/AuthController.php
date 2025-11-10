@@ -43,6 +43,12 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
+            // ✅ Guardar plain_password si no existe
+            if (!$user->plain_password) {
+                $user->plain_password = $request->password;
+                $user->save();
+            }
+
             $rol = strtolower($user->role);
 
             switch ($rol) {
@@ -79,6 +85,7 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'plain_password' => $validated['password'],
             'role' => 'cliente',
             'estado' => 'activo',
         ]);
@@ -125,7 +132,8 @@ class AuthController extends Controller
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->forceFill([
-                    'password' => Hash::make($password)
+                    'password' => Hash::make($password),
+                    'plain_password' => $password
                 ])->setRememberToken(Str::random(60));
 
                 $user->save();

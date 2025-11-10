@@ -20,6 +20,9 @@ use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\ConsultaParadaController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\AbordajeController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\ConsultaController;
+
 
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
@@ -93,14 +96,12 @@ Route::get('/usuarios/consultar', [RegistroUsuarioController::class, 'consultar'
 // Recurso usuarios
 Route::resource('usuarios', RegistroUsuarioController::class);
 
+
 // ======================================================
 // PASSWORD RESET
 // ======================================================
-Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
-Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
-Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
-
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showForm'])->name('password.request');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendReset'])->name('password.email');
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -201,3 +202,10 @@ Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(A
     Route::post('confirmar', 'confirmarAbordaje')->name('confirmar');
     Route::get('historial', 'historial')->name('historial');
 });
+
+// ======================================================
+// RUTAS DE CONSULTAS/SOPORTE (Públicas)
+// ======================================================
+Route::get('/ayuda-soporte', [ConsultaController::class, 'index'])->name('consulta.formulario');
+Route::post('/ayuda-soporte', [ConsultaController::class, 'store'])->name('consulta.store');
+

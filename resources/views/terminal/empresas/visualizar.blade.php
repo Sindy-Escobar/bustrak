@@ -12,16 +12,15 @@
         }
 
         :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --purple-light: #9f7aea;
+            --primary-gradient: linear-gradient(135deg, #1e63b8 0%, #1976d2 100%);
+            --primary-color: #1976d2;
+            --secondary-color: #1565c0;
             --text-dark: #2d3748;
             --text-light: #718096;
             --white: #ffffff;
             --border-color: #e2e8f0;
-            --shadow: 0 10px 25px rgba(102, 126, 234, 0.15);
-            --shadow-lg: 0 20px 40px rgba(102, 126, 234, 0.25);
+            --shadow: 0 10px 25px rgba(25, 118, 210, 0.15);
+            --shadow-lg: 0 20px 40px rgba(25, 118, 210, 0.25);
         }
 
         body {
@@ -90,7 +89,7 @@
             transform: translateY(-50%);
             width: 20px;
             height: 20px;
-            color: var(--purple-light);
+            color: #42a5f5;
         }
 
         .search-box input {
@@ -104,8 +103,8 @@
 
         .search-box input:focus {
             outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 3px rgba(159, 122, 234, 0.1);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
         }
 
         .company-count {
@@ -186,7 +185,7 @@
         .info-icon {
             width: 16px;
             height: 16px;
-            color: var(--purple-light);
+            color: #42a5f5;
         }
 
         .btn-details {
@@ -203,12 +202,12 @@
             justify-content: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 4px 10px rgba(25, 118, 210, 0.2);
         }
 
         .btn-details:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 6px 15px rgba(25, 118, 210, 0.3);
         }
 
         .eye-icon {
@@ -328,7 +327,7 @@
 
         .btn-close-modal:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 6px 15px rgba(25, 118, 210, 0.3);
         }
 
         .action-buttons {
@@ -376,23 +375,6 @@
         .btn-validate:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(246, 173, 85, 0.3);
-        }
-
-        .btn-close-modal {
-            width: 100%;
-            padding: 0.875rem;
-            background: var(--primary-gradient);
-            color: var(--white);
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-close-modal:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
         }
 
         @media (max-width: 768px) {
