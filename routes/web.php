@@ -190,6 +190,7 @@ Route::get('/demo-dashboard', function () {
         'total_activos', 'total_inactivos', 'total_empleados',
         'totalUsuarios', 'usuariosActivos', 'usuariosInactivos'
     ));
+
 });
 
 Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(AbordajeController::class)->group(function () {
