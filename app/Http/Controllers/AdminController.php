@@ -17,10 +17,15 @@ class AdminController extends Controller
         return view('admin.dashboard', compact('totalUsuarios', 'usuariosActivos', 'usuariosInactivos'));
     }
 
-    // HU24: Listado de usuarios para validación
+    // HU24: Listado de usuarios para validación - ACTUALIZADO
     public function usuarios()
     {
-        $usuarios = User::where('role', 'cliente')->get();
+        // CAMBIO: Ahora muestra TODOS los usuarios (clientes, empleados, admins)
+        $usuarios = User::all();
+
+        // Si solo quieres mostrar clientes, usa:
+        // $usuarios = User::where('role', 'cliente')->get();
+
         return view('admin.usuarios', compact('usuarios'));
     }
 

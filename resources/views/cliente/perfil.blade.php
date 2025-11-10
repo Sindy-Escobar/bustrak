@@ -1,160 +1,104 @@
 @extends('layouts.layoutuser')
-    @section('contenido')
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Perfil - BusTrak</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-        }
-        .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .navbar h1 {
-            font-size: 24px;
-        }
-        .nav-links {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            transition: background 0.3s;
-        }
-        .nav-links a:hover {
-            background: rgba(255,255,255,0.2);
-        }
-        .logout-btn {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        .card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 40px;
-            margin-bottom: 20px;
-        }
-        .profile-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            color: white;
-            font-size: 48px;
-        }
-        .profile-info {
-            display: grid;
-            gap: 20px;
-        }
-        .info-row {
-            display: grid;
-            grid-template-columns: 150px 1fr;
-            padding: 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .info-label {
-            font-weight: 600;
-            color: #666;
-        }
-        .info-value {
-            color: #333;
-        }
-        .badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            background: #d4edda;
-            color: #155724;
-        }
-    </style>
-</head>
-<body>
-<nav class="navbar">
-    <h1> BusTrak</h1>
-    <div class="nav-links">
-        <a href="/">Inicio</a>
-        <a href="{{ route('cliente.perfil') }}">Mi Perfil</a>
-        <a href="{{ route('cliente.reservas') }}">Mis Reservas</a>
-        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
-            @csrf
-            <button type="submit" class="logout-btn">Cerrar Sesión</button>
-        </form>
-    </div>
-</nav>
+@section('contenido')
 
-<div class="container">
-    <div class="card">
-        <div class="profile-header">
-            <div class="profile-avatar">
-                {{ strtoupper(substr($usuario->name, 0, 1)) }}
-            </div>
-            <h2>{{ $usuario->name }}</h2>
-            <p style="color: #666;">Cliente BusTrak</p>
-        </div>
+    <div class="container-fluid px-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb" style="background-color: transparent; padding: 0;">
+                <li class="breadcrumb-item"><a href="/" style="color: #5cb3ff; text-decoration: none;">Inicio</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Mi Perfil</li>
+            </ol>
+        </nav>
 
-        <div class="profile-info">
-            <div class="info-row">
-                <div class="info-label">Nombre:</div>
-                <div class="info-value">{{ $usuario->name }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Email:</div>
-                <div class="info-value">{{ $usuario->email }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Tipo de cuenta:</div>
-                <div class="info-value">{{ ucfirst($usuario->role) }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Estado:</div>
-                <div class="info-value">
-                    <span class="badge">{{ ucfirst($usuario->estado) }}</span>
+        <div class="row">
+            <div class="col-lg-9 mx-auto">
+
+                <!-- Header Card con Gradiente -->
+                <div style="background: linear-gradient(135deg, #5cb3ff 0%, #1e63b8 100%); border-radius: 16px; padding: 40px; color: white; margin-bottom: 30px; display: flex; align-items: center; gap: 30px;">
+                    <div style="width: 110px; height: 110px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 50px; font-weight: bold; border: 4px solid rgba(255,255,255,0.4); flex-shrink: 0;">
+                        {{ strtoupper(substr($usuario->name, 0, 1)) }}
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <h2 style="margin: 0; font-size: 28px; font-weight: 700; text-transform: capitalize;">{{ $usuario->name }}</h2>
+                        <p style="margin: 12px 0 0 0; font-size: 14px; opacity: 0.95;">
+                            <i class="fas fa-check-circle me-2"></i> Cliente Verificado
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Miembro desde:</div>
-                <div class="info-value">{{ $usuario->created_at->format('d/m/Y') }}</div>
+
+                <!-- Card de Información -->
+                <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                    <div class="card-body p-4">
+
+                        <!-- Nombre Completo -->
+                        <div style="padding: 20px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700; text-transform: uppercase;">Nombre Completo</p>
+                                <p style="margin: 8px 0 0 0; font-size: 16px; color: #333; font-weight: 600;">{{ $usuario->name }}</p>
+                            </div>
+                            <i class="fas fa-user" style="color: #5cb3ff; font-size: 24px;"></i>
+                        </div>
+
+                        <!-- Correo Electrónico -->
+                        <div style="padding: 20px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                            <div style="flex-grow: 1;">
+                                <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700; text-transform: uppercase;">Correo Electrónico</p>
+                                <p style="margin: 8px 0 0 0; font-size: 16px; color: #333; font-weight: 600;">{{ $usuario->email }}</p>
+                            </div>
+                            <i class="fas fa-envelope" style="color: #5cb3ff; font-size: 24px; margin-left: 20px;"></i>
+                        </div>
+
+                        <!-- Tipo de Cuenta -->
+                        <div style="padding: 20px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700; text-transform: uppercase;">Tipo de Cuenta</p>
+                                <span style="display: inline-block; margin-top: 8px; padding: 6px 14px; background: #e3f2fd; color: #1e63b8; border-radius: 6px; font-size: 13px; font-weight: 600;">
+                                {{ ucfirst($usuario->role) }}
+                            </span>
+                            </div>
+                            <i class="fas fa-id-card" style="color: #5cb3ff; font-size: 24px;"></i>
+                        </div>
+
+                        <!-- Estado de Cuenta -->
+                        <div style="padding: 20px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700; text-transform: uppercase;">Estado de Cuenta</p>
+                                <span style="display: inline-block; margin-top: 8px; padding: 6px 14px; background: #d4edda; color: #155724; border-radius: 6px; font-size: 13px; font-weight: 600;">
+                                <i class="fas fa-circle-dot me-1" style="font-size: 8px;"></i> {{ ucfirst($usuario->estado) }}
+                            </span>
+                            </div>
+                            <i class="fas fa-shield-alt" style="color: #155724; font-size: 24px;"></i>
+                        </div>
+
+                        <!-- Miembro Desde -->
+                        <div style="padding: 20px 0; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700; text-transform: uppercase;">Miembro Desde</p>
+                                <p style="margin: 8px 0 0 0; font-size: 16px; color: #333; font-weight: 600;">{{ $usuario->created_at->format('d \d\e F \d\e Y') }}</p>
+                            </div>
+                            <i class="fas fa-calendar-check" style="color: #5cb3ff; font-size: 24px;"></i>
+                        </div>
+
+                    </div>
+
+                    <!-- Footer con Botones -->
+                    <div style="background: #f8f9fa; padding: 20px; display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid #f0f0f0; border-radius: 0 0 12px 12px;">
+                        <button style="padding: 10px 24px; border: 2px solid #ddd; background: white; color: #333; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.3s ease;"
+                                onmouseover="this.style.background='#f5f5f5'; this.style.borderColor='#bbb';"
+                                onmouseout="this.style.background='white'; this.style.borderColor='#ddd';"
+                                data-bs-toggle="modal" data-bs-target="#editarPerfil">
+                            <i class="fas fa-edit me-2"></i> Editar
+                        </button>
+                        <a href="{{ route('cliente.reservas') }}" style="padding: 10px 24px; background: #5cb3ff; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s ease;"
+                           onmouseover="this.style.background='#3d97f0'; this.style.transform='translateY(-2px)';"
+                           onmouseout="this.style.background='#5cb3ff'; this.style.transform='translateY(0)';">
+                            <i class="fas fa-history"></i> Mis Reservas
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
-</div>
-</body>
-</html>
+
+@endsection

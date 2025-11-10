@@ -12,10 +12,14 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
+        'nombre_completo',
+        'dni',
+        'telefono',
         'email',
         'password',
+        'plain_password',
         'role',
-        'estado',  // ← Asegúrate de que esté aquí
+        'estado',
     ];
 
     protected $hidden = [
@@ -23,15 +27,11 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        // 'password' => 'hashed', // opcional si usas Laravel 10 hash casting; lo dejo fuera para evitar conflictos
+    ];
 
-    // Opcional: Agregar valor por defecto
     protected $attributes = [
         'estado' => 'activo',
     ];

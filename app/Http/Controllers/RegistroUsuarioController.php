@@ -84,21 +84,21 @@ class RegistroUsuarioController extends Controller
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('usuarios.nombre_completo', 'like', "%{$search}%")
-                        ->orWhere('usuarios.email', 'like', "%{$search}%");
+                        ->orWhere('usuarios.email', 'like', "%{$search}%")
+                        ->orWhere('usuarios.dni', 'like', "%{$search}%");
                 });
             })
             // El join hace que 'email' sea ambiguo, por eso se corrigió arriba.
-            ->leftJoin('users', 'usuarios.email', '=', 'users.email')
-
+            ->join('users', 'usuarios.email', '=', 'users.email')
             ->select(
                 'usuarios.*',
                 'users.role as rol',
                 'users.estado'
             );
 
-        // Filtro por DNI
-        if ($request->filled('dni')) {
-            $usuarios->where('usuarios.dni', 'like', '%' . $request->dni . '%');
+        //  Filtro por rol
+        if ($request->filled('rol')) {
+            $usuarios->where('users.role', $request->rol);
         }
 
         // Filtro por estado
@@ -140,28 +140,28 @@ class RegistroUsuarioController extends Controller
         ], [
             // Mensajes personalizados
             'nombre_completo.required' => 'El campo nombre completo es obligatorio.',
-    'nombre_completo.regex' => 'El campo nombre completo solo puede contener letras y espacios.',
-    'nombre_completo.max' => 'El nombre completo no puede tener más de 255 caracteres.',
+            'nombre_completo.regex' => 'El campo nombre completo solo puede contener letras y espacios.',
+            'nombre_completo.max' => 'El nombre completo no puede tener más de 255 caracteres.',
 
-    'dni.required' => 'El campo DNI es obligatorio.',
-    'dni.numeric' => 'El campo DNI debe ser numérico.',
-    'dni.digits' => 'El DNI debe tener :digits dígitos.',
-    'dni.unique' => 'El DNI ya está registrado.',
+            'dni.required' => 'El campo DNI es obligatorio.',
+            'dni.numeric' => 'El campo DNI debe ser numérico.',
+            'dni.digits' => 'El DNI debe tener :digits dígitos.',
+            'dni.unique' => 'El DNI ya está registrado.',
 
-    'email.required' => 'El campo email es obligatorio.',
-    'email.email' => 'El campo email debe ser una dirección válida.',
-    'email.unique' => 'El email ya está registrado.',
+            'email.required' => 'El campo email es obligatorio.',
+            'email.email' => 'El campo email debe ser una dirección válida.',
+            'email.unique' => 'El email ya está registrado.',
 
-    'telefono.required' => 'El campo teléfono es obligatorio.',
-    'telefono.numeric' => 'El teléfono debe contener solo números.',
-    'telefono.digits' => 'El teléfono debe tener :digits dígitos.',
+            'telefono.required' => 'El campo teléfono es obligatorio.',
+            'telefono.numeric' => 'El teléfono debe contener solo números.',
+            'telefono.digits' => 'El teléfono debe tener :digits dígitos.',
 
-    'password.min' => 'La contraseña debe tener al menos :min caracteres.',
-    'password.confirmed' => 'La confirmación de la contraseña no coincide.',
+            'password.min' => 'La contraseña debe tener al menos :min caracteres.',
+            'password.confirmed' => 'La confirmación de la contraseña no coincide.',
 
-    'estado.required' => 'El estado es obligatorio.',
-    'estado.in' => 'El estado seleccionado no es válido.',
-]);
+            'estado.required' => 'El estado es obligatorio.',
+            'estado.in' => 'El estado seleccionado no es válido.',
+        ]);
 
         $usuario->nombre_completo = $request->nombre_completo;
         $usuario->dni = $request->dni;
