@@ -110,15 +110,16 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ======================================================
 // RUTAS PROTEGIDAS PARA CLIENTES
 // ======================================================
-Route::middleware(['auth', 'user.active'])->prefix('cliente')->group(function () {
+// ✅ CAMBIO: Removido 'user.active' del middleware
+Route::middleware(['auth'])->prefix('cliente')->group(function () {
     Route::get('/perfil', [ClienteController::class, 'perfil'])->name('cliente.perfil');
-    // NOTA: Se eliminó la ruta de reservas
 });
 
 // ======================================================
 // RUTAS PROTEGIDAS PARA ADMIN
 // ======================================================
-Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
+// ✅ CAMBIO: Removido 'user.active' del middleware
+Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios');
     Route::post('/usuarios/{id}/cambiar-estado', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
 });
@@ -210,7 +211,7 @@ Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(A
 // RUTAS DE CONSULTAS/SOPORTE (Públicas)
 // ======================================================
 Route::get('/ayuda-soporte', [ConsultaController::class, 'index'])->name('consulta.formulario');
-Route::post('/ayuda-soporte', [ConsultaController::class, 'store'])->name('consulta.store');
+Route::post('/ayuda-soporte', [ConsultaController::class, 'store'])->name('soporte.enviar');
 
 // ======================================================
 // RUTAS NOTIFICACIONES

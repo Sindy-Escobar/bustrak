@@ -34,7 +34,7 @@
             margin-bottom: 20px;
         }
         .logo h1 {
-            color: #1976d2;
+            color: #1e63b8;
             font-size: 28px;
             margin-bottom: 10px;
         }
@@ -63,12 +63,12 @@
         }
         input:focus {
             outline: none;
-            border-color: #1976d2;
+            border-color: #1e63b8;
         }
         .btn {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            background: linear-gradient(135deg, #1e63b8 0%, #1976d2 100%);
             color: white;
             border: none;
             border-radius: 10px;
@@ -85,7 +85,7 @@
             margin-top: 20px;
         }
         .back-link a {
-            color: #1976d2;
+            color: #1e63b8;
             text-decoration: none;
             font-size: 14px;
         }
