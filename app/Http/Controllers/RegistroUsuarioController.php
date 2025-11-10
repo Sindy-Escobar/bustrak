@@ -84,21 +84,21 @@ class RegistroUsuarioController extends Controller
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('usuarios.nombre_completo', 'like', "%{$search}%")
-                        ->orWhere('usuarios.email', 'like', "%{$search}%")
-                        ->orWhere('usuarios.dni', 'like', "%{$search}%");
+                        ->orWhere('usuarios.email', 'like', "%{$search}%");
                 });
             })
             // El join hace que 'email' sea ambiguo, por eso se corrigió arriba.
-            ->join('users', 'usuarios.email', '=', 'users.email')
+            ->leftJoin('users', 'usuarios.email', '=', 'users.email')
+
             ->select(
                 'usuarios.*',
                 'users.role as rol',
                 'users.estado'
             );
 
-        //  Filtro por rol
-        if ($request->filled('rol')) {
-            $usuarios->where('users.role', $request->rol);
+        // Filtro por DNI
+        if ($request->filled('dni')) {
+            $usuarios->where('usuarios.dni', 'like', '%' . $request->dni . '%');
         }
 
         // Filtro por estado
