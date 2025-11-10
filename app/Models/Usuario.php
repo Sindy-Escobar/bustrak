@@ -4,23 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
 
 class Usuario extends Model
 {
     use HasFactory;
 
-    protected $fillable =[
+    protected $table = 'usuarios';
+
+    protected $fillable = [
         'nombre_completo',
         'dni',
-        'email', // Necesitas este campo para que la actualización masiva funcione
+        'email',
         'telefono',
         'password',
-        // 'estado' Retirado, pertenece al modelo User
+    ];
+
+    protected $hidden = [
+        'password',
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     /**
-     * Define la relación inversa con el modelo User (uno a uno).
+     * Relación con la tabla users (si existe)
      */
     public function user()
     {
@@ -28,13 +37,18 @@ class Usuario extends Model
     }
 
     /**
-     * Mutator para hashear la contraseña automáticamente si se asigna.
+     * Obtener el estado del usuario desde la tabla users
      */
-    public function setPasswordAttribute($value)
+    public function getEstadoAttribute()
     {
-        // Solo hashea si el valor no está vacío (para manejar la actualización opcional)
-        if (!empty($value)) {
-            $this->attributes['password'] = Hash::make($value);
-        }
+        return $this->user ? $this->user->estado : 'activo';
+    }
+
+    /**
+     * Obtener el rol del usuario desde la tabla users
+     */
+    public function getRolAttribute()
+    {
+        return $this->user ? $this->user->role : 'cliente';
     }
 }

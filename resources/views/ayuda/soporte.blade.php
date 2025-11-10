@@ -1,3 +1,6 @@
+@extends('layouts.layoutuser')
+@section('contenido')
+
 <!DOCTYPE html>
 <html lang="es">
 <head>

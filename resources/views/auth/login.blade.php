@@ -109,6 +109,13 @@
             font-size: 40px;
             color: white;
             box-shadow: 0 10px 30px rgba(25, 118, 210, 0.3);
+            overflow: hidden;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .logo-text {
@@ -123,6 +130,16 @@
             font-size: 13px;
             margin-top: 8px;
             letter-spacing: 0.5px;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            border-left: 4px solid #dc3545;
         }
 
         .form-group {
@@ -236,15 +253,6 @@
             color: #1565c0;
         }
 
-        .footer {
-            position: absolute;
-            bottom: 20px;
-            right: 30px;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 12px;
-            z-index: 5;
-        }
-
         @media (max-width: 600px) {
             .login-card {
                 margin: 20px;
@@ -273,40 +281,63 @@
 
     <div class="login-card">
         <div class="logo-container">
-            <div class="logo"><img src="/Imagenes/bustrak-logo.jpg" alt="BusTrak" style="width: 100%; height: 100%;"></div>
+            <div class="logo">
+                <img src="/Imagenes/bustrak-logo.jpg" alt="BusTrak">
+            </div>
             <div class="logo-text">BusTrak</div>
             <div class="subtitle">Sistema de Gestión de Reservas</div>
         </div>
 
+        @if ($errors->any())
+            <div class="error-message">
+                @foreach ($errors->all() as $error)
+                    {{ $error }}
+                @endforeach
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('login') }}">
             @csrf
+
             <div class="form-group">
                 <label for="email">Correo Electrónico</label>
-                <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    placeholder="tu@email.com"
+                    required
+                    autofocus
+                >
             </div>
 
             <div class="form-group">
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" placeholder="••••••••" required>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="••••••••"
+                    required
+                >
             </div>
 
             <div class="checkbox-group">
                 <input type="checkbox" id="remember" name="remember">
                 <label for="remember" class="checkbox-text">Recuérdame</label>
-                <a href="/forgot-password" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                <a href="{{ route('password.request') }}" class="forgot-link">¿Olvidaste tu contraseña?</a>
             </div>
 
             <button type="submit" class="btn-login">Iniciar Sesión</button>
         </form>
 
         <div class="register-section">
-                <span class="register-text">¿No tienes cuenta?
-                    <a href="/registro" class="register-link">Regístrate aquí</a>
-                </span>
+            <span class="register-text">¿No tienes cuenta?
+                <a href="{{ route('registro') }}" class="register-link">Regístrate aquí</a>
+            </span>
         </div>
     </div>
-
-
 </div>
 </body>
 </html>

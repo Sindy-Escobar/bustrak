@@ -6,10 +6,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Empleado;
 use App\Models\User;
 
+
 // Controladores
 use App\Http\Controllers\ValidarEmpresaController2;
 use App\Http\Controllers\EmpresaHU11Controller;
-use App\Http\Controllers\EstadisticasController;
 use App\Http\Controllers\EmpleadoHU5Controller;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EmpresaBusController;
@@ -19,13 +19,16 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\RegistroUsuarioController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\ConsultaParadaController;
-use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\AbordajeController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\HistorialReservasController;
 use App\Http\Controllers\ItinerarioController;
+use App\Http\Controllers\ConsultaController;
+use App\Http\Controllers\CatalogoController;
+
+
+
+
 
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
@@ -33,19 +36,24 @@ Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEs
 // Validar usuario (PATCH) - si usas este método
 Route::patch('/admin/usuarios/{id}/validar', [AdminController::class, 'validar'])->name('admin.validar');
 
+
 // ======================================================
 // RUTAS VALIDAR EMPRESAS
 // ======================================================
 Route::get('/validar-empresas', [ValidarEmpresaController2::class, 'index'])
     ->name('empresas.validar');
 
+
 //visualizacion de terminales
 Route::get('/ver_terminales', [RegistroTeminalController::class, 'ver_terminales'])->name('terminales.ver_terminales');
+
+
 
 // RUTA VALIDACIÓN DE EMPLEADOS
 Route::get('/validacion-empleados', function () {
     return view('validacion-empleados.index');
 })->name('validacion-empleados.index');
+
 
 //consulta-paradas
 Route::get('consulta-paradas', [ConsultaParadaController::class, 'index'])->name('consulta-paradas.index');
@@ -85,8 +93,6 @@ Route::put('/empleados/{id}/activar', [EmpleadoController::class, 'activar'])->n
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::put('empresas/{id}', [EmpresaController::class, 'update'])->name('empresas.update');
-
 // ======================================================
 // SOLO USAMOS /registro PARA REGISTRO DE USUARIOS
 // ======================================================
@@ -104,8 +110,10 @@ Route::resource('usuarios', RegistroUsuarioController::class);
 // ======================================================
 // PASSWORD RESET
 // ======================================================
-Route::get('/forgot-password', [ForgotPasswordController::class, 'showForm'])->name('password.request');
-Route::post('/forgot-password', [ForgotPasswordController::class, 'sendReset'])->name('password.email');
+Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -113,14 +121,15 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ======================================================
 // RUTAS PROTEGIDAS PARA CLIENTES
 // ======================================================
-Route::middleware(['auth'])->prefix('cliente')->group(function () {
+Route::middleware(['auth', 'user.active'])->prefix('cliente')->group(function () {
     Route::get('/perfil', [ClienteController::class, 'perfil'])->name('cliente.perfil');
+    Route::get('/reservas', [ClienteController::class, 'reservas'])->name('cliente.reservas');
 });
 
 // ======================================================
 // RUTAS PROTEGIDAS PARA ADMIN
 // ======================================================
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
     Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios');
     Route::post('/usuarios/{id}/cambiar-estado', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
 });
@@ -146,12 +155,6 @@ Route::middleware('auth')->get('/admin/pagina', function () {
 // RUTAS EMPLEADO-HU5
 // ======================================================
 Route::get('/empleados-hu5', [EmpleadoController::class, 'index'])->name('empleados.hu5');
-Route::put('/empleados-hu5/{id}', [EmpleadoController::class, 'update'])->name('empleados.hu5.update');
-Route::put('/empleados-hu5/{id}/activar', [EmpleadoController::class, 'activar'])->name('empleados.hu5.activar');
-Route::put('/empleados-hu5/{id}/desactivar', [EmpleadoController::class, 'guardarDesactivacion'])->name('empleados.hu5.desactivar');
-
-Route::get('/estadisticahu46', [EstadisticasController::class, 'index'])
-    ->name('estadistica');
 
 // ======================================================
 // RUTAS EMPRESAS HU11 (Editar / Actualizar)
@@ -170,16 +173,12 @@ Route::resource('terminales', RegistroTeminalController::class);
 Route::get('/hu10/empresas-buses', [EmpresaBusController::class, 'index'])
     ->name('hu10.empresas.buses');
 
-// ======================================================
-// RUTA PRINCIPAL
-// ======================================================
 Route::get('/principal', function () {
     return view('interfaces.principal');
 });
 
-// ======================================================
-// DEMO DASHBOARD
-// ======================================================
+
+
 Route::get('/demo-dashboard', function () {
     // Totales de empleados
     $total_activos = Empleado::where('estado', 'Activo')->count();
@@ -196,28 +195,15 @@ Route::get('/demo-dashboard', function () {
         'total_activos', 'total_inactivos', 'total_empleados',
         'totalUsuarios', 'usuariosActivos', 'usuariosInactivos'
     ));
+
 });
 
-// ======================================================
-// RUTA HU17 - Catalogo
-// ======================================================
-Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
-
-// ======================================================
-// RUTAS ABORDAJES
-// ======================================================
 Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(AbordajeController::class)->group(function () {
     Route::get('escanear', 'mostrarEscaner')->name('escanear');
     Route::post('validar', 'validarCodigoQR')->name('validar');
     Route::post('confirmar', 'confirmarAbordaje')->name('confirmar');
     Route::get('historial', 'historial')->name('historial');
 });
-
-// ======================================================
-// RUTAS DE CONSULTAS/SOPORTE (Públicas)
-// ======================================================
-Route::get('/ayuda-soporte', [ConsultaController::class, 'index'])->name('consulta.formulario');
-Route::post('/ayuda-soporte', [ConsultaController::class, 'store'])->name('soporte.enviar');
 
 // ======================================================
 // RUTAS NOTIFICACIONES
@@ -235,10 +221,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cliente/historial', [HistorialReservasController::class, 'index'])
         ->name('cliente.historial');
 });
-
-// ======================================================
-// RUTAS ITINERARIO
-// ======================================================
 Route::middleware('auth')->prefix('itinerario')->name('itinerario.')->controller(ItinerarioController::class)->group(function () {
     Route::get('/', 'index')->name('index');
     Route::get('/pdf', 'descargarPDF')->name('pdf');
@@ -247,40 +229,15 @@ Route::middleware('auth')->prefix('itinerario')->name('itinerario.')->controller
     Route::get('/historial', 'historialVisualizaciones')->name('historial');
 });
 
-// ======================================================
-// RUTAS DE EMPLEADOS INTERFAZ
-// ======================================================
-Route::prefix('empleado')->middleware(['auth', 'user.active'])->group(function() {
-    Route::get('/dashboard', [EmpleadoController::class, 'dashboard'])->name('empleado.dashboard');
-    Route::get('/viajes', [EmpleadoController::class, 'viajes'])->name('empleado.viajes');
-    Route::get('/pasajeros', [EmpleadoController::class, 'pasajeros'])->name('empleado.pasajeros');
-    Route::get('/confirmar', [EmpleadoController::class, 'confirmar'])->name('empleado.confirmar');
-    Route::get('/qr', [EmpleadoController::class, 'qr'])->name('empleado.qr');
-
-    // Reservas
-    Route::get('/reservas/create', [EmpleadoController::class, 'crearReserva'])->name('empleado.reservas.create');
-    Route::get('/reservas', [EmpleadoController::class, 'consultarReservas'])->name('empleado.reservas');
-    Route::get('/asientos', [EmpleadoController::class, 'asignarAsientos'])->name('empleado.asientos');
-    Route::get('/boletos', [EmpleadoController::class, 'boletos'])->name('empleado.boletos');
-
-    // Itinerarios
-    Route::get('/itinerarios', [EmpleadoController::class, 'itinerarios'])->name('empleado.itinerarios');
-
-    // Perfil
-    Route::get('/perfil', [EmpleadoController::class, 'perfil'])->name('empleado.perfil');
-});
 
 // ======================================================
-// RUTAS DE USUARIO INTERFAZ
+// RUTA HU17 - Catalogo (tu ruta)
 // ======================================================
-Route::prefix('usuario')->middleware(['auth', 'user.active'])->name('usuario.')->group(function() {
-    Route::get('/dashboard', function () {
-        return view('usuarios.dashboard');
-    })->name('dashboard');
+Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
 
-    Route::get('/viajes', [EmpleadoController::class, 'viajes'])->name('viajes');
-    Route::get('/pasajeros', [EmpleadoController::class, 'pasajeros'])->name('pasajeros');
-    Route::get('/confirmar', [EmpleadoController::class, 'confirmar'])->name('confirmar');
-    Route::get('/qr', [EmpleadoController::class, 'qr'])->name('qr');
-    Route::get('/perfil', [EmpleadoController::class, 'perfil'])->name('perfil');
-});
+// ======================================================
+// RUTAS DE CONSULTAS/SOPORTE (Públicas)
+// ======================================================
+Route::get('/ayuda-soporte', [ConsultaController::class, 'index'])->name('consulta.formulario');
+Route::post('/ayuda-soporte', [ConsultaController::class, 'store'])->name('soporte.enviar');
+
