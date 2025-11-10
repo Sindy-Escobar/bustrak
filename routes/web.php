@@ -88,6 +88,7 @@ Route::put('/empleados/{id}/activar', [EmpleadoController::class, 'activar'])->n
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::put('empresas/{id}', [EmpresaController::class, 'update'])->name('empresas.update');
 // ======================================================
 // SOLO USAMOS /registro PARA REGISTRO DE USUARIOS
 // ======================================================

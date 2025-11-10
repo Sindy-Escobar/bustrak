@@ -38,4 +38,27 @@ class EmpresaController extends Controller
         // Retornar vista con datos
         return view('terminal.empresas.index', compact('empresas', 'search', 'estado'));
     }
+
+    public function update(Request $request, $id)
+    {
+        $empresa = EmpresaBus::findOrFail($id);
+
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'email' => 'required|email|unique:empresa_buses,email,' . $empresa->id,
+            'telefono' => 'nullable|string|max:20',
+            'estado' => 'required|in:0,1',
+        ]);
+
+        $empresa->nombre = $request->nombre;
+        $empresa->email = $request->email;
+        $empresa->telefono = $request->telefono;
+        $empresa->estado_validacion = $request->estado;
+
+        $empresa->save();
+
+        return redirect()->route('empresas.index')
+            ->with('success', 'Empresa actualizada correctamente.');
+    }
+
 }
