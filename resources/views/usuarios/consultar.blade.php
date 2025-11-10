@@ -34,7 +34,7 @@
                                     type="text"
                                     name="search"
                                     class="form-control"
-                                    placeholder="Buscar por Nombre Completo, DNI o Email"
+                                    placeholder="Buscar por Nombre Completo o Email"
                                     value="{{ request('search') }}"
                                 >
                             </div>
@@ -66,21 +66,15 @@
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <label class="form-label fw-bold">
-                                            <i class="fas fa-user-tag text-primary me-2"></i>Rol
+                                            <i class="fas fa-id-card text-primary me-2"></i>DNI
                                         </label>
                                         <div class="input-group">
                                             <span class="input-group-text">
-                                                <i class="fas fa-user-tag"></i>
+                                                <i class="fas fa-id-card"></i>
                                             </span>
-                                            <select name="rol" class="form-select">
-                                                <option value="">Todos los roles</option>
-                                                <option value="admin" {{ request('rol')=='admin' ? 'selected' : '' }}>Administrador</option>
-                                                <option value="empleado" {{ request('rol')=='empleado' ? 'selected' : '' }}>Empleado</option>
-                                                <option value="cliente" {{ request('rol')=='cliente' ? 'selected' : '' }}>Cliente</option>
-                                            </select>
+                                            <input type="text" name="dni" class="form-control" placeholder="Buscar por DNI" value="{{ request('dni') }}">
                                         </div>
                                     </div>
-
                                     <div class="col-md-4">
                                         <label class="form-label fw-bold">
                                             <i class="fas fa-toggle-on text-success me-2"></i>Estado
