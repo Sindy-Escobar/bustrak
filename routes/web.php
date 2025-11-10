@@ -20,6 +20,8 @@ use App\Http\Controllers\RegistroUsuarioController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\ConsultaParadaController;
 use App\Http\Controllers\AbordajeController;
+use App\Http\Controllers\NotificacionController;
+use App\Http\Controllers\HistorialReservasController;
 
 
 
@@ -195,4 +197,21 @@ Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(A
     Route::post('validar', 'validarCodigoQR')->name('validar');
     Route::post('confirmar', 'confirmarAbordaje')->name('confirmar');
     Route::get('historial', 'historial')->name('historial');
+});
+
+// ======================================================
+// RUTAS NOTIFICACIONES
+// ======================================================
+Route::middleware(['auth'])->group(function () {
+    Route::get('/notificaciones', [NotificacionController::class, 'index'])->name('usuario.notificaciones');
+    Route::get('/notificaciones/leida/{id}', [NotificacionController::class, 'marcarLeida'])->name('notificaciones.leida');
+    Route::delete('/notificaciones/eliminar/{id}', [NotificacionController::class, 'eliminar'])->name('notificaciones.eliminar');
+});
+
+// ======================================================
+// RUTAS Historial de viajes
+// ======================================================
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cliente/historial', [HistorialReservasController::class, 'index'])
+        ->name('cliente.historial');
 });

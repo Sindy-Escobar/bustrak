@@ -260,11 +260,12 @@
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
             <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.reservas*') ? 'show' : '' }}" id="reservas">
-                <a href="{{ route('cliente.reservas') }}" class="{{ request()->routeIs('cliente.reservas') ? 'active' : '' }}">
-                    Ver reservas
+                <a href="{{ route('cliente.historial') }}" class="{{ request()->routeIs('cliente.historial') ? 'active' : '' }}">
+                    Historial de viajes
                 </a>
             </div>
         </div>
+
 
         <!-- Rutas y Horarios -->
         <div class="nav-section">
@@ -281,13 +282,27 @@
 
         <!-- Notificaciones -->
         <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#notificaciones" aria-expanded="{{ request()->routeIs('usuario.notificaciones') ? 'true' : 'false' }}">
-                <span><i class="fas fa-bell"></i> Notificaciones</span>
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#notificaciones"
+                    aria-expanded="{{ request()->routeIs('usuario.notificaciones') ? 'true' : 'false' }}">
+        <span>
+            <i class="fas fa-bell"></i> Notificaciones
+            @php
+                $pendientes = \App\Models\Notificacion::where('user_id', Auth::id())
+                    ->where('leida', false)->count();
+            @endphp
+            @if($pendientes > 0)
+                <span class="badge bg-danger ms-2">{{ $pendientes }}</span>
+            @endif
+        </span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
             <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.notificaciones') ? 'show' : '' }}" id="notificaciones">
+                <a href="{{ route('usuario.notificaciones') }}" class="{{ request()->routeIs('usuario.notificaciones') ? 'active' : '' }}">
+                    Ver todas
+                </a>
             </div>
         </div>
+
 
         <!-- Soporte -->
         <div class="nav-section">

@@ -9,6 +9,7 @@ use App\Models\User; // Asegúrate de tener el modelo User si no lo tienes impor
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth; // Necesario para obtener el ID del empleado que confirma
 
+
 class AbordajeController extends Controller
 {
     /**
