@@ -8,27 +8,23 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://kit.fontawesome.com/a2e0c8b2b1.js" crossorigin="anonymous"></script>
-
     <style>
         /* ======== CONFIGURACIÓN GLOBAL ======== */
         html {
             height: 100%;
             overflow-y: scroll;
         }
-
         body {
             margin: 0;
             font-family: "Segoe UI", Roboto, sans-serif;
             background-color: #f5f7fa;
             height: 100%;
         }
-
         main {
             display: flex;
             min-height: 100vh;
             overflow: hidden;
         }
-
         /* ===== SIDEBAR ===== */
         .sidebar {
             width: 260px;
@@ -46,7 +42,6 @@
             scrollbar-width: thin;
             scrollbar-color: #5cb3ff #101827;
         }
-
         .sidebar::-webkit-scrollbar {
             width: 8px;
         }
@@ -61,7 +56,6 @@
             margin-bottom: 1.5rem;
             padding: 1rem;
         }
-
         .brand-logo h2 {
             font-size: 1.8rem;
             font-weight: 800;
@@ -82,7 +76,6 @@
             text-align: center;
             margin-bottom: 2rem;
         }
-
         .user-avatar {
             width: 70px;
             height: 70px;
@@ -96,14 +89,12 @@
             color: white;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
-
         .user-info h3 {
             font-size: 1.1rem;
             font-weight: 600;
             color: #ffffff;
             margin: 0;
         }
-
         .user-info small {
             color: #9ca3af;
             font-size: 0.85rem;
@@ -223,7 +214,6 @@
             </h2>
             <small>Sistema de Gestión</small>
         </div>
-
 
         <!-- Información del Usuario -->
         <div class="user-info">
@@ -353,7 +343,6 @@
                     localStorage.setItem('sidebarUserOpenGroups', JSON.stringify(openGroups));
                 }
             });
-
             group.addEventListener('hidden.bs.collapse', () => {
                 openGroups = openGroups.filter(id => id !== group.id);
                 localStorage.setItem('sidebarUserOpenGroups', JSON.stringify(openGroups));
