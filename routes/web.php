@@ -22,8 +22,7 @@ use App\Http\Controllers\ConsultaParadaController;
 use App\Http\Controllers\AbordajeController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\HistorialReservasController;
-
-
+use App\Http\Controllers\ItinerarioController;
 
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
@@ -215,4 +214,11 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/cliente/historial', [HistorialReservasController::class, 'index'])
         ->name('cliente.historial');
+});
+Route::middleware('auth')->prefix('itinerario')->name('itinerario.')->controller(ItinerarioController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/pdf', 'descargarPDF')->name('pdf');
+    Route::get('/compartir/{id}', 'compartir')->name('compartir');
+    Route::post('/actualizar', 'actualizarItinerario')->name('actualizar');
+    Route::get('/historial', 'historialVisualizaciones')->name('historial');
 });
