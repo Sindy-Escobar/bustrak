@@ -18,16 +18,16 @@ class Empleado extends Model
         'rol',
         'estado',
         'foto',
-        'email',             // Incluido
-        'password_initial',  // Incluido
-        'motivo_baja',       // <--- agregado
-        'fecha_desactivacion', // <--- agregado también para permitir update
+        'email',               // incluido para crear usuario vinculado
+        'password_initial',    // incluido para guardar contraseña temporal
+        'motivo_baja',         // para desactivaciones
+        'fecha_desactivacion', // para registrar fecha de baja
     ];
 
     protected $casts = [
-        'fecha_ingreso' => 'date',          // opcional, útil para formatear
-        'fecha_desactivacion' => 'datetime', // ya está
+        'fecha_ingreso' => 'date',           // útil para formatear fechas
+        'fecha_desactivacion' => 'datetime', // fecha y hora de desactivación
     ];
 
-    public $timestamps = true;
+    public $timestamps = true; // mantener created_at y updated_at
 }

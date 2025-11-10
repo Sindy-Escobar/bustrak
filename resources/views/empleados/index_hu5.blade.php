@@ -4,12 +4,14 @@
 
 @section('content')
     <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h2 style="margin:0; color:#1e63b8; font-weight:600; font-size:2rem;">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white">
+                <h2 class="mb-0" style="color:#1e63b8; font-weight:600; font-size:2rem;">
                     <i class="fas fa-users me-2"></i>Empleados
                 </h2>
             </div>
+
+
 
             <div class="card-body">
 
@@ -30,17 +32,22 @@
                                 <i class="fas fa-search text-primary me-2"></i>Búsqueda General
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text bg-primary text-white">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                                <input type="text" name="buscar" class="form-control" placeholder="Buscar por nombre, apellido o cargo" value="{{ request('buscar') }}">
+                            <span class="input-group-text bg-primary text-white">
+                                <i class="fas fa-search"></i>
+                            </span>
+                                <input type="text" name="buscar" class="form-control"
+                                       placeholder="Buscar por nombre, apellido o cargo"
+                                       value="{{ request('buscar') }}">
                             </div>
                         </div>
+
                         <div class="col-md-5 d-flex align-items-end gap-2">
                             <button class="btn btn-primary flex-fill" type="submit">
                                 <i class="fas fa-search me-2"></i>Buscar
                             </button>
-                            <button class="btn btn-outline-primary flex-fill" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosAvanzados" aria-expanded="false">
+                            <button class="btn btn-outline-primary flex-fill" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#filtrosAvanzados"
+                                    aria-expanded="false">
                                 <i class="fas fa-sliders-h me-2"></i>Filtros
                             </button>
                             @if(request()->hasAny(['buscar','rol','estado','fecha_registro']))
@@ -55,12 +62,16 @@
                     <div class="collapse" id="filtrosAvanzados">
                         <div class="card mb-3 bg-light border-primary">
                             <div class="card-header bg-primary bg-opacity-10">
-                                <h6 class="mb-0 text-primary"><i class="fas fa-filter me-2"></i>Filtros Adicionales</h6>
+                                <h6 class="mb-0 text-primary">
+                                    <i class="fas fa-filter me-2"></i>Filtros Adicionales
+                                </h6>
                             </div>
                             <div class="card-body">
                                 <div class="row g-3">
                                     <div class="col-md-4">
-                                        <label class="form-label fw-bold"><i class="fas fa-user-tag text-primary me-2"></i>Rol</label>
+                                        <label class="form-label fw-bold">
+                                            <i class="fas fa-user-tag text-primary me-2"></i>Rol
+                                        </label>
                                         <select name="rol" class="form-select">
                                             <option value="">Todos</option>
                                             <option value="Administrador" {{ request('rol')=='Administrador' ? 'selected' : '' }}>Administrador</option>
@@ -68,7 +79,9 @@
                                         </select>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-bold"><i class="fas fa-toggle-on text-success me-2"></i>Estado</label>
+                                        <label class="form-label fw-bold">
+                                            <i class="fas fa-toggle-on text-success me-2"></i>Estado
+                                        </label>
                                         <select name="estado" class="form-select">
                                             <option value="">Todos</option>
                                             <option value="Activo" {{ request('estado')=='Activo' ? 'selected' : '' }}>Activo</option>
@@ -76,7 +89,9 @@
                                         </select>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-bold"><i class="fas fa-calendar-alt text-info me-2"></i>Fecha de Registro</label>
+                                        <label class="form-label fw-bold">
+                                            <i class="fas fa-calendar-alt text-info me-2"></i>Fecha de Registro
+                                        </label>
                                         <input type="date" name="fecha_registro" class="form-control" value="{{ request('fecha_registro') }}">
                                     </div>
                                 </div>
@@ -85,18 +100,18 @@
                     </div>
                 </form>
 
-
+                {{-- Tabla de empleados --}}
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered align-middle">
                         <thead class="table-primary">
                         <tr>
-                            <th><i class="fas fa-user text-dark me-2"></i>Nombre</th>
-                            <th><i class="fas fa-user text-dark me-2"></i>Apellido</th>
-                            <th><i class="fas fa-briefcase text-dark me-2"></i>Cargo</th>
-                            <th><i class="fas fa-user-tag text-dark me-2"></i>Rol</th>
-                            <th><i class="fas fa-toggle-on text-dark me-2"></i>Estado</th>
-                            <th><i class="fas fa-calendar-alt text-dark me-2"></i>Fecha Ingreso</th>
-                            <th class="text-center"><i class="fas fa-cogs text-secondary me-2"></i>Acciones</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Cargo</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Fecha Ingreso</th>
+                            <th class="text-center">Acciones</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -107,87 +122,80 @@
                                 <td>{{ $empleado->cargo }}</td>
                                 <td><span class="badge bg-primary">{{ $empleado->rol }}</span></td>
                                 <td>
-                                    @if($empleado->estado == 'Activo')
-                                        <span class="badge bg-success">Activo</span>
-                                    @else
-                                        <span class="badge bg-danger">Inactivo</span>
-                                    @endif
+                                    <span class="badge {{ $empleado->estado == 'Activo' ? 'bg-success' : 'bg-danger' }}">
+                                        {{ $empleado->estado }}
+                                    </span>
                                 </td>
-                                <td>{{ \Carbon\Carbon::parse($empleado->fecha_ingreso)->format('d/m/Y') }}</td>
+                                <td>
+                                    {{ \Carbon\Carbon::parse($empleado->fecha_ingreso)->format('d/m/Y') }}
+                                </td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editarEmpleadoModal{{ $empleado->id }}">
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#editarEmpleadoModal{{ $empleado->id }}">
                                         <i class="fas fa-edit me-1"></i>Editar
                                     </button>
                                 </td>
                             </tr>
 
-
-                            <div class="modal fade" id="editarEmpleadoModal{{ $empleado->id }}" tabindex="-1" aria-labelledby="editarEmpleadoLabel{{ $empleado->id }}" aria-hidden="true">
+                            {{-- Modal de edición --}}
+                            <div class="modal fade" id="editarEmpleadoModal{{ $empleado->id }}" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-dialog-scrollable">
                                     <div class="modal-content">
-                                        <div class="modal-header" style="background-color:#1e63b8; color:white;">
-                                            <h5 class="modal-title"><i class="fas fa-user-edit me-2"></i>Editar Empleado</h5>
+                                        <div class="modal-header bg-primary text-white">
+                                            <h5 class="modal-title">
+                                                <i class="fas fa-user-edit me-2"></i>Editar Empleado
+                                            </h5>
                                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                         </div>
-
                                         <div class="modal-body">
-                                            <form action="{{ route('empleados.update', $empleado->id) }}" method="POST" enctype="multipart/form-data">
+                                            <form action="{{ route('empleados.hu5.update', $empleado->id) }}" method="POST" enctype="multipart/form-data">
                                                 @csrf
                                                 @method('PUT')
 
-                                                <div class="mb-3 border-bottom pb-2">
-                                                    <h6 class="fw-bold text-dark"><i class="fas fa-id-card me-2"></i>Información Personal</h6>
-                                                </div>
-                                                <div class="row g-3 mb-3">
-                                                    <div class="col-md-6">
-                                                        <label class="form-label"><i class="fas fa-user text-dark me-2"></i>Nombre</label>
-                                                        <input type="text" name="nombre" class="form-control form-control-sm" value="{{ $empleado->nombre }}" required>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <label class="form-label"><i class="fas fa-user text-dark me-2"></i>Apellido</label>
-                                                        <input type="text" name="apellido" class="form-control form-control-sm" value="{{ $empleado->apellido }}" required>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <label class="form-label"><i class="fas fa-briefcase text-dark me-2"></i>Cargo</label>
-                                                        <input type="text" name="cargo" class="form-control form-control-sm" value="{{ $empleado->cargo }}" required>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <label class="form-label"><i class="fas fa-calendar-alt text-dark me-2"></i>Fecha de Ingreso</label>
-                                                        <input type="date" name="fecha_ingreso" class="form-control form-control-sm" value="{{ $empleado->fecha_ingreso->format('Y-m-d') }}">
-                                                    </div>
-                                                </div>
-
-                                                <div class="mb-3 border-bottom pb-2">
-                                                    <h6 class="fw-bold text-dark"><i class="fas fa-user-shield me-2"></i>Estado del Usuario</h6>
-                                                </div>
                                                 <div class="row g-3">
                                                     <div class="col-md-6">
-                                                        <label class="form-label"><i class="fas fa-user-tag text-dark me-2"></i>Rol</label>
-                                                        <select name="rol" class="form-select form-select-sm" required>
-                                                            <option value="Administrador" {{ $empleado->rol=='Administrador' ? 'selected' : '' }}>Administrador</option>
-                                                            <option value="Empleado" {{ $empleado->rol=='Empleado' ? 'selected' : '' }}>Empleado</option>
+                                                        <label class="form-label">Nombre</label>
+                                                        <input type="text" name="nombre" value="{{ old('nombre', $empleado->nombre) }}" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Apellido</label>
+                                                        <input type="text" name="apellido" value="{{ old('apellido', $empleado->apellido) }}" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">DNI</label>
+                                                        <input type="text" name="dni" value="{{ old('dni', $empleado->dni) }}" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Cargo</label>
+                                                        <input type="text" name="cargo" value="{{ old('cargo', $empleado->cargo) }}" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Fecha Ingreso</label>
+                                                        <input type="date" name="fecha_ingreso" value="{{ old('fecha_ingreso', \Carbon\Carbon::parse($empleado->fecha_ingreso)->format('Y-m-d')) }}" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Rol</label>
+                                                        <select name="rol" class="form-select" required>
+                                                            <option value="Administrador" {{ old('rol', $empleado->rol)=='Administrador' ? 'selected' : '' }}>Administrador</option>
+                                                            <option value="Empleado" {{ old('rol', $empleado->rol)=='Empleado' ? 'selected' : '' }}>Empleado</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <label class="form-label"><i class="fas fa-toggle-on text-dark me-2"></i>Estado</label>
-                                                        <select name="estado" class="form-select form-select-sm">
-                                                            <option value="Activo" {{ $empleado->estado=='Activo' ? 'selected' : '' }}>Activo</option>
-                                                            <option value="Inactivo" {{ $empleado->estado=='Inactivo' ? 'selected' : '' }}>Inactivo</option>
+                                                        <label class="form-label">Estado</label>
+                                                        <select name="estado" class="form-select" required>
+                                                            <option value="Activo" {{ old('estado', $empleado->estado)=='Activo' ? 'selected' : '' }}>Activo</option>
+                                                            <option value="Inactivo" {{ old('estado', $empleado->estado)=='Inactivo' ? 'selected' : '' }}>Inactivo</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-12">
-                                                        <label class="form-label"><i class="fas fa-camera text-dark me-2"></i>Foto (opcional)</label>
-                                                        <input type="file" name="foto" class="form-control form-control-sm">
+                                                        <label class="form-label">Foto (opcional)</label>
+                                                        <input type="file" name="foto" class="form-control">
                                                     </div>
                                                 </div>
 
                                                 <div class="mt-4 text-end">
-                                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
-                                                        <i class="fas fa-times me-2"></i>Cancelar
-                                                    </button>
-                                                    <button type="submit" class="btn btn-primary btn-sm">
-                                                        <i class="fas fa-save me-2"></i>Guardar Cambios
-                                                    </button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -206,11 +214,13 @@
                     </table>
                 </div>
 
-
+                {{-- Paginación --}}
                 <div class="mt-4">
                     {{ $empleados->appends(request()->all())->links() }}
                 </div>
             </div>
         </div>
     </div>
+
+
 @endsection

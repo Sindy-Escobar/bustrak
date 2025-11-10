@@ -21,4 +21,10 @@ class ClienteController extends Controller
         // Aquí irán las reservas del usuario
         return view('cliente.reservas', compact('usuario'));
     }
+
+    public function dashboard()
+    {
+        return view('usuarios.dashboard'); // o la ruta a tu Blade correspondiente
+    }
+
 }
