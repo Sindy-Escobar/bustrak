@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Empresa;
+use App\Models\EmpresaBus;
 use Illuminate\Http\Request;
 
 class EmpresaController extends Controller
@@ -12,22 +12,30 @@ class EmpresaController extends Controller
         $search = $request->get('search');
         $estado = $request->get('estado');
 
-        $empresas = Empresa::query();
+        $empresas = EmpresaBus::query();
 
-        // Búsqueda por nombre o número de registro
+        //Búsqueda por nombre o correo
         if ($search) {
-            $empresas->where('nombre', 'like', "%{$search}%")
-                ->orWhere('numero_registro', 'like', "%{$search}%");
+            $empresas->where(function ($query) use ($search) {
+                $query->where('nombre', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
         }
 
-        // Filtrado por estado
-        if ($estado !== null) {
-            $empresas->where('estado', $estado);
+        // Filtrado por estado_validacion (activo/inactivo)
+        if ($estado !== null && $estado !== '') {
+            $empresas->where('estado_validacion', $estado);
         }
 
         // Paginación
         $empresas = $empresas->paginate(10);
 
+        // Generar número de registro automático (no se guarda en BD)
+        foreach ($empresas as $empresa) {
+            $empresa->numero_registro = 'EMP-' . str_pad($empresa->id, 4, '0', STR_PAD_LEFT);
+        }
+
+        // Retornar vista con datos
         return view('terminal.empresas.index', compact('empresas', 'search', 'estado'));
     }
 }
