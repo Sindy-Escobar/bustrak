@@ -96,9 +96,9 @@ class RegistroUsuarioController extends Controller
                 'users.estado'
             );
 
-        //  Filtro por rol
-        if ($request->filled('rol')) {
-            $usuarios->where('users.role', $request->rol);
+        // Filtro por DNI
+        if ($request->filled('dni')) {
+            $usuarios->where('usuarios.dni', 'like', '%' . $request->dni . '%');
         }
 
         // Filtro por estado
