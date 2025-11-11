@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('registro_rentas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('usuario_id')->constrained('usuarios')->cascadeOnDelete();
-            $table->enum('tipo_evento', ['familiar, campamento, excursión, educativo, empresarial']);
+            $table->string('nombre_completo'); // NUEVO CAMPO
+            $table->enum('tipo_evento', ['familiar', 'campamento', 'excursion', 'educativo', 'empresarial']);
             $table->string('destino');
             $table->string('punto_partida');
             $table->date('fecha_inicio');

@@ -38,3 +38,4 @@ class Usuario extends Model
         }
     }
 }
+

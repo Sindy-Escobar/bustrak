@@ -10,6 +10,7 @@ class RegistroRenta extends Model
     use HasFactory;
 
     protected $fillable = [
+        'nombre_completo',
         'usuario_id',
         'tipo_evento',
         'destino',

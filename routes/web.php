@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RegistroRentaController;
 use App\Http\Controllers\RegistroTeminalController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -142,8 +143,9 @@ Route::put('/empresa-hu11/{id}', [EmpresaHU11Controller::class, 'update'])->name
 // ======================================================
 // RUTAS TERMINALES
 // ======================================================
-Route::resource('terminales', RegistroTeminalController::class);
-
+Route::resource('terminales', RegistroTeminalController::class)->parameters([
+    'terminales' => 'terminal',
+]);
 // ======================================================
 // RUTA HU10 - VISUALIZAR EMPRESAS DE BUSES
 // ======================================================
@@ -180,3 +182,5 @@ Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(A
     Route::post('confirmar', 'confirmarAbordaje')->name('confirmar');
     Route::get('historial', 'historial')->name('historial');
 });
+
+Route::resource('rentas', RegistroRentaController::class);
