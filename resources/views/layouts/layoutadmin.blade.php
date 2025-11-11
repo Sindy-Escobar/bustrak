@@ -7,7 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a2e0c8b2b1.js" crossorigin="anonymous"></script>
 
     <style>
         /* ======== CONFIGURACIÓN GLOBAL ======== */
@@ -229,16 +228,23 @@
 
         <!-- Estadísticas -->
         <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#estadisticas" aria-expanded="{{ request()->routeIs('admin.dashboard') ? 'true' : 'false' }}">
+            <button class="btn-toggle"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#estadisticas"
+                    aria-expanded="{{ request()->routeIs('admin.estadisticas') ? 'true' : 'false' }}">
                 <span><i class="fas fa-chart-bar"></i> Estadísticas</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
-            <div class="collapse btn-toggle-nav {{ request()->routeIs('admin.dashboard') ? 'show' : '' }}" id="estadisticas">
-                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('admin.estadisticas') ? 'show' : '' }}" id="estadisticas">
+                <a href="{{ route('admin.estadisticas') }}"
+                   class="{{ request()->routeIs('admin.estadisticas') ? 'active' : '' }}">
                     Ver Estadísticas
                 </a>
             </div>
         </div>
+
+
 
         <!-- Terminales -->
         <div class="nav-section">
