@@ -229,16 +229,23 @@
 
         <!-- Estadísticas -->
         <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#estadisticas" aria-expanded="{{ request()->routeIs('admin.dashboard') ? 'true' : 'false' }}">
+            <button class="btn-toggle"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#estadisticas"
+                    aria-expanded="{{ request()->routeIs('admin.estadisticas') ? 'true' : 'false' }}">
                 <span><i class="fas fa-chart-bar"></i> Estadísticas</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
-            <div class="collapse btn-toggle-nav {{ request()->routeIs('admin.dashboard') ? 'show' : '' }}" id="estadisticas">
-                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('admin.estadisticas') ? 'show' : '' }}" id="estadisticas">
+                <a href="{{ route('admin.estadisticas') }}"
+                   class="{{ request()->routeIs('admin.estadisticas') ? 'active' : '' }}">
                     Ver Estadísticas
                 </a>
             </div>
         </div>
+
+
 
         <!-- Terminales -->
         <div class="nav-section">
