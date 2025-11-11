@@ -5,7 +5,6 @@
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb" style="background-color: transparent; padding: 0;">
-                <li class="breadcrumb-item"><a href="/" style="color: #5cb3ff; text-decoration: none;">Inicio</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Mi Perfil</li>
             </ol>
         </nav>
