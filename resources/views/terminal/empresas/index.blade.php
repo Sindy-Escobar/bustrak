@@ -110,12 +110,13 @@
                                 <td>{{ $empresa->email }}</td>
                                 <td>{{ $empresa->telefono }}</td>
                                 <td>
-                                    @if($empresa->estado)
+                                    @if($empresa->estado_validacion)
                                         <span class="badge bg-success">Activa</span>
                                     @else
                                         <span class="badge bg-danger">Inactiva</span>
                                     @endif
                                 </td>
+
                                 <td class="text-center">
                                     <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editarModal{{ $empresa->id }}">
                                         <i class="fas fa-edit me-1"></i> Editar
