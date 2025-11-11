@@ -198,31 +198,19 @@
     <div class="container">
         <h2 class="mb-4 text-center">Destinos en Honduras</h2>
         <div class="row row-cols-2 row-cols-md-4 g-3 departments">
-            <!-- 17 departamentos -->
             <div class="col"><div class="card"><img src="https://i0.wp.com/mntv.hn/wp-content/uploads/2025/04/explore-la-belleza-de-atlantida-y-descubra-sus-tesoros-turisticos-en-semana-santa-10.webp?fit=1200%2C799&ssl=1" class="card-img-top"><div class="card-body text-center"><h6>Atlántida</h6></div></div></div>
             <div class="col"><div class="card"><img src="https://i0.wp.com/www.hondurastips.hn/wp-content/uploads/2019/04/RS1104816_MH-puente-choluteca-10-1-copy.jpg?resize=1000%2C500&ssl=1" class="card-img-top"><div class="card-body text-center"><h6>Choluteca</h6></div></div></div>
             <div class="col"><div class="card"><img src="https://upload.wikimedia.org/wikipedia/commons/c/cb/CA%C3%91ONES_FORTALEZA_SANTA_BARBARA_-_panoramio_-_stanleyatala.jpg" class="card-img-top"><div class="card-body text-center"><h6>Colon</h6></div></div></div>
             <div class="col"><div class="card"><img src="https://www.hondurasensusmanos.com/turismo/wp-content/uploads/2021/04/Comayagua.jpg" class="card-img-top"><div class="card-body text-center"><h6>Comayagua</h6></div></div></div>
 
-            <div class="col"><div class="card"><img src="https://passporterapp.com/es/blog/wp-content/uploads/2023/03/ruinas-de-copan-1.jpeg" class="card-img-top"><div class="card-body text-center"><h6>Copán</h6></div></div></div>
-            <div class="col"><div class="card"><img src="https://www.laprensa.hn/binrepository/1200x675/0c19/1200d630/none/11004/HCLY/la-esperanza-yamaranguila-e-intibuca_5289329_20230817113342.jpg" class="card-img-top"><div class="card-body text-center"><h6>Intibucá</h6></div></div></div>
-            <div class="col"><div class="card"><img src="https://www.hondurasensociedad.hn/wp-content/uploads/2018/09/2-4-3.jpg" class="card-img-top"><div class="card-body text-center"><h6>La Paz</h6></div></div></div>
-            <div class="col"><div class="card"><img src="https://d9zuehkdkxba0.cloudfront.net/wp-content/uploads/2022/06/casco-gracias-lempira-179.jpg" class="card-img-top"><div class="card-body text-center"><h6>Lempira</h6></div></div></div>
 
-
-            <!-- A partir de aquí se aplica el efecto borroso -->
 
             <div class="col blurred"><div class="card"><img src="https://i0.wp.com/visithonduras.iht.hn/wp-content/uploads/2024/05/CUEVAS.jpg?fit=720%2C720&ssl=1" class="card-img-top"><div class="card-body text-center"><h6>Olancho</h6></div></div></div>
             <div class="col blurred"><div class="card"><img src="https://www.laprensa.hn/binrepository/600x338/0c0/0d0/none/11004/NXVQ/np-playas4-011016_LP1004815_MG67348071.jpg" class="card-img-top"><div class="card-body text-center"><h6>Cortés</h6></div></div></div>
             <div class="col blurred"><div class="card"><img src="https://diarioroatan.com/wp-content/uploads/2019/10/361B8C6B-516E-41A2-9F07-DF21065FE7F6.jpeg" class="card-img-top"><div class="card-body text-center"><h6>El Paraíso</h6></div></div></div>
             <div class="col blurred"><div class="card"><img src="https://i.pinimg.com/1200x/3c/00/e6/3c00e6102af48a46c831dcf235f7c831.jpg" class="card-img-top"><div class="card-body text-center"><h6>Francisco Morazán</h6></div></div></div>
-            <div class="col blurred"><div class="card"><img src="https://www.hondurasensusmanos.com/turismo/wp-content/uploads/2020/02/el-pital-ocotepeque-2-500x330.jpg" class="card-img-top"><div class="card-body text-center"><h6>Ocotepeque</h6></div></div></div>
-            <div class="col blurred"><div class="card"><img src="https://mediaim.expedia.com/destination/2/79375301578e271c0c357d27e57ebfff.jpg?impolicy=fcrop&w=512&h=288&q=medium" class="card-img-top"><div class="card-body text-center"><h6>Santa Bárbara</h6></div></div></div>
-            <div class="col blurred"><div class="card"><img src="https://www.laprensa.hn/binrepository/1200x800/0c85/1200d630/none/11004/UFEL/Km-Yoro22-0906192_LP1291605_MG286595879.jpg" class="card-img-top"><div class="card-body text-center"><h6>Yoro</h6></div></div></div>
-            <div class="col blurred"><div class="card"><img src="https://www.espaciohonduras.net/images/Honduras/Turismo/valle/Lugares_turisticos_de_valle/Lugares_turisticos_de_valle.jpg" class="card-img-top"><div class="card-body text-center"><h6>Valle</h6></div></div></div>
         </div>
 
-        <!-- Botón centrado sobre las columnas borrosas -->
         <div class="catalog-btn text-center">
             <a href="/catalogo" class="btn btn-primary btn-lg">Ver Catálogo</a>
         </div>
