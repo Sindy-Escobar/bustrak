@@ -57,10 +57,14 @@
             background: linear-gradient(135deg, #1e63b8 0%, #0d6efd 100%);
             border: none;
             border-radius: 10px;
-            padding: 11px 28px;
+            padding: 0.65rem 1.2rem;
             font-weight: 600;
             transition: all 0.3s ease;
             color: white;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-apply:hover {
@@ -73,17 +77,20 @@
             background: #f3f4f6;
             border: none;
             border-radius: 10px;
-            padding: 11px 28px;
+            padding: 0.65rem 1.2rem;
             font-weight: 600;
             transition: all 0.3s ease;
             color: #374151;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-clear:hover {
             background: #e5e7eb;
             transform: translateY(-2px);
         }
-
         .chart-card {
             background: white;
             border-radius: 12px;

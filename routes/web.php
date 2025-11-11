@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 
 // Controladores
+use App\Http\Controllers\EstadisticasController;
 use App\Http\Controllers\ValidarEmpresaController2;
 use App\Http\Controllers\EmpresaHU11Controller;
 use App\Http\Controllers\EmpleadoHU5Controller;
@@ -131,7 +132,7 @@ Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
     Route::post('/usuarios/{id}/cambiar-estado', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
 });
 
-/*
+
 Route::middleware('auth')->get('/admin/pagina', function () {
     // Totales empleados
     $total_activos = Empleado::where('estado', 'Activo')->count();
@@ -148,7 +149,7 @@ Route::middleware('auth')->get('/admin/pagina', function () {
         'totalUsuarios', 'usuariosActivos', 'usuariosInactivos'
     ));
 })->name('admin.dashboard');
-*/
+
 
 // ======================================================
 // RUTAS EMPLEADO-HU5
@@ -268,3 +269,6 @@ Route::put('/empleados-hu5/{id}', [EmpleadoHU5Controller::class, 'update'])
 //Estadisticas
 Route::get('/estadisticahu46', [EstadisticasController::class, 'index'])
     ->name('estadistica');
+
+//Ruta para visualizar y actualizar las empresas---Anahi_cabrera
+Route::put('empresas/{id}', [EmpresaController::class, 'update'])->name('empresas.update');
