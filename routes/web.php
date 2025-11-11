@@ -269,6 +269,8 @@ Route::put('/empleados-hu5/{id}', [EmpleadoHU5Controller::class, 'update'])
 //Estadisticas
 Route::get('/estadisticahu46', [EstadisticasController::class, 'index'])
     ->name('estadistica');
+Route::get('/admin/estadisticas', [EstadisticasController::class, 'mostrar'])
+    ->name('admin.estadisticas');
 
 //Ruta para visualizar y actualizar las empresas---Anahi_cabrera
 Route::put('empresas/{id}', [EmpresaController::class, 'update'])->name('empresas.update');
