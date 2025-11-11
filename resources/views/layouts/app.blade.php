@@ -78,7 +78,11 @@
         }
     </style>
 </head>
-@@ -82,3 +52,4 @@
 </div>
+<div class="container mt-4">
+    @yield('content')
+</div>
+
+@yield('scripts')
 </body>
 </html>

@@ -23,10 +23,6 @@ use App\Http\Controllers\ItinerarioController;
 use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\CatalogoController;
 
-
-
-
-
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
 
@@ -177,9 +173,7 @@ Route::get('/hu10/empresas-buses', [EmpresaBusController::class, 'index'])
     ->name('hu10.empresas.buses');
 
 Route::get('/principal', function () {
-    return view('interfaces.principal');
-});
-
+    return view('interfaces.principal');})->name('interfaces.principal');
 
 Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(AbordajeController::class)->group(function () {
     Route::get('escanear', 'mostrarEscaner')->name('escanear');

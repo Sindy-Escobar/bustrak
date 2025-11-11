@@ -41,6 +41,7 @@
             overflow-y: auto;
             scrollbar-width: thin;
             scrollbar-color: #5cb3ff #101827;
+            transition: all 0.3s ease;
         }
         .sidebar::-webkit-scrollbar {
             width: 8px;
@@ -50,12 +51,43 @@
             border-radius: 4px;
         }
 
+        /* ===== BOTÓN TOGGLE INTERNO ===== */
+        .toggle-sidebar-btn {
+            position: absolute;
+            top: 20px;
+            right: -20px;
+            width: 40px;
+            height: 40px;
+            background: #1976d2;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 18px;
+        }
+
+        .toggle-sidebar-btn:hover {
+            background: #1565c0;
+            transform: scale(1.15);
+        }
+
+        .toggle-sidebar-btn i {
+            transition: transform 0.3s ease;
+        }
+
         /* ===== LOGO Y USUARIO ===== */
         .brand-logo {
             text-align: center;
-            margin-bottom: 1.5rem;
-            padding: 1rem;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
         }
+
         .brand-logo h2 {
             font-size: 1.8rem;
             font-weight: 800;
@@ -76,19 +108,7 @@
             text-align: center;
             margin-bottom: 2rem;
         }
-        .user-avatar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #5cb3ff, #1e63b8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 0.8rem;
-            font-size: 2rem;
-            color: white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
+
         .user-info h3 {
             font-size: 1.1rem;
             font-weight: 600;
@@ -169,6 +189,7 @@
             background-color: #f5f7fa;
             padding: 28px;
             min-height: 100vh;
+            transition: all 0.3s ease;
         }
 
         /* ===== RESPONSIVE ===== */
@@ -181,47 +202,65 @@
             .content-area {
                 margin-left: 0;
             }
+            .toggle-sidebar-btn {
+                display: none;
+            }
         }
 
         /* ===== Toggle Sidebar ===== */
         .sidebar.collapsed {
-            width: 0;
-            overflow: hidden;
-            transition: all 0.3s ease;
+            width: 20px;
+            overflow: visible;
+        }
+
+        .sidebar.collapsed .brand-logo h2,
+        .sidebar.collapsed .user-info,
+        .sidebar.collapsed .btn-toggle span,
+        .sidebar.collapsed .btn-toggle .chevron,
+        .sidebar.collapsed .btn-toggle-nav {
+            display: none;
+        }
+
+        .sidebar.collapsed .btn-toggle {
+            justify-content: center;
+            padding: 0.7rem;
+        }
+
+        .sidebar.collapsed .btn-toggle i {
+            margin-right: 0;
+            font-size: 1.2rem;
+        }
+
+        .sidebar.collapsed .toggle-sidebar-btn i {
+            transform: rotate(180deg);
         }
 
         .content-area.expanded {
-            margin-left: 0;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-
-        #toggleSidebar {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            margin-left: 80px;
         }
     </style>
 </head>
-
 <body>
 <main>
     <nav class="sidebar">
+        <!-- Botón Toggle Interno -->
+        <button class="toggle-sidebar-btn" id="toggleSidebar">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
         <!-- Logo de la Aplicación -->
         <div class="brand-logo">
             <h2>
-                <img src="{{ asset('Imagenes/bustrak-logo.jpg') }}" alt="Logo" style="height: 60px; vertical-align: middle;">
+                <img src="{{ asset('Imagenes/bustrak-logo.jpg') }}" alt="Logo"
+                     style="border-radius: 35px; width: 120px; height: 60px;">
             </h2>
-            <small>Sistema de Gestión</small>
         </div>
 
         <!-- Información del Usuario -->
-        <div class="user-info">
-            <div class="user-avatar">
-                <i class="fas fa-user"></i>
-            </div>
-            <h3>{{ Auth::user()->nombre_completo ?? 'Usuario' }}</h3>
-            <small><i class="fas fa-envelope me-1"></i>{{ Auth::user()->email ?? 'usuario@bustrak.com' }}</small>
+        <div class="user-info" style="text-align: center; margin-top: 10px;">
+            <small style="color: #fff;">
+                <i class="fas fa-envelope me-1"></i>{{ Auth::user()->email ?? 'usuario@bustrak.com' }}
+            </small>
         </div>
 
         <!-- Mi Cuenta -->
@@ -236,9 +275,6 @@
             <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.perfil*') ? 'show' : '' }}" id="miCuenta">
                 <a href="{{ route('cliente.perfil') }}" class="{{ request()->routeIs('cliente.perfil') ? 'active' : '' }}">
                     Ver perfil
-                </a>
-                <a href="{{ route('usuarios.create') }}" class="{{ request()->routeIs('usuarios.create') ? 'active' : '' }}">
-                    Registrar usuario
                 </a>
                 <a href="{{ route('itinerario.index') }}" class="{{ request()->routeIs('itinerario.index') ? 'active' : '' }}">
                     Itinerario
@@ -259,7 +295,6 @@
             </div>
         </div>
 
-
         <!-- Rutas y Horarios -->
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#rutas" aria-expanded="{{ request()->routeIs('usuario.rutas*') ? 'true' : 'false' }}">
@@ -277,16 +312,16 @@
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#notificaciones"
                     aria-expanded="{{ request()->routeIs('usuario.notificaciones') ? 'true' : 'false' }}">
-        <span>
-            <i class="fas fa-bell"></i> Notificaciones
-            @php
-                $pendientes = \App\Models\Notificacion::where('usuario_id', Auth::id())
-                    ->where('leida', false)->count();
-            @endphp
-            @if($pendientes > 0)
-                <span class="badge bg-danger ms-2">{{ $pendientes }}</span>
-            @endif
-        </span>
+                <span>
+                    <i class="fas fa-bell"></i> Notificaciones
+                    @php
+                        $pendientes = \App\Models\Notificacion::where('usuario_id', Auth::id())
+                            ->where('leida', false)->count();
+                    @endphp
+                    @if($pendientes > 0)
+                        <span class="badge bg-danger ms-2">{{ $pendientes }}</span>
+                    @endif
+                </span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
             <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.notificaciones') ? 'show' : '' }}" id="notificaciones">
@@ -296,29 +331,25 @@
             </div>
         </div>
 
-
         <!-- Soporte -->
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#soporte" aria-expanded="{{ request()->routeIs('usuario.soporte*') ? 'true' : 'false' }}">
-                <span><i class="fas fa-headset"></i> Ayuda y Soporte </span>
+                <span><i class="fas fa-headset"></i> Ayuda y Soporte</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
             <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.soporte*') ? 'show' : '' }}" id="soporte">
+                <a href="/ayuda-soporte" class="active">Enviar consulta</a>
                 <a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'active' : '' }}">
                     Cerrar sesión
+                </a>
+                <a href="{{ route('interfaces.principal') }}" class="{{ request()->routeIs('interfaces.principal') ? 'active' : '' }}">
+                    Inicio
                 </a>
             </div>
         </div>
     </nav>
 
     <div class="content-area">
-        <!-- Botón para mostrar/ocultar la barra lateral -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <button id="toggleSidebar" class="btn btn-outline-primary">
-                <i class="fas fa-bars"></i> Menú
-            </button>
-        </div>
-
         @yield('contenido')
     </div>
 </main>
@@ -364,15 +395,6 @@
         toggleBtn.addEventListener('click', function () {
             sidebar.classList.toggle('collapsed');
             content.classList.toggle('expanded');
-
-            const icon = toggleBtn.querySelector('i');
-            if (sidebar.classList.contains('collapsed')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-xmark');
-            } else {
-                icon.classList.remove('fa-xmark');
-                icon.classList.add('fa-bars');
-            }
         });
     });
 </script>

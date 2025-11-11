@@ -98,11 +98,11 @@
         }
 
         .logo {
-            width: 100px;
+            width: 120px;
             height: 80px;
             margin: 0 auto 15px;
             background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
-            border-radius: 50%;
+            border-radius: 35%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -268,10 +268,36 @@
             .logo-text {
                 font-size: 24px;
             }
+        }.btn-back {
+             position: absolute;
+             top: 25px;
+             left: 25px;
+             background: #ffffff;
+             color: #1976d2;
+             padding: 8px 14px;
+             border-radius: 25px;
+             font-weight: 600;
+             text-decoration: none;
+             box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+             transition: all 0.3s ease;
+             z-index: 50; /* esto asegura que quede por encima del fondo */
+         }
+
+
+        .btn-back:hover {
+            background: #1976d2;
+            color: #ffffff;
+            transform: translateX(-2px);
         }
+
     </style>
 </head>
 <body>
+<!-- Botón Volver al Inicio -->
+<a href="{{ route('interfaces.principal') }}" class="btn-back">
+    Inicio
+</a>
+
 <div class="container">
     <div class="background">
         <div class="circle circle1"></div>
@@ -284,8 +310,6 @@
             <div class="logo">
                 <img src="/Imagenes/bustrak-logo.jpg" alt="BusTrak">
             </div>
-            <div class="logo-text">BusTrak</div>
-            <div class="subtitle">Sistema de Gestión de Reservas</div>
         </div>
 
         @if ($errors->any())
