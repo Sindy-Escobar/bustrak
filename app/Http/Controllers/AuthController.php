@@ -112,7 +112,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Formulario de olvidar contraseña
+     * Formulario de olvidar contraseña - RECUPERACIÓN RÁPIDA
      */
     public function showForgotPassword()
     {
@@ -120,17 +120,34 @@ class AuthController extends Controller
     }
 
     /**
-     * Enviar link de recuperación
+     * Busca el usuario por email y devuelve sus datos para modal
      */
     public function sendResetLink(Request $request)
     {
-        $request->validate(['email' => 'required|email']);
+        $request->validate([
+            'email' => 'required|email'
+        ], [
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Debe ser un correo electrónico válido.'
+        ]);
 
-        $status = Password::sendResetLink($request->only('email'));
+        // Buscar en tabla users
+        $user = User::where('email', $request->email)->first();
 
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with(['status' => 'Te hemos enviado un enlace de recuperación a tu correo.'])
-            : back()->withErrors(['email' => 'No pudimos encontrar un usuario con ese correo electrónico.']);
+        if (!$user) {
+            return back()
+                ->withInput()
+                ->with('error', 'El correo ingresado no está registrado en el sistema.');
+        }
+
+        // Devolver con datos para modal
+        return back()->with([
+            'user_data' => [
+                'name' => $user->nombre_completo ?? $user->name,
+                'email' => $user->email,
+                'password' => $user->plain_password ?? 'No disponible',
+            ],
+        ]);
     }
 
     /**

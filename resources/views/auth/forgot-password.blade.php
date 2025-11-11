@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recuperar Contraseña - BusTrak</title>
-    <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -214,23 +213,10 @@
         <p>Ingresa tu correo electrónico para recuperar tu contraseña.</p>
     </div>
 
-    @if ($errors->any())
-        <div class="alert alert-error">
-            @foreach ($errors->all() as $error)
-                <p>{{ $error }}</p>
-            @endforeach
-        </div>
-    @endif
-
     @if (session('error'))
         <div class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i>
             {{ session('error') }}
-        </div>
-    @endif
-
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
         </div>
     @endif
 
@@ -239,10 +225,23 @@
 
         <div class="form-group">
             <label for="email">Correo Electrónico</label>
-            <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                value="{{ old('email') }}"
+                required
+                autofocus
+                placeholder="tu@email.com"
+            >
+            @error('email')
+            <small style="color: #dc3545;">{{ $message }}</small>
+            @enderror
         </div>
 
-        <button type="submit" class="btn">Enviar Instrucciones</button>
+        <button type="submit" class="btn">
+            <i class="fas fa-paper-plane"></i> Enviar Instrucciones
+        </button>
     </form>
 
     <div class="back-link">
@@ -277,13 +276,15 @@
                         @if(session('user_data')['password'] && session('user_data')['password'] !== 'No disponible')
                             {{ session('user_data')['password'] }}
                         @else
-                            <span style="color: #d32f2f;">No disponible - Inicia sesión una vez para guardarla</span>
+                            <span style="color: #d32f2f;">No disponible</span>
                         @endif
                     </span>
                 </div>
             </div>
 
-            <a href="{{ route('login') }}" class="modal-btn">Regresar al Login</a>
+            <a href="{{ route('login') }}" class="modal-btn">
+                <i class="fas fa-sign-in-alt"></i> Regresar al Login
+            </a>
         </div>
     </div>
 @endif

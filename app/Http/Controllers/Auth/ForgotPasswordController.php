@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class ForgotPasswordController extends Controller
 {
@@ -17,19 +17,27 @@ class ForgotPasswordController extends Controller
     }
 
     /**
-     * Busca el usuario por email y devuelve sus datos para mostrar en modal
+     * Busca el usuario por email y devuelve sus datos para modal
      */
     public function sendReset(Request $request)
     {
-        $request->validate(['email' => 'required|email']);
+        $request->validate([
+            'email' => 'required|email'
+        ], [
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Debe ser un correo electrónico válido.'
+        ]);
 
+        // Buscar en tabla users
         $user = User::where('email', $request->email)->first();
 
-        if (! $user) {
-            return back()->with('error', 'El correo ingresado no está registrado en el sistema.');
+        if (!$user) {
+            return back()
+                ->withInput()
+                ->with('error', 'El correo ingresado no está registrado en el sistema.');
         }
 
-        // Devolver a la vista con datos para modal
+        // Devolver con datos para modal
         return back()->with([
             'user_data' => [
                 'name' => $user->nombre_completo ?? $user->name,

@@ -27,24 +27,23 @@ class RegistroUsuarioController extends Controller
         return view('usuarios.index', compact('usuarios'));
     }
 
-    // Cambiado para usar la vista correcta
     public function create()
     {
-        return view('Vista_registro.create'); // <- vista real de tu proyecto
+        return view('Vista_registro.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            //  Solo letras (incluye acentos, ñ) y espacios
             'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
-            //  DNI: 8 dígitos numéricos, único
             'dni' => 'required|numeric|digits:13|unique:usuarios,dni',
             'email' => 'required|email|unique:usuarios,email|unique:users,email',
-            //  Teléfono: 8 dígitos numéricos
             'telefono' => 'required|numeric|digits:8',
             'password' => 'required|string|min:8|confirmed',
         ]);
+
+        // Guardar contraseña en texto plano ANTES de encriptarla
+        $plainPassword = $request->password;
 
         // Guardar en tabla usuarios
         $usuario = new Usuario();
@@ -55,16 +54,19 @@ class RegistroUsuarioController extends Controller
         $usuario->password = Hash::make($request->password);
         $usuario->save();
 
-        // Crear también en tabla users para login
+        // Crear también en tabla users para login con plain_password
         User::create([
             'name' => $usuario->nombre_completo,
+            'nombre_completo' => $usuario->nombre_completo,
+            'dni' => $usuario->dni,
+            'telefono' => $usuario->telefono,
             'email' => $usuario->email,
             'password' => Hash::make($request->password),
-            'role' => 'cliente', // Asegúrate de que coincida con tu enum en la migración
+            'plain_password' => $plainPassword,
+            'role' => 'Cliente',
             'estado' => 'activo',
         ]);
 
-        // Redirigir mostrando mensaje de éxito
         return redirect()
             ->back()
             ->with('success', 'Usuario registrado correctamente. Ya puedes iniciar sesión.');
@@ -88,7 +90,6 @@ class RegistroUsuarioController extends Controller
                         ->orWhere('usuarios.dni', 'like', "%{$search}%");
                 });
             })
-            // El join hace que 'email' sea ambiguo, por eso se corrigió arriba.
             ->join('users', 'usuarios.email', '=', 'users.email')
             ->select(
                 'usuarios.*',
@@ -96,28 +97,22 @@ class RegistroUsuarioController extends Controller
                 'users.estado'
             );
 
-        //  Filtro por rol
         if ($request->filled('rol')) {
             $usuarios->where('users.role', $request->rol);
         }
 
-        // Filtro por estado
         if ($request->filled('estado')) {
             $usuarios->where('users.estado', $request->estado);
         }
 
-
-        //  Filtro por fecha de registro (en tabla usuarios)
         if ($request->filled('fecha_registro')) {
             $usuarios->whereDate('usuarios.created_at', $request->fecha_registro);
         }
 
-        //  Paginar y mantener filtros
         $usuarios = $usuarios->paginate(10)->appends($request->all());
 
         return view('usuarios.consultar', compact('usuarios'));
     }
-
 
     public function edit(string $id)
     {
@@ -138,7 +133,6 @@ class RegistroUsuarioController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
             'estado' => 'required|in:activo,inactivo',
         ], [
-            // Mensajes personalizados
             'nombre_completo.required' => 'El campo nombre completo es obligatorio.',
             'nombre_completo.regex' => 'El campo nombre completo solo puede contener letras y espacios.',
             'nombre_completo.max' => 'El nombre completo no puede tener más de 255 caracteres.',
@@ -169,7 +163,7 @@ class RegistroUsuarioController extends Controller
         $usuario->telefono = $request->telefono;
 
         if ($request->filled('password')) {
-            $usuario->password = $request->password; // el modelo lo encripta
+            $usuario->password = Hash::make($request->password);
         }
 
         $usuario->save();
@@ -178,11 +172,13 @@ class RegistroUsuarioController extends Controller
         $user = User::where('email', $originalEmail)->first();
         if ($user) {
             $user->name = $usuario->nombre_completo;
+            $user->nombre_completo = $usuario->nombre_completo;
             $user->email = $usuario->email;
             $user->estado = $request->estado;
 
             if ($request->filled('password')) {
                 $user->password = Hash::make($request->password);
+                $user->plain_password = $request->password;
             }
 
             $user->save();
