@@ -2,9 +2,6 @@
 
 use App\Http\Controllers\RegistroTeminalController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Empleado;
-use App\Models\User;
 
 
 // Controladores
@@ -48,11 +45,12 @@ Route::get('/validar-empresas', [ValidarEmpresaController2::class, 'index'])
 Route::get('/ver_terminales', [RegistroTeminalController::class, 'ver_terminales'])->name('terminales.ver_terminales');
 
 
-
+/*
 // RUTA VALIDACIÓN DE EMPLEADOS
 Route::get('/validacion-empleados', function () {
     return view('validacion-empleados.index');
 })->name('validacion-empleados.index');
+*/
 
 
 //consulta-paradas
@@ -80,10 +78,13 @@ Route::match(['get', 'post'], '/empresa', [EmpresaBusController::class, 'form'])
 // ======================================================
 Route::resource('empleados', EmpleadoController::class);
 
+/*
 // Rutas adicionales para activar/desactivar empleados
 Route::get('/empleados/{id}/desactivar', [EmpleadoController::class, 'formDesactivar'])->name('empleados.formDesactivar');
 Route::put('/empleados/{id}/desactivar', [EmpleadoController::class, 'guardarDesactivacion'])->name('empleados.desactivar');
 Route::put('/empleados/{id}/activar', [EmpleadoController::class, 'activar'])->name('empleados.activar');
+*/
+
 
 // ======================================================
 // RUTAS DE AUTENTICACIÓN
@@ -134,6 +135,7 @@ Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
     Route::post('/usuarios/{id}/cambiar-estado', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
 });
 
+/*
 Route::middleware('auth')->get('/admin/pagina', function () {
     // Totales empleados
     $total_activos = Empleado::where('estado', 'Activo')->count();
@@ -150,6 +152,7 @@ Route::middleware('auth')->get('/admin/pagina', function () {
         'totalUsuarios', 'usuariosActivos', 'usuariosInactivos'
     ));
 })->name('admin.dashboard');
+*/
 
 // ======================================================
 // RUTAS EMPLEADO-HU5
@@ -177,26 +180,6 @@ Route::get('/principal', function () {
     return view('interfaces.principal');
 });
 
-
-
-Route::get('/demo-dashboard', function () {
-    // Totales de empleados
-    $total_activos = Empleado::where('estado', 'Activo')->count();
-    $total_inactivos = Empleado::where('estado', 'Inactivo')->count();
-    $total_empleados = Empleado::count();
-
-    // Totales de usuarios
-    $totalUsuarios = User::count();
-    $usuariosActivos = User::where('estado', 'activo')->count();
-    $usuariosInactivos = User::where('estado', 'inactivo')->count();
-
-    // Retorna la vista
-    return view('admin.dashboard', compact(
-        'total_activos', 'total_inactivos', 'total_empleados',
-        'totalUsuarios', 'usuariosActivos', 'usuariosInactivos'
-    ));
-
-});
 
 Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(AbordajeController::class)->group(function () {
     Route::get('escanear', 'mostrarEscaner')->name('escanear');
@@ -231,13 +214,63 @@ Route::middleware('auth')->prefix('itinerario')->name('itinerario.')->controller
 
 
 // ======================================================
-// RUTA HU17 - Catalogo (tu ruta)
+// RUTA HU17 - Catalogo
 // ======================================================
 Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
 
 // ======================================================
-// RUTAS DE CONSULTAS/SOPORTE (Públicas)
+// RUTAS DE CONSULTAS/SOPORTE
 // ======================================================
 Route::get('/ayuda-soporte', [ConsultaController::class, 'index'])->name('consulta.formulario');
 Route::post('/ayuda-soporte', [ConsultaController::class, 'store'])->name('soporte.enviar');
 
+// ======================================================
+// RUTAS DE EMPLEADOS INTERFAZ
+// ======================================================
+Route::prefix('empleado')->middleware(['auth', 'user.active'])->group(function() {
+
+    Route::get('/dashboard', [EmpleadoController::class, 'dashboard'])->name('empleado.dashboard');
+    Route::get('/viajes', [EmpleadoController::class, 'viajes'])->name('empleado.viajes');
+    Route::get('/pasajeros', [EmpleadoController::class, 'pasajeros'])->name('empleado.pasajeros');
+    Route::get('/confirmar', [EmpleadoController::class, 'confirmar'])->name('empleado.confirmar');
+    Route::get('/qr', [EmpleadoController::class, 'qr'])->name('empleado.qr');
+
+    // Reservas
+    Route::get('/reservas/create', [EmpleadoController::class, 'crearReserva'])->name('empleado.reservas.create');
+    Route::get('/reservas', [EmpleadoController::class, 'consultarReservas'])->name('empleado.reservas');
+    Route::get('/asientos', [EmpleadoController::class, 'asignarAsientos'])->name('empleado.asientos');
+    Route::get('/boletos', [EmpleadoController::class, 'boletos'])->name('empleado.boletos');
+
+    // Itinerarios
+    Route::get('/itinerarios', [EmpleadoController::class, 'itinerarios'])->name('empleado.itinerarios');
+
+    // Perfil
+    Route::get('/perfil', [EmpleadoController::class, 'perfil'])->name('empleado.perfil');
+});
+
+Route::prefix('usuario')->middleware(['auth', 'user.active'])->group(function() {
+    Route::get('/dashboard', [EmpleadoController::class, 'dashboard'])->name('usuario.dashboard');
+});
+
+Route::prefix('usuario')->middleware(['auth', 'user.active'])->name('usuario.')->group(function() {
+    Route::get('/dashboard', function () {
+        return view('usuarios.dashboard');
+    })->name('dashboard');
+
+    Route::get('/viajes', [EmpleadoController::class, 'viajes'])->name('viajes');
+    Route::get('/pasajeros', [EmpleadoController::class, 'pasajeros'])->name('pasajeros');
+    Route::get('/confirmar', [EmpleadoController::class, 'confirmar'])->name('confirmar');
+    Route::get('/qr', [EmpleadoController::class, 'qr'])->name('qr');
+
+    Route::get('/perfil', [EmpleadoController::class, 'perfil'])->name('perfil');
+});
+
+
+//Empleados Fransis
+
+Route::put('/empleados-hu5/{id}', [EmpleadoHU5Controller::class, 'update'])
+    ->name('empleados.hu5.update');
+
+//Estadisticas
+Route::get('/estadisticahu46', [EstadisticasController::class, 'index'])
+    ->name('estadistica');
