@@ -36,3 +36,4 @@ class User extends Authenticatable
         'estado' => 'activo',
     ];
 }
+
