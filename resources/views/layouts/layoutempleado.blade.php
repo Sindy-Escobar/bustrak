@@ -89,8 +89,9 @@
         <!-- Información del usuario -->
         <div class="user-info">
             <div class="user-avatar"><i class="fas fa-user-tie"></i></div>
-            <h3>{{ Auth::user()->nombre_completo ?? 'Empleado' }}</h3>
-            <small>{{ Auth::user()->email ?? 'empleado@bustrak.com' }}</small>
+            <h3>{{ auth()->user()->nombre_completo ?? 'Empleado' }}</h3>
+            <small>{{ auth()->user()->email ?? 'empleado@bustrak.com' }}</small>
+
         </div>
 
         <!-- Secciones del panel de Empleado / Agente de Ventas -->

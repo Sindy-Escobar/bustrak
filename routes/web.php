@@ -270,3 +270,13 @@ Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function
     Route::get('reserva/{viaje_id}/asientos', [ReservaController::class, 'seleccionarAsiento'])->name('reserva.asientos');
     Route::post('reserva/store', [ReservaController::class, 'store'])->name('reserva.store');
 });
+
+
+//usuario pre-determinado para admin, Roberto
+Route::get('/admin/dashboard', function () {
+    if (Auth::check() && Auth::user()->role === 'Administrador') {
+        return view('admin.dashboard');
+    }
+    abort(403, 'Acceso denegado');
+})->middleware('auth')->name('admin.dashboard');
+

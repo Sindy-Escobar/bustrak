@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="container">
-        <h1>Bienvenido, {{ Auth::user()->nombre_completo ?? 'Empleado' }}</h1>
+        <h1>Bienvenido, {{ auth()->user()->nombre_completo ?? 'Empleado' }}</h1>
         <p>Este es tu panel de control.</p>
     </div>
 @endsection
