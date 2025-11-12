@@ -15,7 +15,7 @@ class ItinerarioController extends Controller
     public function index()
     {
         $usuario = Auth::user();
-        $reservas = Reserva::with(['viaje.ruta'])
+        $reservas = Reserva::with(['viaje'])
             ->where('user_id', $usuario->id)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -27,7 +27,7 @@ class ItinerarioController extends Controller
     public function descargarPDF()
     {
         $usuario = Auth::user();
-        $reservas = Reserva::with(['viaje.ruta'])
+        $reservas = Reserva::with(['viaje'])
             ->where('usuario_id', $usuario->id)
             ->get();
 
@@ -51,7 +51,7 @@ class ItinerarioController extends Controller
     // Método para compartir itinerario
     public function compartir($id)
     {
-        $reserva = Reserva::with(['viaje.ruta'])->findOrFail($id);
+        $reserva = Reserva::with(['viaje'])->findOrFail($id);
         return view('itinerario.compartir', compact('reserva'));
     }
 
