@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\RegistroRentaController;
 use App\Http\Controllers\RegistroTeminalController;
+use App\Http\Controllers\ReservaController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -259,3 +260,13 @@ Route::get('/admin/estadisticas', [EstadisticasController::class, 'mostrar'])
 Route::put('empresas/{id}', [EmpresaController::class, 'update'])->name('empresas.update');
 
 Route::resource('rentas', RegistroRentaController::class);
+
+// ======================================================
+// RUTAS PARA RESERVAS
+// ======================================================
+Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
+    Route::get('reserva/create', [ReservaController::class, 'create'])->name('reserva.create');
+    Route::post('reserva/buscar', [ReservaController::class, 'buscar'])->name('reserva.buscar');
+    Route::get('reserva/{viaje_id}/asientos', [ReservaController::class, 'seleccionarAsiento'])->name('reserva.asientos');
+    Route::post('reserva/store', [ReservaController::class, 'store'])->name('reserva.store');
+});
