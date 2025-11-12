@@ -10,23 +10,26 @@ class Reserva extends Model
     use HasFactory;
 
     protected $fillable = [
-        'usuario_id',
+        'user_id',
         'viaje_id',
+        'asiento_id',
         'codigo_reserva',
         'fecha_reserva',
         'estado',
     ];
 
-    // Relación con usuario
-    public function usuario()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'usuario_id');
+        return $this->belongsTo(\App\Models\User::class, 'user_id');
     }
 
-    // Relación con viaje
     public function viaje()
     {
-        return $this->belongsTo(Viaje::class, 'viaje_id');
+        return $this->belongsTo(Viaje::class);
+    }
+
+    public function asiento()
+    {
+        return $this->belongsTo(Asiento::class);
     }
 }
-
