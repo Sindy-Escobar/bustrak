@@ -16,7 +16,7 @@ class ItinerarioController extends Controller
     {
         $usuario = Auth::user();
         $reservas = Reserva::with(['viaje.ruta'])
-            ->where('usuario_id', $usuario->id)
+            ->where('user_id', $usuario->id)
             ->orderBy('created_at', 'desc')
             ->get();
 
