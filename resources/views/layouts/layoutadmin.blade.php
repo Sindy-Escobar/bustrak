@@ -301,9 +301,6 @@
                 <a href="{{ route('empresas.index') }}" class="{{ request()->routeIs('empresas.index') ? 'active' : '' }}">
                     Lista de empresas
                 </a>
-                <a href="{{ route('empresas.validar') }}" class="{{ request()->routeIs('empresas.validar') ? 'active' : '' }}">
-                    Validar empresas
-                </a>
                 <a href="{{ route('empresa.form') }}" class="{{ request()->routeIs('empresa.form') ? 'active' : '' }}">
                     Registrar empresa
                 </a>
@@ -336,9 +333,6 @@
                 </a>
                 <a href="{{ route('terminales.create') }}" class="{{ request()->routeIs('terminales.create') ? 'active' : '' }}">
                     Agregar terminal
-                </a>
-                <a href="{{ route('terminales.ver_terminales') }}" class="{{ request()->routeIs('terminales.ver_terminales') ? 'active' : '' }}">
-                    Visualizar terminales
                 </a>
             </div>
         </div>

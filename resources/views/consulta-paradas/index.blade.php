@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+@extends('layouts.layoutuser')
+@section('contenido')
+    <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -9,19 +11,19 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #ecf0f1;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Navbar con gradiente exacto */
+        /* Navbar con azul oscuro */
         .navbar-bustrak {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0c3c60;
             color: white;
             padding: 20px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
         /* Contenedor para logo y menú (izquierda) */
@@ -47,7 +49,7 @@
         }
 
         .nav-link-bustrak {
-            color: rgba(255,255,255,0.9) !important;
+            color: rgba(255,255,255,0.85) !important;
             font-weight: 500;
             text-decoration: none;
             padding: 8px 16px;
@@ -58,22 +60,22 @@
         .nav-link-bustrak:hover,
         .nav-link-bustrak.active {
             color: white !important;
-            background-color: rgba(255,255,255,0.2);
+            background-color: rgba(255,255,255,0.15);
         }
 
         .btn-login {
-            background-color: rgba(255,255,255,0.2);
+            background-color: #00BCD4;
             color: white;
             font-weight: 600;
             padding: 10px 25px;
             border-radius: 5px;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: none;
             transition: all 0.3s ease;
             cursor: pointer;
         }
 
         .btn-login:hover {
-            background-color: rgba(255,255,255,0.3);
+            background-color: #00ACC1;
             color: white;
         }
 
@@ -92,7 +94,7 @@
         }
 
         .main-title {
-            color: #2c3e50;
+            color: #0c3c60;
             font-weight: 700;
             margin-bottom: 5px;
             font-size: 2rem;
@@ -114,12 +116,12 @@
 
         .form-label {
             font-weight: 600;
-            color: #2c3e50;
+            color: #0c3c60;
             margin-bottom: 8px;
         }
 
         .btn-primary-custom {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #5DA3E8;
             border: none;
             color: white;
             font-weight: 600;
@@ -127,7 +129,7 @@
         }
 
         .btn-primary-custom:hover {
-            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+            background: #4A92D7;
             color: white;
         }
 
@@ -139,7 +141,7 @@
         }
 
         .table-custom thead {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0c3c60;
             color: white;
         }
 
@@ -161,7 +163,7 @@
         }
 
         .badge-distance {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #5DA3E8;
             color: white;
             font-weight: 600;
         }
@@ -182,19 +184,19 @@
         }
 
         .section-title {
-            color: #2c3e50;
+            color: #0c3c60;
             font-size: 1.3rem;
             font-weight: 600;
             margin-bottom: 15px;
         }
 
         .pagination .page-link {
-            color: #667eea;
+            color: #5DA3E8;
         }
 
         .pagination .page-item.active .page-link {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-color: #667eea;
+            background: #5DA3E8;
+            border-color: #5DA3E8;
         }
 
         /* Responsive */
@@ -217,43 +219,6 @@
     </style>
 </head>
 <body>
-<!-- Navbar Superior con gradiente exacto -->
-<nav class="navbar-bustrak">
-    <!-- Logo BusTrak y Menú de Navegación juntos a la izquierda -->
-    <div class="navbar-left">
-        <!-- Logo BusTrak -->
-        <div class="navbar-brand-bustrak">
-            BusTrak
-        </div>
-
-        <!-- Menú de Navegación -->
-        <ul class="nav-links">
-            <li>
-                <a class="nav-link-bustrak" href="{{ route('login') }}">
-                    Inicio
-                </a>
-            </li>
-            <li>
-                <a class="nav-link-bustrak active" href="#">
-                    Terminales
-                </a>
-            </li>
-            <li>
-                <a class="nav-link-bustrak" href="{{ route('terminales.index') }}">
-                    Registrar
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <!-- Botón Cerrar Sesión FUNCIONAL -->
-    <form action="{{ route('logout') }}" method="POST" class="d-inline">
-        @csrf
-        <button type="submit" class="btn-login">
-            Cerrar Sesión
-        </button>
-    </form>
-</nav>
 
 <!-- Contenido Principal -->
 <div class="container main-content">
@@ -555,3 +520,4 @@
 </script>
 </body>
 </html>
+@endsection
