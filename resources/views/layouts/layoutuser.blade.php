@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\Auth; @endphp
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -284,16 +285,27 @@
 
         <!-- Mis Reservas -->
         <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#reservas" aria-expanded="{{ request()->routeIs('usuario.reservas*') ? 'true' : 'false' }}">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#reservas"
+                    aria-expanded="{{ request()->routeIs('usuario.reservas*') ? 'true' : 'false' }}">
                 <span><i class="fas fa-ticket-alt"></i> Mis Reservas</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
-            <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.reservas*') ? 'show' : '' }}" id="reservas">
-                <a href="{{ route('cliente.historial') }}" class="{{ request()->routeIs('cliente.historial') ? 'active' : '' }}">
+
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('cliente.reserva.create') || request()->routeIs('cliente.historial') ? 'show' : '' }}"
+                 id="reservas">
+
+                <a href="{{ route('cliente.reserva.create') }}"
+                   class="{{ request()->routeIs('cliente.reserva.create') ? 'active' : '' }}">
+                    Registrar nueva reserva
+                </a>
+
+                <a href="{{ route('cliente.historial') }}"
+                   class="{{ request()->routeIs('cliente.historial') ? 'active' : '' }}">
                     Historial de viajes
                 </a>
             </div>
         </div>
+
 
         <!-- Rutas y Horarios -->
         <div class="nav-section">
