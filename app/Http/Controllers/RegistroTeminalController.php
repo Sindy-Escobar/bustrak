@@ -8,7 +8,7 @@ use App\Models\RegistroTerminal;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 
-// ✅ NOMBRE DE CLASE CORREGIDO A 'RegistroTerminalController'
+//  NOMBRE DE CLASE CORREGIDO A 'RegistroTerminalController'
 class RegistroTeminalController extends Controller
 {
     private $departamentosHonduras = [
@@ -40,11 +40,39 @@ class RegistroTeminalController extends Controller
     ];
 
 
-    public function index()
+    public function index(Request $request)
     {
-        $terminales = RegistroTerminal::paginate(5);
-        return view('terminales.index', compact('terminales'));
+        $query = RegistroTerminal::query();
+
+        // Filtros de búsqueda
+        if ($request->filled('nombre')) {
+            $query->where('nombre', 'like', '%' . $request->nombre . '%');
+        }
+
+        if ($request->filled('contacto')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('telefono', 'like', '%' . $request->contacto . '%')
+                    ->orWhere('correo', 'like', '%' . $request->contacto . '%');
+            });
+        }
+
+        if ($request->filled('ubicacion')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('departamento', 'like', '%' . $request->ubicacion . '%')
+                    ->orWhere('municipio', 'like', '%' . $request->ubicacion . '%')
+                    ->orWhere('direccion', 'like', '%' . $request->ubicacion . '%');
+            });
+        }
+
+        // Paginación
+        $terminales = $query->paginate(5);
+
+        return view('terminales.index', compact('terminales'))
+            ->with('nombre', $request->nombre)
+            ->with('contacto', $request->contacto)
+            ->with('ubicacion', $request->ubicacion);
     }
+
 
     public function create()
     {
@@ -152,21 +180,5 @@ class RegistroTeminalController extends Controller
         // Lógica de eliminación...
     }
 
-    public function ver_terminales(Request $request)
-    {
-        $search = $request->get('search');
-        $estado = $request->get('estado');
-        $query = RegistroTerminal::query();
-        if ($search) {
-            $query->where(function($q) use ($search) {
-                $q->where('nombre', 'like', "%{$search}%")
-                    ->orWhere('municipio', 'like', "%{$search}%");
-            });
-        }
-        if ($estado) {
-            $query->where('estado', $estado);
-        }
-        $terminales = $query->orderBy('nombre')->paginate(10)->withQueryString();
-        return view('terminales.ver_terminales', compact('terminales', 'search', 'estado'));
-    }
+
 }
