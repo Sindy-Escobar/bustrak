@@ -338,9 +338,7 @@
     </style>
 </head>
 <body>
-<a href="{{ route('interfaces.principal') }}" class="btn-back">
-    Inicio
-</a>
+
 <div class="registro-container">
     <div class="background">
         <div class="circle circle1"></div>
@@ -349,6 +347,9 @@
     </div>
 
     <div class="register-card">
+        <a href="{{ route('interfaces.principal') }}" class="btn-back">
+            Inicio
+        </a>
         <div class="logo-container">
             <div class="logo">
                 <img src="/Imagenes/bustrak-logo.jpg" alt="BusTrak">
