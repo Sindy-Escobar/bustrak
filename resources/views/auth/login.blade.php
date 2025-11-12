@@ -293,10 +293,6 @@
     </style>
 </head>
 <body>
-<!-- Botón Volver al Inicio -->
-<a href="{{ route('interfaces.principal') }}" class="btn-back">
-    Inicio
-</a>
 
 <div class="container">
     <div class="background">
@@ -306,6 +302,10 @@
     </div>
 
     <div class="login-card">
+        <!-- Botón Volver al Inicio -->
+        <a href="{{ route('interfaces.principal') }}" class="btn-back">
+            Inicio
+        </a>
         <div class="logo-container">
             <div class="logo">
                 <img src="/Imagenes/bustrak-logo.jpg" alt="BusTrak">
