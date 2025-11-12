@@ -20,7 +20,7 @@ class HistorialReservasController extends Controller
 
         // Traer reservas del usuario con información del viaje
         $reservas = Reserva::with('viaje')
-            ->where('usuario_id', $usuario->id)
+            ->where('user_id', $usuario->id)
             ->orderBy('fecha_reserva', 'desc')
             ->paginate(10);
 
