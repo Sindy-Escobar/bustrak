@@ -380,6 +380,7 @@
         <a href="/login" class="btn btn-primary btn-login me-2">Iniciar Sesión</a>
         <a href="/registro" class="btn btn-success btn-registro">Registrate</a>
     </div>
+
 </section>
 
 
