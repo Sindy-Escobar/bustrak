@@ -18,6 +18,8 @@ class EmpresaBusController extends Controller
         // MODIFICACIÓN: Obtener todas las empresas y pasarlas a la vista
         $empresas = EmpresaBus::all();
         return view('terminal.empresas.visualizar', compact('empresas'));
+        return view('Empresa.proximamente');
+
     }
 
     public function form(Request $request)

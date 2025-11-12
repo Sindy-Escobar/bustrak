@@ -282,3 +282,8 @@ Route::get('/admin/dashboard', function () {
     abort(403, 'Acceso denegado');
 })->middleware('auth')->name('admin.dashboard');
 
+
+// Página temporal "Próximamente"
+Route::get('/proximamente', function () {
+    return view('Empresa.proximamente');
+})->name('proximamente');
