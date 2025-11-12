@@ -277,9 +277,7 @@
                 <a href="{{ route('cliente.perfil') }}" class="{{ request()->routeIs('cliente.perfil') ? 'active' : '' }}">
                     Ver perfil
                 </a>
-                <a href="{{ route('itinerario.index') }}" class="{{ request()->routeIs('itinerario.index') ? 'active' : '' }}">
-                    Itinerario
-                </a>
+
             </div>
         </div>
 
@@ -315,7 +313,7 @@
             </button>
             <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.rutas*') ? 'show' : '' }}" id="rutas">
                 <a href="{{ route('consulta-paradas.index') }}" class="{{ request()->routeIs('consulta-paradas.index') ? 'active' : '' }}">
-                    Ver rutas disponibles
+                    Consultar Rutas
                 </a>
             </div>
         </div>
@@ -342,6 +340,24 @@
                 </a>
             </div>
         </div>
+
+
+
+        <!-- Empresa -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#empresa"
+                    aria-expanded="{{ request()->routeIs('proximamente') ? 'true' : 'false' }}">
+                <span><i class="fas fa-building"></i>Mi Empresa</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('proximamente') ? 'show' : '' }}" id="empresa">
+                <a href="{{ route('proximamente') }}"
+                   class="{{ request()->routeIs('proximamente') ? 'active' : '' }}">
+                    Registrar empresa
+                </a>
+            </div>
+        </div>
+
 
         <!-- Soporte -->
         <div class="nav-section">
