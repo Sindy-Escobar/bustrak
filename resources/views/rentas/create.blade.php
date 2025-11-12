@@ -26,32 +26,31 @@
             {{-- Sección 1: Datos del Nuevo Cliente y Partida --}}
             <h3>Datos del Cliente y Partida</h3>
             <hr>
-            {{-- Fila 1: Datos del Nuevo Cliente (Nombre y Email/Contacto) --}}
+            {{-- Fila 1: Datos del Nuevo Cliente (Nombre, Email y DNI) --}}
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <label for="nombre_cliente" class="form-label">**Nombre completo del cliente**</label>
-                    <input type="text" name="nombre_cliente" id="nombre_cliente" class="form-control" placeholder="Escriba el nombre del nuevo cliente" required value="{{ old('nombre_cliente') }}">
+                    <label for="nombre_cliente" class="form-label">Ingrese su nombre</label>
+                    <input type="text" name="nombre_cliente" id="nombre_cliente" class="form-control" placeholder="" required value="{{ old('nombre_cliente') }}">
                 </div>
                 <div class="col-md-4">
-                    <label for="email_cliente" class="form-label">**Email o Contacto**</label>
-                    <input type="text" name="email_cliente" id="email_cliente" class="form-control" placeholder="Ej: correo@ejemplo.com o 9988-7766" required value="{{ old('email_cliente') }}">
+                    <label for="email_cliente" class="form-label">Ingrese su correo electronico</label>
+                    <input type="text" name="email_cliente" id="email_cliente" class="form-control" placeholder value="{{ old('email_cliente') }}">
                 </div>
-                {{-- CAMPO usuario_id AHORA ES ESCRIBIBLE --}}
+                {{-- CAMPO DNI/Identificación que reemplaza a usuario_id --}}
                 <div class="col-md-4">
-                    <label for="usuario_id" class="form-label">**usuario_id (Escriba 13 dígitos)**</label>
-                    {{-- SE QUITA EL atributo 'readonly' --}}
-                    {{-- También añadí 'maxlength' y 'minlength' para guiar al usuario --}}
-                    <input type="text" name="usuario_id" id="codigo_renta" class="form-control" required
-                           minlength="13" maxlength="13" pattern="[0-9]*"
-                           placeholder="Escriba los 13 dígitos del ID"
-                           value="{{ old('usuario_id') }}">
-                    {{-- CAMPO OCULTO PARA EL ID DEL CLIENTE, generado con las iniciales --}}
-                    <input type="hidden" name="id_cliente" id="id_cliente" value="{{ old('id_cliente') }}">
+                    <label for="dni_cliente" class="form-label">DNI / Identificación</label>
+                    {{-- Se cambia el nombre del campo a 'dni_cliente' --}}
+                    {{-- Los atributos de validación se ajustan a lo que espera el Controller (max: 20, alfanumérico) --}}
+                    <input type="text" name="dni_cliente" id="dni_cliente" class="form-control" required
+                           maxlength="20"
+                           placeholder="Identificación única del cliente"
+                           value="{{ old('dni_cliente') }}">
+                    {{-- SE ELIMINA EL CAMPO OCULTO 'id_cliente' ya que la lógica fue removida --}}
                 </div>
             </div>
 
             <div class="row mb-4">
-                <div class="col-md-12">
+                <div class="col-md-4">
                     <label for="punto_partida" class="form-label">Punto de partida</label>
                     <input type="text" name="punto_partida" id="punto_partida" class="form-control" required value="{{ old('punto_partida') }}">
                 </div>
@@ -144,14 +143,14 @@
 
             {{-- Botones de Acción --}}
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary px-4">Guardar Renta y Cliente</button>
+                <button type="submit" class="btn btn-primary px-4">Reservar Renta </button>
                 <button type="button" class="btn btn-warning px-4" id="limpiarFormulario">Limpiar</button>
                 <a href="{{ route('rentas.index') }}" class="btn btn-secondary px-4">Cancelar</a>
             </div>
         </form>
     </div>
 
-    {{-- Script para la lógica (Se elimina la generación automática de usuario_id) --}}
+    {{-- Script para la lógica --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const tipoEvento = document.getElementById('tipo_evento');
@@ -164,7 +163,7 @@
 
             // --- CAMPOS CLIENTE ---
             const nombreClienteInput = document.getElementById('nombre_cliente');
-            const idClienteInput = document.getElementById('id_cliente');
+            // const idClienteInput = document.getElementById('id_cliente'); // Se elimina
 
             // Mapeo de eventos a porcentajes de descuento
             const descuentos = {
@@ -175,7 +174,7 @@
                 'Empresarial': 12
             };
 
-            // --- Funciones de Cálculo y Generación ---
+            // --- Funciones de Cálculo ---
 
             function calcularTotal() {
                 const tarifa = parseFloat(tarifaInput.value) || 0;
@@ -211,48 +210,19 @@
                 calcularTotal();
             }
 
-            // Función para Generar ID de Cliente basado en el nombre (SE MANTIENE, ya que este es el id_cliente oculto)
-            function generarIdCliente() {
-                const nombreCompleto = nombreClienteInput.value.trim();
-
-                // Si el campo de nombre está vacío, el ID se limpia
-                if (nombreCompleto === '') {
-                    idClienteInput.value = '';
-                    return;
-                }
-
-                // 1. Obtener iniciales del nombre
-                const partes = nombreCompleto.split(/\s+/).filter(p => p.length > 0);
-                let iniciales = partes.map(p => p.charAt(0).toUpperCase()).join('');
-
-                if (iniciales.length === 0) {
-                    iniciales = 'NC';
-                }
-
-                // 2. Obtener la fecha corta (MMDD)
-                const date = new Date();
-                const month = (date.getMonth() + 1).toString().padStart(2, '0');
-                const day = date.getDate().toString().padStart(2, '0');
-
-                // 3. Generar 3 dígitos aleatorios
-                const random = Math.floor(100 + Math.random() * 900);
-
-                // 4. Formato final: [C-] + [Iniciales] + [MMDD] + [XXX]
-                idClienteInput.value = `C-${iniciales}${month}${day}${random}`;
-            }
-
+            // SE ELIMINÓ LA FUNCIÓN generarIdCliente()
 
             // --- Event Listeners y Inicialización ---
 
             tipoEvento.addEventListener('change', establecerDescuento);
             tarifaInput.addEventListener('input', calcularTotal);
 
-            // Listener para el campo de nombre que genera el ID del Cliente
-            nombreClienteInput.addEventListener('input', generarIdCliente);
+            // Listener para el campo de nombre que generaba el ID fue removido.
+            // nombreClienteInput.addEventListener('input', generarIdCliente); // Se elimina
 
             // Inicialización al cargar la página
             establecerDescuento();
-            generarIdCliente(); // El ID del cliente oculto se sigue generando
+            // generarIdCliente(); // Se elimina la inicialización
 
             // Limpiar Formulario
             limpiarBoton.addEventListener('click', function() {
@@ -264,8 +234,7 @@
                 totalInput.value = '0.00';
                 descuentoDisplay.selectedIndex = 0;
 
-                // Regenerar/limpiar el ID del cliente oculto
-                generarIdCliente();
+                // Regenerar/limpiar el ID del cliente oculto (Esta línea fue actualizada para no llamar a la función eliminada)
             });
         });
     </script>
