@@ -28,7 +28,7 @@
         }
         /* ===== SIDEBAR ===== */
         .sidebar {
-            width: 260px;
+            width: 230px;
             background-color: #101827;
             color: #fff;
             display: flex;
@@ -210,7 +210,7 @@
 
         /* ===== Toggle Sidebar ===== */
         .sidebar.collapsed {
-            width: 20px;
+            width: 80px;
             overflow: visible;
         }
 
@@ -354,14 +354,34 @@
                 <a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'active' : '' }}">
                     Cerrar sesión
                 </a>
-                <a href="{{ route('interfaces.principal') }}" class="{{ request()->routeIs('interfaces.principal') ? 'active' : '' }}">
-                    Inicio
-                </a>
             </div>
         </div>
     </nav>
 
     <div class="content-area">
+        <!-- Barra superior -->
+        <div class="d-flex justify-content-between align-items-center mb-4 p-3 rounded shadow-sm"
+             style="background-color: #0d1f3f; border-left: 5px solid #0dcaf0;">
+            <h5 class="mb-0 fw-semibold text-white">
+            </h5>
+
+            <div class="d-flex gap-2">
+                <a href="{{ route('interfaces.principal') }}"
+                   class="btn btn-outline-light btn-sm px-3 rounded-pill shadow-sm">
+                    <i class="fas fa-home me-1"></i> Inicio
+                </a>
+
+                <a href="{{ route('login') }}"
+                   class="btn btn-info btn-sm px-3 rounded-pill text-white shadow-sm">
+                    <i class="fas fa-sign-in-alt me-1"></i> Login
+                </a>
+
+                <a href="{{ route('registro') }}"
+                   class="btn btn-info btn-sm px-3 rounded-pill text-white shadow-sm">
+                    <i class="fas fa-sign-in-alt me-1"></i> Registrarse
+                </a>
+            </div>
+        </div>
         @yield('contenido')
     </div>
 </main>

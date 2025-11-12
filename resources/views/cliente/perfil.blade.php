@@ -32,7 +32,7 @@
                         <!-- Nombre Completo -->
                         <div style="padding: 20px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
                             <div>
-                                <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700; text-transform: uppercase;">Nombre Completo</p>
+                                <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700;">Nombre Completo</p>
                                 <p style="margin: 8px 0 0 0; font-size: 16px; color: #333; font-weight: 600;">{{ $usuario->name }}</p>
                             </div>
                             <i class="fas fa-user" style="color: #5cb3ff; font-size: 24px;"></i>
@@ -41,7 +41,7 @@
                         <!-- Correo Electrónico -->
                         <div style="padding: 20px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
                             <div style="flex-grow: 1;">
-                                <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700; text-transform: uppercase;">Correo Electrónico</p>
+                                <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700;">Correo Electrónico</p>
                                 <p style="margin: 8px 0 0 0; font-size: 16px; color: #333; font-weight: 600;">{{ $usuario->email }}</p>
                             </div>
                             <i class="fas fa-envelope" style="color: #5cb3ff; font-size: 24px; margin-left: 20px;"></i>
@@ -50,7 +50,7 @@
                         <!-- Tipo de Cuenta -->
                         <div style="padding: 20px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
                             <div>
-                                <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700; text-transform: uppercase;">Tipo de Cuenta</p>
+                                <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700;">Tipo de Cuenta</p>
                                 <span style="display: inline-block; margin-top: 8px; padding: 6px 14px; background: #e3f2fd; color: #1e63b8; border-radius: 6px; font-size: 13px; font-weight: 600;">
                                 {{ ucfirst($usuario->role) }}
                             </span>
@@ -61,7 +61,7 @@
                         <!-- Estado de Cuenta -->
                         <div style="padding: 20px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
                             <div>
-                                <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700; text-transform: uppercase;">Estado de Cuenta</p>
+                                <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700;">Estado de Cuenta</p>
                                 <span style="display: inline-block; margin-top: 8px; padding: 6px 14px; background: #d4edda; color: #155724; border-radius: 6px; font-size: 13px; font-weight: 600;">
                                 <i class="fas fa-circle-dot me-1" style="font-size: 8px;"></i> {{ ucfirst($usuario->estado) }}
                             </span>
@@ -72,7 +72,7 @@
                         <!-- Miembro Desde -->
                         <div style="padding: 20px 0; display: flex; justify-content: space-between; align-items: center;">
                             <div>
-                                <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700; text-transform: uppercase;">Miembro Desde</p>
+                                <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700;">Miembro Desde</p>
                                 <p style="margin: 8px 0 0 0; font-size: 16px; color: #333; font-weight: 600;">{{ $usuario->created_at->format('d \d\e F \d\e Y') }}</p>
                             </div>
                             <i class="fas fa-calendar-check" style="color: #5cb3ff; font-size: 24px;"></i>

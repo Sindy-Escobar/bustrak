@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://kit.fontawesome.com/a2e0c8b2b1.js" crossorigin="anonymous"></script>
 
     <style>
         /* ======== CONFIGURACIÓN GLOBAL ======== */
@@ -30,7 +31,7 @@
 
         /* ===== SIDEBAR ===== */
         .sidebar {
-            width: 260px;
+            width: 230px;
             background-color: #101827;
             color: #fff;
             display: flex;
@@ -44,6 +45,7 @@
             overflow-y: auto;
             scrollbar-width: thin;
             scrollbar-color: #5cb3ff #101827;
+            transition: all 0.3s ease;
         }
 
         .sidebar::-webkit-scrollbar {
@@ -54,14 +56,60 @@
             border-radius: 4px;
         }
 
+        /* ===== BOTÓN TOGGLE INTERNO ===== */
+        .toggle-sidebar-btn {
+            position: absolute;
+            top: 20px;
+            right: -20px;
+            width: 40px;
+            height: 45px;
+            background: #1976d2;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 18px;
+        }
+
+        .toggle-sidebar-btn:hover {
+            background: #1565c0;
+            transform: scale(1.15);
+        }
+
+        .toggle-sidebar-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        /* ===== LOGO Y USUARIO ===== */
+        .brand-logo {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+        }
+
+        .brand-logo h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
         .user-info {
             text-align: center;
             margin-bottom: 2rem;
         }
 
         .user-info h3 {
-            font-size: 1.3rem;
-            font-weight: 700;
+            font-size: 1.1rem;
+            font-weight: 600;
             color: #ffffff;
             margin: 0;
         }
@@ -135,6 +183,7 @@
             background-color: #f5f7fa;
             padding: 28px;
             min-height: 100vh;
+            transition: all 0.3s ease;
         }
 
         /* ===== RESPONSIVE ===== */
@@ -147,33 +196,62 @@
             .content-area {
                 margin-left: 0;
             }
+            .toggle-sidebar-btn {
+                display: none;
+            }
         }
+
         /* ===== Toggle Sidebar ===== */
         .sidebar.collapsed {
-            width: 0;
-            overflow: hidden;
-            transition: all 0.3s ease;
+            width: 80px;
+            overflow: visible;
+        }
+
+        .sidebar.collapsed .brand-logo h2,
+        .sidebar.collapsed .user-info,
+        .sidebar.collapsed .btn-toggle span,
+        .sidebar.collapsed .btn-toggle .chevron,
+        .sidebar.collapsed .btn-toggle-nav {
+            display: none;
+        }
+
+        .sidebar.collapsed .btn-toggle {
+            justify-content: center;
+            padding: 0.7rem;
+        }
+
+        .sidebar.collapsed .btn-toggle i {
+            margin-right: 0;
+            font-size: 1.2rem;
+        }
+
+        .sidebar.collapsed .toggle-sidebar-btn i {
+            transform: rotate(180deg);
         }
 
         .content-area.expanded {
-            margin-left: 0;
-            width: 100%;
-            transition: all 0.3s ease;
+            margin-left: 80px;
         }
-
-        #toggleSidebar {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
     </style>
-
 </head>
 
 <body>
 <main>
     <nav class="sidebar">
+        <!-- Botón Toggle Interno -->
+        <button class="toggle-sidebar-btn" id="toggleSidebar">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <!-- Logo de la Aplicación -->
+        <div class="brand-logo">
+            <h2>
+                <img src="{{ asset('Imagenes/bustrak-logo.jpg') }}" alt="Logo"
+                     style="border-radius: 35px; width: 120px; height: 60px;">
+            </h2>
+        </div>
+
+        <!-- Información del Usuario -->
         <div class="user-info">
             <h3>Admin</h3>
         </div>
@@ -187,7 +265,6 @@
                 <span><i class="fas fa-user-tie"></i> Empleados</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
-
             <div class="collapse btn-toggle-nav {{ request()->routeIs('empleados.*') ? 'show' : '' }}" id="empleados">
                 <a href="{{ route('empleados.hu5') }}" class="{{ request()->routeIs('empleados.hu5') ? 'active' : '' }}">
                     Ver empleados
@@ -195,12 +272,11 @@
                 <a href="{{ route('empleados.create') }}" class="{{ request()->routeIs('empleados.create') ? 'active' : '' }}">
                     Registrar empleado
                 </a>
-                <a href="{{ route('abordajes.historial') }}" class="{{ request()->routeIs('empleados.create') ? 'active' : '' }}">
+                <a href="{{ route('abordajes.historial') }}" class="{{ request()->routeIs('abordajes.historial') ? 'active' : '' }}">
                     Check-in
                 </a>
             </div>
         </div>
-
 
         <!-- Usuarios -->
         <div class="nav-section">
@@ -209,7 +285,9 @@
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
             <div class="collapse btn-toggle-nav" id="usuarios">
-                <a href="{{ route('usuarios.consultar') }}" class="{{ request()->routeIs('usuarios.consultar') ? 'active' : '' }}">Consultar usuarios</a>
+                <a href="{{ route('usuarios.consultar') }}" class="{{ request()->routeIs('usuarios.consultar') ? 'active' : '' }}">
+                    Consultar usuarios
+                </a>
             </div>
         </div>
 
@@ -220,31 +298,31 @@
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
             <div class="collapse btn-toggle-nav" id="empresa">
-                <a href="{{ route('empresas.index') }}" class="{{ request()->routeIs('empresas.index') ? 'active' : '' }}">Lista de empresas</a>
-                <a href="{{ route('empresas.validar') }}" class="{{ request()->routeIs('empresas.validar') ? 'active' : '' }}">Validar empresas</a>
-                <a href="{{ route('empresa.form') }}" class="{{ request()->routeIs('empresa.form') ? 'active' : '' }}">Registrar empresa</a>
+                <a href="{{ route('empresas.index') }}" class="{{ request()->routeIs('empresas.index') ? 'active' : '' }}">
+                    Lista de empresas
+                </a>
+                <a href="{{ route('empresas.validar') }}" class="{{ request()->routeIs('empresas.validar') ? 'active' : '' }}">
+                    Validar empresas
+                </a>
+                <a href="{{ route('empresa.form') }}" class="{{ request()->routeIs('empresa.form') ? 'active' : '' }}">
+                    Registrar empresa
+                </a>
             </div>
         </div>
 
         <!-- Estadísticas -->
         <div class="nav-section">
-            <button class="btn-toggle"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#estadisticas"
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#estadisticas"
                     aria-expanded="{{ request()->routeIs('admin.estadisticas') ? 'true' : 'false' }}">
                 <span><i class="fas fa-chart-bar"></i> Estadísticas</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
-
             <div class="collapse btn-toggle-nav {{ request()->routeIs('admin.estadisticas') ? 'show' : '' }}" id="estadisticas">
-                <a href="{{ route('admin.estadisticas') }}"
-                   class="{{ request()->routeIs('admin.estadisticas') ? 'active' : '' }}">
+                <a href="{{ route('admin.estadisticas') }}" class="{{ request()->routeIs('admin.estadisticas') ? 'active' : '' }}">
                     Ver Estadísticas
                 </a>
             </div>
         </div>
-
-
 
         <!-- Terminales -->
         <div class="nav-section">
@@ -253,20 +331,29 @@
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
             <div class="collapse btn-toggle-nav" id="terminales">
-                <a href="{{ route('terminales.index') }}" class="{{ request()->routeIs('terminales.index') ? 'active' : '' }}">Ver terminales</a>
-                <a href="{{ route('terminales.create') }}" class="{{ request()->routeIs('terminales.create') ? 'active' : '' }}">Agregar terminal</a>
-                <a href="{{ route('terminales.ver_terminales') }}" class="{{ request()->routeIs('terminales.ver_terminales') ? 'active' : '' }}">Visualizar terminales</a>
+                <a href="{{ route('terminales.index') }}" class="{{ request()->routeIs('terminales.index') ? 'active' : '' }}">
+                    Ver terminales
+                </a>
+                <a href="{{ route('terminales.create') }}" class="{{ request()->routeIs('terminales.create') ? 'active' : '' }}">
+                    Agregar terminal
+                </a>
+                <a href="{{ route('terminales.ver_terminales') }}" class="{{ request()->routeIs('terminales.ver_terminales') ? 'active' : '' }}">
+                    Visualizar terminales
+                </a>
             </div>
         </div>
 
+        <!-- Cerrar Sesión -->
         <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#soporte" aria-expanded="false">
-                <span><i class="fas fa-headset"></i> Cerrar sesion</span>
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#sesion" aria-expanded="false">
+                <span><i class="fas fa-sign-out-alt"></i> Cuenta</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
-            <div class="collapse btn-toggle-nav" id="soporte">
-                <a href="{{ route('logout') }}"
-                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <div class="collapse btn-toggle-nav" id="sesion">
+                <a href="{{ route('interfaces.principal') }}">
+                    Inicio
+                </a>
+                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     Cerrar sesión
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
@@ -275,19 +362,31 @@
     </nav>
 
     <div class="content-area">
-        <!--  Botón para mostrar/ocultar la barra lateral -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <button id="toggleSidebar" class="btn btn-outline-primary">
-                <i class="fas fa-bars"></i> Menú
-            </button>
-        </div>
+        <!-- Barra superior -->
+        <div class="d-flex justify-content-between align-items-center mb-4 p-3 rounded shadow-sm"
+             style="background-color: #0d1f3f; border-left: 5px solid #0dcaf0;">
+        <h5 class="mb-0 fw-semibold text-white">
+            </h5>
 
+            <div class="d-flex gap-2">
+                <a href="{{ route('interfaces.principal') }}"
+                   class="btn btn-outline-light btn-sm px-3 rounded-pill shadow-sm">
+                    <i class="fas fa-home me-1"></i> Inicio
+                </a>
+
+                <a href="{{ route('login') }}"
+                   class="btn btn-info btn-sm px-3 rounded-pill text-white shadow-sm">
+                    <i class="fas fa-sign-in-alt me-1"></i> Login
+                </a>
+            </div>
+        </div>
         @yield('content')
     </div>
-
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Script para mantener grupos abiertos -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         let openGroups = JSON.parse(localStorage.getItem('sidebarOpenGroups') || '[]');
@@ -316,7 +415,8 @@
         });
     });
 </script>
-<!-- Script para ocultar/mostrar la barra lateral -->
+
+<!-- Script para ocultar/mostrar sidebar -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const sidebar = document.querySelector('.sidebar');
@@ -326,16 +426,6 @@
         toggleBtn.addEventListener('click', function () {
             sidebar.classList.toggle('collapsed');
             content.classList.toggle('expanded');
-
-            // Cambiar ícono dinámicamente
-            const icon = toggleBtn.querySelector('i');
-            if (sidebar.classList.contains('collapsed')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-xmark');
-            } else {
-                icon.classList.remove('fa-xmark');
-                icon.classList.add('fa-bars');
-            }
         });
     });
 </script>
