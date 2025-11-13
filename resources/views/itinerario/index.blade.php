@@ -13,7 +13,6 @@
                     <i class="fas fa-file-pdf me-2"></i>Descargar PDF
                 </a>
             </div>
-
             <div class="card-body">
                 <h5 class="mb-4"><i class="fas fa-user me-2"></i>Pasajero: {{ $usuario->nombre_completo }}</h5>
 
@@ -22,27 +21,18 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">
                                 <i class="fas fa-bus me-2 text-primary"></i>
-                                {{ $reserva->viaje->ruta->nombre ?? 'Ruta no disponible' }}
+                                {{ $reserva->viaje->origen->nombre ?? 'Origen' }} to {{ $reserva->viaje->destino->nombre ?? 'Destino' }}
                             </h5>
-                            <span class="badge
-                            @if($reserva->estado == 'confirmado') bg-success
-                            @elseif($reserva->estado == 'pendiente') bg-warning text-dark
-                            @elseif($reserva->estado == 'cancelado') bg-danger
-                            @else bg-info
-                            @endif">
-                            {{ strtoupper($reserva->estado) }}
-                        </span>
+                            <span class="badge {{ $reserva->estado == 'confirmado' ? 'bg-success' : ($reserva->estado == 'pendiente' ? 'bg-warning text-dark' : 'bg-danger') }}">
+                        {{ strtoupper($reserva->estado) }}
+                    </span>
                         </div>
-
                         <hr>
-
-                        <p><i class="fas fa-map-marker-alt me-2 text-primary"></i><strong>Origen:</strong> {{ $reserva->viaje->ruta->origen ?? 'N/A' }}</p>
-                        <p><i class="fas fa-flag-checkered me-2 text-primary"></i><strong>Destino:</strong> {{ $reserva->viaje->ruta->destino ?? 'N/A' }}</p>
-                        <p><i class="fas fa-calendar-alt me-2 text-primary"></i><strong>Fecha:</strong> {{ $reserva->viaje->fecha_salida ?? 'N/A' }}</p>
-                        <p><i class="fas fa-clock me-2 text-primary"></i><strong>Hora:</strong> {{ $reserva->viaje->hora_salida ?? 'N/A' }}</p>
-                        <p><i class="fas fa-chair me-2 text-primary"></i><strong>Asiento:</strong> {{ $reserva->asiento ?? 'N/A' }}</p>
-                        <p><i class="fas fa-ticket-alt me-2 text-primary"></i><strong>Código QR:</strong> {{ $reserva->codigo_qr }}</p>
-
+                        <p><i class="fas fa-map-marker-alt me-2 text-primary"></i><strong>Origen:</strong> {{ $reserva->viaje->origen->nombre ?? 'N/A' }}</p>
+                        <p><i class="fas fa-flag-checkered me-2 text-primary"></i><strong>Destino:</strong> {{ $reserva->viaje->destino->nombre ?? 'N/A' }}</p>
+                        <p><i class="fas fa-calendar-alt me-2 text-primary"></i><strong>Fecha:</strong> {{ $reserva->viaje->fecha_hora_salida ? \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('d/m/Y') : 'N/A' }}</p>
+                        <p><i class="fas fa-clock me-2 text-primary"></i><strong>Hora:</strong> {{ $reserva->viaje->fecha_hora_salida ? \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('H:i') : 'N/A' }}</p>
+                        <p><i class="fas fa-chair me-2 text-primary"></i><strong>Asiento:</strong> {{ $reserva->asiento->numero_asiento ?? 'N/A' }}</p>
                         <div class="text-end">
                             <a href="{{ route('itinerario.compartir', $reserva->id) }}" class="btn btn-outline-primary btn-sm">
                                 <i class="fas fa-share-alt me-1"></i>Compartir
