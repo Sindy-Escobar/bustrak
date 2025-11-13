@@ -30,7 +30,7 @@ class Viaje extends Model
 
     public function bus()
     {
-        return $this->belongsTo(Bus::class); // Asume modelo Bus existe
+        return $this->belongsTo(Bus::class);
     }
 
     public function asientos()
