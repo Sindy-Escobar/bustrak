@@ -275,7 +275,7 @@
             </button>
             <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.perfil*') ? 'show' : '' }}" id="miCuenta">
                 <a href="{{ route('cliente.perfil') }}" class="{{ request()->routeIs('cliente.perfil') ? 'active' : '' }}">
-                    Ver perfil
+                    Ver Perfil
                 </a>
 
             </div>
