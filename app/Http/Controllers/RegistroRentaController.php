@@ -2,26 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\RegistroRenta;
 use App\Models\Usuario;
-use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Carbon\Carbon; // Importamos Carbon para calcular la duración del viaje
 
 class RegistroRentaController extends Controller
 {
-    public function index()
+    /**
+     * Muestra la lista de todas las rentas.
+     */
+
+        public function index()
     {
-        $rentas = RegistroRenta::orderBy('id', 'desc')->paginate(10);
+        // Obtiene las rentas paginadas para el listado
+        $rentas = RegistroRenta::orderBy('id', 'desc')->paginate(5);
         return view('rentas.index', compact('rentas'));
     }
-
+    /**
+     * Muestra el formulario para crear una nueva renta.
+     */
     public function create()
     {
         return view('rentas.create');
     }
 
+    /**
+     * Almacena una nueva renta en la base de datos.
+     * Se asegura de calcular y guardar el total_tarifa.
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -59,7 +71,11 @@ class RegistroRentaController extends Controller
             // --- CALCULAR TOTALES ---
             $tarifa = $data['tarifa'];
             $descuentoPorcentaje = $data['descuento_valor'] ?? 0;
+
+            // 1. Calcular Monto de Descuento
             $descuentoMonto = $tarifa * ($descuentoPorcentaje / 100);
+
+            // 2. Calcular Total Tarifa (Costo Base - Descuento)
             $totalCalculado = $tarifa - $descuentoMonto;
 
             // --- CREAR RENTA ---
@@ -78,8 +94,9 @@ class RegistroRentaController extends Controller
                 'hora_retorno' => $data['hora_retorno'] ?? null,
                 'tarifa' => $tarifa,
                 'descuento' => $descuentoMonto,
-                'total_tarifa' => $totalCalculado,
+                'total_tarifa' => $totalCalculado, // Guarda el total calculado
                 'anticipo' => $data['anticipo'] ?? 0,
+                'penalizacion' => 0, // Inicializar la penalización
             ]);
 
             DB::commit();
@@ -93,11 +110,18 @@ class RegistroRentaController extends Controller
         }
     }
 
+    /**
+     * Muestra el formulario para editar una renta existente.
+     */
     public function edit(RegistroRenta $renta)
     {
         return view('rentas.edit', compact('renta'));
     }
 
+    /**
+     * Actualiza una renta existente en la base de datos.
+     * Se asegura de recalcular y guardar el total_tarifa.
+     */
     public function update(Request $request, RegistroRenta $renta)
     {
         $data = $request->validate([
@@ -109,21 +133,32 @@ class RegistroRentaController extends Controller
             'num_pasajeros_confirmados' => 'nullable|integer|min:0|max:500',
             'num_pasajeros_estimados' => 'nullable|integer|min:1|max:500',
             'tarifa' => 'required|numeric|min:0.01',
-            'descuento_valor' => 'nullable|numeric|min:0',
+            'descuento_valor' => 'nullable|numeric|min:0', // Descuento en % (valor)
             'anticipo' => 'nullable|numeric|min:0',
             'hora_salida' => 'nullable|date_format:H:i',
             'hora_retorno' => 'nullable|date_format:H:i',
+            'penalizacion' => 'nullable|numeric|min:0', // Aseguramos que se pueda actualizar la penalización
         ]);
 
-        $descuentoMonto = ($data['tarifa'] * ($data['descuento_valor'] ?? 0)) / 100;
+        // --- RECALCULAR TOTALES ---
+        $tarifa = $data['tarifa'];
+        $descuentoPorcentaje = $data['descuento_valor'] ?? 0;
+
+        // 1. Calcular Monto de Descuento
+        $descuentoMonto = ($tarifa * $descuentoPorcentaje) / 100;
+
+        // 2. Calcular Total Tarifa (Costo Base - Descuento)
         $data['descuento'] = $descuentoMonto;
-        $data['total_tarifa'] = $data['tarifa'] - $descuentoMonto;
+        $data['total_tarifa'] = $tarifa - $descuentoMonto; // Guarda el nuevo total
 
         $renta->update($data);
 
         return redirect()->route('rentas.index')->with('success', 'Renta actualizada correctamente.');
     }
 
+    /**
+     * Elimina una renta de la base de datos.
+     */
     public function destroy(RegistroRenta $renta)
     {
         $renta->delete();

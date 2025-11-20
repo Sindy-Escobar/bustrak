@@ -5,7 +5,7 @@
 @section('content')
     <div class="container mt-4">
         {{-- Encabezado y título principal --}}
-        <h2 class="mb-4 text-center">Registro de renta de viaje express y nuevo cliente</h2>
+        <h2 class="mb-4 text-center">Registro de renta de viaje express </h2>
 
         {{-- Mensajes de validación --}}
         @if ($errors->any())
@@ -24,7 +24,7 @@
             @csrf
 
             {{-- Sección 1: Datos del Nuevo Cliente y Partida --}}
-            <h3>Datos del Cliente y Partida</h3>
+            <h3>Datos del cliente y partida</h3>
             <hr>
             {{-- Fila 1: Datos del Nuevo Cliente (Nombre, Email y DNI) --}}
             <div class="row mb-3">
@@ -38,7 +38,7 @@
                 </div>
                 {{-- CAMPO DNI/Identificación que reemplaza a usuario_id --}}
                 <div class="col-md-4">
-                    <label for="dni_cliente" class="form-label">DNI / Identificación</label>
+                    <label for="dni_cliente" class="form-label">DNI / identificación</label>
                     {{-- Se cambia el nombre del campo a 'dni_cliente' --}}
                     {{-- Los atributos de validación se ajustan a lo que espera el Controller (max: 20, alfanumérico) --}}
                     <input type="text" name="dni_cliente" id="dni_cliente" class="form-control" required
@@ -57,7 +57,7 @@
             </div>
 
             {{-- Sección 2: Detalles del Viaje --}}
-            <h3>Detalles del Viaje</h3>
+            <h3>Detalles del viaje</h3>
             <hr>
             {{-- Fila 2: Destino y Fecha de Inicio --}}
             <div class="row mb-3">
@@ -111,16 +111,16 @@
             </div>
 
             {{-- Sección 3: Finanzas --}}
-            <h3>Información Financiera</h3>
+            <h3>Información financiera</h3>
             <hr>
             {{-- Fila 4: Tarifa, Descuento, Total y Anticipo --}}
             <div class="row mb-4">
                 <div class="col-md-3">
-                    <label for="tarifa" class="form-label">Tarifa Base (Lps)</label>
+                    <label for="tarifa" class="form-label">Tarifa base (Lps)</label>
                     <input type="number" step="0.01" name="tarifa" id="tarifa" class="form-control" required value="{{ old('tarifa') }}">
                 </div>
                 <div class="col-md-3">
-                    <label for="descuento" class="form-label">Descuento (%) Aplicado</label>
+                    <label for="descuento" class="form-label">Descuento (%) aplicado</label>
                     <select id="descuento_display" class="form-select" disabled>
                         <option value="0">0% (Ninguno)</option>
                         <option value="5">Familiar 5%</option>
@@ -132,7 +132,7 @@
                     <input type="hidden" name="descuento_valor" id="descuento_valor" value="{{ old('descuento_valor') ?? '0' }}">
                 </div>
                 <div class="col-md-3">
-                    <label for="total" class="form-label">Total a Pagar (Lps)</label>
+                    <label for="total" class="form-label">Total a pagar (Lps)</label>
                     <input type="number" step="0.01" name="total" id="total" class="form-control" readonly value="{{ old('total') ?? '0.00' }}">
                 </div>
                 <div class="col-md-3">
@@ -143,7 +143,7 @@
 
             {{-- Botones de Acción --}}
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary px-4">Reservar Renta </button>
+                <button type="submit" class="btn btn-primary px-4">Reservar renta </button>
                 <button type="button" class="btn btn-warning px-4" id="limpiarFormulario">Limpiar</button>
                 <a href="{{ route('rentas.index') }}" class="btn btn-secondary px-4">Cancelar</a>
             </div>

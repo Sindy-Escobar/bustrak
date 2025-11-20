@@ -82,12 +82,12 @@
 
                     <!-- Footer con Botones -->
                     <div style="background: #f8f9fa; padding: 20px; display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid #f0f0f0; border-radius: 0 0 12px 12px;">
-                        <button style="padding: 10px 24px; border: 2px solid #ddd; background: white; color: #333; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.3s ease;"
-                                onmouseover="this.style.background='#f5f5f5'; this.style.borderColor='#bbb';"
-                                onmouseout="this.style.background='white'; this.style.borderColor='#ddd';"
-                                data-bs-toggle="modal" data-bs-target="#editarPerfil">
-                            <i class="fas fa-edit me-2"></i> Editar
-                        </button>
+                        <a href="{{ route('cliente.edit') }}"
+                           style="padding: 10px 24px; border: 2px solid #ddd; background: white; color: #333; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.3s ease; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;"
+                           onmouseover="this.style.background='#f5f5f5'; this.style.borderColor='#bbb';"
+                           onmouseout="this.style.background='white'; this.style.borderColor='#ddd';">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
                         <a href="{{ route('cliente.reservas') }}" style="padding: 10px 24px; background: #5cb3ff; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s ease;"
                            onmouseover="this.style.background='#3d97f0'; this.style.transform='translateY(-2px)';"
                            onmouseout="this.style.background='#5cb3ff'; this.style.transform='translateY(0)';">
