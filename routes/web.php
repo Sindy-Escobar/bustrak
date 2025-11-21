@@ -120,6 +120,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth', 'user.active'])->prefix('cliente')->group(function () {
     Route::get('/perfil', [ClienteController::class, 'perfil'])->name('cliente.perfil');
     Route::get('/reservas', [ClienteController::class, 'reservas'])->name('cliente.reservas');
+    Route::get('/perfil/editar', [ClienteController::class, 'edit'])->name('cliente.edit');
+    Route::put('/perfil', [ClienteController::class, 'update'])->name('cliente.update');
 });
 
 // ======================================================

@@ -231,15 +231,18 @@
                             </div>
                         </div>
 
-                        {{-- ⚙ Botones de Acción --}}
-                        <div class="d-flex justify-content-between align-items-center pt-3 border-top">
-                            <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ route('terminales.index') }}'">
-                                <i class="fas fa-arrow-left me-2"></i> Volver a la lista
-                            </button>
 
+                        {{-- 🔘 BOTONES DE ACCIÓN --}}
+                        <div class="d-flex justify-content-between mt-5 pt-3 border-top">
+                            <a href="{{ route('terminales.index') }}" class="btn btn-secondary rounded-2 px-4 shadow-sm">
+                                <i class="fas fa-arrow-left me-1"></i>Volver a la lista
+                            </a>
                             <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-primary submit-btn">
-                                    <i class="fas fa-sync-alt me-2"></i> Actualizar
+                                <button type="button" class="btn btn-warning reset-btn">
+                                    <i class="fas fa-undo me-2"></i> Restaurar Original
+                                </button>
+                                <button type="submit" class="btn btn-success rounded-2 px-4 shadow">
+                                    <i class="fas fa-save me-2"></i>Actualizar Terminal
                                 </button>
                             </div>
                         </div>
@@ -249,19 +252,18 @@
         </div>
     </div>
 
-    {{-- 🧠 Lógica JavaScript COMPLETA --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 🏷 Referencias a Elementos del DOM
-            const terminalForm = document.getElementById('terminalForm');
-            const departamentoSelect = document.getElementById('departamento');
-            const municipioSelect = document.getElementById('municipio');
-            const codigoInput = document.getElementById('codigo');
-            const nombreInput = document.getElementById('nombre');
-            const telefonoInput = document.getElementById('telefono');
-            const correoInput = document.getElementById('correo');
-            const direccionTextarea = document.getElementById('direccion');
-            const descripcionTextarea = document.getElementById('descripcion');
+        @section('scripts')
+            <script>
+                // La data del controlador se inyecta directamente
+                const municipiosData = @json($municipiosHonduras);
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    // 🏷️ Referencias a Elementos del DOM
+                    const terminalForm = document.getElementById('terminalForm');
+                    const departamentoSelect = document.getElementById('departamento');
+                    const municipioSelect = document.getElementById('municipio');
+                    const codigoInput = document.getElementById('codigo');
+                    const nombreInput = document.getElementById('nombre');
 
             // ⏰ Referencias de los nuevos SELECTS de Hora/Minuto y los campos HIDDEN
             const horarioAperturaHoraSelect = document.getElementById('horario_apertura_hora');
@@ -275,53 +277,37 @@
             const terminal = @json($terminal);
 
 
-            // 🗺 Data de Municipios por Departamento (Honduras)
-            const municipiosData = {
-                'Atlántida': ['La Ceiba', 'El Porvenir', 'Tela', 'San Francisco', 'Arizona', 'Esparta', 'Jutiapa', 'La Másica'],
-                'Colón': ['Trujillo', 'Balfate', 'Iriona', 'Limón', 'Sabá', 'Santa Rosa de Aguán', 'Sonaguera', 'Tocoa', 'Bonito Oriental', 'Fe'],
-                'Comayagua': ['Comayagua', 'Ajuterique', 'El Rosario', 'Esquías', 'Guanja', 'La Libertad', 'Lamaní', 'La Paz', 'Leyes', 'Meámbar', 'Minas de Oro', 'Ojo de Agua', 'San Jerónimo', 'San José de Comayagua', 'San José del Potrero', 'San Luis', 'San Sebastián', 'Siguatepeque', 'Taulabé', 'Villa de San Antonio', 'Las Lajas'],
-                'Copán': ['Santa Rosa de Copán', 'Cabañas', 'Concepción', 'Copán Ruinas', 'Corquín', 'Dolores', 'Dulce Nombre', 'El Paraíso', 'Florida', 'La Unión', 'Leapaera', 'Lucerna', 'Nueva Arcadia', 'San Agustín', 'San Antonio', 'San Jerónimo', 'San José', 'San Juan de Opoa', 'San Nicolás', 'San Pedro de Copán', 'Santa Rita', 'Trinidad de Copán', 'Veracruz'],
-                'Cortés': ['San Pedro Sula', 'Choloma', 'Puerto Cortés', 'La Lima', 'Omoa', 'San Antonio de Cortés', 'San Francisco de Yojoa', 'San Manuel', 'Villanueva', 'Potrerillos', 'Pimienta', 'Santa Cruz de Yojoa'],
-                'Choluteca': ['Choluteca', 'Apacilagua', 'Concepción de María', 'El Corpus', 'El Triunfo', 'Marcovia', 'Morolica', 'Namasigüe', 'Orocuina', 'Pespire', 'San Antonio de Flores', 'San Isidro', 'San José', 'San Marcos de Colón', 'Santa Ana de Yusguare', 'Ciudad Choluteca'],
-                'El Paraíso': ['Yuscarán', 'Alauca', 'Danlí', 'El Paraíso', 'Güinope', 'Jacaleapa', 'Liure', 'Morocelí', 'Oropolí', 'Potrerillos', 'San Antonio de Flores', 'San Lucas', 'San Matías', 'Soledad', 'Teupasenti', 'Vado Ancho', 'Trojes', 'Texiguat'],
-                'Francisco Morazán': ['Distrito Central (Tegucigalpa y Comayagüela)', 'Alubarén', 'Cedros', 'Curarén', 'El Porvenir', 'Guaimaca', 'La Libertad', 'La Venta', 'Lepaterique', 'Maraita', 'Marale', 'Nueva Armenia', 'Ojojona', 'Orica', 'Reitoca', 'Sabana Grande', 'San Antonio de Oriente', 'San Buenaventura', 'San Ignacio', 'San Juan de Flores (Cantarranas)', 'San Miguelito', 'Santa Ana', 'Santa Lucía', 'Talanga', 'Tatumbla', 'Valle de Ángeles', 'Villa de San Francisco', 'Vallecillo'],
-                'Gracias a Dios': ['Puerto Lempira', 'Brus Laguna', 'Ahuas', 'Juan Francisco Bulnes', 'Villeda Morales', 'Wampusirpi'],
-                'Intibucá': ['La Esperanza', 'Camasca', 'Colomoncagua', 'Concepción', 'Dolores', 'Honduritas', 'Intibucá', 'Jesús de Otoro', 'Magdalena', 'Masaguara', 'San Antonio', 'San Francisco de Opalaca', 'San Isidro', 'San Juan', 'San Marco de la Sierra', 'San Miguelito', 'Santa Lucía', 'Yamaranguila', 'Yurique'],
-                'Islas de la Bahía': ['Roatán', 'Guanaja', 'José Santos Guardiola', 'Utila'],
-                'La Paz': ['La Paz', 'Aguanqueterique', 'Cabañas', 'Cane', 'Chinacla', 'Guajiquiro', 'Laura', 'Marcala', 'Mercedes de Oriente', 'Opatoro', 'San Antonio del Norte', 'San José', 'San Juan', 'San Pedro de Tutule', 'Santa Ana', 'Santa Elena', 'Santa María', 'Santiago de Puringla', 'Yarula'],
-                'Lempira': ['Gracias', 'Belen', 'Candelaria', 'Cololaca', 'Erandique', 'Gualcince', 'Guarita', 'La Campa', 'La Iguala', 'Las Flores', 'La Unión', 'La Virtud', 'Lepaera', 'Mapulaca', 'Piraera', 'Rendero', 'San Andrés', 'San Francisco', 'San Juan de Cajacas', 'San Manuel Colohete', 'San Rafael', 'San Sebastián', 'Santa Cruz', 'Talgua', 'Tambla', 'Tomala', 'Tomala', 'Valladolid', 'Virginia', 'San Antonio'],
-                'Ocotepeque': ['Ocotepeque', 'Belén Gualcho', 'Concepción', 'Dolores Merendón', 'Fraternidad', 'La Encarnación', 'La Labor', 'Lucerna', 'Mercedes', 'San Fernando', 'San Francisco del Valle', 'San Jorge', 'San Marcos', 'Santa Fe', 'Sinuapa', 'Sensenti'],
-                'Olancho': ['Juticalpa', 'Campamento', 'Catacamas', 'Concordia', 'Dulce Nombre de Culmí', 'El Rosario', 'Esquipulas del Norte', 'Gualaco', 'Guarizama', 'Jano', 'La Unión', 'Mangulile', 'Manto', 'Salama', 'San Esteban', 'San Francisco de la Paz', 'Santa María del Real', 'Silca', 'Yocón', 'Patuca', 'Guayape'],
-                'Santa Bárbara': ['Santa Bárbara', 'Azacualpa', 'Atima', 'Ceguaca', 'Concepción del Norte', 'Concepción del Sur', 'Chinda', 'El Níspero', 'Gualala', 'Ilama', 'Las Vegas', 'Macuelizo', 'Naranjito', 'Nueva Frontera', 'Petoa', 'Protección', 'Quimistán', 'San Francisco de Ojuera', 'San Luis', 'San Marcos', 'San Nicolás', 'San Pedro Zacapa', 'Santa Rita', 'Trinidad', 'Santa Cruz de Yojoa'],
-                'Valle': ['Nacaome', 'Amapala', 'Alianza', 'Aramecina', 'Caridad', 'Goascorán', 'Langue', 'San Francisco de Coray', 'San Lorenzo'],
-                'Yoro': ['Yoro', 'Arenal', 'El Negrito', 'El Progreso', 'Jocón', 'Morazán', 'Olanchito', 'Santa Rita', 'Sulaco', 'Victoria', 'Yorito']
-            };
 
-            // ❌ Funciones de Manejo de Errores (Mostrar/Limpiar) - ADAPTADAS A BOOTSTRAP
-            function showError(field, message) {
-                const fieldId = field.id;
-                const errorId = fieldId.startsWith('horario_') ? fieldId.substring(0, fieldId.lastIndexOf('_')) : fieldId;
-                const errorElement = document.getElementById(error-${errorId});
+                    // ❌ Funciones de Manejo de Errores (Mostrar/Limpiar)
+                    function showError(field, message) {
+                        const fieldId = field.id;
+                        // Para horarios, el error se muestra en el div principal
+                        const errorId = fieldId.startsWith('horario_') ? fieldId.substring(0, fieldId.lastIndexOf('_')) : fieldId;
+                        const errorElement = document.getElementById(`error-${errorId}`);
 
-                if (errorElement) {
-                    if (fieldId.endsWith('_minuto')) {
-                        errorElement.innerHTML = message.replace(/\\(.?)\\*/g, '<strong>$1</strong>');
-                    } else if (!fieldId.startsWith('horario_')) {
-                        errorElement.innerHTML = message.replace(/\\(.?)\\*/g, '<strong>$1</strong>');
-                    } else if (message === '') {
-                        errorElement.textContent = '';
+                        if (errorElement) {
+                            if (fieldId.startsWith('horario_')) {
+                                // Mostrar mensaje en el div principal y marcar ambos selects
+                                errorElement.innerHTML = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                                document.getElementById(fieldId.startsWith('horario_apertura') ? 'horario_apertura_hora' : 'horario_cierre_hora').classList.add('is-invalid');
+                                document.getElementById(fieldId.startsWith('horario_apertura') ? 'horario_apertura_minuto' : 'horario_cierre_minuto').classList.add('is-invalid');
+                            } else {
+                                errorElement.innerHTML = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                                field.classList.add('is-invalid');
+                            }
+                        }
                     }
 
-                    field.classList.add('is-invalid');
-                }
-            }
+                    function clearError(field) {
+                        const fieldId = field.id;
+                        const errorId = fieldId.startsWith('horario_') ? fieldId.substring(0, fieldId.lastIndexOf('_')) : fieldId;
+                        const errorElement = document.getElementById(`error-${errorId}`);
 
-            function clearError(field) {
-                const fieldId = field.id;
-                const errorId = fieldId.startsWith('horario_') ? fieldId.substring(0, fieldId.lastIndexOf('_')) : fieldId;
-                const errorElement = document.getElementById(error-${errorId});
+                        if (errorElement && !fieldId.startsWith('horario_')) {
+                            errorElement.textContent = '';
+                        }
 
-                field.classList.remove('is-invalid');
+                        field.classList.remove('is-invalid');
 
                 if (fieldId.startsWith('horario_') && errorElement) {
                     const otherSelectId = fieldId.endsWith('_hora') ? fieldId.replace('_hora', '_minuto') : fieldId.replace('_minuto', '_hora');
@@ -352,14 +338,10 @@
                 this.style.height = (this.scrollHeight) + 'px';
             }
 
-            // 🏙 Funciones de Ubicación y Código
-            function loadMunicipios() {
-                const selectedDepto = departamentoSelect.value;
-                municipioSelect.innerHTML = '';
-                clearError(municipioSelect);
-
-                // 🛑 VALOR EXISTENTE PARA EDICIÓN
-                const oldMunicipio = "{{ old('municipio', $terminal->municipio) }}";
+                    // 🏙️ Funciones de Ubicación y Código
+                    function loadMunicipios() {
+                        const selectedDepto = departamentoSelect.value;
+                        municipioSelect.innerHTML = ''; // Limpiar opciones anteriores
 
                 if (selectedDepto && municipiosData[selectedDepto]) {
                     municipioSelect.disabled = false;
@@ -383,19 +365,18 @@
                 clearError(codigoInput);
             }
 
-            // ⏱ Funciones de Horario (SELECTORES HORA Y MINUTO con AM/PM)
-
-            function generateHourOptions() {
-                const options = [];
-                for (let h = 0; h < 24; h++) {
-                    const hour24 = String(h).padStart(2, '0');
-                    let hour12 = h % 12 || 12;
-                    const ampm = h < 12 ? 'AM' : 'PM';
-                    const text12 = ${String(hour12).padStart(2, '0')} ${ampm};
-                    options.push({ value: hour24, text: text12 });
-                }
-                return options;
-            }
+                    // ⏱️ Funciones de Horario
+                    function generateHourOptions() {
+                        const options = [];
+                        for (let h = 0; h < 24; h++) {
+                            const hour24 = String(h).padStart(2, '0');
+                            let hour12 = h % 12 || 12;
+                            const ampm = h < 12 ? 'AM' : 'PM';
+                            const text12 = `${String(hour12).padStart(2, '0')} ${ampm}`;
+                            options.push({ value: hour24, text: text12 });
+                        }
+                        return options;
+                    }
 
             function generateMinuteOptions() {
                 const options = [];
@@ -412,9 +393,16 @@
                 const ci_h = horarioCierreHoraSelect.value;
                 const ci_m = horarioCierreMinutoSelect.value;
 
-                horarioAperturaHidden.value = (ap_h && ap_m) ? ${ap_h}:${ap_m} : '';
-                horarioCierreHidden.value = (ci_h && ci_m) ? ${ci_h}:${ci_m} : '';
-            }
+                        horarioAperturaHidden.value = (ap_h && ap_m) ? `${ap_h}:${ap_m}` : '';
+                        horarioCierreHidden.value = (ci_h && ci_m) ? `${ci_h}:${ci_m}` : '';
+
+                        if (horarioAperturaHidden.value) {
+                            clearError(horarioAperturaHoraSelect);
+                        }
+                        if (horarioCierreHidden.value) {
+                            clearError(horarioCierreHoraSelect);
+                        }
+                    }
 
             function populateTimeSelects() {
                 const hourOptions = generateHourOptions();
@@ -430,14 +418,23 @@
                 const oldCierreHora = oldCierre.substring(0, 2);
                 const oldCierreMinuto = oldCierre.substring(3, 5);
 
-                const fillSelect = (selectElement, options, oldValue, defaultText) => {
-                    selectElement.innerHTML = <option value="">${defaultText}</option>;
-                    options.forEach(option => {
-                        const isSelected = option.value === oldValue;
-                        const newOption = new Option(option.text, option.value, false, isSelected);
-                        selectElement.appendChild(newOption);
-                    });
-                };
+                        const [ciHora, ciMinuto] = oldCierre.split(':');
+                        const oldCierreHora = ciHora || '';
+                        const oldCierreMinuto = ciMinuto || '';
+
+                        // Función auxiliar para llenar un select
+                        const fillSelect = (selectElement, options, oldValue, defaultText) => {
+                            selectElement.innerHTML = `<option value="">${defaultText}</option>`;
+                            options.forEach(optionData => {
+                                const newOption = new Option(optionData.text, optionData.value);
+
+                                // LÓGICA DE PRE-SELECCIÓN
+                                if (optionData.value === oldValue) {
+                                    newOption.selected = true;
+                                }
+                                selectElement.appendChild(newOption);
+                            });
+                        };
 
                 // Llenar Apertura
                 fillSelect(horarioAperturaHoraSelect, hourOptions, oldAperturaHora, 'Hora');
@@ -515,50 +512,35 @@
                     }
 
 
-                    // 1.1 Validación de campos de Horario
-                    if (fieldId.startsWith('horario_') && (fieldId.endsWith('_hora') || fieldId.endsWith('_minuto'))) {
+                                if (!horaSelect.value || !minutoSelect.value) {
+                                    message = 'Debe seleccionar tanto la **hora** como el **minuto** para el horario.';
+                                    isFieldInvalid = true;
 
-                        if (fieldId.endsWith('_hora')) {
-                            if (!horaSelect.value || !minutoSelect.value) {
-                                message = 'Debe seleccionar tanto la *hora* como el *minuto*.';
-                                isFieldInvalid = true;
+                                    if (!firstInvalidField) firstInvalidField = horaSelect;
+                                }
 
-                                if (!horaSelect.value) showError(horaSelect, '');
-                                if (!minutoSelect.value) showError(minutoSelect, message);
+                                if (isFieldInvalid) {
+                                    isValid = false;
+                                    showError(horaSelect, message); // Muestra el error en el div principal y marca los selects
+                                }
                             }
-                        }
-                    }
-                    // 1.2 Validación de otros campos vacíos
-                    else if (!value) {
-                        message = 'Este campo es *obligatorio*.';
-                        isFieldInvalid = true;
-                    }
+                            // 2. Validación de otros campos vacíos
+                            else if (!fieldId.startsWith('horario_') && !value) {
+                                message = 'Este campo es **obligatorio**.';
+                                isFieldInvalid = true;
+                            }
 
-                    // 2. Validación de Teléfono (8 dígitos)
-                    else if (fieldId === 'telefono' && !/^\d{8}$/.test(value)) {
-                        message = 'El teléfono debe contener exactamente *8 dígitos* numéricos.';
-                        isFieldInvalid = true;
-                    }
+                            // 3. Validación de Teléfono (8 dígitos)
+                            else if (fieldId === 'telefono' && !/^\d{8}$/.test(value)) {
+                                message = 'El teléfono debe contener exactamente **8 dígitos** numéricos.';
+                                isFieldInvalid = true;
+                            }
 
-                    // 3. Validación de Correo electrónico
-                    else if (fieldId === 'correo' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                        message = 'Ingrese un *correo electrónico válido* (ej: nombre@dominio.com).';
-                        isFieldInvalid = true;
-                    }
-
-                    // 4. Validación Horario Cierre vs Apertura (Usando campos ocultos)
-                    const aperturaValue = horarioAperturaHidden.value;
-                    const cierreValue = horarioCierreHidden.value;
-
-                    if (fieldId.startsWith('horario_cierre_') && cierreValue && aperturaValue) {
-                        if (cierreValue <= aperturaValue) {
-                            message = 'El horario de cierre debe ser *posterior* al de apertura.';
-                            isFieldInvalid = true;
-
-                            showError(horarioCierreHoraSelect, '');
-                            showError(horarioCierreMinutoSelect, message);
-                        }
-                    }
+                            // 4. Validación de Correo electrónico
+                            else if (fieldId === 'correo' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                                message = 'Ingrese un **correo electrónico válido** (ej: nombre@dominio.com).';
+                                isFieldInvalid = true;
+                            }
 
                     if (isFieldInvalid) {
                         isValid = false;
@@ -574,19 +556,27 @@
                     }
                 });
 
-                if (!isValid) {
-                    event.preventDefault();
-                    if (firstInvalidField) {
-                        if (firstInvalidField.id.endsWith('_minuto')) {
-                            const horaSelectId = firstInvalidField.id.replace('_minuto', '_hora');
-                            document.getElementById(horaSelectId).focus();
-                        } else {
-                            firstInvalidField.focus();
-                        }
-                    }
-                }
-            });
+                        // 5. Validación Horario Cierre vs Apertura (Final)
+                        const aperturaValue = horarioAperturaHidden.value;
+                        const cierreValue = horarioCierreHidden.value;
 
-        });
-    </script>
+                        if (aperturaValue && cierreValue && cierreValue <= aperturaValue) {
+                            const message = 'El horario de cierre debe ser **posterior** al de apertura.';
+                            isValid = false;
+                            showError(horarioCierreHoraSelect, message); // Muestra error y marca los selects de cierre
+
+                            // Si no se ha marcado un campo aún, marcamos el de cierre para enfocar
+                            if (!firstInvalidField) firstInvalidField = horarioCierreHoraSelect;
+                        }
+
+                        if (!isValid) {
+                            event.preventDefault();
+                            if (firstInvalidField) {
+                                firstInvalidField.focus();
+                            }
+                        }
+
+                });
+                });
+            </script>
 @endsection
