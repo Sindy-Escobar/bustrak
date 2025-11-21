@@ -1,253 +1,245 @@
 @extends('layouts.layoutadmin')
 
-@section('title', 'Editar Terminal - BusTrak')
+@section('title', 'Edición de Terminal - BusTrak')
 
 @section('content')
 
-    {{-- Script de Tailwind CSS y Estilos (para consistencia) --}}
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Estilos personalizados para el formulario */
-        .error-message {
-            color: #dc3545; /* Color de error de Bootstrap */
-            font-size: 0.875em;
-            margin-top: 0.25rem;
-            min-height: 1.25em; /* Previene CLS */
-        }
-
-        .form-control.is-invalid, .form-select.is-invalid {
-            border-color: #dc3545 !important;
-        }
-
-        /* Estilo para los iconos en el input group */
-        .input-group-text {
-            border-right: none;
-            background-color: #f8f9fa !important;
-        }
-
-        /* Ajuste para que los textareas se vean bien */
-        textarea {
-            min-height: 100px;
-            resize: none;
-        }
-
-        /* Estilos para el encabezado */
-        .custom-title {
-            color: #1e63b8;
-            font-weight: 600;
-            font-size: 1.8rem;
-        }
-    </style>
+    {{-- 🛑 Mensajes de Sesión (Errores o Éxito) --}}
+    @if (session('error'))
+        <div class="alert alert-danger" role="alert">
+            {{ session('error') }}
+        </div>
+    @endif
+    @if (session('success'))
+        <div class="alert alert-success" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
 
     {{-- 📝 Contenedor Principal del Formulario --}}
     <div class="container px-0">
         <div class="card shadow-lg border-0 rounded-3">
             <div class="card-body p-4">
                 <header>
-                    <h2 class="mb-0 custom-title">
-                        <i class="fas fa-edit me-2"></i>Editar Terminal: {{ $terminal->nombre }}
+                    <h2 class="mb-0" style="color:#1e63b8; font-weight:600; font-size:1.8rem;">
+                        <i class="fas fa-bus me-2"></i>Editar Terminal
                     </h2>
                 </header>
 
-                {{-- ➡️ Formulario de Edición --}}
+                {{-- ➡ Formulario de Edición --}}
                 <div class="card-body p-4 p-md-5">
-                    <form id="terminalForm"
-                          action="{{ route('terminales.update', $terminal) }}"
-                          method="POST"
-                          novalidate>                        @csrf
+                    {{-- 🛑 RUTA DE ACTUALIZACIÓN CON MÉTODO PUT/PATCH --}}
+                    <form id="terminalForm" action="{{ route('terminales.update', $terminal->id) }}" method="POST" novalidate>
+                        @csrf
                         @method('PUT')
 
+
                         {{-- 1️⃣ DATOS DE UBICACIÓN --}}
-                        <h5 class="mb-3 mt-2 custom-title" style="font-size:1.5rem;">
+                        <h5 class="mb-3 mt-2" style="color:#1e63b8; font-weight:600; font-size:1.5rem;">
                             <i class="fas fa-map-marker-alt me-2"></i>1. Datos de ubicación
                         </h5>
                         <hr class="mt-0 mb-4">
                         <div class="row g-4">
-                            {{-- Nombre --}}
+                            {{-- Fila 1: Nombre y Código --}}
                             <div class="col-md-6">
                                 <label for="nombre" class="form-label">Nombre</label>
-                                <input
-                                    type="text"
-                                    id="nombre"
-                                    name="nombre"
-                                    value="{{ old('nombre', $terminal->nombre) }}"
-                                    maxlength="100"
-                                    required
-                                    class="form-control"
-                                >
+                                {{-- 🛑 PRECARGA DE VALOR EXISTENTE --}}
+                                <input type="text" id="nombre" name="nombre" value="{{ old('nombre', $terminal->nombre) }}" maxlength="100" required
+                                       class="form-control @error('nombre') is-invalid @enderror">
+                                @error('nombre')
+                                <div class="error-message">{{ $message }}</div>
+                                @enderror
                                 <div id="error-nombre" class="error-message"></div>
                             </div>
 
-                            {{-- Departamento (Pre-selecciona el valor guardado) --}}
+                            {{-- Fila 2: Departamento y Municipio --}}
                             <div class="col-md-6">
                                 <label for="departamento" class="form-label">Departamento</label>
-                                <select
-                                    id="departamento"
-                                    name="departamento"
-                                    class="form-select"
-                                    required
-                                >
+                                <select id="departamento" name="departamento" required
+                                        class="form-select @error('departamento') is-invalid @enderror">
                                     <option value="">-- Seleccione un departamento --</option>
                                     @foreach($departamentos as $depto)
-                                        <option
-                                            value="{{ $depto }}"
-                                            {{ old('departamento', $terminal->departamento) == $depto ? 'selected' : '' }}
-                                        >
+                                        {{-- 🛑 PRECARGA DE VALOR EXISTENTE --}}
+                                        <option value="{{ $depto }}" {{ old('departamento', $terminal->departamento) == $depto ? 'selected' : '' }}>
                                             {{ $depto }}
                                         </option>
                                     @endforeach
                                 </select>
+                                @error('departamento')
+                                <div class="error-message">{{ $message }}</div>
+                                @enderror
                                 <div id="error-departamento" class="error-message"></div>
                             </div>
 
-                            {{-- Municipio (Será llenado y seleccionado por JavaScript) --}}
                             <div class="col-md-6">
-                                <label for="municipio" class="form-label">Municipio</label>
-                                <select id="municipio" name="municipio" class="form-select" required>
-                                    <option value="">-- Seleccione primero un departamento --</option>
-                                </select>
-
-                                <div id="error-municipio" class="error-message"></div>
-                                {{-- Campo oculto para guardar el valor del municipio existente y cargarlo con JS --}}
-                                <input type="hidden" id="old_municipio" value="{{ old('municipio', $terminal->municipio) }}">
+                                <div class="mb-3">
+                                    <label for="municipio" class="form-label">Municipio</label>
+                                    <select id="municipio" name="municipio" required disabled
+                                            class="form-select @error('municipio') is-invalid @enderror">
+                                        {{-- Las opciones se cargan mediante JavaScript --}}
+                                        <option value="">-- Seleccione primero un departamento --</option>
+                                    </select>
+                                    @error('municipio')
+                                    <div class="error-message">{{ $message }}</div>
+                                    @enderror
+                                    <div id="error-municipio" class="error-message"></div>
+                                </div>
                             </div>
 
-                            {{-- Código --}}
                             <div class="col-md-6">
-                                <label for="codigo" class="form-label">Código (generado automáticamente)</label>
-                                <input
-                                    type="text"
-                                    id="codigo"
-                                    name="codigo"
-                                    value="{{ old('codigo', $terminal->codigo) }}"
-                                    class="form-control bg-light"
-                                    required
-                                    readonly
-                                >
-                                <div id="error-codigo" class="error-message"></div>
+                                <div class="mb-3">
+                                    <label for="codigo" class="form-label">Código</label>
+                                    {{-- 🛑 PRECARGA DE VALOR EXISTENTE Y PERMANENTE EN EDICIÓN --}}
+                                    <input type="text" id="codigo" name="codigo" value="{{ old('codigo', $terminal->codigo) }}" maxlength="10" required readonly
+                                           class="form-control bg-light @error('codigo') is-invalid @enderror">
+                                    @error('codigo')
+                                    <div class="error-message">{{ $message }}</div>
+                                    @enderror
+                                    <div id="error-codigo" class="error-message"></div>
+                                </div>
                             </div>
+                        </div>
 
-                            {{-- Dirección --}}
+                        {{-- Fila 3: Dirección --}}
+                        <div class="row mb-3">
                             <div class="col-12">
-                                <label for="direccion" class="form-label">Dirección exacta</label>
-                                <textarea
-                                    id="direccion"
-                                    name="direccion"
-                                    class="form-control"
-                                    maxlength="150"
-                                    required
-                                >{{ old('direccion', $terminal->direccion) }}</textarea>
-                                <div id="error-direccion" class="error-message"></div>
+                                <div class="mb-3">
+                                    <label for="direccion" class="form-label">Dirección</label>
+                                    {{-- 🛑 PRECARGA DE VALOR EXISTENTE --}}
+                                    <textarea id="direccion" name="direccion" maxlength="150" required
+                                              class="form-control @error('direccion') is-invalid @enderror">{{ old('direccion', $terminal->direccion) }}</textarea>
+                                    @error('direccion')
+                                    <div class="error-message">{{ $message }}</div>
+                                    @enderror
+                                    <div id="error-direccion" class="error-message"></div>
+                                </div>
                             </div>
                         </div>
 
                         {{-- 2️⃣ INFORMACIÓN DE CONTACTO --}}
-                        <h5 class="mb-3 mt-5 custom-title" style="font-size:1.5rem;">
-                            <i class="fas fa-address-book me-2"></i>2. Información de Contacto
+                        <h5 class="mb-3 mt-5" style="color:#1e63b8; font-weight:600; font-size:1.5rem;">
+                            <i class="fas fa-address-book me-2"></i>2. Información de contacto
                         </h5>
                         <hr class="mt-0 mb-4">
                         <div class="row g-4">
-                            {{-- Teléfono --}}
+                            {{-- Fila 4: Teléfono y Correo --}}
                             <div class="col-md-6">
-                                <label for="telefono" class="form-label">Teléfono</label>
-                                <input
-                                    type="text"
-                                    id="telefono"
-                                    name="telefono"
-                                    value="{{ old('telefono', $terminal->telefono) }}"
-                                    class="form-control"
-                                    maxlength="8"
-                                    required
-                                >
-                                <div id="error-telefono" class="error-message"></div>
+                                <div class="mb-3">
+                                    <label for="telefono" class="form-label">Teléfono</label>
+                                    {{-- 🛑 PRECARGA DE VALOR EXISTENTE --}}
+                                    <input type="text" id="telefono" name="telefono" value="{{ old('telefono', $terminal->telefono) }}" maxlength="8" required
+                                           class="form-control @error('telefono') is-invalid @enderror">
+                                    @error('telefono')
+                                    <div class="error-message">{{ $message }}</div>
+                                    @enderror
+                                    <div id="error-telefono" class="error-message"></div>
+                                </div>
                             </div>
-
-                            {{-- Correo --}}
                             <div class="col-md-6">
-                                <label for="correo" class="form-label">Correo electrónico</label>
-                                <input
-                                    type="email"
-                                    id="correo"
-                                    name="correo"
-                                    value="{{ old('correo', $terminal->correo) }}"
-                                    class="form-control"
-                                    maxlength="50"
-                                    required
-                                >
-                                <div id="error-correo" class="error-message"></div>
+                                <div class="mb-3">
+                                    <label for="correo" class="form-label">Correo electrónico</label>
+                                    {{-- 🛑 PRECARGA DE VALOR EXISTENTE --}}
+                                    <input type="email" id="correo" name="correo" value="{{ old('correo', $terminal->correo) }}" maxlength="50" required
+                                           class="form-control @error('correo') is-invalid @enderror">
+                                    @error('correo')
+                                    <div class="error-message">{{ $message }}</div>
+                                    @enderror
+                                    <div id="error-correo" class="error-message"></div>
+                                </div>
                             </div>
                         </div>
 
                         {{-- 3️⃣ HORARIOS Y DESCRIPCIÓN --}}
-                        <h5 class="mb-3 mt-5 custom-title" style="font-size:1.5rem;">
-                            <i class="fas fa-clock me-2"></i>3. Horarios y Detalles
+                        <h5 class="mb-3 mt-5" style="color:#1e63b8; font-weight:600; font-size:1.5rem;">
+                            <i class="fas fa-clock me-2"></i>3. Horarios y detalles
                         </h5>
                         <hr class="mt-0 mb-4">
                         <div class="row g-4">
-                            {{-- Horario Apertura --}}
                             <div class="col-md-4">
                                 <label for="horario_apertura_hora" class="form-label">Horario de apertura</label>
                                 <div class="input-group">
+                                    {{-- Icono de Sol (Apertura) --}}
                                     <span class="input-group-text bg-light"><i class="fas fa-sun text-warning"></i></span>
-                                    <select id="horario_apertura_hora" required class="form-select">
+
+                                    {{-- Select Hora --}}
+                                    <select id="horario_apertura_hora" required
+                                            class="form-select">
                                         <option value="">Hora</option>
                                     </select>
+
+                                    {{-- Separador --}}
                                     <span class="input-group-text">:</span>
-                                    <select id="horario_apertura_minuto" required class="form-select">
+
+                                    {{-- Select Minuto --}}
+                                    <select id="horario_apertura_minuto" required
+                                            class="form-select">
                                         <option value="">Min</option>
                                     </select>
                                 </div>
+                                {{-- El mensaje de error usa el ID original del campo (horario_apertura) --}}
+                                @error('horario_apertura')
+                                <div class="error-message">{{ $message }}</div>
+                                @enderror
                                 <div id="error-horario_apertura" class="error-message"></div>
                             </div>
 
-                            {{-- Horario Cierre --}}
                             <div class="col-md-4">
                                 <label for="horario_cierre_hora" class="form-label">Horario de cierre</label>
                                 <div class="input-group">
+                                    {{-- Icono de Luna (Cierre) --}}
                                     <span class="input-group-text bg-light"><i class="fas fa-moon text-secondary"></i></span>
-                                    <select id="horario_cierre_hora" required class="form-select">
+
+                                    {{-- Select Hora --}}
+                                    <select id="horario_cierre_hora" required
+                                            class="form-select">
                                         <option value="">Hora</option>
                                     </select>
+
+                                    {{-- Separador --}}
                                     <span class="input-group-text">:</span>
-                                    <select id="horario_cierre_minuto" required class="form-select">
+
+                                    {{-- Select Minuto --}}
+                                    <select id="horario_cierre_minuto" required
+                                            class="form-select">
                                         <option value="">Min</option>
                                     </select>
                                 </div>
+                                @error('horario_cierre')
+                                <div class="error-message">{{ $message }}</div>
+                                @enderror
                                 <div id="error-horario_cierre" class="error-message"></div>
                             </div>
                         </div>
 
-                        {{-- 🟢 CAMPOS OCULTOS con valores de la DB para inicializar el JS y enviar al servidor --}}
-                        <input type="hidden" name="horario_apertura" id="horario_apertura_hidden" value="{{ old('horario_apertura', $terminal->horario_apertura) }}">
-                        <input type="hidden" name="horario_cierre" id="horario_cierre_hidden" value="{{ old('horario_cierre', $terminal->horario_cierre) }}">
+                        {{-- CAMPOS OCULTOS para enviar el valor completo HH:MM a Laravel --}}
+                        <input type="hidden" name="horario_apertura" id="horario_apertura_hidden">
+                        <input type="hidden" name="horario_cierre" id="horario_cierre_hidden">
 
-                        {{-- Descripción --}}
-                        <div class="row mb-4 mt-4">
+                        {{-- Fila 6: Descripción --}}
+                        <div class="row mb-4">
                             <div class="col-12">
-                                <label for="descripcion" class="form-label">Descripción y notas adicionales</label>
-                                <textarea
-                                    id="descripcion"
-                                    name="descripcion"
-                                    class="form-control"
-                                    rows="3"
-                                    required
-                                >{{ old('descripcion', $terminal->descripcion) }}</textarea>
-                                <div id="error-descripcion" class="error-message"></div>
+                                <div class="mb-3">
+                                    <label for="descripcion" class="form-label">Descripción</label>
+                                    {{-- 🛑 PRECARGA DE VALOR EXISTENTE --}}
+                                    <textarea id="descripcion" name="descripcion" required
+                                              class="form-control @error('descripcion') is-invalid @enderror">{{ old('descripcion', $terminal->descripcion) }}</textarea>
+                                    @error('descripcion')
+                                    <div class="error-message">{{ $message }}</div>
+                                    @enderror
+                                    <div id="error-descripcion" class="error-message"></div>
+                                </div>
                             </div>
                         </div>
 
+                        {{-- ⚙ Botones de Acción --}}
+                        <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                            <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ route('terminales.index') }}'">
+                                <i class="fas fa-arrow-left me-2"></i> Volver a la lista
+                            </button>
 
-                        {{-- 🔘 BOTONES DE ACCIÓN --}}
-                        <div class="d-flex justify-content-between mt-5 pt-3 border-top">
-                            <a href="{{ route('terminales.index') }}" class="btn btn-secondary rounded-2 px-4 shadow-sm">
-                                <i class="fas fa-arrow-left me-1"></i>Volver a la lista
-                            </a>
                             <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-warning reset-btn">
-                                    <i class="fas fa-undo me-2"></i> Restaurar Original
-                                </button>
-                                <button type="submit" class="btn btn-success rounded-2 px-4 shadow">
-                                    <i class="fas fa-save me-2"></i>Actualizar Terminal
+                                <button type="submit" class="btn btn-primary submit-btn">
+                                    <i class="fas fa-sync-alt me-2"></i> Actualizar
                                 </button>
                             </div>
                         </div>
@@ -255,358 +247,346 @@
                 </div>
             </div>
         </div>
-        @endsection
+    </div>
 
-        @section('scripts')
-            <script>
-                // La data del controlador se inyecta directamente
-                const municipiosData = @json($municipiosHonduras);
+    {{-- 🧠 Lógica JavaScript COMPLETA --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 🏷 Referencias a Elementos del DOM
+            const terminalForm = document.getElementById('terminalForm');
+            const departamentoSelect = document.getElementById('departamento');
+            const municipioSelect = document.getElementById('municipio');
+            const codigoInput = document.getElementById('codigo');
+            const nombreInput = document.getElementById('nombre');
+            const telefonoInput = document.getElementById('telefono');
+            const correoInput = document.getElementById('correo');
+            const direccionTextarea = document.getElementById('direccion');
+            const descripcionTextarea = document.getElementById('descripcion');
 
-                document.addEventListener('DOMContentLoaded', function() {
-                    // 🏷️ Referencias a Elementos del DOM
-                    const terminalForm = document.getElementById('terminalForm');
-                    const departamentoSelect = document.getElementById('departamento');
-                    const municipioSelect = document.getElementById('municipio');
-                    const codigoInput = document.getElementById('codigo');
-                    const nombreInput = document.getElementById('nombre');
+            // ⏰ Referencias de los nuevos SELECTS de Hora/Minuto y los campos HIDDEN
+            const horarioAperturaHoraSelect = document.getElementById('horario_apertura_hora');
+            const horarioAperturaMinutoSelect = document.getElementById('horario_apertura_minuto');
+            const horarioCierreHoraSelect = document.getElementById('horario_cierre_hora');
+            const horarioCierreMinutoSelect = document.getElementById('horario_cierre_minuto');
 
-                    // ⏰ Referencias de los SELECTS de Hora/Minuto y los campos HIDDEN
-                    const horarioAperturaHoraSelect = document.getElementById('horario_apertura_hora');
-                    const horarioAperturaMinutoSelect = document.getElementById('horario_apertura_minuto');
-                    const horarioCierreHoraSelect = document.getElementById('horario_cierre_hora');
-                    const horarioCierreMinutoSelect = document.getElementById('horario_cierre_minuto');
-                    const horarioAperturaHidden = document.getElementById('horario_apertura_hidden');
-                    const horarioCierreHidden = document.getElementById('horario_cierre_hidden');
+            const horarioAperturaHidden = document.getElementById('horario_apertura_hidden');
+            const horarioCierreHidden = document.getElementById('horario_cierre_hidden');
+
+            const terminal = @json($terminal);
 
 
-                    // 🟢 VALOR GUARDADO DEL MUNICIPIO (Se lee aquí para estar seguro)
-                    const oldMunicipioValue = document.getElementById('old_municipio').value;
+            // 🗺 Data de Municipios por Departamento (Honduras)
+            const municipiosData = {
+                'Atlántida': ['La Ceiba', 'El Porvenir', 'Tela', 'San Francisco', 'Arizona', 'Esparta', 'Jutiapa', 'La Másica'],
+                'Colón': ['Trujillo', 'Balfate', 'Iriona', 'Limón', 'Sabá', 'Santa Rosa de Aguán', 'Sonaguera', 'Tocoa', 'Bonito Oriental', 'Fe'],
+                'Comayagua': ['Comayagua', 'Ajuterique', 'El Rosario', 'Esquías', 'Guanja', 'La Libertad', 'Lamaní', 'La Paz', 'Leyes', 'Meámbar', 'Minas de Oro', 'Ojo de Agua', 'San Jerónimo', 'San José de Comayagua', 'San José del Potrero', 'San Luis', 'San Sebastián', 'Siguatepeque', 'Taulabé', 'Villa de San Antonio', 'Las Lajas'],
+                'Copán': ['Santa Rosa de Copán', 'Cabañas', 'Concepción', 'Copán Ruinas', 'Corquín', 'Dolores', 'Dulce Nombre', 'El Paraíso', 'Florida', 'La Unión', 'Leapaera', 'Lucerna', 'Nueva Arcadia', 'San Agustín', 'San Antonio', 'San Jerónimo', 'San José', 'San Juan de Opoa', 'San Nicolás', 'San Pedro de Copán', 'Santa Rita', 'Trinidad de Copán', 'Veracruz'],
+                'Cortés': ['San Pedro Sula', 'Choloma', 'Puerto Cortés', 'La Lima', 'Omoa', 'San Antonio de Cortés', 'San Francisco de Yojoa', 'San Manuel', 'Villanueva', 'Potrerillos', 'Pimienta', 'Santa Cruz de Yojoa'],
+                'Choluteca': ['Choluteca', 'Apacilagua', 'Concepción de María', 'El Corpus', 'El Triunfo', 'Marcovia', 'Morolica', 'Namasigüe', 'Orocuina', 'Pespire', 'San Antonio de Flores', 'San Isidro', 'San José', 'San Marcos de Colón', 'Santa Ana de Yusguare', 'Ciudad Choluteca'],
+                'El Paraíso': ['Yuscarán', 'Alauca', 'Danlí', 'El Paraíso', 'Güinope', 'Jacaleapa', 'Liure', 'Morocelí', 'Oropolí', 'Potrerillos', 'San Antonio de Flores', 'San Lucas', 'San Matías', 'Soledad', 'Teupasenti', 'Vado Ancho', 'Trojes', 'Texiguat'],
+                'Francisco Morazán': ['Distrito Central (Tegucigalpa y Comayagüela)', 'Alubarén', 'Cedros', 'Curarén', 'El Porvenir', 'Guaimaca', 'La Libertad', 'La Venta', 'Lepaterique', 'Maraita', 'Marale', 'Nueva Armenia', 'Ojojona', 'Orica', 'Reitoca', 'Sabana Grande', 'San Antonio de Oriente', 'San Buenaventura', 'San Ignacio', 'San Juan de Flores (Cantarranas)', 'San Miguelito', 'Santa Ana', 'Santa Lucía', 'Talanga', 'Tatumbla', 'Valle de Ángeles', 'Villa de San Francisco', 'Vallecillo'],
+                'Gracias a Dios': ['Puerto Lempira', 'Brus Laguna', 'Ahuas', 'Juan Francisco Bulnes', 'Villeda Morales', 'Wampusirpi'],
+                'Intibucá': ['La Esperanza', 'Camasca', 'Colomoncagua', 'Concepción', 'Dolores', 'Honduritas', 'Intibucá', 'Jesús de Otoro', 'Magdalena', 'Masaguara', 'San Antonio', 'San Francisco de Opalaca', 'San Isidro', 'San Juan', 'San Marco de la Sierra', 'San Miguelito', 'Santa Lucía', 'Yamaranguila', 'Yurique'],
+                'Islas de la Bahía': ['Roatán', 'Guanaja', 'José Santos Guardiola', 'Utila'],
+                'La Paz': ['La Paz', 'Aguanqueterique', 'Cabañas', 'Cane', 'Chinacla', 'Guajiquiro', 'Laura', 'Marcala', 'Mercedes de Oriente', 'Opatoro', 'San Antonio del Norte', 'San José', 'San Juan', 'San Pedro de Tutule', 'Santa Ana', 'Santa Elena', 'Santa María', 'Santiago de Puringla', 'Yarula'],
+                'Lempira': ['Gracias', 'Belen', 'Candelaria', 'Cololaca', 'Erandique', 'Gualcince', 'Guarita', 'La Campa', 'La Iguala', 'Las Flores', 'La Unión', 'La Virtud', 'Lepaera', 'Mapulaca', 'Piraera', 'Rendero', 'San Andrés', 'San Francisco', 'San Juan de Cajacas', 'San Manuel Colohete', 'San Rafael', 'San Sebastián', 'Santa Cruz', 'Talgua', 'Tambla', 'Tomala', 'Tomala', 'Valladolid', 'Virginia', 'San Antonio'],
+                'Ocotepeque': ['Ocotepeque', 'Belén Gualcho', 'Concepción', 'Dolores Merendón', 'Fraternidad', 'La Encarnación', 'La Labor', 'Lucerna', 'Mercedes', 'San Fernando', 'San Francisco del Valle', 'San Jorge', 'San Marcos', 'Santa Fe', 'Sinuapa', 'Sensenti'],
+                'Olancho': ['Juticalpa', 'Campamento', 'Catacamas', 'Concordia', 'Dulce Nombre de Culmí', 'El Rosario', 'Esquipulas del Norte', 'Gualaco', 'Guarizama', 'Jano', 'La Unión', 'Mangulile', 'Manto', 'Salama', 'San Esteban', 'San Francisco de la Paz', 'Santa María del Real', 'Silca', 'Yocón', 'Patuca', 'Guayape'],
+                'Santa Bárbara': ['Santa Bárbara', 'Azacualpa', 'Atima', 'Ceguaca', 'Concepción del Norte', 'Concepción del Sur', 'Chinda', 'El Níspero', 'Gualala', 'Ilama', 'Las Vegas', 'Macuelizo', 'Naranjito', 'Nueva Frontera', 'Petoa', 'Protección', 'Quimistán', 'San Francisco de Ojuera', 'San Luis', 'San Marcos', 'San Nicolás', 'San Pedro Zacapa', 'Santa Rita', 'Trinidad', 'Santa Cruz de Yojoa'],
+                'Valle': ['Nacaome', 'Amapala', 'Alianza', 'Aramecina', 'Caridad', 'Goascorán', 'Langue', 'San Francisco de Coray', 'San Lorenzo'],
+                'Yoro': ['Yoro', 'Arenal', 'El Negrito', 'El Progreso', 'Jocón', 'Morazán', 'Olanchito', 'Santa Rita', 'Sulaco', 'Victoria', 'Yorito']
+            };
+
+            // ❌ Funciones de Manejo de Errores (Mostrar/Limpiar) - ADAPTADAS A BOOTSTRAP
+            function showError(field, message) {
+                const fieldId = field.id;
+                const errorId = fieldId.startsWith('horario_') ? fieldId.substring(0, fieldId.lastIndexOf('_')) : fieldId;
+                const errorElement = document.getElementById(error-${errorId});
+
+                if (errorElement) {
+                    if (fieldId.endsWith('_minuto')) {
+                        errorElement.innerHTML = message.replace(/\\(.?)\\*/g, '<strong>$1</strong>');
+                    } else if (!fieldId.startsWith('horario_')) {
+                        errorElement.innerHTML = message.replace(/\\(.?)\\*/g, '<strong>$1</strong>');
+                    } else if (message === '') {
+                        errorElement.textContent = '';
+                    }
+
+                    field.classList.add('is-invalid');
+                }
+            }
+
+            function clearError(field) {
+                const fieldId = field.id;
+                const errorId = fieldId.startsWith('horario_') ? fieldId.substring(0, fieldId.lastIndexOf('_')) : fieldId;
+                const errorElement = document.getElementById(error-${errorId});
+
+                field.classList.remove('is-invalid');
+
+                if (fieldId.startsWith('horario_') && errorElement) {
+                    const otherSelectId = fieldId.endsWith('_hora') ? fieldId.replace('_hora', '_minuto') : fieldId.replace('_minuto', '_hora');
+                    const otherSelect = document.getElementById(otherSelectId);
+
+                    if (field.value && otherSelect.value) {
+                        errorElement.textContent = '';
+                    }
+
+                    if (!field.value) {
+                        otherSelect.classList.remove('is-invalid');
+                    }
+                }
+
+                if (!fieldId.startsWith('horario_') && errorElement) {
+                    errorElement.textContent = '';
+                }
+
+                if (fieldId === 'departamento') {
+                    municipioSelect.classList.remove('is-invalid');
+                    document.getElementById('error-municipio').textContent = '';
+                }
+            }
+
+            // 📐 Función para Auto-Redimensionar Textareas
+            function autoResize() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            }
+
+            // 🏙 Funciones de Ubicación y Código
+            function loadMunicipios() {
+                const selectedDepto = departamentoSelect.value;
+                municipioSelect.innerHTML = '';
+                clearError(municipioSelect);
+
+                // 🛑 VALOR EXISTENTE PARA EDICIÓN
+                const oldMunicipio = "{{ old('municipio', $terminal->municipio) }}";
+
+                if (selectedDepto && municipiosData[selectedDepto]) {
+                    municipioSelect.disabled = false;
+                    municipioSelect.appendChild(new Option('-- Seleccione un municipio --', ''));
+
+                    const municipios = municipiosData[selectedDepto].sort();
+
+                    municipios.forEach(municipio => {
+                        const isSelected = municipio === oldMunicipio;
+                        const option = new Option(municipio, municipio, false, isSelected);
+                        municipioSelect.appendChild(option);
+                    });
+                } else {
+                    municipioSelect.disabled = true;
+                    municipioSelect.appendChild(new Option('-- Seleccione primero un departamento --', ''));
+                }
+            }
+
+            function updateCodigo() {
+                // En edición, el código es de solo lectura. Solo se usa para limpiar el error si se manipula el campo nombre.
+                clearError(codigoInput);
+            }
+
+            // ⏱ Funciones de Horario (SELECTORES HORA Y MINUTO con AM/PM)
+
+            function generateHourOptions() {
+                const options = [];
+                for (let h = 0; h < 24; h++) {
+                    const hour24 = String(h).padStart(2, '0');
+                    let hour12 = h % 12 || 12;
+                    const ampm = h < 12 ? 'AM' : 'PM';
+                    const text12 = ${String(hour12).padStart(2, '0')} ${ampm};
+                    options.push({ value: hour24, text: text12 });
+                }
+                return options;
+            }
+
+            function generateMinuteOptions() {
+                const options = [];
+                for (let m = 0; m < 60; m += 5) {
+                    const minute = String(m).padStart(2, '0');
+                    options.push({ value: minute, text: minute });
+                }
+                return options;
+            }
+
+            function updateHiddenFields() {
+                const ap_h = horarioAperturaHoraSelect.value;
+                const ap_m = horarioAperturaMinutoSelect.value;
+                const ci_h = horarioCierreHoraSelect.value;
+                const ci_m = horarioCierreMinutoSelect.value;
+
+                horarioAperturaHidden.value = (ap_h && ap_m) ? ${ap_h}:${ap_m} : '';
+                horarioCierreHidden.value = (ci_h && ci_m) ? ${ci_h}:${ci_m} : '';
+            }
+
+            function populateTimeSelects() {
+                const hourOptions = generateHourOptions();
+                const minuteOptions = generateMinuteOptions();
+
+                // 🛑 Recuperar valores antiguos o del modelo $terminal
+                const oldApertura = "{{ old('horario_apertura', $terminal->horario_apertura) }}";
+                const oldCierre = "{{ old('horario_cierre', $terminal->horario_cierre) }}";
+
+                // Los valores antiguos se separan en Hora y Minuto (si el formato es HH:MM)
+                const oldAperturaHora = oldApertura.substring(0, 2);
+                const oldAperturaMinuto = oldApertura.substring(3, 5);
+                const oldCierreHora = oldCierre.substring(0, 2);
+                const oldCierreMinuto = oldCierre.substring(3, 5);
+
+                const fillSelect = (selectElement, options, oldValue, defaultText) => {
+                    selectElement.innerHTML = <option value="">${defaultText}</option>;
+                    options.forEach(option => {
+                        const isSelected = option.value === oldValue;
+                        const newOption = new Option(option.text, option.value, false, isSelected);
+                        selectElement.appendChild(newOption);
+                    });
+                };
+
+                // Llenar Apertura
+                fillSelect(horarioAperturaHoraSelect, hourOptions, oldAperturaHora, 'Hora');
+                fillSelect(horarioAperturaMinutoSelect, minuteOptions, oldAperturaMinuto, 'Min');
+
+                // Llenar Cierre
+                fillSelect(horarioCierreHoraSelect, hourOptions, oldCierreHora, 'Hora');
+                fillSelect(horarioCierreMinutoSelect, minuteOptions, oldCierreMinuto, 'Min');
+
+                updateHiddenFields();
+            }
+
+            // 🚀 Inicialización
+            populateTimeSelects();
+
+            if (departamentoSelect.value) {
+                loadMunicipios();
+            }
+
+            // 📐 Redimensionamiento de Textareas
+            direccionTextarea.addEventListener('input', autoResize);
+            descripcionTextarea.addEventListener('input', autoResize);
+            if (direccionTextarea.value) autoResize.call(direccionTextarea);
+            if (descripcionTextarea.value) autoResize.call(descripcionTextarea);
+
+            // 👂 Event Listeners para Ubicación y Código
+            departamentoSelect.addEventListener('change', loadMunicipios);
+            municipioSelect.addEventListener('change', updateCodigo);
+            nombreInput.addEventListener('input', updateCodigo);
+
+            // Registrar listeners para horarios y limpieza de errores
+            [
+                horarioAperturaHoraSelect,
+                horarioAperturaMinutoSelect,
+                horarioCierreHoraSelect,
+                horarioCierreMinutoSelect
+            ].forEach(select => {
+                select.addEventListener('change', updateHiddenFields);
+                select.addEventListener('change', function() { clearError(this); });
+            });
+
+            // Listeners para campos regulares
+            document.querySelectorAll(
+                'input:not([type="hidden"]):not([readonly]), select:not([id^="horario_apertura_"]):not([id^="horario_cierre_"]), textarea'
+            ).forEach(field => {
+                field.addEventListener('input', function() { clearError(this); });
+                field.addEventListener('change', function() { clearError(this); });
+            });
 
 
-                    // ❌ Funciones de Manejo de Errores (Mostrar/Limpiar)
-                    function showError(field, message) {
-                        const fieldId = field.id;
-                        // Para horarios, el error se muestra en el div principal
-                        const errorId = fieldId.startsWith('horario_') ? fieldId.substring(0, fieldId.lastIndexOf('_')) : fieldId;
-                        const errorElement = document.getElementById(`error-${errorId}`);
+            // 🛑 Lógica para la Validación del Formulario al Enviar (Validación Cliente)
+            terminalForm.addEventListener('submit', function(event) {
+                let isValid = true;
+                let firstInvalidField = null;
 
-                        if (errorElement) {
-                            if (fieldId.startsWith('horario_')) {
-                                // Mostrar mensaje en el div principal y marcar ambos selects
-                                errorElement.innerHTML = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                                document.getElementById(fieldId.startsWith('horario_apertura') ? 'horario_apertura_hora' : 'horario_cierre_hora').classList.add('is-invalid');
-                                document.getElementById(fieldId.startsWith('horario_apertura') ? 'horario_apertura_minuto' : 'horario_cierre_minuto').classList.add('is-invalid');
-                            } else {
-                                errorElement.innerHTML = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                                field.classList.add('is-invalid');
+                updateHiddenFields();
+
+                // Limpiar errores antes de revalidar
+                document.querySelectorAll(
+                    'input:not([type="hidden"]):not([readonly]), select, textarea'
+                ).forEach(field => clearError(field));
+
+                const requiredFields = terminalForm.querySelectorAll('[required]');
+
+                requiredFields.forEach(field => {
+                    let message = '';
+                    const value = field.value.trim();
+                    const fieldId = field.id;
+                    let isFieldInvalid = false;
+
+                    let horaSelect, minutoSelect;
+                    if (fieldId.startsWith('horario_')) {
+                        horaSelect = document.getElementById(fieldId.startsWith('horario_apertura') ? 'horario_apertura_hora' : 'horario_cierre_hora');
+                        minutoSelect = document.getElementById(fieldId.startsWith('horario_apertura') ? 'horario_apertura_minuto' : 'horario_cierre_minuto');
+                    }
+
+
+                    // 1.1 Validación de campos de Horario
+                    if (fieldId.startsWith('horario_') && (fieldId.endsWith('_hora') || fieldId.endsWith('_minuto'))) {
+
+                        if (fieldId.endsWith('_hora')) {
+                            if (!horaSelect.value || !minutoSelect.value) {
+                                message = 'Debe seleccionar tanto la *hora* como el *minuto*.';
+                                isFieldInvalid = true;
+
+                                if (!horaSelect.value) showError(horaSelect, '');
+                                if (!minutoSelect.value) showError(minutoSelect, message);
                             }
                         }
                     }
+                    // 1.2 Validación de otros campos vacíos
+                    else if (!value) {
+                        message = 'Este campo es *obligatorio*.';
+                        isFieldInvalid = true;
+                    }
 
-                    function clearError(field) {
-                        const fieldId = field.id;
-                        const errorId = fieldId.startsWith('horario_') ? fieldId.substring(0, fieldId.lastIndexOf('_')) : fieldId;
-                        const errorElement = document.getElementById(`error-${errorId}`);
+                    // 2. Validación de Teléfono (8 dígitos)
+                    else if (fieldId === 'telefono' && !/^\d{8}$/.test(value)) {
+                        message = 'El teléfono debe contener exactamente *8 dígitos* numéricos.';
+                        isFieldInvalid = true;
+                    }
 
-                        if (errorElement && !fieldId.startsWith('horario_')) {
-                            errorElement.textContent = '';
-                        }
+                    // 3. Validación de Correo electrónico
+                    else if (fieldId === 'correo' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                        message = 'Ingrese un *correo electrónico válido* (ej: nombre@dominio.com).';
+                        isFieldInvalid = true;
+                    }
 
-                        field.classList.remove('is-invalid');
+                    // 4. Validación Horario Cierre vs Apertura (Usando campos ocultos)
+                    const aperturaValue = horarioAperturaHidden.value;
+                    const cierreValue = horarioCierreHidden.value;
 
-                        // Limpieza especial para Horarios: Si ambos selects tienen valor, limpiar el error principal.
-                        if (fieldId.startsWith('horario_')) {
-                            const horaSelect = document.getElementById(fieldId.startsWith('horario_apertura') ? 'horario_apertura_hora' : 'horario_cierre_hora');
-                            const minutoSelect = document.getElementById(fieldId.startsWith('horario_apertura') ? 'horario_apertura_minuto' : 'horario_cierre_minuto');
+                    if (fieldId.startsWith('horario_cierre_') && cierreValue && aperturaValue) {
+                        if (cierreValue <= aperturaValue) {
+                            message = 'El horario de cierre debe ser *posterior* al de apertura.';
+                            isFieldInvalid = true;
 
-                            if (horaSelect.value && minutoSelect.value) {
-                                horaSelect.classList.remove('is-invalid');
-                                minutoSelect.classList.remove('is-invalid');
-                                document.getElementById(errorId).textContent = '';
-                            }
+                            showError(horarioCierreHoraSelect, '');
+                            showError(horarioCierreMinutoSelect, message);
                         }
                     }
 
-                    // 📐 Función para Auto-Redimensionar Textareas
-                    function autoResize() {
-                        this.style.height = 'auto';
-                        this.style.height = (this.scrollHeight) + 'px';
+                    if (isFieldInvalid) {
+                        isValid = false;
+                        if (!fieldId.startsWith('horario_')) {
+                            showError(field, message);
+                        } else if (fieldId.endsWith('_hora')) {
+                            if (!horaSelect.value) showError(field, message);
+                        }
+
+                        if (!firstInvalidField) {
+                            firstInvalidField = field;
+                        }
                     }
+                });
 
-                    // 🏙️ Funciones de Ubicación y Código
-                    function loadMunicipios() {
-                        const selectedDepto = departamentoSelect.value;
-                        municipioSelect.innerHTML = ''; // Limpiar opciones anteriores
-
-                        if (selectedDepto && municipiosData[selectedDepto]) {
-                            // 🟢 Asegurar que el select esté habilitado al cargar data
-                            municipioSelect.disabled = false;
-                            municipioSelect.appendChild(new Option('-- Seleccione un municipio --', ''));
-
-                            const municipios = municipiosData[selectedDepto].sort();
-
-                            municipios.forEach(municipio => {
-                                const option = new Option(municipio, municipio);
-
-                                // LÓGICA DE PRE-SELECCIÓN DEL MUNICIPIO GUARDADO
-                                if (municipio === oldMunicipioValue) { // Usa la variable segura
-                                    option.selected = true;
-                                }
-                                municipioSelect.appendChild(option);
-                            });
+                if (!isValid) {
+                    event.preventDefault();
+                    if (firstInvalidField) {
+                        if (firstInvalidField.id.endsWith('_minuto')) {
+                            const horaSelectId = firstInvalidField.id.replace('_minuto', '_hora');
+                            document.getElementById(horaSelectId).focus();
                         } else {
-                            municipioSelect.disabled = true;
-                            municipioSelect.appendChild(new Option('-- Seleccione primero un departamento --', ''));
-                        }
-                        updateCodigo();
-
-                        if (municipioSelect.value && municipioSelect.classList.contains('is-invalid')) {
-                            clearError(municipioSelect);
+                            firstInvalidField.focus();
                         }
                     }
+                }
+            });
 
-                    function updateCodigo() {
-                        const depto = departamentoSelect.value;
-                        const muni = municipioSelect.value;
-                        const nombre = nombreInput.value;
-                        let generatedCode = '';
-
-                        if (depto && muni) {
-                            const deptoCode = depto.substring(0, 3).toUpperCase();
-                            const muniCode = muni.replace(/[^a-zA-Z0-9]/g, '').substring(0, 3).toUpperCase();
-                            const nameHash = nombre.replace(/\s/g, '').substring(0, 2).toUpperCase() || 'XX';
-                            generatedCode = `${deptoCode}-${muniCode}-${nameHash}`;
-                        } else if (depto && !muni) {
-                            const deptoCode = depto.substring(0, 3).toUpperCase();
-                            const nameHash = nombre.replace(/\s/g, '').substring(0, 2).toUpperCase() || 'XX';
-                            generatedCode = `${deptoCode}-MUN-XX-${nameHash}`;
-                        }
-
-                        codigoInput.value = generatedCode;
-                        clearError(codigoInput);
-                    }
-
-                    // ⏱️ Funciones de Horario
-                    function generateHourOptions() {
-                        const options = [];
-                        for (let h = 0; h < 24; h++) {
-                            const hour24 = String(h).padStart(2, '0');
-                            let hour12 = h % 12 || 12;
-                            const ampm = h < 12 ? 'AM' : 'PM';
-                            const text12 = `${String(hour12).padStart(2, '0')} ${ampm}`;
-                            options.push({ value: hour24, text: text12 });
-                        }
-                        return options;
-                    }
-
-                    function generateMinuteOptions() {
-                        const options = [];
-                        for (let m = 0; m < 60; m += 5) {
-                            const minute = String(m).padStart(2, '0');
-                            options.push({ value: minute, text: minute });
-                        }
-                        return options;
-                    }
-
-                    function updateHiddenFields() {
-                        const ap_h = horarioAperturaHoraSelect.value;
-                        const ap_m = horarioAperturaMinutoSelect.value;
-                        const ci_h = horarioCierreHoraSelect.value;
-                        const ci_m = horarioCierreMinutoSelect.value;
-
-                        horarioAperturaHidden.value = (ap_h && ap_m) ? `${ap_h}:${ap_m}` : '';
-                        horarioCierreHidden.value = (ci_h && ci_m) ? `${ci_h}:${ci_m}` : '';
-
-                        if (horarioAperturaHidden.value) {
-                            clearError(horarioAperturaHoraSelect);
-                        }
-                        if (horarioCierreHidden.value) {
-                            clearError(horarioCierreHoraSelect);
-                        }
-                    }
-
-                    // 🟢 CORRECCIÓN CLAVE: Lógica para pre-seleccionar los selects de Hora/Minuto
-                    function populateTimeSelects() {
-                        const hourOptions = generateHourOptions();
-                        const minuteOptions = generateMinuteOptions();
-
-                        const oldApertura = horarioAperturaHidden.value; // Formato HH:MM (e.g., "08:00")
-                        const oldCierre = horarioCierreHidden.value;     // Formato HH:MM (e.g., "17:00")
-
-                        // ✅ FIX: Usar split para parsear de forma robusta
-                        const [apHora, apMinuto] = oldApertura.split(':');
-                        const oldAperturaHora = apHora || '';
-                        const oldAperturaMinuto = apMinuto || '';
-
-                        const [ciHora, ciMinuto] = oldCierre.split(':');
-                        const oldCierreHora = ciHora || '';
-                        const oldCierreMinuto = ciMinuto || '';
-
-                        // Función auxiliar para llenar un select
-                        const fillSelect = (selectElement, options, oldValue, defaultText) => {
-                            selectElement.innerHTML = `<option value="">${defaultText}</option>`;
-                            options.forEach(optionData => {
-                                const newOption = new Option(optionData.text, optionData.value);
-
-                                // LÓGICA DE PRE-SELECCIÓN
-                                if (optionData.value === oldValue) {
-                                    newOption.selected = true;
-                                }
-                                selectElement.appendChild(newOption);
-                            });
-                        };
-
-                        // Llenar y seleccionar Apertura
-                        fillSelect(horarioAperturaHoraSelect, hourOptions, oldAperturaHora, 'Hora');
-                        fillSelect(horarioAperturaMinutoSelect, minuteOptions, oldAperturaMinuto, 'Min');
-
-                        // Llenar y seleccionar Cierre
-                        fillSelect(horarioCierreHoraSelect, hourOptions, oldCierreHora, 'Hora');
-                        fillSelect(horarioCierreMinutoSelect, minuteOptions, oldCierreMinuto, 'Min');
-
-                        updateHiddenFields();
-                    }
-
-                    // 🚀 Inicialización
-
-                    // 1. Lógica para Ubicación
-                    if (departamentoSelect.value) {
-                        // Llamar a loadMunicipios explícitamente al inicio si hay un departamento pre-seleccionado
-                        loadMunicipios();
-                    }
-
-                    // 2. Lógica para Horarios
-                    populateTimeSelects();
-
-                    // 👂 Event Listeners para Ubicación y Código
-                    departamentoSelect.addEventListener('change', loadMunicipios);
-                    municipioSelect.addEventListener('change', updateCodigo);
-                    nombreInput.addEventListener('input', updateCodigo);
-
-                    // 👂 Event Listeners para Horarios (mantienen el campo hidden actualizado)
-                    [
-                        horarioAperturaHoraSelect,
-                        horarioAperturaMinutoSelect,
-                        horarioCierreHoraSelect,
-                        horarioCierreMinutoSelect
-                    ].forEach(select => {
-                        select.addEventListener('change', updateHiddenFields);
-                    });
-
-
-                    // 👂 Event Listeners para Textareas y ajuste de tamaño inicial
-                    const direccionTextarea = document.getElementById('direccion');
-                    const descripcionTextarea = document.getElementById('descripcion');
-
-                    direccionTextarea.addEventListener('input', autoResize);
-                    descripcionTextarea.addEventListener('input', autoResize);
-                    if (direccionTextarea.value) autoResize.call(direccionTextarea);
-                    if (descripcionTextarea.value) autoResize.call(descripcionTextarea);
-
-                    // 👂 Event Listeners para limpiar errores en inputs/textareas/selects
-                    document.querySelectorAll(
-                        'input:not([type="hidden"]):not([readonly]), select, textarea'
-                    ).forEach(field => {
-                        field.addEventListener('input', function() { clearError(this); });
-                        field.addEventListener('change', function() { clearError(this); });
-                    });
-
-
-                    // 🗑️ Lógica para el botón de Restaurar (Recarga para mostrar valores originales)
-                    const resetButton = document.querySelector('.reset-btn');
-                    if (resetButton) {
-                        resetButton.addEventListener('click', function() {
-                            window.location.reload();
-                        });
-                    }
-
-                    // 🛑 Lógica para la Validación del Formulario al Enviar (Validación Cliente)
-                    terminalForm.addEventListener('submit', function(event) {
-                        let isValid = true;
-                        let firstInvalidField = null;
-
-                        // 1. Asegurarse de que los campos ocultos están actualizados justo antes del envío
-                        updateHiddenFields();
-
-                        // Limpiar todos los mensajes de error antes de revalidar
-                        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-                        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-
-
-                        const requiredFields = terminalForm.querySelectorAll('[required]');
-
-                        requiredFields.forEach(field => {
-                            let message = '';
-                            const value = field.value.trim();
-                            const fieldId = field.id;
-                            let isFieldInvalid = false;
-
-                            // 1. Validación de campos de Horario (Solo chequeamos una vez por tipo)
-                            if (fieldId.startsWith('horario_apertura_hora') || fieldId.startsWith('horario_cierre_hora')) {
-                                const horaSelect = document.getElementById(fieldId);
-                                const minutoSelect = document.getElementById(fieldId.replace('_hora', '_minuto'));
-
-                                if (!horaSelect.value || !minutoSelect.value) {
-                                    message = 'Debe seleccionar tanto la **hora** como el **minuto** para el horario.';
-                                    isFieldInvalid = true;
-
-                                    if (!firstInvalidField) firstInvalidField = horaSelect;
-                                }
-
-                                if (isFieldInvalid) {
-                                    isValid = false;
-                                    showError(horaSelect, message); // Muestra el error en el div principal y marca los selects
-                                }
-                            }
-                            // 2. Validación de otros campos vacíos
-                            else if (!fieldId.startsWith('horario_') && !value) {
-                                message = 'Este campo es **obligatorio**.';
-                                isFieldInvalid = true;
-                            }
-
-                            // 3. Validación de Teléfono (8 dígitos)
-                            else if (fieldId === 'telefono' && !/^\d{8}$/.test(value)) {
-                                message = 'El teléfono debe contener exactamente **8 dígitos** numéricos.';
-                                isFieldInvalid = true;
-                            }
-
-                            // 4. Validación de Correo electrónico
-                            else if (fieldId === 'correo' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                                message = 'Ingrese un **correo electrónico válido** (ej: nombre@dominio.com).';
-                                isFieldInvalid = true;
-                            }
-
-
-                            if (isFieldInvalid && !fieldId.startsWith('horario_')) {
-                                isValid = false;
-                                showError(field, message);
-                                if (!firstInvalidField) {
-                                    firstInvalidField = field;
-                                }
-                            }
-                        });
-
-                        // 5. Validación Horario Cierre vs Apertura (Final)
-                        const aperturaValue = horarioAperturaHidden.value;
-                        const cierreValue = horarioCierreHidden.value;
-
-                        if (aperturaValue && cierreValue && cierreValue <= aperturaValue) {
-                            const message = 'El horario de cierre debe ser **posterior** al de apertura.';
-                            isValid = false;
-                            showError(horarioCierreHoraSelect, message); // Muestra error y marca los selects de cierre
-
-                            // Si no se ha marcado un campo aún, marcamos el de cierre para enfocar
-                            if (!firstInvalidField) firstInvalidField = horarioCierreHoraSelect;
-                        }
-
-                        if (!isValid) {
-                            event.preventDefault();
-                            if (firstInvalidField) {
-                                firstInvalidField.focus();
-                            }
-                        }
-
-                });
-                });
-            </script>
+        });
+    </script>
 @endsection
