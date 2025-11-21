@@ -15,71 +15,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Navbar con azul oscuro */
-        .navbar-bustrak {
-            background: #0c3c60;
-            color: white;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-
-        /* Contenedor para logo y menú (izquierda) */
-        .navbar-left {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-        }
-
-        .navbar-brand-bustrak {
-            color: white !important;
-            font-weight: 700;
-            font-size: 1.8rem;
-            margin: 0;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            margin: 0;
-            padding: 0;
-            list-style: none;
-        }
-
-        .nav-link-bustrak {
-            color: rgba(255,255,255,0.85) !important;
-            font-weight: 500;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link-bustrak:hover,
-        .nav-link-bustrak.active {
-            color: white !important;
-            background-color: rgba(255,255,255,0.15);
-        }
-
-        .btn-login {
-            background-color: #00BCD4;
-            color: white;
-            font-weight: 600;
-            padding: 10px 25px;
-            border-radius: 5px;
-            border: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .btn-login:hover {
-            background-color: #00ACC1;
-            color: white;
-        }
-
-        /* Contenido principal */
         .main-content {
             padding: 20px;
             margin-top: 0;
@@ -157,17 +92,6 @@
             border-color: #ecf0f1;
         }
 
-        .badge-active {
-            background-color: #27ae60;
-            color: white;
-        }
-
-        .badge-distance {
-            background: #5DA3E8;
-            color: white;
-            font-weight: 600;
-        }
-
         #map {
             height: 400px;
             border-radius: 8px;
@@ -199,21 +123,55 @@
             border-color: #5DA3E8;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .navbar-bustrak {
-                padding: 15px 20px;
-                flex-direction: column;
-                gap: 15px;
-            }
+        .badge-codigo {
+            background: #6c757d;
+            color: white;
+            font-weight: 600;
+            padding: 6px 10px;
+        }
 
-            .navbar-left {
-                flex-direction: column;
-                gap: 15px;
-            }
+        .location-badge {
+            background: #17a2b8;
+            color: white;
+            font-size: 0.8rem;
+            padding: 6px 10px;
+        }
 
-            .nav-links {
-                gap: 15px;
+        .map-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .leaflet-container {
+            background-color: #e8f4f8 !important;
+        }
+
+        .form-control, .form-select {
+            height: 45px;
+        }
+
+        #search-form .form-control,
+        #search-form .btn-primary-custom {
+            height: 45px !important;
+        }
+
+        #search-form .btn-primary-custom {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 18px;
+            border-radius: 6px;
+            line-height: 1;
+        }
+
+        #search-form .btn-primary-custom i {
+            line-height: 1;
+        }
+
+        @media (max-width: 575.98px) {
+            #search-form .form-control,
+            #search-form .btn-primary-custom {
+                height: 42px !important;
             }
         }
     </style>
@@ -232,292 +190,235 @@
         </div>
     </div>
 
-    <!-- Search and Location Section -->
+    <!-- Search Section -->
     <div class="search-section">
         <div class="row g-3 align-items-end">
-            <div class="col-md-5">
-                <label class="form-label">Buscar por nombre o dirección...</label>
-                <form action="{{ route('consulta-paradas.index') }}" method="GET" id="search-form" class="d-flex">
-                    <input type="hidden" name="lat" id="input-lat" value="{{ request('lat') }}">
-                    <input type="hidden" name="lng" id="input-lng" value="{{ request('lng') }}">
-                    <input type="text" name="search" class="form-control me-2"
-                           placeholder="Buscar terminal..."
-                           value="{{ request('search') }}">
+            <!-- 🔍 BUSCADOR -->
+            <div class="col-md-6">
+                <label class="form-label">Buscar por nombre, dirección, municipio o departamento...</label>
+                <form action="{{ route('consulta-paradas.index') }}" method="GET" id="search-form" class="d-flex w-100">
+                    <input type="text" name="search" class="form-control me-2 flex-grow-1" placeholder="Buscar terminal..." value="{{ request('search') }}">
                     <button type="submit" class="btn btn-primary-custom">
                         <i class="fas fa-search me-1"></i>Buscar
                     </button>
                 </form>
             </div>
-            <div class="col-md-5">
+
+            <!-- 🔽 ORDENAR -->
+            <div class="col-md-6">
                 <label class="form-label">Ordenar por</label>
-                <form action="{{ route('consulta-paradas.index') }}" method="GET" id="sort-form">
-                    <input type="hidden" name="lat" value="{{ request('lat') }}">
-                    <input type="hidden" name="lng" value="{{ request('lng') }}">
+                <form action="{{ route('consulta-paradas.index') }}" method="GET" id="sort-form" class="w-100">
                     <input type="hidden" name="search" value="{{ request('search') }}">
-                    <select name="order_by" class="form-select" onchange="document.getElementById('sort-form').submit()">
+                    <select name="order_by" class="form-select w-100" onchange="document.getElementById('sort-form').submit()">
                         <option value="nombre" {{ request('order_by') == 'nombre' ? 'selected' : '' }}>Nombre (A-Z)</option>
                         <option value="nombre_desc" {{ request('order_by') == 'nombre_desc' ? 'selected' : '' }}>Nombre (Z-A)</option>
+                        <option value="codigo" {{ request('order_by') == 'codigo' ? 'selected' : '' }}>Código</option>
+                        <option value="departamento" {{ request('order_by') == 'departamento' ? 'selected' : '' }}>Departamento</option>
+                        <option value="municipio" {{ request('order_by') == 'municipio' ? 'selected' : '' }}>Municipio</option>
                         <option value="fecha_reciente" {{ request('order_by') == 'fecha_reciente' ? 'selected' : '' }}>Más Recientes</option>
                         <option value="fecha_antiguo" {{ request('order_by') == 'fecha_antiguo' ? 'selected' : '' }}>Más Antiguos</option>
-                        <option value="activas" {{ request('order_by') == 'activas' ? 'selected' : '' }}>Solo Activas</option>
-                        <option value="inactivas" {{ request('order_by') == 'inactivas' ? 'selected' : '' }}>Solo Inactivas</option>
-                        @if(request('lat') && request('lng'))
-                            <option value="proximidad" {{ request('order_by') == 'proximidad' ? 'selected' : '' }}>Más Cercanas</option>
-                        @endif
+                        <option value="proximidad" {{ request('order_by') == 'proximidad' ? 'selected' : '' }}>Más Cercanas</option>
                     </select>
                 </form>
             </div>
-            <div class="col-md-2">
-                <!-- BOTÓN SEPARADO - NO DENTRO DE FORM -->
-                <button type="button" id="btn-location" class="btn btn-primary-custom w-100">
-                    <i class="fas fa-location-arrow me-1"></i>Mi Ubicación
-                </button>
-            </div>
-        </div>
-        <div class="mt-2">
-            <small id="location-status" class="text-muted"></small>
         </div>
     </div>
 
-    <!-- Interactive Map Section -->
+    <!-- Mapa -->
     <div class="map-section">
         <h3 class="section-title">
             <i class="fas fa-map me-2"></i>Mapa de Terminales
         </h3>
-        <div id="map"></div>
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+        <div class="mt-2">
+            <small class="text-muted">
+                <i class="fas fa-info-circle me-1"></i>
+                El mapa muestra la ubicación exacta de las terminales basada en sus coordenadas.
+            </small>
+        </div>
     </div>
 
-    <!-- Results Section -->
+    <!-- Resultados -->
     <div class="search-section">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="section-title mb-0">
                 <i class="fas fa-list me-2"></i>Lista de Terminales
             </h3>
             <span class="text-muted">
-                    @if($paradas->count() > 0)
-                    Mostrando {{ $paradas->firstItem() }} - {{ $paradas->lastItem() }} de {{ $paradas->total() }} terminales
+                @if($terminales->count() > 0)
+                    Mostrando {{ $terminales->firstItem() }} - {{ $terminales->lastItem() }} de {{ $terminales->total() }} terminales
                 @endif
-                </span>
+            </span>
         </div>
 
-        @if($paradas->count() > 0)
+        @if($terminales->count() > 0)
             <div class="table-responsive">
                 <table class="table table-custom table-hover">
                     <thead>
                     <tr>
                         <th>Nombre</th>
+                        <th>Código</th>
                         <th>Dirección</th>
+                        <th>Ubicación</th>
                         <th>Horario</th>
                         <th>Contacto</th>
-                        <th>Ubicación</th>
-                        @if(request('lat') && request('lng'))
-                            <th>Distancia</th>
-                        @endif
+                        <th>Coordenadas</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($paradas as $parada)
+                    @foreach($terminales as $terminal)
                         <tr>
                             <td>
-                                <strong>{{ $parada->nombre }}</strong>
-                                @if($parada->estado)
-                                    <span class="badge badge-active ms-1">Activa</span>
+                                <strong>{{ $terminal->nombre }}</strong>
+                                @if($terminal->descripcion)
+                                    <br><small class="text-muted">
+                                        @php
+                                            $descripcion = $terminal->descripcion;
+                                            if(strlen($descripcion) > 50) {
+                                                echo substr($descripcion, 0, 50) . '...';
+                                            } else {
+                                                echo $descripcion;
+                                            }
+                                        @endphp
+                                    </small>
                                 @endif
                             </td>
-                            <td>{{ $parada->direccion }}</td>
+                            <td>
+                                <span class="badge badge-codigo">{{ $terminal->codigo }}</span>
+                            </td>
+                            <td>{{ $terminal->direccion }}</td>
+                            <td>
+                                <span class="badge location-badge">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    {{ $terminal->municipio }}, {{ $terminal->departamento }}
+                                </span>
+                            </td>
                             <td>
                                 <i class="fas fa-clock text-warning me-1"></i>
-                                {{ $parada->horario ?? 'No especificado' }}
+                                {{ $terminal->horario_apertura }} - {{ $terminal->horario_cierre }}
                             </td>
                             <td>
-                                @if($parada->contacto)
-                                    <i class="fas fa-phone text-success me-1"></i>
-                                    {{ $parada->contacto }}
-                                @else
-                                    <span class="text-muted">Sin contacto</span>
+                                <i class="fas fa-phone me-1"></i>{{ $terminal->telefono }}
+                                @if($terminal->correo)
+                                    <br><i class="fas fa-envelope me-1"></i>{{ $terminal->correo }}
                                 @endif
                             </td>
                             <td>
-                                @if($parada->latitud && $parada->longitud)
-                                    <button class="btn btn-sm btn-primary-custom view-on-map"
-                                            data-lat="{{ $parada->latitud }}"
-                                            data-lng="{{ $parada->longitud }}"
-                                            data-name="{{ $parada->nombre }}">
-                                        <i class="fas fa-map-marker-alt me-1"></i>Ver Mapa
-                                    </button>
+                                @if($terminal->latitud && $terminal->longitud)
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-crosshairs me-1"></i>
+                                        {{ number_format($terminal->latitud, 6) }}, {{ number_format($terminal->longitud, 6) }}
+                                    </span>
                                 @else
-                                    <span class="text-muted">No disponible</span>
+                                    <span class="badge bg-secondary">
+                                        <i class="fas fa-map-marker-alt me-1"></i>
+                                        Sin coordenadas
+                                    </span>
                                 @endif
                             </td>
-                            @if(request('lat') && request('lng'))
-                                <td>
-                                    @if(isset($parada->distancia))
-                                        <span class="badge badge-distance">
-                                                {{ number_format($parada->distancia, 1) }} km
-                                            </span>
-                                    @else
-                                        <span class="text-muted">-</span>
-                                    @endif
-                                </td>
-                            @endif
                         </tr>
                     @endforeach
                     </tbody>
                 </table>
             </div>
 
-            <!-- Pagination -->
             <div class="d-flex justify-content-center mt-4">
                 <nav>
-                    {{ $paradas->links() }}
+                    {{ $terminales->links() }}
                 </nav>
             </div>
         @else
             <div class="text-center py-5">
                 <i class="fas fa-map-marker-alt fa-3x text-muted mb-3"></i>
                 <h4 class="text-muted">No se encontraron terminales</h4>
-                <p class="text-muted">Intenta con otros términos de búsqueda o activa tu ubicación</p>
-                <button id="btn-location-empty" class="btn btn-primary-custom">
-                    <i class="fas fa-location-arrow me-1"></i>Activar Mi Ubicación
-                </button>
+                <p class="text-muted">Intenta con otros términos de búsqueda</p>
             </div>
         @endif
     </div>
 </div>
 
-<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
-    // Initialize Map
-    const map = L.map('map').setView([14.0378, -86.5794], 12);
+    document.addEventListener('DOMContentLoaded', function() {
+        const map = L.map('map').setView([14.8378, -86.5375], 7);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 18
+        }).addTo(map);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+        const terminalesData = @json($terminales->items());
+        const markers = [];
 
-    // Add markers for terminales
-    const paradasData = @json($paradas->items());
-    paradasData.forEach(parada => {
-        if (parada.latitud && parada.longitud) {
-            L.marker([parada.latitud, parada.longitud])
-                .addTo(map)
-                .bindPopup(`
-                        <div class="text-center">
-                            <h6 class="text-primary mb-2">${parada.nombre}</h6>
-                            <p class="mb-1 small"><i class="fas fa-map-marker-alt me-1"></i>${parada.direccion}</p>
-                            <p class="mb-1 small"><i class="fas fa-clock me-1"></i>${parada.horario || 'Horario no especificado'}</p>
-                            <p class="mb-0 small"><i class="fas fa-phone me-1"></i>${parada.contacto || 'Sin contacto'}</p>
-                        </div>
-                    `);
-        }
-    });
+        terminalesData.forEach(terminal => {
+            let coords = null;
 
-    // User location
-    let userMarker = null;
-    const userLat = {{ request('lat') ?: 'null' }};
-    const userLng = {{ request('lng') ?: 'null' }};
-
-    if (userLat && userLng) {
-        userMarker = L.marker([userLat, userLng])
-            .addTo(map)
-            .bindPopup('<strong><i class="fas fa-user me-1"></i>Tu Ubicación Actual</strong>')
-            .openPopup();
-
-        // Adjust map view
-        const group = new L.featureGroup([...map._layers]);
-        map.fitBounds(group.getBounds().pad(0.1));
-    }
-
-    // Location button functionality - CORREGIDA
-    function activateLocation(buttonId = 'btn-location') {
-        const status = document.getElementById('location-status');
-        const btn = document.getElementById(buttonId);
-
-        status.textContent = 'Detectando tu ubicación...';
-        status.className = 'text-warning';
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Detectando...';
-
-        if (!navigator.geolocation) {
-            status.textContent = 'Tu navegador no soporta geolocalización';
-            status.className = 'text-danger';
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-location-arrow me-1"></i>Mi Ubicación';
-            return;
-        }
-
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-
-                // Actualizar los inputs hidden
-                document.getElementById('input-lat').value = lat;
-                document.getElementById('input-lng').value = lng;
-
-                status.textContent = 'Ubicación detectada! Recargando resultados...';
-                status.className = 'text-success';
-
-                // Enviar el formulario de búsqueda con las nuevas coordenadas
-                setTimeout(() => {
-                    document.getElementById('search-form').submit();
-                }, 1000);
-            },
-            function(error) {
-                let message = 'Error: ';
-                switch(error.code) {
-                    case error.PERMISSION_DENIED:
-                        message += 'Permiso de ubicación denegado';
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        message += 'Ubicación no disponible';
-                        break;
-                    case error.TIMEOUT:
-                        message += 'Tiempo de espera agotado';
-                        break;
-                    default:
-                        message += 'Error desconocido';
-                }
-                status.textContent = message;
-                status.className = 'text-danger';
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-location-arrow me-1"></i>Mi Ubicación';
-            },
-            {
-                timeout: 10000,
-                enableHighAccuracy: true
+            // ✅ USAR COORDENADAS EXACTAS DE RegistroTerminal
+            if (terminal.latitud && terminal.longitud) {
+                coords = [parseFloat(terminal.latitud), parseFloat(terminal.longitud)];
+            } else {
+                // Coordenadas aproximadas por municipio
+                const municipioCoords = {
+                    'Distrito Central (Tegucigalpa y Comayagüela)': [14.0940, -87.2067],
+                    'San Pedro Sula': [15.5059, -88.0236],
+                    'La Ceiba': [15.7828, -86.7900],
+                    'Comayagua': [14.4604, -87.6389],
+                    'Choluteca': [13.3017, -87.1944],
+                    'Puerto Cortés': [15.8389, -87.9439],
+                    'El Progreso': [15.4000, -87.8000],
+                    'Juticalpa': [14.6667, -86.2167],
+                    'Danlí': [14.0333, -86.5833],
+                    'Santa Rosa de Copán': [14.7667, -88.7833],
+                    'Tela': [15.7833, -87.4500],
+                    'Siguatepeque': [14.6000, -87.8333],
+                    'La Esperanza': [14.3000, -88.1833],
+                    'Catacamas': [14.8481, -85.8944],
+                    'Trujillo': [15.9167, -85.9500],
+                    'Roatán': [16.3170, -86.5370]
+                };
+                coords = municipioCoords[terminal.municipio] || [14.8378, -86.5375];
             }
-        );
-    }
 
-    // Event listeners CORREGIDOS
-    document.getElementById('btn-location').addEventListener('click', () => activateLocation('btn-location'));
-    if (document.getElementById('btn-location-empty')) {
-        document.getElementById('btn-location-empty').addEventListener('click', () => activateLocation('btn-location-empty'));
-    }
+            const marker = L.marker(coords)
+            .addTo(map)
+            .bindPopup(`
+                    <div style="min-width: 220px;">
+                        <h6 class="text-primary mb-2" style="font-weight: 600; font-size: 1rem;">
+                            <i class="fas fa-bus me-1"></i>${terminal.nombre}
+                        </h6>
+                        <div style="font-size: 0.85rem;">
+                            <p class="mb-1"><strong>Código:</strong> ${terminal.codigo}</p>
+                            <p class="mb-1"><i class="fas fa-map-marker-alt me-1"></i>${terminal.direccion}</p>
+                            <p class="mb-1"><i class="fas fa-location-arrow me-1"></i>${terminal.municipio}, ${terminal.departamento}</p>
+                            ${terminal.latitud && terminal.longitud ?
+                `<p class="mb-1"><i class="fas fa-crosshairs me-1"></i><small>Coordenadas exactas</small></p>
+                 <p class="mb-1"><small>Lat: ${parseFloat(terminal.latitud).toFixed(6)}</small></p>
+                 <p class="mb-1"><small>Lng: ${parseFloat(terminal.longitud).toFixed(6)}</small></p>` :
+                `<p class="mb-1"><i class="fas fa-info-circle me-1"></i><small>Ubicación aproximada</small></p>`}
+                            <p class="mb-1"><i class="fas fa-clock me-1"></i>${terminal.horario_apertura} - ${terminal.horario_cierre}</p>
+                            <p class="mb-1"><i class="fas fa-phone me-1"></i>${terminal.telefono}</p>
+                            ${terminal.correo ? `<p class="mb-0"><i class="fas fa-envelope me-1"></i>${terminal.correo}</p>` : ''}
+                        </div>
+                    </div>
+                `);
 
-    // View on map buttons
-    document.querySelectorAll('.view-on-map').forEach(button => {
-        button.addEventListener('click', function() {
-            const lat = parseFloat(this.dataset.lat);
-            const lng = parseFloat(this.dataset.lng);
-            const name = this.dataset.name;
-
-            map.setView([lat, lng], 15);
-
-            // Find and open marker popup
-            map.eachLayer(layer => {
-                if (layer instanceof L.Marker) {
-                    const pos = layer.getLatLng();
-                    if (pos.lat === lat && pos.lng === lng) {
-                        layer.openPopup();
-                    }
-                }
-            });
+            markers.push(marker);
         });
+
+        if (markers.length > 0) {
+            const group = new L.featureGroup(markers);
+            map.fitBounds(group.getBounds().pad(0.1));
+        } else {
+            map.setView([14.8378, -86.5375], 7);
+        }
+
+        setTimeout(() => map.invalidateSize(), 100);
     });
 </script>
+
 </body>
 </html>
 @endsection

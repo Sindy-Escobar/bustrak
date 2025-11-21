@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ConsultaParada;
+use App\Models\RegistroTerminal;
 
 class ConsultaParadaController extends Controller
 {
@@ -14,52 +14,56 @@ class ConsultaParadaController extends Controller
         $userLng = $request->input('lng');
         $orderBy = $request->input('order_by', 'nombre');
 
-        $paradas = ConsultaParada::query()
+        $terminales = RegistroTerminal::query()
             ->when($search, function ($q) use ($search) {
                 $q->where('nombre', 'like', "%$search%")
-                    ->orWhere('direccion', 'like', "%$search%");
+                    ->orWhere('direccion', 'like', "%$search%")
+                    ->orWhere('municipio', 'like', "%$search%")
+                    ->orWhere('departamento', 'like', "%$search%")
+                    ->orWhere('codigo', 'like', "%$search%");
             });
-
-        // Filtros por estado
-        if ($orderBy === 'activas') {
-            $paradas = $paradas->where('estado', 1);
-        } elseif ($orderBy === 'inactivas') {
-            $paradas = $paradas->where('estado', 0);
-        }
 
         // Calcular distancia si tenemos coordenadas del usuario
         if ($userLat && $userLng) {
-            $paradas = $paradas->selectRaw('*,
+            $terminales = $terminales->selectRaw('*,
             (6371 * acos(cos(radians(?)) * cos(radians(latitud)) * cos(radians(longitud) - radians(?)) + sin(radians(?)) * sin(radians(latitud)))) AS distancia',
                 [$userLat, $userLng, $userLat]
             );
 
             if ($orderBy === 'proximidad') {
-                $paradas = $paradas->orderBy('distancia');
+                $terminales = $terminales->orderBy('distancia');
             }
         }
 
         // Ordenamientos
         switch ($orderBy) {
             case 'nombre_desc':
-                $paradas = $paradas->orderBy('nombre', 'desc');
+                $terminales = $terminales->orderBy('nombre', 'desc');
+                break;
+            case 'codigo':
+                $terminales = $terminales->orderBy('codigo', 'asc');
+                break;
+            case 'departamento':
+                $terminales = $terminales->orderBy('departamento', 'asc');
+                break;
+            case 'municipio':
+                $terminales = $terminales->orderBy('municipio', 'asc');
                 break;
             case 'fecha_reciente':
-                $paradas = $paradas->orderBy('created_at', 'desc');
+                $terminales = $terminales->orderBy('created_at', 'desc');
                 break;
             case 'fecha_antiguo':
-                $paradas = $paradas->orderBy('created_at', 'asc');
+                $terminales = $terminales->orderBy('created_at', 'asc');
                 break;
             case 'proximidad':
-                // Ya se maneja arriba
                 break;
-            default: // 'nombre' por defecto
-                $paradas = $paradas->orderBy('nombre', 'asc');
+            default:
+                $terminales = $terminales->orderBy('nombre', 'asc');
                 break;
         }
 
-        $paradas = $paradas->paginate(10);
+        $terminales = $terminales->paginate(10);
 
-        return view('consulta-paradas.index', compact('paradas', 'userLat', 'userLng'));
+        return view('consulta-paradas.index', compact('terminales', 'userLat', 'userLng'));
     }
 }
