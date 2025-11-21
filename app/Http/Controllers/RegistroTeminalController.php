@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-// ✅ Usamos el nombre correcto del Modelo
 use App\Models\RegistroTerminal;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 
-//  NOMBRE DE CLASE CORREGIDO A 'RegistroTerminalController'
 class RegistroTeminalController extends Controller
 {
     private $departamentosHonduras = [
@@ -22,7 +20,6 @@ class RegistroTeminalController extends Controller
         'Atlántida' => ['La Ceiba', 'El Porvenir', 'Esparta', 'Jutiapa', 'La Másica', 'San Francisco', 'Tela', 'Arizona'],
         'Colón' => ['Trujillo', 'Balfate', 'Iriona', 'Limón', 'Sabá', 'Santa Fe', 'Santa Rosa de Aguán', 'Sonaguera', 'Tocoa', 'Bonito Oriental'],
         'Comayagua' => ['Comayagua', 'Ajuterique', 'El Porvenir', 'Esquías', 'Humuya', 'La Libertad', 'Lamaní', 'La Paz', 'Las Lajas', 'Lejamaní', 'Meámbar', 'Minas de Oro', 'Ojo de Agua', 'San Jerónimo', 'San José de Comayagua', 'San José del Potrero', 'San Luis', 'San Sebastián', 'Siguatepeque', 'Taulabé', 'Villa de San Antonio'],
-        // ➡️ CORRECCIÓN DEL ARRAY DE COPÁN (23 municipios)
         'Copán' => ['Santa Rosa de Copán', 'Cabañas', 'Concepción', 'Copán Ruinas', 'Corquín', 'Dolores', 'Dulce Nombre', 'El Paraíso', 'Florida', 'La Jigua', 'La Unión', 'Lucerna', 'Mercedes', 'San Agustín', 'San Fernando', 'San Francisco del Valle', 'San Jerónimo', 'San José', 'San Juan de Opoa', 'San Nicolás', 'San Pedro de Copán', 'Santa Rita', 'Trinidad de Copán', 'Veracruz'],
         'Cortés' => ['San Pedro Sula', 'Choloma', 'La Lima', 'Omoa', 'Pimienta', 'Potrerillos', 'Puerto Cortés', 'San Antonio de Cortés', 'San Manuel', 'Santa Cruz de Yojoa', 'Villanueva'],
         'Choluteca' => ['Choluteca', 'Apacilagua', 'Concepción de María', 'Corpus', 'Duyure', 'El Triunfo', 'Marcovia', 'Morolica', 'Namasigüe', 'Orocuina', 'Pespire', 'San Antonio de Flores', 'San Isidro', 'San José', 'San Marcos de Colón', 'Santa Ana de Yusguare'],
@@ -40,12 +37,10 @@ class RegistroTeminalController extends Controller
         'Yoro' => ['Yoro', 'Arenal', 'El Negrito', 'El Progreso', 'Jocón', 'Morazán', 'Olanchito', 'Santa Rita', 'Sulaco', 'Victoria', 'Yorito']
     ];
 
-
     public function index(Request $request)
     {
         $query = RegistroTerminal::query();
 
-        // Filtros de búsqueda
         if ($request->filled('nombre')) {
             $query->where('nombre', 'like', '%' . $request->nombre . '%');
         }
@@ -65,7 +60,6 @@ class RegistroTeminalController extends Controller
             });
         }
 
-        // Paginación
         $terminales = $query->paginate(5);
 
         return view('terminales.index', compact('terminales'))
@@ -74,49 +68,43 @@ class RegistroTeminalController extends Controller
             ->with('ubicacion', $request->ubicacion);
     }
 
-
     public function create()
     {
         $departamentos = $this->departamentosHonduras;
-        $municipiosHonduras = $this->municipiosHonduras; // Nombre de variable para JS
+        $municipiosHonduras = $this->municipiosHonduras;
         return view('terminales.create', compact('departamentos', 'municipiosHonduras'));
     }
 
     public function store(Request $request)
     {
-        // ... (Validación y Store logic - NO CAMBIA) ...
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:100|regex:/^\S.*$/',
             'codigo' => 'required|string|max:10|unique:registro_terminal,codigo|regex:/^\S.*$/',
             'direccion' => 'required|string|max:150|regex:/^\S.*$/',
-
             'departamento' => [
                 'required',
                 'string',
                 Rule::in($this->departamentosHonduras),
             ],
             'municipio' => 'required|string|max:50|regex:/^\S.*$/',
-
             'telefono' => 'required|string|max:8|regex:/^[983]\d{7}$/|unique:registro_terminal,telefono',
-
             'correo' => 'required|email:rfc,dns|max:50|unique:registro_terminal,correo|regex:/^\S.*$/',
-
             'horario_apertura' => 'required|date_format:H:i',
             'horario_cierre' => 'required|date_format:H:i|after:horario_apertura',
             'descripcion' => 'required|string',
+            'latitud' => 'nullable|numeric|between:-90,90',
+            'longitud' => 'nullable|numeric|between:-180,180',
         ]);
 
         try {
+            // ✅ SOLO CREAR EN registro_terminal
             RegistroTerminal::create($validatedData);
 
             return redirect()->route('terminales.index')->with('success', 'Terminal creada correctamente.');
 
         } catch (\Exception $e) {
             Log::error('Error FATAL al crear la terminal: ' . $e->getMessage());
-
-            return back()
-                ->withInput()
-                ->with('error', 'Error del sistema al guardar. Detalle técnico: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Error del sistema al guardar: ' . $e->getMessage());
         }
     }
 
@@ -125,10 +113,7 @@ class RegistroTeminalController extends Controller
         return view('terminales.show', compact('terminal'));
     }
 
-    /**
-     * Muestra el formulario de edición de la terminal.
-     */
-    public function edit(RegistroTerminal $terminal) // ✅ Inyección de modelo directamente (Route Model Binding)
+    public function edit(RegistroTerminal $terminal)
     {
         $departamentos = $this->departamentosHonduras;
         $municipiosHonduras = $this->municipiosHonduras;
@@ -136,43 +121,36 @@ class RegistroTeminalController extends Controller
         return view('terminales.edit', compact('terminal', 'departamentos', 'municipiosHonduras'));
     }
 
-
-    /**
-     * Actualiza la terminal en la base de datos.
-     */
-    public function update(Request $request, RegistroTerminal $terminal) // ✅ Inyección de modelo (Route Model Binding)
+    public function update(Request $request, RegistroTerminal $terminal)
     {
         try {
             $validatedData = $request->validate([
                 'nombre' => 'required|string|max:100|regex:/^\S.*$/',
                 'codigo' => 'required|string|max:10|unique:registro_terminal,codigo,' . $terminal->id . '|regex:/^\S.*$/',
                 'direccion' => 'required|string|max:150|regex:/^\S.*$/',
-
                 'departamento' => [
                     'required',
                     'string',
                     Rule::in($this->departamentosHonduras),
                 ],
                 'municipio' => 'required|string|max:50|regex:/^\S.*$/',
-
                 'telefono' => 'required|string|max:8|regex:/^[983]\d{7}$/|unique:registro_terminal,telefono,' . $terminal->id,
-
                 'correo' => 'required|email:rfc,dns|max:50|unique:registro_terminal,correo,' . $terminal->id . '|regex:/^\S.*$/',
-
                 'horario_apertura' => 'required|date_format:H:i',
                 'horario_cierre' => 'required|date_format:H:i|after:horario_apertura',
-
                 'descripcion' => 'required|string',
+                'latitud' => 'nullable|numeric|between:-90,90',
+                'longitud' => 'nullable|numeric|between:-180,180',
             ]);
 
+            // ✅ SOLO ACTUALIZAR EN registro_terminal
             $terminal->update($validatedData);
+
             return redirect()->route('terminales.index')->with('success', 'Terminal actualizada correctamente.');
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            Log::error('Error FATAL al actualizar la terminal (ID ' . $terminal->id . '): ' . $e->getMessage());
-            return back()->with('error', 'Error crítico del sistema al actualizar. Detalles registrados en el log de Laravel.')->withInput();
+            Log::error('Error FATAL al actualizar la terminal: ' . $e->getMessage());
+            return back()->with('error', 'Error crítico del sistema: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -180,6 +158,4 @@ class RegistroTeminalController extends Controller
     {
         // Lógica de eliminación...
     }
-
-
 }

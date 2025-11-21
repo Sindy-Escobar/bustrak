@@ -4,7 +4,7 @@
 
 @section('content')
 
-    {{-- 🛑 Mensajes de Sesión (Errores o Éxito) --}}
+    {{-- 🛑 Mensajes de Sesión --}}
     @if (session('error'))
         <div class="alert alert-danger" role="alert">
             {{ session('error') }}
@@ -28,11 +28,9 @@
 
                 {{-- ➡️ Formulario de Edición --}}
                 <div class="card-body p-4 p-md-5">
-                    {{-- 🛑 RUTA DE ACTUALIZACIÓN CON MÉTODO PUT/PATCH --}}
                     <form id="terminalForm" action="{{ route('terminales.update', $terminal->id) }}" method="POST" novalidate>
                         @csrf
                         @method('PUT')
-
 
                         {{-- 1️⃣ DATOS DE UBICACIÓN --}}
                         <h5 class="mb-3 mt-2" style="color:#1e63b8; font-weight:600; font-size:1.5rem;">
@@ -43,7 +41,6 @@
                             {{-- Fila 1: Nombre y Código --}}
                             <div class="col-md-6">
                                 <label for="nombre" class="form-label">Nombre</label>
-                                {{-- 🛑 PRECARGA DE VALOR EXISTENTE --}}
                                 <input type="text" id="nombre" name="nombre" value="{{ old('nombre', $terminal->nombre) }}" maxlength="100" required
                                        class="form-control @error('nombre') is-invalid @enderror">
                                 @error('nombre')
@@ -59,7 +56,6 @@
                                         class="form-select @error('departamento') is-invalid @enderror">
                                     <option value="">-- Seleccione un departamento --</option>
                                     @foreach($departamentos as $depto)
-                                        {{-- 🛑 PRECARGA DE VALOR EXISTENTE --}}
                                         <option value="{{ $depto }}" {{ old('departamento', $terminal->departamento) == $depto ? 'selected' : '' }}>
                                             {{ $depto }}
                                         </option>
@@ -76,7 +72,6 @@
                                     <label for="municipio" class="form-label">Municipio</label>
                                     <select id="municipio" name="municipio" required disabled
                                             class="form-select @error('municipio') is-invalid @enderror">
-                                        {{-- Las opciones se cargan mediante JavaScript --}}
                                         <option value="">-- Seleccione primero un departamento --</option>
                                     </select>
                                     @error('municipio')
@@ -89,7 +84,6 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="codigo" class="form-label">Código</label>
-                                    {{-- 🛑 PRECARGA DE VALOR EXISTENTE Y PERMANENTE EN EDICIÓN --}}
                                     <input type="text" id="codigo" name="codigo" value="{{ old('codigo', $terminal->codigo) }}" maxlength="10" required readonly
                                            class="form-control bg-light @error('codigo') is-invalid @enderror">
                                     @error('codigo')
@@ -105,7 +99,6 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label for="direccion" class="form-label">Dirección</label>
-                                    {{-- 🛑 PRECARGA DE VALOR EXISTENTE --}}
                                     <textarea id="direccion" name="direccion" maxlength="150" required
                                               class="form-control @error('direccion') is-invalid @enderror">{{ old('direccion', $terminal->direccion) }}</textarea>
                                     @error('direccion')
@@ -113,6 +106,47 @@
                                     @enderror
                                     <div id="error-direccion" class="error-message"></div>
                                 </div>
+                            </div>
+                        </div>
+
+                        {{-- 1.5 COORDENADAS (OPCIONAL) --}}
+                        <h5 class="mb-3 mt-5" style="color:#1e63b8; font-weight:600; font-size:1.5rem;">
+                            <i class="fas fa-map-marker-alt me-2"></i>1.5 Coordenadas (Opcional)
+                        </h5>
+                        <hr class="mt-0 mb-4">
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="latitud" class="form-label">Latitud</label>
+                                    <input type="text" id="latitud" name="latitud" value="{{ old('latitud', $terminal->latitud) }}"
+                                           class="form-control @error('latitud') is-invalid @enderror"
+                                           placeholder="Ej: 14.0821">
+                                    @error('latitud')
+                                    <div class="error-message">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="longitud" class="form-label">Longitud</label>
+                                    <input type="text" id="longitud" name="longitud" value="{{ old('longitud', $terminal->longitud) }}"
+                                           class="form-control @error('longitud') is-invalid @enderror"
+                                           placeholder="Ej: -87.2063">
+                                    @error('longitud')
+                                    <div class="error-message">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Ejemplo: 14.0821, -87.2063 (Copiar de Google Maps)
+                                </small>
                             </div>
                         </div>
 
@@ -126,7 +160,6 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="telefono" class="form-label">Teléfono</label>
-                                    {{-- 🛑 PRECARGA DE VALOR EXISTENTE --}}
                                     <input type="text" id="telefono" name="telefono" value="{{ old('telefono', $terminal->telefono) }}" maxlength="8" required
                                            class="form-control @error('telefono') is-invalid @enderror">
                                     @error('telefono')
@@ -138,7 +171,6 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="correo" class="form-label">Correo electrónico</label>
-                                    {{-- 🛑 PRECARGA DE VALOR EXISTENTE --}}
                                     <input type="email" id="correo" name="correo" value="{{ old('correo', $terminal->correo) }}" maxlength="50" required
                                            class="form-control @error('correo') is-invalid @enderror">
                                     @error('correo')
@@ -158,25 +190,15 @@
                             <div class="col-md-4">
                                 <label for="horario_apertura_hora" class="form-label">Horario de apertura</label>
                                 <div class="input-group">
-                                    {{-- Icono de Sol (Apertura) --}}
                                     <span class="input-group-text bg-light"><i class="fas fa-sun text-warning"></i></span>
-
-                                    {{-- Select Hora --}}
-                                    <select id="horario_apertura_hora" required
-                                            class="form-select">
+                                    <select id="horario_apertura_hora" required class="form-select">
                                         <option value="">Hora</option>
                                     </select>
-
-                                    {{-- Separador --}}
                                     <span class="input-group-text">:</span>
-
-                                    {{-- Select Minuto --}}
-                                    <select id="horario_apertura_minuto" required
-                                            class="form-select">
+                                    <select id="horario_apertura_minuto" required class="form-select">
                                         <option value="">Min</option>
                                     </select>
                                 </div>
-                                {{-- El mensaje de error usa el ID original del campo (horario_apertura) --}}
                                 @error('horario_apertura')
                                 <div class="error-message">{{ $message }}</div>
                                 @enderror
@@ -186,21 +208,12 @@
                             <div class="col-md-4">
                                 <label for="horario_cierre_hora" class="form-label">Horario de cierre</label>
                                 <div class="input-group">
-                                    {{-- Icono de Luna (Cierre) --}}
                                     <span class="input-group-text bg-light"><i class="fas fa-moon text-secondary"></i></span>
-
-                                    {{-- Select Hora --}}
-                                    <select id="horario_cierre_hora" required
-                                            class="form-select">
+                                    <select id="horario_cierre_hora" required class="form-select">
                                         <option value="">Hora</option>
                                     </select>
-
-                                    {{-- Separador --}}
                                     <span class="input-group-text">:</span>
-
-                                    {{-- Select Minuto --}}
-                                    <select id="horario_cierre_minuto" required
-                                            class="form-select">
+                                    <select id="horario_cierre_minuto" required class="form-select">
                                         <option value="">Min</option>
                                     </select>
                                 </div>
@@ -211,7 +224,7 @@
                             </div>
                         </div>
 
-                        {{-- CAMPOS OCULTOS para enviar el valor completo HH:MM a Laravel --}}
+                        {{-- CAMPOS OCULTOS para horarios --}}
                         <input type="hidden" name="horario_apertura" id="horario_apertura_hidden">
                         <input type="hidden" name="horario_cierre" id="horario_cierre_hidden">
 
@@ -220,7 +233,6 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label for="descripcion" class="form-label">Descripción</label>
-                                    {{-- 🛑 PRECARGA DE VALOR EXISTENTE --}}
                                     <textarea id="descripcion" name="descripcion" required
                                               class="form-control @error('descripcion') is-invalid @enderror">{{ old('descripcion', $terminal->descripcion) }}</textarea>
                                     @error('descripcion')
@@ -263,19 +275,17 @@
             const direccionTextarea = document.getElementById('direccion');
             const descripcionTextarea = document.getElementById('descripcion');
 
-            // ⏰ Referencias de los nuevos SELECTS de Hora/Minuto y los campos HIDDEN
+            // ⏰ Referencias de los SELECTS de Hora/Minuto
             const horarioAperturaHoraSelect = document.getElementById('horario_apertura_hora');
             const horarioAperturaMinutoSelect = document.getElementById('horario_apertura_minuto');
             const horarioCierreHoraSelect = document.getElementById('horario_cierre_hora');
             const horarioCierreMinutoSelect = document.getElementById('horario_cierre_minuto');
-
             const horarioAperturaHidden = document.getElementById('horario_apertura_hidden');
             const horarioCierreHidden = document.getElementById('horario_cierre_hidden');
 
             const terminal = @json($terminal);
 
-
-            // 🗺️ Data de Municipios por Departamento (Honduras)
+            // 🗺️ Data de Municipios
             const municipiosData = {
                 'Atlántida': ['La Ceiba', 'El Porvenir', 'Tela', 'San Francisco', 'Arizona', 'Esparta', 'Jutiapa', 'La Másica'],
                 'Colón': ['Trujillo', 'Balfate', 'Iriona', 'Limón', 'Sabá', 'Santa Rosa de Aguán', 'Sonaguera', 'Tocoa', 'Bonito Oriental', 'Fe'],
@@ -297,7 +307,7 @@
                 'Yoro': ['Yoro', 'Arenal', 'El Negrito', 'El Progreso', 'Jocón', 'Morazán', 'Olanchito', 'Santa Rita', 'Sulaco', 'Victoria', 'Yorito']
             };
 
-            // ❌ Funciones de Manejo de Errores (Mostrar/Limpiar) - ADAPTADAS A BOOTSTRAP
+            // ❌ Funciones de Manejo de Errores
             function showError(field, message) {
                 const fieldId = field.id;
                 const errorId = fieldId.startsWith('horario_') ? fieldId.substring(0, fieldId.lastIndexOf('_')) : fieldId;
@@ -358,7 +368,6 @@
                 municipioSelect.innerHTML = '';
                 clearError(municipioSelect);
 
-                // 🛑 VALOR EXISTENTE PARA EDICIÓN
                 const oldMunicipio = "{{ old('municipio', $terminal->municipio) }}";
 
                 if (selectedDepto && municipiosData[selectedDepto]) {
@@ -379,12 +388,10 @@
             }
 
             function updateCodigo() {
-                // En edición, el código es de solo lectura. Solo se usa para limpiar el error si se manipula el campo nombre.
                 clearError(codigoInput);
             }
 
-            // ⏱️ Funciones de Horario (SELECTORES HORA Y MINUTO con AM/PM)
-
+            // ⏱️ Funciones de Horario
             function generateHourOptions() {
                 const options = [];
                 for (let h = 0; h < 24; h++) {
@@ -420,11 +427,9 @@
                 const hourOptions = generateHourOptions();
                 const minuteOptions = generateMinuteOptions();
 
-                // 🛑 Recuperar valores antiguos o del modelo $terminal
                 const oldApertura = "{{ old('horario_apertura', $terminal->horario_apertura) }}";
                 const oldCierre = "{{ old('horario_cierre', $terminal->horario_cierre) }}";
 
-                // Los valores antiguos se separan en Hora y Minuto (si el formato es HH:MM)
                 const oldAperturaHora = oldApertura.substring(0, 2);
                 const oldAperturaMinuto = oldApertura.substring(3, 5);
                 const oldCierreHora = oldCierre.substring(0, 2);
@@ -439,11 +444,8 @@
                     });
                 };
 
-                // Llenar Apertura
                 fillSelect(horarioAperturaHoraSelect, hourOptions, oldAperturaHora, 'Hora');
                 fillSelect(horarioAperturaMinutoSelect, minuteOptions, oldAperturaMinuto, 'Min');
-
-                // Llenar Cierre
                 fillSelect(horarioCierreHoraSelect, hourOptions, oldCierreHora, 'Hora');
                 fillSelect(horarioCierreMinutoSelect, minuteOptions, oldCierreMinuto, 'Min');
 
@@ -463,12 +465,11 @@
             if (direccionTextarea.value) autoResize.call(direccionTextarea);
             if (descripcionTextarea.value) autoResize.call(descripcionTextarea);
 
-            // 👂 Event Listeners para Ubicación y Código
+            // 👂 Event Listeners
             departamentoSelect.addEventListener('change', loadMunicipios);
             municipioSelect.addEventListener('change', updateCodigo);
             nombreInput.addEventListener('input', updateCodigo);
 
-            // Registrar listeners para horarios y limpieza de errores
             [
                 horarioAperturaHoraSelect,
                 horarioAperturaMinutoSelect,
@@ -479,7 +480,6 @@
                 select.addEventListener('change', function() { clearError(this); });
             });
 
-            // Listeners para campos regulares
             document.querySelectorAll(
                 'input:not([type="hidden"]):not([readonly]), select:not([id^="horario_apertura_"]):not([id^="horario_cierre_"]), textarea'
             ).forEach(field => {
@@ -487,15 +487,13 @@
                 field.addEventListener('change', function() { clearError(this); });
             });
 
-
-            // 🛑 Lógica para la Validación del Formulario al Enviar (Validación Cliente)
+            // 🛑 Validación del Formulario
             terminalForm.addEventListener('submit', function(event) {
                 let isValid = true;
                 let firstInvalidField = null;
 
                 updateHiddenFields();
 
-                // Limpiar errores antes de revalidar
                 document.querySelectorAll(
                     'input:not([type="hidden"]):not([readonly]), select, textarea'
                 ).forEach(field => clearError(field));
@@ -514,10 +512,8 @@
                         minutoSelect = document.getElementById(fieldId.startsWith('horario_apertura') ? 'horario_apertura_minuto' : 'horario_cierre_minuto');
                     }
 
-
-                    // 1.1 Validación de campos de Horario
+                    // Validación de campos de Horario
                     if (fieldId.startsWith('horario_') && (fieldId.endsWith('_hora') || fieldId.endsWith('_minuto'))) {
-
                         if (fieldId.endsWith('_hora')) {
                             if (!horaSelect.value || !minutoSelect.value) {
                                 message = 'Debe seleccionar tanto la **hora** como el **minuto**.';
@@ -528,25 +524,25 @@
                             }
                         }
                     }
-                    // 1.2 Validación de otros campos vacíos
+                    // Validación de otros campos vacíos
                     else if (!value) {
                         message = 'Este campo es **obligatorio**.';
                         isFieldInvalid = true;
                     }
 
-                    // 2. Validación de Teléfono (8 dígitos)
+                    // Validación de Teléfono
                     else if (fieldId === 'telefono' && !/^\d{8}$/.test(value)) {
                         message = 'El teléfono debe contener exactamente **8 dígitos** numéricos.';
                         isFieldInvalid = true;
                     }
 
-                    // 3. Validación de Correo electrónico
+                    // Validación de Correo
                     else if (fieldId === 'correo' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
                         message = 'Ingrese un **correo electrónico válido** (ej: nombre@dominio.com).';
                         isFieldInvalid = true;
                     }
 
-                    // 4. Validación Horario Cierre vs Apertura (Usando campos ocultos)
+                    // Validación Horario Cierre vs Apertura
                     const aperturaValue = horarioAperturaHidden.value;
                     const cierreValue = horarioCierreHidden.value;
 
@@ -577,13 +573,7 @@
                 if (!isValid) {
                     event.preventDefault();
                     if (firstInvalidField) {
-                        // Enfocar el campo de Hora si el Minuto está fallando para horarios
-                        if (firstInvalidField.id.endsWith('_minuto')) {
-                            const horaSelectId = firstInvalidField.id.replace('_minuto', '_hora');
-                            document.getElementById(horaSelectId).focus();
-                        } else {
-                            firstInvalidField.focus();
-                        }
+                        firstInvalidField.focus();
                     }
                 }
             });

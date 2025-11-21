@@ -23,6 +23,8 @@ return new class extends Migration
             $table->time('horario_apertura');
             $table->time('horario_cierre');
             $table->text('descripcion');
+            $table->decimal('latitud', 10, 8)->nullable(); // ✅ NUEVO
+            $table->decimal('longitud', 11, 8)->nullable(); // ✅ NUEVO
             $table->timestamps();
         });
     }
