@@ -60,6 +60,8 @@ class RegistroUsuarioController extends Controller
             'name' => $usuario->nombre_completo,
             'email' => $usuario->email,
             'password' => Hash::make($request->password),
+            'dni' => $usuario->dni,
+            'telefono' => $usuario->telefono,
             'role' => 'cliente', // Asegúrate de que coincida con tu enum en la migración
             'estado' => 'activo',
         ]);
