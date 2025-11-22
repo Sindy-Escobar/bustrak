@@ -301,6 +301,11 @@
                    class="{{ request()->routeIs('cliente.historial') ? 'active' : '' }}">
                     Historial de viajes
                 </a>
+                <a href="{{ route('itinerario.index') }}"
+                   class="{{ request()->routeIs('itinerario.index') ? 'active' : '' }}">
+                    Itinerario de reservas
+                </a>
+
             </div>
         </div>
 

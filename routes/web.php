@@ -25,6 +25,7 @@ use App\Http\Controllers\HistorialReservasController;
 use App\Http\Controllers\ItinerarioController;
 use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\CatalogoController;
+use App\Http\Controllers\CheckinController;
 
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
@@ -38,7 +39,6 @@ Route::patch('/admin/usuarios/{id}/validar', [AdminController::class, 'validar']
 // ======================================================
 Route::get('/validar-empresas', [ValidarEmpresaController2::class, 'index'])
     ->name('empresas.validar');
-
 
 //visualizacion de terminales
 Route::get('/ver_terminales', [RegistroTeminalController::class, 'ver_terminales'])->name('terminales.ver_terminales');
@@ -189,6 +189,7 @@ Route::middleware('auth')->prefix('itinerario')->name('itinerario.')->controller
     Route::get('/', 'index')->name('index');
     Route::get('/pdf', 'descargarPDF')->name('pdf');
     Route::get('/compartir/{id}', 'compartir')->name('compartir');
+    Route::get('/compartir/{id}/pdf', 'descargarCompartido')->name('pdf.compartido');
     Route::post('/actualizar', 'actualizarItinerario')->name('actualizar');
     Route::get('/historial', 'historialVisualizaciones')->name('historial');
 });
@@ -289,3 +290,8 @@ Route::get('/admin/dashboard', function () {
 Route::get('/proximamente', function () {
     return view('Empresa.proximamente');
 })->name('proximamente');
+
+// Chec-kin
+Route::post('/abordajes/validar', [CheckinController::class, 'validarCodigo'])->name('abordajes.validar');
+Route::post('/abordajes/confirmar', [CheckinController::class, 'confirmarAbordaje'])->name('abordajes.confirmar');
+Route::get('/abordajes/historial', [CheckinController::class, 'historial'])->name('abordajes.historial');
