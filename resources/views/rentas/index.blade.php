@@ -87,22 +87,17 @@
                                     <td>{{ number_format($renta->anticipo, 2) }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
-                                            {{-- Botón para Ver Detalles --}}
-                                            <a href="{{ route('rentas.show', $renta->id) }}" class="btn btn-sm btn-info" title="Ver Detalles">
-                                                <i class="fas fa-eye"></i>
+                                            {{-- Botón para Editar - COLOR AZUL --}}
+                                            <a href="{{ route('rentas.edit', $renta->id) }}" class="btn btn-sm btn-primary" title="Editar">
+                                                <i class="fas fa-edit"></i> Editar
                                             </a>
 
-                                            {{-- Botón para Editar --}}
-                                            <a href="{{ route('rentas.edit', $renta->id) }}" class="btn btn-sm btn-warning" title="Editar">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-
-                                            {{-- Botón para Eliminar (Formulario) --}}
+                                            {{-- Botón para Eliminar - COLOR ROJO --}}
                                             <form action="{{ route('rentas.destroy', $renta->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-danger" title="Eliminar" onclick="return confirm('¿Está seguro de que desea eliminar esta renta?')">
-                                                    <i class="fas fa-trash-alt"></i>
+                                                    <i class="fas fa-trash-alt"></i> Eliminar
                                                 </button>
                                             </form>
                                         </div>
