@@ -1,5 +1,5 @@
 @php use Illuminate\Support\Facades\Auth; @endphp
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -277,7 +277,6 @@
                 <a href="{{ route('cliente.perfil') }}" class="{{ request()->routeIs('cliente.perfil') ? 'active' : '' }}">
                     Ver Perfil
                 </a>
-
             </div>
         </div>
 
@@ -346,8 +345,6 @@
             </div>
         </div>
 
-
-
         <!-- Empresa -->
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#empresa"
@@ -363,7 +360,6 @@
             </div>
         </div>
 
-
         <!-- Soporte -->
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#soporte" aria-expanded="{{ request()->routeIs('usuario.soporte*') ? 'true' : 'false' }}">
@@ -375,9 +371,35 @@
                 <a href="{{ route('consulta.mis') }}" class="{{ request()->routeIs('consulta.mis') ? 'active' : '' }}">
                     Mis Solicitudes
                 </a>
-                <a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'active' : '' }}">
+            </div>
+        </div>
+
+        <!-- Solicitudes -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#solicitudes"
+                    aria-expanded="{{ request()->routeIs('solicitud.empleo*') ? 'true' : 'false' }}">
+                <span><i class="fas fa-file-lines"></i> Solicitudes</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('solicitud.empleo*') ? 'show' : '' }}" id="solicitudes">
+                <a href="{{ route('solicitud.empleo.mis-solicitudes') }}"
+                   class="{{ request()->routeIs('solicitud.empleo.mis-solicitudes') ? 'active' : '' }}">
+                    Solicitud de Empleo
+                </a>
+            </div>
+        </div>
+
+        <!-- Sesión -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#sesion" aria-expanded="false">
+                <span><i class="fas fa-sign-out-alt"></i> Sesión</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav" id="sesion">
+                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     Cerrar sesión
                 </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
             </div>
         </div>
     </nav>

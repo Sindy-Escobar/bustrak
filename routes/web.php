@@ -27,6 +27,8 @@ use App\Http\Controllers\ItinerarioController;
 use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\CheckinController;
+use App\Http\Controllers\SolicitudController;
+
 
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
@@ -297,6 +299,7 @@ Route::post('/abordajes/validar', [CheckinController::class, 'validarCodigo'])->
 Route::post('/abordajes/confirmar', [CheckinController::class, 'confirmarAbordaje'])->name('abordajes.confirmar');
 Route::get('/abordajes/historial', [CheckinController::class, 'historial'])->name('abordajes.historial');
 
+
 // Ruta para ver las consultas del usuario
 Route::get('/mis-solicitudes', [ConsultaController::class, 'misConsultas'])
     ->name('consulta.mis');
@@ -307,3 +310,16 @@ Route::get('/viaje/{reserva}/calificar', [CalificacionController::class, 'create
 
 Route::post('/viaje/{reserva}/calificar', [CalificacionController::class, 'store'])
     ->name('calificacion.store');
+
+//Solicitud de Constancia - Carolina
+Route::middleware(['auth'])->group(function () {
+    Route::get('solicitudes', [SolicitudController::class, 'index'])->name('solicitudes.index');
+    Route::get('solicitudes/create', [SolicitudController::class, 'create'])->name('solicitudes.create');
+    Route::post('solicitudes', [SolicitudController::class, 'store'])->name('solicitudes.store');
+    Route::patch('solicitudes/{solicitud}/procesar', [SolicitudController::class, 'procesar'])->name('solicitudes.procesar');
+});
+
+// Solicitud de Empleo - Carolina
+Route::get('/solicitud/empleo', [App\Http\Controllers\SolicitudEmpleoController::class, 'misSolicitudes'])->name('solicitud.empleo.mis-solicitudes');
+Route::get('/crear-solicitud-empleo', [App\Http\Controllers\SolicitudEmpleoController::class, 'create'])->name('solicitud.empleo.create');
+Route::post('/solicitud/empleo/enviar', [App\Http\Controllers\SolicitudEmpleoController::class, 'store'])->name('solicitud.empleo.store');

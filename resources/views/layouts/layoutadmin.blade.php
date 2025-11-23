@@ -337,6 +337,19 @@
             </div>
         </div>
 
+
+        <!-- Constancias -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#constancias" aria-expanded="{{ request()->routeIs('solicitudes.*') ? 'true':'false' }}">
+                <span><i class="fas fa-file-lines"></i> Constancias</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('solicitudes.*') ? 'show':'' }}" id="constancias">
+                <a href="{{ route('solicitudes.index') }}" class="{{ request()->routeIs('solicitudes.index') ? 'active':'' }}">Gestionar Solicitudes</a>
+
+            </div>
+        </div>
+
         <!-- Cerrar Sesión -->
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#sesion" aria-expanded="false">
