@@ -338,7 +338,7 @@
                                 class="form-control @error('nombre') is-invalid @enderror"
                                 id="nombre"
                                 name="nombre"
-                                value="{{ old('nombre', Auth::user()->name ?? '') }}"
+                                value="{{ old('nombre', auth()->user()->name ?? '') }}"
                                 placeholder="Tu nombre completo"
                                 required>
                             @error('nombre')
@@ -355,7 +355,7 @@
                                 class="form-control @error('correo') is-invalid @enderror"
                                 id="correo"
                                 name="correo"
-                                value="{{ old('correo', Auth::user()->email ?? '') }}"
+                                value="{{ old('correo', auth()->user()->email ?? '') }}"
                                 placeholder="tu@email.com"
                                 required>
                             @error('correo')

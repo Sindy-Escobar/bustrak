@@ -372,6 +372,9 @@
             </button>
             <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.soporte*') ? 'show' : '' }}" id="soporte">
                 <a href="/ayuda-soporte" class="active">Enviar consulta</a>
+                <a href="{{ route('consulta.mis') }}" class="{{ request()->routeIs('consulta.mis') ? 'active' : '' }}">
+                    Mis Solicitudes
+                </a>
                 <a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'active' : '' }}">
                     Cerrar sesión
                 </a>

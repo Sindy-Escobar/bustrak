@@ -12,9 +12,15 @@ class Consulta extends Model
     protected $table = 'consultas';
 
     protected $fillable = [
+        'user_id',
         'nombre_completo',
         'correo',
         'asunto',
         'mensaje'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
