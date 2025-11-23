@@ -1,13 +1,13 @@
 @extends('layouts.layoutuser')
 
-@section('title', 'Mis Solicitudes de Ayuda')
-
-@section('content')
-    <div class="container mt-5">
-        <h2 class="mb-4 text-primary">Mis Solicitudes de Ayuda y Reclamos</h2>
+@section('contenido')
+    <div class="container mt-4">
+        <h2 class="mb-3" style="color:#1e63b8;">
+            <i class="fas fa-headset me-2"></i>Mis Solicitudes
+        </h2>
 
         @if($consultas->isEmpty())
-            <div class="alert alert-info">
+            <div class="alert alert-info text-center">
                 No has enviado ninguna solicitud aún.
             </div>
         @else
@@ -26,7 +26,7 @@
                             <tr>
                                 <td>{{ $consulta->asunto }}</td>
                                 <td>{{ $consulta->mensaje }}</td>
-                                <td>{{ $consulta->created_at->format('d/m/Y H:i') }}</td>
+                                <td>{{ $consulta->created_at->format('d/m/Y') }}</td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -35,12 +35,4 @@
             </div>
         @endif
     </div>
-
-
-    <script>
-        setInterval(() => {
-            location.reload();
-        }, 20000);
-    </script>
 @endsection
-

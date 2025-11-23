@@ -36,6 +36,7 @@ class ConsultaController extends Controller
 
         try {
             Consulta::create([
+                'user_id' => auth()->id(),
                 'nombre_completo' => $request->nombre,
                 'correo' => $request->correo,
                 'asunto' => $request->asunto,
@@ -55,5 +56,14 @@ class ConsultaController extends Controller
     {
         $consultas = Consulta::orderBy('created_at', 'desc')->paginate(10);
         return view('admin.consultas', compact('consultas'));
+    }
+
+    public function misConsultas()
+    {
+        $consultas = Consulta::where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('ayuda.indexh44', compact('consultas'));
     }
 }
