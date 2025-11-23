@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 // Controladores
+use App\Http\Controllers\CalificacionController;
 use App\Http\Controllers\EstadisticasController;
 use App\Http\Controllers\ValidarEmpresaController2;
 use App\Http\Controllers\EmpresaHU11Controller;
@@ -299,3 +300,10 @@ Route::get('/abordajes/historial', [CheckinController::class, 'historial'])->nam
 // Ruta para ver las consultas del usuario
 Route::get('/mis-solicitudes', [ConsultaController::class, 'misConsultas'])
     ->name('consulta.mis');
+
+// Rutas de calificación de viajes
+Route::get('/viaje/{reserva}/calificar', [CalificacionController::class, 'create'])
+    ->name('calificacion.create');
+
+Route::post('/viaje/{reserva}/calificar', [CalificacionController::class, 'store'])
+    ->name('calificacion.store');
