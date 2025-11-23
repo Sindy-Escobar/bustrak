@@ -12,6 +12,11 @@
         </div>
 
         <div class="card-body p-0">
+            @if(session('error'))
+                <div class="alert alert-danger m-2">
+                    {{ session('error') }}
+                </div>
+            @endif
             <div class="table-responsive">
                 <table class="table table-striped table-hover mb-0">
                     <thead class="table-dark">
@@ -23,6 +28,7 @@
                         <th class="text-center">Llegada</th>
                         <th class="text-center">Asiento</th>
                         <th class="text-center">Estado</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -50,6 +56,19 @@
                                            ($reserva->estado === 'cancelada' ? 'bg-danger' : 'bg-warning') }}">
                                         {{ ucfirst($reserva->estado) }}
                                     </span>
+                            </td>
+
+                            <td class="text-center">
+                                @if($reserva->estado === 'confirmada' && !$reserva->viaje->calificacion)
+                                    <a href="{{ route('calificacion.create', $reserva->id) }}"
+                                       class="btn btn-warning btn-sm">
+                                        <i class="fas fa-star"></i> Calificar
+                                    </a>
+                                @elseif($reserva->estado === 'confirmada' && $reserva->viaje->calificacion)
+                                    <span class="text-success fw-bold">Calificado</span>
+                                @else
+                                    <span class="text-muted">En curso</span>
+                                @endif
                             </td>
                         </tr>
                     @empty
