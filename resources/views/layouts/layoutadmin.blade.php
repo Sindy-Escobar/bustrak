@@ -347,6 +347,18 @@
         </div>
 
 
+        <!-- Solicitud -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#solicitud" aria-expanded="{{ request()->routeIs('solicitudes.*') ? 'true' : 'false' }}">
+                <span><i class="fas fa-file-alt"></i> Solicitud</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('solicitudes.*') ? 'show' : '' }}" id="solicitud">
+                <a href="{{ route('solicitudes.index') }}" class="{{ request()->routeIs('solicitudes.index') ? 'active' : '' }}">
+                    Constancias de Trabajo
+                </a>
+            </div>
+        </div>
 
 
 

@@ -328,3 +328,19 @@ Route::post('admin/update-password', [AuthController::class, 'updateAdminPasswor
 // Usuario
 Route::get('usuario/cambiar-password', [AuthController::class, 'showUserChangePasswordForm'])->name('usuario.change-password');
 Route::post('usuario/update-password', [AuthController::class, 'updateUserPassword'])->name('usuario.update-password');
+
+
+
+
+//Solicitud de Constancia - Carolina
+Route::middleware(['auth'])->group(function () {
+    Route::get('solicitudes', [SolicitudController::class, 'index'])->name('solicitudes.index');
+    Route::get('solicitudes/create', [SolicitudController::class, 'create'])->name('solicitudes.create');
+    Route::post('solicitudes', [SolicitudController::class, 'store'])->name('solicitudes.store');
+    Route::patch('solicitudes/{solicitud}/procesar', [SolicitudController::class, 'procesar'])->name('solicitudes.procesar');
+});
+
+// Solicitud de Empleo - Carolina
+Route::get('/solicitud/empleo', [App\Http\Controllers\SolicitudEmpleoController::class, 'misSolicitudes'])->name('solicitud.empleo.mis-solicitudes');
+Route::get('/crear-solicitud-empleo', [App\Http\Controllers\SolicitudEmpleoController::class, 'create'])->name('solicitud.empleo.create');
+Route::post('/solicitud/empleo/enviar', [App\Http\Controllers\SolicitudEmpleoController::class, 'store'])->name('solicitud.empleo.store');
