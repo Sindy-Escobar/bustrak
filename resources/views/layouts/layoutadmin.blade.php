@@ -337,6 +337,42 @@
             </div>
         </div>
 
+        <!-- Notificaciones -->
+        <div class="nav-section">
+            <button class="btn-toggle d-flex justify-content-between align-items-center"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#notificaciones"
+                    aria-expanded="{{ request()->routeIs('admin.notificaciones.*') ? 'true' : 'false' }}">
+        <span>
+            <i class="fas fa-bell"></i> Notificaciones
+        </span>
+
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Burbuja -->
+                    @php
+                        $adminNotiCount = \App\Models\Notificacion::where('usuario_id', auth()->id())
+                            ->where('leida', false)
+                            ->count();
+                    @endphp
+                    @if($adminNotiCount > 0)
+                        <span class="badge bg-danger">{{ $adminNotiCount }}</span>
+                    @endif
+
+                    <!-- Flecha chevron -->
+                    <i class="fas fa-chevron-right chevron"></i>
+                </div>
+            </button>
+
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('admin.notificaciones.*') ? 'show' : '' }}"
+                 id="notificaciones">
+                <a href="{{ route('admin.notificaciones') }}"
+                   class="{{ request()->routeIs('admin.notificaciones') ? 'active' : '' }}">
+                    Ver notificaciones
+                </a>
+            </div>
+        </div>
+
+
         <!-- Cerrar Sesión -->
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#sesion" aria-expanded="false">

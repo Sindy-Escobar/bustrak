@@ -18,7 +18,6 @@ class EmpresaBusController extends Controller
         // MODIFICACIÓN: Obtener todas las empresas y pasarlas a la vista
         $empresas = EmpresaBus::all();
         return view('terminal.empresas.visualizar', compact('empresas'));
-        return view('Empresa.proximamente');
 
     }
 
@@ -49,5 +48,27 @@ class EmpresaBusController extends Controller
         // Si es GET, solo muestra el formulario
         return view('empresa.create');
     }
+    public function formUsuario(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $request->validate([
+                'nombre' => 'required|unique:empresa_buses,nombre|max:255',
+                'propietario' => 'required|unique:empresa_buses,propietario|max:255',
+                'telefono' => ['required', 'regex:/^[839]\d{7}$/', 'unique:empresa_buses,telefono'],
+                'email' => 'nullable|email|unique:empresa_buses,email',
+                'direccion' => 'required|unique:empresa_buses,direccion|max:255',
+            ]
+            , [
+                'nombre.unique' => 'El nombre de la empresa ya ha sido registrado.',
+                'nombre.required' => 'El campo nombre es obligatorio.',
+            ]);
 
+            EmpresaBus::create($request->all());
+
+            return back()->with('success', 'Empresa registrada correctamente.');
+        }
+
+        // Aquí apuntamos a tu vista real
+        return view('Empresa.MiEmpresa'); // Extiende layout de usuario dentro de esta vista
+    }
 }

@@ -70,7 +70,7 @@ Route::get('empresas', [EmpresaController::class, 'index'])->name('empresas.inde
 // ======================================================
 // REGISTRO DE EMPRESAS DE BUSES
 // ======================================================
-Route::match(['get', 'post'], '/empresa', [EmpresaBusController::class, 'form'])->name('empresa.form');
+//Route::match(['get', 'post'], '/empresa', [EmpresaBusController::class, 'form'])->name('empresa.form');
 
 // ======================================================
 // RECURSO EMPLEADOS
@@ -286,12 +286,6 @@ Route::get('/admin/dashboard', function () {
     abort(403, 'Acceso denegado');
 })->middleware('auth')->name('admin.dashboard');
 
-
-// Página temporal "Próximamente"
-Route::get('/proximamente', function () {
-    return view('Empresa.proximamente');
-})->name('proximamente');
-
 // Chec-kin
 Route::post('/abordajes/validar', [CheckinController::class, 'validarCodigo'])->name('abordajes.validar');
 Route::post('/abordajes/confirmar', [CheckinController::class, 'confirmarAbordaje'])->name('abordajes.confirmar');
@@ -307,3 +301,20 @@ Route::get('/viaje/{reserva}/calificar', [CalificacionController::class, 'create
 
 Route::post('/viaje/{reserva}/calificar', [CalificacionController::class, 'store'])
     ->name('calificacion.store');
+
+// ======================================================
+// RUTAS notificaciones de admin
+// ======================================================
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/notificaciones', [NotificacionController::class, 'indexAdmin'])->name('admin.notificaciones');
+});
+
+// ======================================================
+// RUTAS registro de empresas/usuarios
+// ======================================================
+Route::match(['get', 'post'], '/empresa', [EmpresaBusController::class, 'form'])->name('empresa.form');
+Route::middleware(['auth'])->prefix('usuario')->group(function () {
+    Route::match(['get', 'post'], '/mi-empresa', [EmpresaBusController::class, 'formUsuario'])
+        ->name('usuario.empresa.form');
+});
+

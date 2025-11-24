@@ -9,7 +9,7 @@ class Notificacion extends Model
 {
     use HasFactory;
 
-    protected $table = 'notificaciones'; // 👈 Esta línea es clave
+    protected $table = 'notificaciones'; //
 
     protected $fillable = [
         'usuario_id',

@@ -10,7 +10,6 @@
             </div>
 
             <div class="card-body">
-                <!-- Mensaje de éxito -->
                 @if(session('success'))
                     <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
                         <i class="fas fa-circle-check me-2"></i>
@@ -19,86 +18,18 @@
                     </div>
                 @endif
 
-                <!-- Formulario de búsqueda y filtros -->
-                <form method="GET" action="{{ route('empresas.index') }}" class="mb-4">
-                    <div class="row g-3 mb-3">
-                        <!-- Búsqueda -->
-                        <div class="col-md-7">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-search text-primary me-2"></i>Búsqueda General
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-primary text-white">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                                <input
-                                    type="text"
-                                    name="search"
-                                    class="form-control"
-                                    placeholder="Buscar por nombre"
-                                    value="{{ request('search') }}">
-                            </div>
-                        </div>
-
-                        <!-- Botones -->
-                        <div class="col-md-5 d-flex align-items-end gap-2">
-                            <button class="btn btn-primary flex-fill" type="submit">
-                                <i class="fas fa-search me-2"></i>Buscar
-                            </button>
-                            <button class="btn btn-outline-primary flex-fill" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosAvanzados" aria-expanded="false">
-                                <i class="fas fa-sliders-h me-2"></i>Filtros
-                            </button>
-                            @if(request()->hasAny(['search', 'estado']))
-                                <a href="{{ route('empresas.index') }}" class="btn btn-outline-secondary flex-fill">
-                                    <i class="fas fa-times me-2"></i>Limpiar
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-
-                    <!-- Filtros avanzados -->
-                    <div class="collapse" id="filtrosAvanzados">
-                        <div class="card mb-3 bg-light border-primary">
-                            <div class="card-header bg-primary bg-opacity-10">
-                                <h6 class="mb-0 text-primary">
-                                    <i class="fas fa-filter me-2"></i>Filtros Adicionales
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-bold">
-                                            <i class="fas fa-toggle-on text-success me-2"></i>Estado
-                                        </label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">
-                                                <i class="fas fa-toggle-on"></i>
-                                            </span>
-                                            <select name="estado" class="form-select">
-                                                <option value="">Todos los estados</option>
-                                                <option value="1" {{ request('estado') == '1' ? 'selected' : '' }}>Activas</option>
-                                                <option value="0" {{ request('estado') == '0' ? 'selected' : '' }}>Inactivas</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-
                 <!-- Tabla de Empresas -->
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered align-middle text-center">
                         <thead class="table-primary">
                         <tr>
-                            <th><i class="fas fa-hashtag me-2"></i>ID</th>
-                            <th><i class="fas fa-building me-2"></i>Nombre</th>
-                            <th><i class="fas fa-id-card me-2"></i>Número Registro</th>
-                            <th><i class="fas fa-envelope me-2"></i>Correo</th>
-                            <th><i class="fas fa-phone me-2"></i>Teléfono</th>
-                            <th><i class="fas fa-toggle-on me-2"></i>Estado</th>
-                            <th class="text-center"><i class="fas fa-cog me-2"></i>Acciones</th>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Número Registro</th>
+                            <th>Correo</th>
+                            <th>Teléfono</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -116,9 +47,8 @@
                                         <span class="badge bg-danger">Inactiva</span>
                                     @endif
                                 </td>
-
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editarModal{{ $empresa->id }}">
+                                <td>
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editarModal{{ $empresa->id }}">
                                         <i class="fas fa-edit me-1"></i> Editar
                                     </button>
                                 </td>
@@ -141,17 +71,17 @@
 
                                                 <div class="mb-3">
                                                     <label for="nombre{{ $empresa->id }}" class="form-label">Nombre <span class="text-danger">*</span></label>
-                                                    <input type="text" name="nombre" id="nombre{{ $empresa->id }}" value="{{ old('nombre', $empresa->nombre) }}" class="form-control" required>
+                                                    <input type="text" name="nombre" id="nombre{{ $empresa->id }}" value="{{ $empresa->nombre }}" class="form-control" required>
                                                 </div>
 
                                                 <div class="mb-3">
-                                                    <label for="email{{ $empresa->id }}" class="form-label">Correo <span class="text-danger">*</span></label>
-                                                    <input type="email" name="email" id="email{{ $empresa->id }}" value="{{ old('email', $empresa->email) }}" class="form-control" required>
+                                                    <label for="email{{ $empresa->id }}" class="form-label">Correo</label>
+                                                    <input type="email" name="email" id="email{{ $empresa->id }}" value="{{ $empresa->email }}" class="form-control">
                                                 </div>
 
                                                 <div class="mb-3">
                                                     <label for="telefono{{ $empresa->id }}" class="form-label">Teléfono</label>
-                                                    <input type="text" name="telefono" id="telefono{{ $empresa->id }}" value="{{ old('telefono', $empresa->telefono) }}" class="form-control">
+                                                    <input type="text" name="telefono" id="telefono{{ $empresa->id }}" value="{{ $empresa->telefono }}" class="form-control">
                                                 </div>
 
                                                 <div class="mb-3">
@@ -161,11 +91,12 @@
                                                         <option value="0" {{ !$empresa->estado_validacion ? 'selected' : '' }}>Inactiva</option>
                                                     </select>
                                                 </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i>Cancelar</button>
+                                                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Guardar Cambios</button>
+                                                </div>
                                             </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i>Cancelar</button>
-                                            <button type="submit" form="formEditar{{ $empresa->id }}" class="btn btn-primary"><i class="fas fa-save me-1"></i>Guardar Cambios</button>
                                         </div>
                                     </div>
                                 </div>
