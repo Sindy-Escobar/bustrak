@@ -7,338 +7,107 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-            text-transform: uppercase;
-            height: 35px;
-            line-height: 30px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-login {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-
-        .btn-login:hover {
-            background-color: #0056b3;
-            border-color: #004085;
-        }
-        .blurred-container {
-            position: relative;
-        }
-
-        .btn-registro {
-            background-color: #28a745;
-            border-color: #28a745;
-        }
-
-        .btn-registro:hover {
-            background-color: #218838;
-            border-color: #1e7e34;
-        }
         body { font-family: Arial, sans-serif; }
-        .hero {
-            height: 60vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-            background: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.3)), url('https://www.shutterstock.com/image-illustration/image-bus-on-road-600nw-2578468007.jpg') no-repeat center center;
-            background-size: cover;
-            text-align: center;
-        }
+        .btn { display: inline-block; padding: 10px 20px; font-size: 16px; font-weight: bold; text-align: center; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease; text-transform: uppercase; height: 35px; line-height: 30px; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-login { background-color: #007bff; border-color: #007bff; color: white; }
+        .btn-login:hover { background-color: #0056b3; }
+        .btn-registro { background-color: #28a745; border-color: #28a745; color: white; }
+        .btn-registro:hover { background-color: #218838; }
+        .hero { height: 60vh; display: flex; align-items: center; justify-content: center; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.7); background: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.3)), url('https://www.shutterstock.com/image-illustration/image-bus-on-road-600nw-2578468007.jpg') no-repeat center center; background-size: cover; text-align: center; }
         .hero h1 { font-size: 3rem; font-weight: bold; }
         .hero p { font-size: 1.5rem; margin-bottom: 20px; }
-        .btn-login { font-size: 1.2rem; padding: 10px 25px; }
-
-        .search-section {
-            margin-top: -50px;
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
-            position: relative;
-            z-index: 10;
-        }
-
-        .blurred {
-            filter: blur(4px);
-            pointer-events: none;
-            user-select: none;
-        }
-        .catalog-btn {
-            position: absolute;
-            bottom: 20px;
-            top : 70%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 20;
-        }
-        .hero-buttons .btn {
-            font-size: 1.2rem;
-            padding: 10px 25px;
-            border-radius: 8px;
-        }
-        .hero-buttons .btn {
-            font-size: 1rem;
-            padding: 1px 5px;
-            border-radius: 8px;
-        }
-
-        .departments img { height: 150px; object-fit: cover; border-radius: 10px; }
+        .search-section { margin-top: -50px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0px 5px 15px rgba(0,0,0,0.2); max-width: 1000px; margin-left: auto; margin-right: auto; position: relative; z-index: 10; }
         .departments .card { cursor: pointer; transition: transform 0.2s; }
         .departments .card:hover { transform: scale(1.05); }
-
-        /* Estilos del modal de viajes */
-        .modal-viajes {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 3000;
-            overflow-y: auto;
-            padding: 20px;
-        }
-        .modal-viajes.show { display: block; }
-        .modal-viajes-content {
-            background: white;
-            border-radius: 12px;
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        }
-        .modal-viajes-header {
-            background: linear-gradient(180deg, #1e63b8, #1976d2);
-            color: white;
-            padding: 24px;
-            border-radius: 12px 12px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .modal-viajes-header h2 {
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-        .modal-viajes-close {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-viajes-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        .modal-viajes-body {
-            padding: 24px;
-        }
-        .viaje-card {
-            border-left: 4px solid #1976d2;
-            padding: 20px;
-            background: #fafbfc;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            transition: all 0.2s;
-            border: 1px solid #e5e7eb;
-        }
-        .viaje-card:hover {
-            background: white;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-        }
-        .viaje-content {
-            display: grid;
-            grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr auto;
-            gap: 16px;
-            align-items: center;
-        }
-        .viaje-info {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .viaje-label {
-            font-size: 11px;
-            color: #9ca3af;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-        .viaje-value {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1f2937;
-        }
-        .viaje-precio {
-            font-size: 20px;
-            color: #1976d2;
-            font-weight: 700;
-        }
-        .viaje-precio-compra {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-        .btn-comprar {
-            background-color: #1976d2;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
+        .departments img { height: 150px; object-fit: cover; border-radius: 10px; }
+        .modal-info { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 3000; padding: 20px; align-items: center; justify-content: center; }
+        .modal-info.show { display: flex; }
+        .modal-info-content { background: white; border-radius: 12px; max-width: 1200px; width: 100%; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); max-height: 85vh; overflow-y: auto; }
+        .modal-info-header { background: linear-gradient(180deg, #1e63b8, #1976d2); color: white; padding: 24px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+        .modal-info-header h2 { margin: 0; font-size: 1.5rem; font-weight: 700; }
+        .modal-info-close { background: rgba(255, 255, 255, 0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .modal-info-close:hover { background: rgba(255, 255, 255, 0.3); }
+        .modal-info-body { padding: 24px; }
+        .info-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb; flex-wrap: wrap; }
+        .info-tab { padding: 10px 20px; border: none; background: none; cursor: pointer; font-weight: 600; color: #6b7280; border-bottom: 3px solid transparent; transition: all 0.3s; font-size: 14px; }
+        .info-tab.active { color: #1976d2; border-bottom-color: #1976d2; }
+        .info-tab:hover { color: #1976d2; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .info-card { border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; transition: all 0.3s; background: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        .info-card:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15); }
+        .info-card-img { width: 100%; height: 160px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; }
+        .info-card-body { padding: 16px; }
+        .info-card-title { font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 8px; }
+        .info-card-desc { font-size: 13px; color: #6b7280; line-height: 1.6; }
+        .modal-viajes { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 3000; padding: 20px; align-items: center; justify-content: center; }
+        .modal-viajes.show { display: flex; }
+        .modal-viajes-content { background: white; border-radius: 12px; max-width: 1200px; width: 100%; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); max-height: 85vh; overflow-y: auto; }
+        .modal-viajes-header { background: linear-gradient(180deg, #1e63b8, #1976d2); color: white; padding: 24px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+        .modal-viajes-header h2 { margin: 0; font-size: 1.5rem; font-weight: 700; }
+        .modal-viajes-close { background: rgba(255, 255, 255, 0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .modal-viajes-close:hover { background: rgba(255, 255, 255, 0.3); }
+        .modal-viajes-body { padding: 24px; }
+        .viaje-card { border-left: 4px solid #1976d2; padding: 20px; background: #fafbfc; border-radius: 8px; margin-bottom: 12px; transition: all 0.2s; border: 1px solid #e5e7eb; }
+        .viaje-card:hover { background: white; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); }
+        .viaje-content { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr auto; gap: 16px; align-items: center; }
+        .viaje-info { display: flex; flex-direction: column; justify-content: center; }
+        .viaje-label { font-size: 11px; color: #9ca3af; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+        .viaje-value { font-size: 14px; font-weight: 600; color: #1f2937; }
+        .viaje-precio { font-size: 20px; color: #1976d2; font-weight: 700; }
+        .viaje-precio-compra { display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
+        .btn-comprar { background-color: #1976d2; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; white-space: nowrap; }
         .btn-comprar:hover { background-color: #1565c0; }
-        .btn-eliminar {
-            background-color: #ef4444;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
+        .btn-eliminar { background-color: #ef4444; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; white-space: nowrap; }
         .btn-eliminar:hover { background-color: #dc2626; }
-        .btn-eliminar:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .modal-waitlist {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 4000;
-            align-items: center;
-            justify-content: center;
-        }
+        .btn-eliminar:disabled { opacity: 0.5; cursor: not-allowed; }
+        .modal-waitlist { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 4000; align-items: center; justify-content: center; }
         .modal-waitlist.show { display: flex; }
-        .modal-content-waitlist {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        }
-        .modal-waitlist h2 {
-            color: #1976d2;
-            margin-bottom: 15px;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .modal-waitlist p {
-            color: #6b7280;
-            margin-bottom: 20px;
-        }
-        .waitlist-info {
-            background: #e0f2fe;
-            border-left: 4px solid #1976d2;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 13px;
-            color: #1f2937;
-            line-height: 1.8;
-        }
-        .waitlist-info strong {
-            color: #1976d2;
-            display: block;
-            margin-bottom: 5px;
-        }
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        .modal-buttons button {
-            flex: 1;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .btn-confirmar {
-            background-color: #1976d2;
-            color: white;
-        }
-        .btn-confirmar:hover {
-            background-color: #1565c0;
-        }
-        .btn-cancelar {
-            background-color: #ef4444;
-            color: white;
-        }
-        .btn-cancelar:hover {
-            background-color: #dc2626;
-        }
-        .no-viajes {
-            background: #dbeafe;
-            padding: 40px;
-            border-radius: 12px;
-            border: 2px dashed #3b82f6;
-            text-align: center;
-        }
-        .no-viajes i {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            color: #3b82f6;
-        }
-        .no-viajes h3 {
-            color: #1e40af;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-        .no-viajes p {
-            color: #1e40af;
-        }
+        .modal-content-waitlist { background: white; border-radius: 12px; padding: 30px; max-width: 500px; width: 90%; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); }
+        .modal-waitlist h2 { color: #1976d2; margin-bottom: 15px; font-size: 24px; display: flex; align-items: center; gap: 10px; }
+        .modal-waitlist p { color: #6b7280; margin-bottom: 20px; }
+        .waitlist-info { background: #e0f2fe; border-left: 4px solid #1976d2; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 13px; color: #1f2937; line-height: 1.8; }
+        .waitlist-info strong { color: #1976d2; display: block; margin-bottom: 5px; }
+        .modal-buttons { display: flex; gap: 10px; }
+        .modal-buttons button { flex: 1; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; }
+        .btn-confirmar { background-color: #1976d2; color: white; }
+        .btn-confirmar:hover { background-color: #1565c0; }
+        .btn-cancelar { background-color: #ef4444; color: white; }
+        .btn-cancelar:hover { background-color: #dc2626; }
+        .no-viajes { background: #dbeafe; padding: 40px; border-radius: 12px; border: 2px dashed #3b82f6; text-align: center; }
+        .no-viajes i { font-size: 4rem; margin-bottom: 20px; color: #3b82f6; }
+        .no-viajes h3 { color: #1e40af; margin-bottom: 15px; font-size: 1.3rem; }
+        .no-viajes p { color: #1e40af; }
         @media (max-width: 768px) {
-            .viaje-content {
-                grid-template-columns: 1fr;
-            }
+            .viaje-content { grid-template-columns: 1fr; }
+            .cards-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-<!-- Modal de confirmación de compra/eliminación -->
+<div class="modal-info" id="modalInfo">
+    <div class="modal-info-content">
+        <div class="modal-info-header">
+            <h2 id="modalInfoTitle"><i class="fas fa-map-marker-alt"></i> Departamento</h2>
+            <button class="modal-info-close" onclick="cerrarModalInfo()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-info-body">
+            <div class="info-tabs">
+                <button class="info-tab active" onclick="cambiarTab('lugares')"><i class="fas fa-landmark"></i> Lugares Turísticos</button>
+                <button class="info-tab" onclick="cambiarTab('comidas')"><i class="fas fa-utensils"></i> Comidas Típicas</button>
+            </div>
+            <div id="lugaresTab" class="tab-content active">
+                <div class="cards-grid" id="lugaresGrid"></div>
+            </div>
+            <div id="comidasTab" class="tab-content">
+                <div class="cards-grid" id="comidasGrid"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal-waitlist" id="waitlistModal">
     <div class="modal-content-waitlist">
         <h2 id="modalTitle"><i class="fas fa-check-circle"></i> Confirmar Compra</h2>
@@ -351,14 +120,11 @@
     </div>
 </div>
 
-<!-- Modal de viajes -->
 <div class="modal-viajes" id="modalViajes">
     <div class="modal-viajes-content">
         <div class="modal-viajes-header">
             <h2 id="modalViajesTitle"><i class="fas fa-bus"></i> Viajes Disponibles</h2>
-            <button class="modal-viajes-close" onclick="cerrarModalViajes()">
-                <i class="fas fa-times"></i>
-            </button>
+            <button class="modal-viajes-close" onclick="cerrarModalViajes()"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-viajes-body">
             <div id="viajesContainer"></div>
@@ -366,70 +132,62 @@
     </div>
 </div>
 
-<!-- Hero Section -->
 <section class="hero position-relative">
     <div class="container">
         <h1>Reserva tu Asiento de Bus Fácil y Rápido</h1>
         <p>Explora rutas, horarios y promociones exclusivas para ti.</p>
-        <h2>Bustrak, tu mejor opcion</h2>
-
+        <h2>Bustrak, tu mejor opción</h2>
     </div>
-
-    <!-- Botones en la esquina superior derecha -->
     <div class="hero-buttons position-absolute top-0 end-0 m-3">
         <a href="/login" class="btn btn-primary btn-login me-2">Iniciar Sesión</a>
         <a href="/registro" class="btn btn-success btn-registro">Registrate</a>
     </div>
-
 </section>
 
-
-<!-- Formulario de búsqueda -->
 <section class="search-section">
     <form class="row g-3">
         <div class="col-md-6">
             <label for="origen" class="form-label">Origen</label>
             <select class="form-select" id="origen">
                 <option selected>Seleccione un origen</option>
-                <option>San Pedro Sula</option>
-                <option>Tegucigalpa</option>
-                <option>La Ceiba</option>
-                <option>San Lorenzo</option>
-                <option>Danli</option>
-                <option>Santa Barbara</option>
+                <option>Cortés</option>
+                <option>Atlántida</option>
+                <option>Francisco Morazán</option>
                 <option>Choluteca</option>
-                <option>Trujillo</option>
-                <option>Santa Rosa de Copan</option>
-                <option>La Esperanza</option>
-                <option>Gracias</option>
-                <option>Juticalpa</option>
-                <option>La paz</option>
-                <option>Yoro</option>
                 <option>Comayagua</option>
-                <option>Nueva Ocotepeque</option>
-
+                <option>Colón</option>
+                <option>Copán</option>
+                <option>El Paraíso</option>
+                <option>Yoro</option>
+                <option>Intibucá</option>
+                <option>La Paz</option>
+                <option>Lempira</option>
+                <option>Ocotepeque</option>
+                <option>Olancho</option>
+                <option>Santa Bárbara</option>
+                <option>Valle</option>
             </select>
         </div>
         <div class="col-md-6">
             <label for="destino" class="form-label">Destino</label>
             <select class="form-select" id="destino">
                 <option selected>Seleccione un destino</option>
-                <option>San Pedro Sula</option>
-                <option>Tegucigalpa</option>
-                <option>La Ceiba</option>
-                <option>San Lorenzo</option>
-                <option>Danli</option>
-                <option>Santa Barbara</option>
+                <option>Cortés</option>
+                <option>Atlántida</option>
+                <option>Francisco Morazán</option>
                 <option>Choluteca</option>
-                <option>Trujillo</option>
-                <option>Santa Rosa de Copan</option>
-                <option>La Esperanza</option>
-                <option>Gracias</option>
-                <option>Juticalpa</option>
-                <option>La paz</option>
-                <option>Yoro</option>
                 <option>Comayagua</option>
-                <option>Nueva Ocotepeque</option>
+                <option>Colón</option>
+                <option>Copán</option>
+                <option>El Paraíso</option>
+                <option>Yoro</option>
+                <option>Intibucá</option>
+                <option>La Paz</option>
+                <option>Lempira</option>
+                <option>Ocotepeque</option>
+                <option>Olancho</option>
+                <option>Santa Bárbara</option>
+                <option>Valle</option>
             </select>
         </div>
         <div class="col-md-6">
@@ -445,60 +203,31 @@
             <input type="number" class="form-control" id="pasajeros" value="1" min="1">
         </div>
         <div class="col-md-6 d-flex align-items-end">
-            <a href="/login" class="btn btn-primary w-100">Buscar Viaje</a>
-
-
+            <button type="button" class="btn btn-primary w-100" onclick="buscarViajes()">Buscar Viaje</button>
         </div>
     </form>
 </section>
 
-<!-- Sección Departamentos de Honduras -->
 <section class="py-5 position-relative">
     <div class="container">
         <h2 class="mb-4 text-center">Destinos en Honduras</h2>
         <div class="row row-cols-1 row-cols-md-3 g-3 departments">
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Cortés')"><img src="/catalago/img/cortes.jpg" class="card-img-top"><div class="card-body text-center"><h6>Cortés</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Atlántida')"><img src="/catalago/img/atlantida.jpg" class="card-img-top"><div class="card-body text-center"><h6>Atlántida</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Francisco Morazán')"><img src="/catalago/img/francisco.jpg" class="card-img-top"><div class="card-body text-center"><h6>Francisco Morazán</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Choluteca')"><img src="/catalago/img/choluteca.jpg" class="card-img-top"><div class="card-body text-center"><h6>Choluteca</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Comayagua')"><img src="/catalago/img/comayagua.jpg" class="card-img-top"><div class="card-body text-center"><h6>Comayagua</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Colón')"><img src="/catalago/img/colon.jpg" class="card-img-top"><div class="card-body text-center"><h6>Colón</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Copán')"><img src="/catalago/img/copan.jpg" class="card-img-top"><div class="card-body text-center"><h6>Copán</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('El Paraíso')"><img src="/catalago/img/elparaiso.jpg" class="card-img-top"><div class="card-body text-center"><h6>El Paraíso</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Yoro')"><img src="/catalago/img/yoro.jpg" class="card-img-top"><div class="card-body text-center"><h6>Yoro</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Gracias a Dios')"><img src="/catalago/img/gracias.jpg" class="card-img-top"><div class="card-body text-center"><h6>Gracias a Dios</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Intibucá')"><img src="/catalago/img/intibuca.jpg" class="card-img-top"><div class="card-body text-center"><h6>Intibucá</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Islas de la Bahía')"><img src="/catalago/img/islas.jpg" class="card-img-top"><div class="card-body text-center"><h6>Islas de la Bahía</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('La Paz')"><img src="/catalago/img/lapaz.jpg" class="card-img-top"><div class="card-body text-center"><h6>La Paz</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Lempira')"><img src="/catalago/img/lempira.jpg" class="card-img-top"><div class="card-body text-center"><h6>Lempira</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Ocotepeque')"><img src="/catalago/img/ocotepeque.jpg" class="card-img-top"><div class="card-body text-center"><h6>Ocotepeque</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Olancho')"><img src="/catalago/img/olancho.jpg" class="card-img-top"><div class="card-body text-center"><h6>Olancho</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Santa Bárbara')"><img src="/catalago/img/santabarbara.jpg" class="card-img-top"><div class="card-body text-center"><h6>Santa Bárbara</h6></div></div></div>
-            <div class="col"><div class="card" onclick="mostrarViajesDepartamento('Valle')"><img src="/catalago/img/valle.jpg" class="card-img-top"><div class="card-body text-center"><h6>Valle</h6></div></div></div>
-        </div>
-    </div>
-</section>
-
-<!-- Sección de Servicios -->
-<section class="py-5 bg-light">
-    <div class="container text-center">
-        <h2 class="mb-4">Nuestros Servicios</h2>
-        <div class="row">
-            <div class="col-md-4 mb-3 service">
-                <img src="https://www.aduanas.gob.hn/wp-content/uploads/2023/02/Mapa-AduanasMapa-scaled.jpg" class="img-fluid rounded" alt="Rutas Populares">
-                <h5 class="mt-2">Rutas Populares</h5>
-                <p>Encuentra los destinos más solicitados por nuestros pasajeros.</p>
-            </div>
-            <div class="col-md-4 mb-3 service">
-                <img src="https://www.banrural.com.hn/wp-content/uploads/2024/05/TravelHub-min-1.jpg" class="img-fluid rounded" alt="Promociones">
-                <h5 class="mt-2">Promociones</h5>
-                <p>Aprovecha descuentos y promociones especiales en tus viajes.</p>
-            </div>
-            <div class="col-md-4 mb-3 service">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5qJbswnaa5-zWREh0F9dnxY-Ngilrzmid_w&s" class="img-fluid rounded" alt="Viaje Seguro">
-                <h5 class="mt-2">Viaje Seguro</h5>
-                <p>Viaja tranquilo con nuestro sistema de reservas confiable.</p>
-            </div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('Cortés')"><img src="/catalago/img/cortes.jpg" class="card-img-top"><div class="card-body text-center"><h6>Cortés</h6></div></div></div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('Atlántida')"><img src="/catalago/img/atlantida.jpg" class="card-img-top"><div class="card-body text-center"><h6>Atlántida</h6></div></div></div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('Francisco Morazán')"><img src="/catalago/img/francisco.jpg" class="card-img-top"><div class="card-body text-center"><h6>Francisco Morazán</h6></div></div></div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('Choluteca')"><img src="/catalago/img/choluteca.jpg" class="card-img-top"><div class="card-body text-center"><h6>Choluteca</h6></div></div></div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('Comayagua')"><img src="/catalago/img/comayagua.jpg" class="card-img-top"><div class="card-body text-center"><h6>Comayagua</h6></div></div></div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('Colón')"><img src="/catalago/img/colon.jpg" class="card-img-top"><div class="card-body text-center"><h6>Colón</h6></div></div></div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('Copán')"><img src="/catalago/img/copan.jpg" class="card-img-top"><div class="card-body text-center"><h6>Copán</h6></div></div></div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('El Paraíso')"><img src="/catalago/img/elparaiso.jpg" class="card-img-top"><div class="card-body text-center"><h6>El Paraíso</h6></div></div></div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('Yoro')"><img src="/catalago/img/yoro.jpg" class="card-img-top"><div class="card-body text-center"><h6>Yoro</h6></div></div></div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('Intibucá')"><img src="/catalago/img/intibuca.jpg" class="card-img-top"><div class="card-body text-center"><h6>Intibucá</h6></div></div></div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('La Paz')"><img src="/catalago/img/lapaz.jpg" class="card-img-top"><div class="card-body text-center"><h6>La Paz</h6></div></div></div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('Lempira')"><img src="/catalago/img/lempira.jpg" class="card-img-top"><div class="card-body text-center"><h6>Lempira</h6></div></div></div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('Ocotepeque')"><img src="/catalago/img/ocotepeque.jpg" class="card-img-top"><div class="card-body text-center"><h6>Ocotepeque</h6></div></div></div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('Olancho')"><img src="/catalago/img/olancho.jpg" class="card-img-top"><div class="card-body text-center"><h6>Olancho</h6></div></div></div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('Santa Bárbara')"><img src="/catalago/img/santabarbara.jpg" class="card-img-top"><div class="card-body text-center"><h6>Santa Bárbara</h6></div></div></div>
+            <div class="col"><div class="card" onclick="abrirModalInfo('Valle')"><img src="/catalago/img/valle.jpg" class="card-img-top"><div class="card-body text-center"><h6>Valle</h6></div></div></div>
         </div>
     </div>
 </section>
@@ -512,103 +241,129 @@
     let asientosVendidos = {};
     let departamentoActual = '';
 
-    const viajesDatos = [
-        { ruta: 'Cortés', fecha: '2025-01-15', horario: '6:00 AM', duracion: '3h 30m', precio: 250, destino: 'Cortés', empresa: 'Transporte Express' },
-        { ruta: 'Cortés', fecha: '2025-02-20', horario: '9:00 AM', duracion: '3h 30m', precio: 250, destino: 'Cortés', empresa: 'Buses del Norte' },
-        { ruta: 'Atlántida', fecha: '2025-02-10', horario: '9:00 AM', duracion: '4h 15m', precio: 320, destino: 'Atlántida', empresa: 'Viajes Rápidos' },
-        { ruta: 'Atlántida', fecha: '2025-03-15', horario: '7:30 AM', duracion: '4h 15m', precio: 320, destino: 'Atlántida', empresa: 'Línea Dorada' },
-        { ruta: 'Francisco Morazán', fecha: '2025-03-20', horario: '12:00 PM', duracion: '2h 45m', precio: 180, destino: 'Francisco Morazán', empresa: 'Autobuses Unidos' },
-        { ruta: 'Francisco Morazán', fecha: '2025-04-18', horario: '3:00 PM', duracion: '2h 45m', precio: 180, destino: 'Francisco Morazán', empresa: 'Transporte Express' },
-        { ruta: 'Choluteca', fecha: '2025-04-12', horario: '7:30 AM', duracion: '5h 20m', precio: 380, destino: 'Choluteca', empresa: 'Buses del Norte' },
-        { ruta: 'Choluteca', fecha: '2025-05-22', horario: '10:30 AM', duracion: '5h 20m', precio: 380, destino: 'Choluteca', empresa: 'Viajes Rápidos' },
-        { ruta: 'Comayagua', fecha: '2025-05-08', horario: '3:00 PM', duracion: '3h 10m', precio: 210, destino: 'Comayagua', empresa: 'Línea Dorada' },
-        { ruta: 'Comayagua', fecha: '2025-06-12', horario: '6:00 AM', duracion: '3h 10m', precio: 210, destino: 'Comayagua', empresa: 'Autobuses Unidos' },
-        { ruta: 'Colón', fecha: '2025-06-18', horario: '10:30 AM', duracion: '4h 05m', precio: 290, destino: 'Colón', empresa: 'Transporte Express' },
-        { ruta: 'Colón', fecha: '2025-07-14', horario: '1:30 PM', duracion: '4h 05m', precio: 290, destino: 'Colón', empresa: 'Buses del Norte' },
-        { ruta: 'Copán', fecha: '2025-07-25', horario: '1:30 PM', duracion: '4h 40m', precio: 340, destino: 'Copán', empresa: 'Viajes Rápidos' },
-        { ruta: 'Copán', fecha: '2025-08-19', horario: '4:30 PM', duracion: '4h 40m', precio: 340, destino: 'Copán', empresa: 'Línea Dorada' },
-        { ruta: 'El Paraíso', fecha: '2025-08-14', horario: '4:30 PM', duracion: '2h 55m', precio: 165, destino: 'El Paraíso', empresa: 'Autobuses Unidos' },
-        { ruta: 'El Paraíso', fecha: '2025-09-10', horario: '6:00 PM', duracion: '2h 55m', precio: 165, destino: 'El Paraíso', empresa: 'Transporte Express' },
-        { ruta: 'Yoro', fecha: '2025-09-22', horario: '6:00 PM', duracion: '3h 20m', precio: 220, destino: 'Yoro', empresa: 'Buses del Norte' },
-        { ruta: 'Yoro', fecha: '2025-10-16', horario: '9:00 AM', duracion: '3h 20m', precio: 220, destino: 'Yoro', empresa: 'Viajes Rápidos' },
-        { ruta: 'Gracias a Dios', fecha: '2025-10-05', horario: '8:00 AM', duracion: '4h 50m', precio: 295, destino: 'Gracias a Dios', empresa: 'Línea Dorada' },
-        { ruta: 'Intibucá', fecha: '2025-11-30', horario: '2:00 PM', duracion: '3h 25m', precio: 185, destino: 'Intibucá', empresa: 'Autobuses Unidos' },
-        { ruta: 'Islas de la Bahía', fecha: '2025-01-25', horario: '7:30 AM', duracion: '5h 10m', precio: 420, destino: 'Islas de la Bahía', empresa: 'Transporte Express' },
-        { ruta: 'Islas de la Bahía', fecha: '2025-03-12', horario: '10:30 AM', duracion: '5h 10m', precio: 420, destino: 'Islas de la Bahía', empresa: 'Buses del Norte' },
-        { ruta: 'La Paz', fecha: '2025-02-14', horario: '12:00 PM', duracion: '3h 35m', precio: 195, destino: 'La Paz', empresa: 'Viajes Rápidos' },
-        { ruta: 'La Paz', fecha: '2025-04-22', horario: '1:30 PM', duracion: '3h 35m', precio: 195, destino: 'La Paz', empresa: 'Línea Dorada' },
-        { ruta: 'Lempira', fecha: '2025-05-18', horario: '6:00 AM', duracion: '4h 25m', precio: 310, destino: 'Lempira', empresa: 'Autobuses Unidos' },
-        { ruta: 'Lempira', fecha: '2025-07-08', horario: '9:00 AM', duracion: '4h 25m', precio: 310, destino: 'Lempira', empresa: 'Transporte Express' },
-        { ruta: 'Ocotepeque', fecha: '2025-06-05', horario: '3:00 PM', duracion: '4h 55m', precio: 360, destino: 'Ocotepeque', empresa: 'Buses del Norte' },
-        { ruta: 'Ocotepeque', fecha: '2025-08-28', horario: '4:30 PM', duracion: '4h 55m', precio: 360, destino: 'Ocotepeque', empresa: 'Viajes Rápidos' },
-        { ruta: 'Olancho', fecha: '2025-07-17', horario: '7:30 AM', duracion: '3h 40m', precio: 240, destino: 'Olancho', empresa: 'Línea Dorada' },
-        { ruta: 'Olancho', fecha: '2025-09-19', horario: '10:30 AM', duracion: '3h 40m', precio: 240, destino: 'Olancho', empresa: 'Autobuses Unidos' },
-        { ruta: 'Santa Bárbara', fecha: '2025-08-06', horario: '12:00 PM', duracion: '4h 15m', precio: 285, destino: 'Santa Bárbara', empresa: 'Transporte Express' },
-        { ruta: 'Santa Bárbara', fecha: '2025-10-24', horario: '1:30 PM', duracion: '4h 15m', precio: 285, destino: 'Santa Bárbara', empresa: 'Buses del Norte' },
-        { ruta: 'Valle', fecha: '2025-09-03', horario: '6:00 PM', duracion: '5h 30m', precio: 395, destino: 'Valle', empresa: 'Viajes Rápidos' },
-        { ruta: 'Valle', fecha: '2025-11-14', horario: '9:00 AM', duracion: '5h 30m', precio: 395, destino: 'Valle', empresa: 'Línea Dorada' }
+    const destinosData = {
+        'Atlántida': { lugares: ['Parque Nacional Pico Bonito', 'Las Cascadas de Zacate', 'Jardín Botánico Lancetilla', 'Playas del Municipio de Tela', 'Muelle de La Ceiba', 'Río Cangrejal (Área de Rafting)', 'Reserva Marina Cuero y Salado', 'Laguna de Los Micos'], comidas: ['Pan de Coco', 'Tapado Costeño', 'Pescado Frito con Tajadas', 'Casabe (Yuca)', 'Tostones', 'Sopa de Mariscos (Estilo Ceibeño)', 'Rice and Beans', 'Dulce de Banano'] },
+        'Colón': { lugares: ['Playas de Trujillo', 'Fortaleza de Santa Bárbara', 'Parque Nacional Capiro y Calentura', 'Laguna de Guaymoreto', 'Puerto de Castilla', 'Comunidades Garífunas (Santa Fe)', 'Montaña de Calentura', 'Balnearios en Río Aguán'], comidas: ['Machuca (Puré de Plátano)', 'Sopa de Caracol', 'Pescado al Vapor', 'Casabe', 'Pan de Coco', 'Carne de Cerdo Ahumada', 'Atol de Coco', 'Tostones con frijoles'] },
+        'Comayagua': { lugares: ['Catedral de Comayagua (Reloj Antiguo)', 'Cuevas de Taulabé', 'Museo Colonial de Comayagua', 'Plaza Central León Alvarado', 'Iglesia La Merced', 'Cueva Hedionda', 'La Villa de San Antonio', 'Casa de la Cultura de Comayagua'], comidas: ['Sopa de Capirotadas', 'Pinol (Carne molida)', 'Nacatamales de cerdo', 'Tustacas', 'Alcitrones', 'Tamalitos de Chipilín', 'Montucas de maíz', 'Dulce de Leche (Cajetas)'] },
+        'Copán': { lugares: ['Sitio Arqueológico Ruinas de Copán', 'El Bosque de Guacamayas', 'Aguas Termales de Luna Jaguar', 'Hacienda San Lucas', 'Fincas de café (Ruta)', 'Las Sepulturas (Sitio Arqueológico)', 'Museos Arqueológicos de Copán', 'Túneles Mayas (Bajo las Ruinas)'], comidas: ['Tamalitos de Frijoles (o ticucos)', 'Montucas', 'Sopa de Gallina de Patio', 'Picucos (dulce)', 'Totopostes', 'Chilate (bebida)', 'Atol de Maíz', 'Carne Asada al Carbón'] },
+        'Cortés': { lugares: ['Cataratas de Pulhapanzak', 'Fortaleza de San Fernando de Omoa', 'Playas de Puerto Cortés', 'Parque Nacional Cusuco', 'Museo de la Naturaleza (SPS)', 'Muelle de Puerto Cortés', 'Cienaguita (Playas)', 'Museo de Antropología e Historia (SPS)'], comidas: ['Baleadas', 'Pollo Chuco', 'Pastelitos de Perro', 'Sopa de Frijoles con Huevo', 'Sopa de Mondongo', 'Tajadas de plátano maduro', 'Atol de Elote', 'Chuletas de Cerdo'] },
+        'Choluteca': { lugares: ['Playas de Cedeño', 'Reserva de Vida Silvestre El Jicarito', 'Museo de Historia Regional (Choluteca)', 'Puente de Choluteca', 'Manglares de la zona de Cedeño', 'Playas de Punta Condega', 'Aguas Termales en El Corpus', 'Iglesia Inmaculada Concepción'], comidas: ['Rosquillas en Miel', 'Chancletas de Pataste', 'Cuznaca (Dulce de mango)', 'Tamales Pisques', 'Curiles (mariscos locales)', 'Pescado Frito (de la zona costera)', 'Sopa de Mariscada Sureña', 'Queso Frito'] },
+        'El Paraíso': { lugares: ['Fábricas de Puros (Danlí)', 'Aguas Termales de San Francisco de la Venta', 'Cascada de El Cacao', 'Montaña de Teupasenti', 'Reserva de Vida Silvestre Texíguat (Zona El Paraíso)', 'Fincas de café (Ruta)', 'Iglesia Inmaculada Concepción (Danlí)', 'Parque Nacional La Botija (Montaña)'], comidas: ['Ticuco (Tamales de frijol tierno)', 'Atol de Elote', 'Cuajada de Danlí', 'Nacatamales', 'Ayote en Miel', 'Tamalitos de Cambray', 'Carne de Cerdo Asada', 'Tamales de Yuca'] },
+        'Francisco Morazán': { lugares: ['El Cristo del Picacho', 'Parque Nacional La Tigra', 'Parque Nacional El Hatillo', 'Valle de Ángeles (Pueblo Artesanal)', 'Basílica de Suyapa', 'Ruinas de Choluteca La Vieja (Ojojona)', 'Santa Lucía (Pueblo colonial)', 'Museo para la Identidad Nacional (MIN)'], comidas: ['Carne Asada (con chimol y frijoles)', 'Nacatamales', 'Sopa de Mondongo', 'Rosquillas de Maíz', 'Sopa de Olla', 'Torrejas', 'Frijoles Fritos (con queso)', 'Tamales de Elote'] },
+        'Intibucá': { lugares: ['Lagos de Chiligatoro', 'Gruta de La Esperanza', 'Cascadas de La Campa', 'La Gruta de Las Mercedes', 'El Cerrito (Mirador)', 'Feria de la Papa y el Vino (Evento Anual)', 'Senderos Lencas', 'Iglesia La Merced (La Esperanza)'], comidas: ['Sopa de Gallina India', 'Atol Shuco', 'Chicha (bebida)', 'Ticucos', 'Miel de Abeja (de la zona)', 'Pan Casero y Rosquetes', 'Tamales de Elote', 'Sopa de Frijoles (con cuajada)'] },
+        'La Paz': { lugares: ['Cascada de Santa Elena', 'Parque Arqueológico Yarumela', 'Montaña de Chinacla', 'El Picacho de Chinacla', 'Iglesia Colonial de La Paz', 'Museo Regional de Arqueología (Yarumela)', 'Balnearios en los ríos locales', 'Templo Católico de San Antonio del Norte'], comidas: ['Chancletas de Pataste', 'Sopa de Albóndigas', 'Torrejas (de yuca o plátano)', 'Rosquillas', 'Queso de Capa', 'Tamalitos de Frijol', 'Tamales de Cerdo', 'Sopa de Gallina'] },
+        'Lempira': { lugares: ['Fuerte de San Cristóbal (Gracias)', 'Parque Nacional Montaña de Celaque', 'Aguas Termales de Gracias', 'Casa Presidencial de Lempira (museo)', 'Laguna Madre Vieja', 'Fincas de Café (Ruta del Lenca)', 'Monumento a Lempira', 'Iglesia La Merced (Gracias)'], comidas: ['Atol Shuco', 'Chilate', 'Ticucos', 'Totopostes', 'Sopa de Olla Lenca', 'Cuajada en penca', 'Tamalitos de Elote', 'Rosquillas (de Maíz)'] },
+        'Ocotepeque': { lugares: ['Reserva Biológica Güisayote', 'Aguas Termales de Azacualpa', 'Ruinas de la Antigua Ocotepeque', 'Río Lempa (Fuente en la montaña)', 'Iglesia de San Francisco de Asís', 'Mirador de Ocotepeque', 'La Casa de la Cultura de Ocotepeque', 'Montaña de El Pital'], comidas: ['Sopa de Tortas de Pescado', 'Tamalitos de Cambray', 'Atol de Elote', 'Cuajada', 'Sopa de Frijoles', 'Chilate', 'Carne de Cerdo Asada', 'Tamal de Frijol con arroz'] },
+        'Olancho': { lugares: ['Parque Nacional Sierra de Agalta', 'Laguna de Talgua (Catacamas)', 'Cueva de El Gigante (Catacamas)', 'Cuevas de Cuyamel', 'Río Tinto', 'Catedral de Juticalpa', 'Aguas Termales de San Francisco de la Paz', 'Reserva Biológica Sierra de Río Tinto'], comidas: ['Cuajada en Penca', 'Carne de res con Yuca (o Guisada)', 'Tamales de Frijol', 'Quesillo', 'Sopa de Olla Olanchana', 'Tamalitos de Cambray', 'Atol de Maíz', 'Tustacas'] },
+        'Santa Bárbara': { lugares: ['Parque Nacional Montaña de Santa Bárbara (PANAMOSAB)', 'Cuevas de la Kinkora', 'Festival del Junco (Evento Artesanal)', 'Balnearios en los ríos de la zona', 'Cuevas de Gualala', 'Fincas de café (Ruta)', 'El Junco (Área de artesanía)', 'Iglesia de Santa Bárbara (Histórica)'], comidas: ['Montucas', 'Atol de Piña', 'Sopa de Olla', 'Tamalitos de Frijol', 'Pescado Frito (de la zona del Lago)', 'Tamales de Chicharrones', 'Sopa de Pescado', 'Queso Frito'] },
+        'Valle': { lugares: ['Puerto de San Lorenzo (Muelle)', 'Isla del Tigre (Amapala)', 'Playas del Golfo de Fonseca (Playa Grande)', 'Humedales del Golfo de Fonseca', 'Isla Zacate Grande', 'Casco Urbano de Amapala', 'El Jicarito (reserva de manglares)', 'Reserva Biológica de Guanacaste'], comidas: ['Pescado Frito (del Golfo)', 'Ceviches (de camarón y pescado)', 'Sopa Marinera', 'Curiles (en salsa o frescos)', 'Tamalitos de Elote', 'Camarones a la diabla', 'Sopa de Almejas', 'Dulce de Nance'] },
+        'Yoro': { lugares: ['Parque Nacional Pico Pijol', 'Cuevas de la Lluvia de Peces', 'Balneario El Ocote', 'Río Sulaco', 'Fincas de palma africana y cacao', 'Montaña de Mico Quemado', 'Parque Nacional Cerro Azul de Meámbar (Parte Yoro)', 'Río Cuyamapa'], comidas: ['Sopa de Jutes (Caracoles de río)', 'Sopa de Frijoles con Hueso de Cerdo', 'Cuajada de Leche', 'Atol de Maíz', 'Sopa de Mondongo', 'Tamales de Maíz', 'Carne de Res Asada', 'Tajadas de Plátano'] }
+    };
+
+    const viajesBase = [
+        {ruta:'Cortés',horario:'6:00 AM',duracion:'3h 30m',precio:250,empresa:'Transporte Express'},
+        {ruta:'Cortés',horario:'9:00 AM',duracion:'3h 30m',precio:250,empresa:'Buses del Norte'},
+        {ruta:'Atlántida',horario:'9:00 AM',duracion:'4h 15m',precio:320,empresa:'Viajes Rápidos'},
+        {ruta:'Atlántida',horario:'7:30 AM',duracion:'4h 15m',precio:320,empresa:'Línea Dorada'},
+        {ruta:'Francisco Morazán',horario:'12:00 PM',duracion:'2h 45m',precio:180,empresa:'Autobuses Unidos'},
+        {ruta:'Francisco Morazán',horario:'3:00 PM',duracion:'2h 45m',precio:180,empresa:'Transporte Express'},
+        {ruta:'Choluteca',horario:'7:30 AM',duracion:'5h 20m',precio:380,empresa:'Buses del Norte'},
+        {ruta:'Choluteca',horario:'10:30 AM',duracion:'5h 20m',precio:380,empresa:'Viajes Rápidos'},
+        {ruta:'Comayagua',horario:'3:00 PM',duracion:'3h 10m',precio:210,empresa:'Línea Dorada'},
+        {ruta:'Comayagua',horario:'6:00 AM',duracion:'3h 10m',precio:210,empresa:'Autobuses Unidos'},
+        {ruta:'Colón',horario:'10:30 AM',duracion:'4h 05m',precio:290,empresa:'Transporte Express'},
+        {ruta:'Colón',horario:'1:30 PM',duracion:'4h 05m',precio:290,empresa:'Buses del Norte'},
+        {ruta:'Copán',horario:'1:30 PM',duracion:'4h 40m',precio:340,empresa:'Viajes Rápidos'},
+        {ruta:'Copán',horario:'4:30 PM',duracion:'4h 40m',precio:340,empresa:'Línea Dorada'},
+        {ruta:'El Paraíso',horario:'4:30 PM',duracion:'2h 55m',precio:165,empresa:'Autobuses Unidos'},
+        {ruta:'El Paraíso',horario:'6:00 PM',duracion:'2h 55m',precio:165,empresa:'Transporte Express'},
+        {ruta:'Yoro',horario:'6:00 PM',duracion:'3h 20m',precio:220,empresa:'Buses del Norte'},
+        {ruta:'Yoro',horario:'9:00 AM',duracion:'3h 20m',precio:220,empresa:'Viajes Rápidos'},
+        {ruta:'Intibucá',horario:'2:00 PM',duracion:'3h 25m',precio:185,empresa:'Autobuses Unidos'},
+        {ruta:'Intibucá',horario:'8:00 AM',duracion:'3h 25m',precio:185,empresa:'Línea Dorada'},
+        {ruta:'La Paz',horario:'12:00 PM',duracion:'3h 35m',precio:195,empresa:'Viajes Rápidos'},
+        {ruta:'La Paz',horario:'1:30 PM',duracion:'3h 35m',precio:195,empresa:'Línea Dorada'},
+        {ruta:'Lempira',horario:'6:00 AM',duracion:'4h 25m',precio:310,empresa:'Autobuses Unidos'},
+        {ruta:'Lempira',horario:'9:00 AM',duracion:'4h 25m',precio:310,empresa:'Transporte Express'},
+        {ruta:'Ocotepeque',horario:'3:00 PM',duracion:'4h 55m',precio:360,empresa:'Buses del Norte'},
+        {ruta:'Ocotepeque',horario:'4:30 PM',duracion:'4h 55m',precio:360,empresa:'Viajes Rápidos'},
+        {ruta:'Olancho',horario:'7:30 AM',duracion:'3h 40m',precio:240,empresa:'Línea Dorada'},
+        {ruta:'Olancho',horario:'10:30 AM',duracion:'3h 40m',precio:240,empresa:'Autobuses Unidos'},
+        {ruta:'Santa Bárbara',horario:'12:00 PM',duracion:'4h 15m',precio:285,empresa:'Transporte Express'},
+        {ruta:'Santa Bárbara',horario:'1:30 PM',duracion:'4h 15m',precio:285,empresa:'Buses del Norte'},
+        {ruta:'Valle',horario:'6:00 PM',duracion:'5h 30m',precio:395,empresa:'Viajes Rápidos'},
+        {ruta:'Valle',horario:'9:00 AM',duracion:'5h 30m',precio:395,empresa:'Línea Dorada'}
     ];
+
+    function abrirModalInfo(departamento) {
+        const info = destinosData[departamento];
+        if (!info) return;
+        document.getElementById('modalInfoTitle').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${departamento}`;
+        const lugaresHtml = info.lugares.map(lugar => `<div class="info-card"><div class="info-card-img"><i class="fas fa-landmark"></i></div><div class="info-card-body"><div class="info-card-title">${lugar}</div></div></div>`).join('');
+        const comidasHtml = info.comidas.map(comida => `<div class="info-card"><div class="info-card-img"><i class="fas fa-utensils"></i></div><div class="info-card-body"><div class="info-card-title">${comida}</div></div></div>`).join('');
+        document.getElementById('lugaresGrid').innerHTML = lugaresHtml;
+        document.getElementById('comidasGrid').innerHTML = comidasHtml;
+        document.getElementById('modalInfo').classList.add('show');
+    }
+
+    function cerrarModalInfo() {
+        document.getElementById('modalInfo').classList.remove('show');
+    }
+
+    function cambiarTab(tab) {
+        document.querySelectorAll('.info-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        event.target.closest('.info-tab').classList.add('active');
+        document.getElementById(tab + 'Tab').classList.add('active');
+    }
+
+    function buscarViajes() {
+        const origen = document.getElementById('origen').value;
+        const destino = document.getElementById('destino').value;
+        const fechaIda = document.getElementById('fecha_ida').value;
+        if (!origen || origen === 'Seleccione un origen') {
+            alert('Por favor, seleccione un origen.');
+            return;
+        }
+        if (!destino || destino === 'Seleccione un destino') {
+            alert('Por favor, seleccione un destino.');
+            return;
+        }
+        if (!fechaIda) {
+            alert('Por favor, seleccione una fecha de ida.');
+            return;
+        }
+        if (origen === destino) {
+            alert('El origen y el destino no pueden ser iguales.');
+            return;
+        }
+        mostrarViajesDepartamento(destino);
+    }
 
     function mostrarViajesDepartamento(departamento) {
         departamentoActual = departamento;
         const origenSeleccionado = document.getElementById('origen').value;
-
+        const fechaIda = document.getElementById('fecha_ida').value;
         if (!origenSeleccionado || origenSeleccionado === 'Seleccione un origen') {
-            alert('Por favor, seleccione un origen antes de ver los viajes disponibles.');
+            alert('Por favor, seleccione un origen.');
             return;
         }
-
-        const viajesFiltrados = viajesDatos.filter(v => v.destino === departamento);
-
+        if (!fechaIda) {
+            alert('Por favor, seleccione una fecha.');
+            return;
+        }
+        const viajesFiltrados = viajesBase.filter(v => v.ruta === departamento).map(v => ({ ...v, fecha: fechaIda, destino: departamento }));
         document.getElementById('modalViajesTitle').innerHTML = `<i class="fas fa-bus"></i> Viajes de ${origenSeleccionado} a ${departamento}`;
-
         const container = document.getElementById('viajesContainer');
-
         if (viajesFiltrados.length === 0) {
-            container.innerHTML = `
-                <div class="no-viajes">
-                    <i class="fas fa-search"></i>
-                    <h3>No hay viajes disponibles</h3>
-                    <p>No se encontraron viajes desde ${origenSeleccionado} hacia ${departamento} en este momento.</p>
-                </div>
-            `;
+            container.innerHTML = `<div class="no-viajes"><i class="fas fa-search"></i><h3>No hay viajes</h3><p>No hay viajes disponibles.</p></div>`;
         } else {
             container.innerHTML = viajesFiltrados.map((viaje, i) => {
-                const viajeIndex = viajesDatos.indexOf(viaje);
+                const viajeIndex = viajesBase.findIndex(v => v.horario === viaje.horario && v.ruta === viaje.ruta && v.empresa === viaje.empresa);
                 const hayAsientos = (asientosVendidos[viajeIndex] || 0) > 0;
-                return `
-                    <div class="viaje-card">
-                        <div class="viaje-content">
-                            <div class="viaje-info">
-                                <span class="viaje-label"><i class="fas fa-route"></i> Ruta</span>
-                                <span class="viaje-value">${origenSeleccionado} → ${viaje.ruta}</span>
-                            </div>
-                            <div class="viaje-info">
-                                <span class="viaje-label"><i class="fas fa-calendar"></i> Fecha</span>
-                                <span class="viaje-value">${new Date(viaje.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
-                            </div>
-                            <div class="viaje-info">
-                                <span class="viaje-label"><i class="fas fa-clock"></i> Horario</span>
-                                <span class="viaje-value">${viaje.horario}</span>
-                            </div>
-                            <div class="viaje-info">
-                                <span class="viaje-label"><i class="fas fa-hourglass"></i> Duración</span>
-                                <span class="viaje-value">${viaje.duracion}</span>
-                            </div>
-                            <div class="viaje-info">
-                                <span class="viaje-label"><i class="fas fa-dollar-sign"></i> Precio</span>
-                                <span class="viaje-precio">L${viaje.precio.toFixed(2)}</span>
-                            </div>
-                            <div class="viaje-precio-compra">
-                                <button class="btn-comprar" onclick="solicitarViaje(${viajeIndex})"><i class="fas fa-ticket-alt"></i> Comprar</button>
-                                <button class="btn-eliminar" onclick="eliminarCompra(${viajeIndex})" ${!hayAsientos ? 'disabled' : ''}><i class="fas fa-trash"></i> Eliminar</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                return `<div class="viaje-card"><div class="viaje-content"><div class="viaje-info"><span class="viaje-label">Ruta</span><span class="viaje-value">${origenSeleccionado} → ${viaje.ruta}</span></div><div class="viaje-info"><span class="viaje-label">Fecha</span><span class="viaje-value">${new Date(viaje.fecha + 'T00:00:00').toLocaleDateString('es-ES')}</span></div><div class="viaje-info"><span class="viaje-label">Horario</span><span class="viaje-value">${viaje.horario}</span></div><div class="viaje-info"><span class="viaje-label">Duración</span><span class="viaje-value">${viaje.duracion}</span></div><div class="viaje-info"><span class="viaje-label">Precio</span><span class="viaje-precio">L${viaje.precio.toFixed(2)}</span></div><div class="viaje-precio-compra"><button class="btn-comprar" onclick="solicitarViaje(${viajeIndex}, '${viaje.fecha}')"><i class="fas fa-ticket-alt"></i> Comprar</button><button class="btn-eliminar" onclick="eliminarCompra(${viajeIndex}, '${viaje.fecha}')" ${!hayAsientos ? 'disabled' : ''}><i class="fas fa-trash"></i></button></div></div></div>`;
             }).join('');
         }
-
         document.getElementById('modalViajes').classList.add('show');
     }
 
@@ -616,39 +371,25 @@
         document.getElementById('modalViajes').classList.remove('show');
     }
 
-    function solicitarViaje(index) {
+    function solicitarViaje(index, fecha) {
         viajeSeleccionado = index;
         esEliminacion = false;
-        const viaje = viajesDatos[index];
-        const fechaFormateada = new Date(viaje.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
+        const viaje = viajesBase[index];
+        const fechaFormateada = new Date(fecha + 'T00:00:00').toLocaleDateString('es-ES');
         document.getElementById('modalTitle').innerHTML = '<i class="fas fa-ticket-alt"></i> Confirmar Compra';
-        document.getElementById('modalMessage').textContent = '¿Deseas confirmar la compra de este boleto?';
-        document.getElementById('waitlistDetails').innerHTML = `
-            <strong>Ruta:</strong> ${viaje.ruta}<br>
-            <strong>Fecha:</strong> ${fechaFormateada}<br>
-            <strong>Horario:</strong> ${viaje.horario}<br>
-            <strong>Precio:</strong> L${viaje.precio.toFixed(2)}<br>
-            <strong>Asientos Vendidos:</strong> ${asientosVendidos[index] || 0}/30
-        `;
+        document.getElementById('modalMessage').textContent = '¿Deseas confirmar la compra?';
+        document.getElementById('waitlistDetails').innerHTML = `<strong>Ruta:</strong> ${viaje.ruta}<br><strong>Fecha:</strong> ${fechaFormateada}<br><strong>Horario:</strong> ${viaje.horario}<br><strong>Precio:</strong> L${viaje.precio.toFixed(2)}<br><strong>Asientos:</strong> ${asientosVendidos[index] || 0}/30`;
         document.getElementById('waitlistModal').classList.add('show');
     }
 
-    function eliminarCompra(index) {
+    function eliminarCompra(index, fecha) {
         viajeSeleccionado = index;
         esEliminacion = true;
-        const viaje = viajesDatos[index];
-        const fechaFormateada = new Date(viaje.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
+        const viaje = viajesBase[index];
+        const fechaFormateada = new Date(fecha + 'T00:00:00').toLocaleDateString('es-ES');
         document.getElementById('modalTitle').innerHTML = '<i class="fas fa-trash"></i> Eliminar Compra';
         document.getElementById('modalMessage').textContent = '¿Deseas eliminar esta compra?';
-        document.getElementById('waitlistDetails').innerHTML = `
-            <strong>Ruta:</strong> ${viaje.ruta}<br>
-            <strong>Fecha:</strong> ${fechaFormateada}<br>
-            <strong>Horario:</strong> ${viaje.horario}<br>
-            <strong>Precio:</strong> L${viaje.precio.toFixed(2)}<br>
-            <strong>Asientos Vendidos:</strong> ${asientosVendidos[index] || 0}/30
-        `;
+        document.getElementById('waitlistDetails').innerHTML = `<strong>Ruta:</strong> ${viaje.ruta}<br><strong>Fecha:</strong> ${fechaFormateada}<br><strong>Horario:</strong> ${viaje.horario}<br><strong>Precio:</strong> L${viaje.precio.toFixed(2)}<br><strong>Asientos:</strong> ${asientosVendidos[index] || 0}/30`;
         document.getElementById('waitlistModal').classList.add('show');
     }
 
@@ -666,7 +407,6 @@
                 comprasUsuario[viajeSeleccionado] = true;
             }
         }
-
         document.getElementById('waitlistModal').classList.remove('show');
         mostrarViajesDepartamento(departamentoActual);
     }

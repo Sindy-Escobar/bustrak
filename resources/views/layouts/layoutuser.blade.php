@@ -305,6 +305,10 @@
                    class="{{ request()->routeIs('itinerario.index') ? 'active' : '' }}">
                     Itinerario de reservas
                 </a>
+                <a href="{{ route('itinerario.index') }}"
+                                    class="{{ request()->routeIs('itinerario.index') ? 'active' : '' }}">
+                    Ver Facturas
+                </a>
 
             </div>
         </div>
@@ -369,14 +373,54 @@
             </button>
             <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.soporte*') ? 'show' : '' }}" id="soporte">
                 <a href="/ayuda-soporte" class="active">Enviar consulta</a>
-                <a href="{{ route('consulta.mis') }}" class="{{ request()->routeIs('consulta.mis') ? 'active' : '' }}">
+
+
+                <a href="{{ route('usuario.change-password') }}">
+                    Cambiar Contraseña
+                </a>
+
+
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
+            </div>
+        </div>
+
+        <!-- Solicitud -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#solicitud"
+                    aria-expanded="{{ request()->routeIs('solicitud.empleo.mis-solicitudes') ? 'true' : 'false' }}">
+                <span><i class="fas fa-file-alt"></i> Solicitud</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('solicitud.empleo.mis-solicitudes') ? 'show' : '' }}" id="solicitud">
+                <a href="{{ route('solicitud.empleo.mis-solicitudes') }}"
+                   class="{{ request()->routeIs('solicitud.empleo.mis-solicitudes') ? 'active' : '' }}">
                     Mis Solicitudes
                 </a>
-                <a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'active' : '' }}">
+            </div>
+        </div>
+
+        <!-- Sesión -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#sesion"
+                    aria-expanded="false">
+                <span><i class="fas fa-sign-out-alt"></i> Sesión</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav" id="sesion">
+                <a href="{{ route('logout') }}"
+                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     Cerrar sesión
                 </a>
             </div>
         </div>
+
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+            @csrf
+        </form>
+
+
     </nav>
 
     <div class="content-area">
@@ -392,15 +436,6 @@
                     <i class="fas fa-home me-1"></i> Inicio
                 </a>
 
-                <a href="{{ route('login') }}"
-                   class="btn btn-info btn-sm px-3 rounded-pill text-white shadow-sm">
-                    <i class="fas fa-sign-in-alt me-1"></i> Login
-                </a>
-
-                <a href="{{ route('registro') }}"
-                   class="btn btn-info btn-sm px-3 rounded-pill text-white shadow-sm">
-                    <i class="fas fa-sign-in-alt me-1"></i> Registrarse
-                </a>
             </div>
         </div>
         @yield('contenido')
