@@ -256,6 +256,42 @@
             <h3>Admin</h3>
         </div>
 
+
+        <!-- Estadísticas -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#estadisticas"
+                    aria-expanded="{{ request()->routeIs('admin.estadisticas') ? 'true' : 'false' }}">
+                <span><i class="fas fa-chart-bar"></i> Estadísticas</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('admin.estadisticas') ? 'show' : '' }}" id="estadisticas">
+                <a href="{{ route('admin.estadisticas') }}" class="{{ request()->routeIs('admin.estadisticas') ? 'active' : '' }}">
+                    Ver Estadísticas
+                </a>
+            </div>
+        </div>
+
+
+        <!-- Empresa -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#empresa" aria-expanded="false">
+                <span><i class="fas fa-building"></i> Empresa</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav" id="empresa">
+                <a href="{{ route('empresas.index') }}" class="{{ request()->routeIs('empresas.index') ? 'active' : '' }}">
+                    Lista de empresas
+                </a>
+                <a href="{{ route('empresa.form') }}" class="{{ request()->routeIs('empresa.form') ? 'active' : '' }}">
+                    Registrar empresa
+                </a>
+            </div>
+        </div>
+
+
+
+
+
         <!-- Empleados -->
         <div class="nav-section">
             <button class="btn-toggle d-flex justify-content-between align-items-center"
@@ -278,48 +314,7 @@
             </div>
         </div>
 
-        <!-- Usuarios -->
-        <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#usuarios" aria-expanded="false">
-                <span><i class="fas fa-users"></i> Usuarios</span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-            <div class="collapse btn-toggle-nav" id="usuarios">
-                <a href="{{ route('usuarios.consultar') }}" class="{{ request()->routeIs('usuarios.consultar') ? 'active' : '' }}">
-                    Consultar usuarios
-                </a>
-            </div>
-        </div>
 
-        <!-- Empresa -->
-        <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#empresa" aria-expanded="false">
-                <span><i class="fas fa-building"></i> Empresa</span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-            <div class="collapse btn-toggle-nav" id="empresa">
-                <a href="{{ route('empresas.index') }}" class="{{ request()->routeIs('empresas.index') ? 'active' : '' }}">
-                    Lista de empresas
-                </a>
-                <a href="{{ route('empresa.form') }}" class="{{ request()->routeIs('empresa.form') ? 'active' : '' }}">
-                    Registrar empresa
-                </a>
-            </div>
-        </div>
-
-        <!-- Estadísticas -->
-        <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#estadisticas"
-                    aria-expanded="{{ request()->routeIs('admin.estadisticas') ? 'true' : 'false' }}">
-                <span><i class="fas fa-chart-bar"></i> Estadísticas</span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-            <div class="collapse btn-toggle-nav {{ request()->routeIs('admin.estadisticas') ? 'show' : '' }}" id="estadisticas">
-                <a href="{{ route('admin.estadisticas') }}" class="{{ request()->routeIs('admin.estadisticas') ? 'active' : '' }}">
-                    Ver Estadísticas
-                </a>
-            </div>
-        </div>
 
         <!-- Terminales -->
         <div class="nav-section">
@@ -338,17 +333,23 @@
         </div>
 
 
-        <!-- Constancias -->
+        <!-- Usuarios -->
         <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#constancias" aria-expanded="{{ request()->routeIs('solicitudes.*') ? 'true':'false' }}">
-                <span><i class="fas fa-file-lines"></i> Constancias</span>
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#usuarios" aria-expanded="false">
+                <span><i class="fas fa-users"></i> Usuarios</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
-            <div class="collapse btn-toggle-nav {{ request()->routeIs('solicitudes.*') ? 'show':'' }}" id="constancias">
-                <a href="{{ route('solicitudes.index') }}" class="{{ request()->routeIs('solicitudes.index') ? 'active':'' }}">Gestionar Solicitudes</a>
-
+            <div class="collapse btn-toggle-nav" id="usuarios">
+                <a href="{{ route('usuarios.consultar') }}" class="{{ request()->routeIs('usuarios.consultar') ? 'active' : '' }}">
+                    Consultar usuarios
+                </a>
             </div>
         </div>
+
+
+
+
+
 
         <!-- Cerrar Sesión -->
         <div class="nav-section">
@@ -357,13 +358,28 @@
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
             <div class="collapse btn-toggle-nav" id="sesion">
+
                 <a href="{{ route('interfaces.principal') }}">
                     Inicio
                 </a>
-                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+
+                <a href="{{ route('admin.change-password') }}">
+                    Cambiar Contraseña
+                </a>
+
+
+
+                <a href="{{ route('logout') }}"
+                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     Cerrar sesión
                 </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+
+
+
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
+
             </div>
         </div>
     </nav>
@@ -376,16 +392,13 @@
             </h5>
 
             <div class="d-flex gap-2">
-                <a href="{{ route('interfaces.principal') }}"
-                   class="btn btn-outline-light btn-sm px-3 rounded-pill shadow-sm">
-                    <i class="fas fa-home me-1"></i> Inicio
-                </a>
 
-                <a href="{{ route('login') }}"
-                   class="btn btn-info btn-sm px-3 rounded-pill text-white shadow-sm">
-                    <i class="fas fa-sign-in-alt me-1"></i> Login
-                </a>
             </div>
+            <a href="{{ route('interfaces.principal') }}"
+               class="btn btn-outline-light btn-sm px-3 rounded-pill shadow-sm">
+                <i class="fas fa-home me-1"></i> Inicio
+            </a>
+
         </div>
         @yield('content')
     </div>
