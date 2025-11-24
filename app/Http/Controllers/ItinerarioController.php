@@ -17,13 +17,21 @@ class ItinerarioController extends Controller
     {
         $usuario = Auth::user();
 
+        // Traer todas las reservas del usuario con su viaje y asiento
         $reservas = Reserva::with(['viaje.origen', 'viaje.destino', 'asiento'])
             ->where('user_id', $usuario->id)
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('itinerario.index', compact('usuario', 'reservas'));
+        // Todas las ciudades para los selects de origen/destino
+        $ciudades = \App\Models\Ciudad::all();
+
+        // Todos los asientos para los selects de edición
+        $asientos = \App\Models\Asiento::all();
+
+        return view('itinerario.index', compact('usuario', 'reservas', 'ciudades', 'asientos'));
     }
+
 
     public function descargarPDF()
     {
