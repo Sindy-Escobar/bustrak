@@ -138,75 +138,16 @@
         <p>Explora rutas, horarios y promociones exclusivas para ti.</p>
         <h2>Bustrak, tu mejor opción</h2>
     </div>
+    @guest
+
     <div class="hero-buttons position-absolute top-0 end-0 m-3">
         <a href="/login" class="btn btn-primary btn-login me-2">Iniciar Sesión</a>
         <a href="/registro" class="btn btn-success btn-registro">Registrate</a>
     </div>
+   @endguest
 </section>
 
-<section class="search-section">
-    <form class="row g-3">
-        <div class="col-md-6">
-            <label for="origen" class="form-label">Origen</label>
-            <select class="form-select" id="origen">
-                <option selected>Seleccione un origen</option>
-                <option>Cortés</option>
-                <option>Atlántida</option>
-                <option>Francisco Morazán</option>
-                <option>Choluteca</option>
-                <option>Comayagua</option>
-                <option>Colón</option>
-                <option>Copán</option>
-                <option>El Paraíso</option>
-                <option>Yoro</option>
-                <option>Intibucá</option>
-                <option>La Paz</option>
-                <option>Lempira</option>
-                <option>Ocotepeque</option>
-                <option>Olancho</option>
-                <option>Santa Bárbara</option>
-                <option>Valle</option>
-            </select>
-        </div>
-        <div class="col-md-6">
-            <label for="destino" class="form-label">Destino</label>
-            <select class="form-select" id="destino">
-                <option selected>Seleccione un destino</option>
-                <option>Cortés</option>
-                <option>Atlántida</option>
-                <option>Francisco Morazán</option>
-                <option>Choluteca</option>
-                <option>Comayagua</option>
-                <option>Colón</option>
-                <option>Copán</option>
-                <option>El Paraíso</option>
-                <option>Yoro</option>
-                <option>Intibucá</option>
-                <option>La Paz</option>
-                <option>Lempira</option>
-                <option>Ocotepeque</option>
-                <option>Olancho</option>
-                <option>Santa Bárbara</option>
-                <option>Valle</option>
-            </select>
-        </div>
-        <div class="col-md-6">
-            <label for="fecha_ida" class="form-label">Fecha de Ida</label>
-            <input type="date" class="form-control" id="fecha_ida">
-        </div>
-        <div class="col-md-6">
-            <label for="fecha_regreso" class="form-label">Fecha de Regreso</label>
-            <input type="date" class="form-control" id="fecha_regreso">
-        </div>
-        <div class="col-md-6">
-            <label for="pasajeros" class="form-label">Número de Pasajeros</label>
-            <input type="number" class="form-control" id="pasajeros" value="1" min="1">
-        </div>
-        <div class="col-md-6 d-flex align-items-end">
-            <button type="button" class="btn btn-primary w-100" onclick="buscarViajes()">Buscar Viaje</button>
-        </div>
-    </form>
-</section>
+
 
 <section class="py-5 position-relative">
     <div class="container">
