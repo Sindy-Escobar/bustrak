@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 // Controladores
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\RegistroPuntosController;
 use App\Http\Controllers\CalificacionController;
 use App\Http\Controllers\EstadisticasController;
 use App\Http\Controllers\ValidarEmpresaController2;
@@ -302,3 +303,9 @@ Route::get('/solicitud/empleo', [App\Http\Controllers\SolicitudEmpleoController:
 Route::get('/crear-solicitud-empleo', [App\Http\Controllers\SolicitudEmpleoController::class, 'create'])->name('solicitud.empleo.create');
 Route::post('/solicitud/empleo/enviar', [App\Http\Controllers\SolicitudEmpleoController::class, 'store'])->name('solicitud.empleo.store');
 
+// Registro de puntos
+Route::get('/viaje/{reserva}/registrar-puntos', [RegistroPuntosController::class, 'create'])
+    ->name('puntos.create');
+
+Route::post('/viaje/{reserva}/registrar-puntos', [RegistroPuntosController::class, 'store'])
+    ->name('puntos.store');
