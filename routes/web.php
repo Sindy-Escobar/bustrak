@@ -28,6 +28,8 @@ use App\Http\Controllers\ItinerarioController;
 use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\CheckinController;
+use App\Http\Controllers\SolicitudController;
+
 
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
@@ -298,6 +300,7 @@ Route::get('/proximamente', function () {
 Route::post('/abordajes/validar', [CheckinController::class, 'validarCodigo'])->name('abordajes.validar');
 Route::post('/abordajes/confirmar', [CheckinController::class, 'confirmarAbordaje'])->name('abordajes.confirmar');
 Route::get('/abordajes/historial', [CheckinController::class, 'historial'])->name('abordajes.historial');
+
 
 // Ruta para ver las consultas del usuario
 Route::get('/mis-solicitudes', [ConsultaController::class, 'misConsultas'])
