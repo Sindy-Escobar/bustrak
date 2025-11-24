@@ -335,6 +335,24 @@
             color: #ffffff;
             transform: translateX(-2px);
         }
+        .btn-back:hover {
+            background: #1976d2;
+            color: #ffffff;
+            transform: translateX(-2px);
+        }
+
+        .top-logo-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .logo-container img {
+            width: 150px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -347,14 +365,12 @@
     </div>
 
     <div class="register-card">
-        <a href="{{ route('interfaces.principal') }}" class="btn-back">
-            Inicio
-        </a>
         <div class="logo-container">
-            <div class="logo">
-                <img src="/Imagenes/bustrak-logo.jpg" alt="BusTrak">
+            <div class="top-logo-wrapper">
+                <a href="{{ route('interfaces.principal') }}" class="logo-container">
+                    <img src="/Imagenes/bustrak-logo.jpg" alt="BusTrak">
+                </a>
             </div>
-            <div class="subtitle">Registro de Nueva Cuenta</div>
         </div>
 
         @if(session('success'))
