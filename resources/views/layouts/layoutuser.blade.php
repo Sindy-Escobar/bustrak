@@ -305,6 +305,10 @@
                    class="{{ request()->routeIs('itinerario.index') ? 'active' : '' }}">
                     Itinerario de reservas
                 </a>
+                <a href="{{ route('itinerario.index') }}"
+                                    class="{{ request()->routeIs('itinerario.index') ? 'active' : '' }}">
+                    Ver Facturas
+                </a>
 
             </div>
         </div>
@@ -375,9 +379,21 @@
                 <a href="{{ route('consulta.mis') }}" class="{{ request()->routeIs('consulta.mis') ? 'active' : '' }}">
                     Mis Solicitudes
                 </a>
-                <a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'active' : '' }}">
+
+                <a href="{{ route('usuario.change-password') }}">
+                    Cambiar Contraseña
+                </a>
+
+
+
+                <a href="{{ route('logout') }}"
+                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     Cerrar sesión
                 </a>
+
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
             </div>
         </div>
     </nav>
@@ -395,15 +411,6 @@
                     <i class="fas fa-home me-1"></i> Inicio
                 </a>
 
-                <a href="{{ route('login') }}"
-                   class="btn btn-info btn-sm px-3 rounded-pill text-white shadow-sm">
-                    <i class="fas fa-sign-in-alt me-1"></i> Login
-                </a>
-
-                <a href="{{ route('registro') }}"
-                   class="btn btn-info btn-sm px-3 rounded-pill text-white shadow-sm">
-                    <i class="fas fa-sign-in-alt me-1"></i> Registrarse
-                </a>
             </div>
         </div>
         @yield('contenido')

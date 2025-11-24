@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 // Controladores
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CalificacionController;
 use App\Http\Controllers\EstadisticasController;
 use App\Http\Controllers\ValidarEmpresaController2;
@@ -133,9 +134,10 @@ Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
     Route::post('/usuarios/{id}/cambiar-estado', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
 });
 
-Route::middleware('auth')->get('/admin/pagina', function () {
-    return view('interfaces.admin');
-})->name('admin.dashboard');
+
+
+Route::get('/admin/pagina', [EstadisticasController::class, 'index'
+])->middleware('auth') ->name('admin.dashboard');
 
 // ======================================================
 // RUTAS EMPLEADO-HU5
@@ -307,3 +309,19 @@ Route::get('/viaje/{reserva}/calificar', [CalificacionController::class, 'create
 
 Route::post('/viaje/{reserva}/calificar', [CalificacionController::class, 'store'])
     ->name('calificacion.store');
+
+//cerar secion
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
+
+
+
+
+// Admin
+Route::get('admin/cambiar-password', [AuthController::class, 'showAdminChangePasswordForm'])->name('admin.change-password');
+Route::post('admin/update-password', [AuthController::class, 'updateAdminPassword'])->name('admin.update-password');
+
+// Usuario
+Route::get('usuario/cambiar-password', [AuthController::class, 'showUserChangePasswordForm'])->name('usuario.change-password');
+Route::post('usuario/update-password', [AuthController::class, 'updateUserPassword'])->name('usuario.update-password');

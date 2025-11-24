@@ -210,10 +210,10 @@
 
                     <div class="col-lg-2 col-md-12 d-flex gap-2">
                         <button type="submit" class="btn btn-apply w-50">
-                            <i class="fas fa-search me-2"></i>Filtrar
+                            <i class=""></i>Filtrar
                         </button>
                         <a href="{{ route('estadistica') }}" class="btn btn-clear w-50">
-                            <i class="fas fa-eraser me-2"></i>Limpiar
+                            <i class=""></i>Limpiar
                         </a>
                     </div>
 
