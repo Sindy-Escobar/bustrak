@@ -61,13 +61,27 @@
                             <td class="text-center">
                                 @if($reserva->estado === 'confirmada' && !$reserva->viaje->calificacion)
                                     <a href="{{ route('calificacion.create', $reserva->id) }}"
-                                       class="btn btn-warning btn-sm">
-                                        <i class="fas fa-star"></i> Calificar
+                                       class="btn btn-warning btn-sm me-1">
+                                        <i class="fas fa-star"></i>
                                     </a>
+
+                                    {{-- Botón Registrar Puntos --}}
+                                    <a href="{{ route('puntos.create', $reserva->id) }}"
+                                       class="btn btn-info btn-sm">
+                                        <i class="fas fa-coins"></i>
+                                    </a>
+
                                 @elseif($reserva->estado === 'confirmada' && $reserva->viaje->calificacion)
                                     <span class="text-success fw-bold">Calificado</span>
+
+
+                                    <a href="{{ route('puntos.create', $reserva->id) }}"
+                                       class="btn btn-info btn-sm ms-2">
+                                        <i class="fas fa-coins"></i> Registrar
+                                    </a>
+
                                 @else
-                                    <span class="text-muted">En curso</span>
+                                    <span class="text-muted">-</span>
                                 @endif
                             </td>
                         </tr>
