@@ -24,6 +24,7 @@ class ReservaController extends Controller
         return view('cliente.reserva.create', compact('ciudades'));
     }
 
+
     // Buscar viajes disponibles
     public function buscar(Request $request)
     {
@@ -85,4 +86,33 @@ class ReservaController extends Controller
 
         return view('cliente.reserva.confirmacion', compact('reserva', 'qrCode'));
     }
+
+
+    public function update(Request $request, Reserva $reserva)
+    {
+        // Validación básica
+        $request->validate([
+            'ciudad_origen_id' => 'required|exists:ciudades,id',
+            'ciudad_destino_id' => 'required|exists:ciudades,id',
+            'fecha_salida' => 'required|date',
+            'hora_salida' => 'required',
+            'asiento_id' => 'required|exists:asientos,id',
+        ]);
+
+        // Actualizar datos del viaje
+        $reserva->viaje->update([
+            'ciudad_origen_id' => $request->ciudad_origen_id,
+            'ciudad_destino_id' => $request->ciudad_destino_id,
+            'fecha_hora_salida' => $request->fecha_salida . ' ' . $request->hora_salida,
+        ]);
+
+        // Actualizar asiento
+        $reserva->update([
+            'asiento_id' => $request->asiento_id,
+        ]);
+
+        return redirect()->back()->with('success', '¡Reserva actualizada correctamente!');
+    }
+
+
 }

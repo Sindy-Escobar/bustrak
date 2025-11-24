@@ -27,6 +27,7 @@ use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\CheckinController;
 
+
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
 
@@ -230,7 +231,7 @@ Route::prefix('empleado')->middleware(['auth', 'user.active'])->group(function()
     Route::get('/perfil', [EmpleadoController::class, 'perfil'])->name('empleado.perfil');
 });
 
-Route::prefix('usuario')->middleware(['auth', 'user.active'])->group(function() {
+     Route::prefix('usuario')->middleware(['auth', 'user.active'])->group(function() {
     Route::get('/dashboard', [EmpleadoController::class, 'dashboard'])->name('usuario.dashboard');
 });
 
@@ -274,7 +275,10 @@ Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function
     Route::post('reserva/buscar', [ReservaController::class, 'buscar'])->name('reserva.buscar');
     Route::get('reserva/{viaje_id}/asientos', [ReservaController::class, 'seleccionarAsiento'])->name('reserva.asientos');
     Route::post('reserva/store', [ReservaController::class, 'store'])->name('reserva.store');
+
 });
+
+Route::put('/reserva/{reserva}/update', [ReservaController::class, 'update'])->name('reserva.update');
 
 
 //usuario pre-determinado para admin, Roberto
