@@ -40,6 +40,7 @@
             height: 100vh;
             box-shadow: 3px 0 8px rgba(0, 0, 0, 0.3);
             overflow-y: auto;
+            overflow-x: hidden;
             scrollbar-width: thin;
             scrollbar-color: #5cb3ff #101827;
             transition: all 0.3s ease;
@@ -327,29 +328,6 @@
             </div>
         </div>
 
-        <!-- Notificaciones -->
-        <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#notificaciones"
-                    aria-expanded="{{ request()->routeIs('usuario.notificaciones') ? 'true' : 'false' }}">
-                <span>
-                    <i class="fas fa-bell"></i> Notificaciones
-                    @php
-                        $pendientes = \App\Models\Notificacion::where('usuario_id', Auth::id())
-                            ->where('leida', false)->count();
-                    @endphp
-                    @if($pendientes > 0)
-                        <span class="badge bg-danger ms-2">{{ $pendientes }}</span>
-                    @endif
-                </span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-            <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.notificaciones') ? 'show' : '' }}" id="notificaciones">
-                <a href="{{ route('usuario.notificaciones') }}" class="{{ request()->routeIs('usuario.notificaciones') ? 'active' : '' }}">
-                    Ver todas
-                </a>
-            </div>
-        </div>
-
 
 
         <!-- Empresa -->
@@ -425,18 +403,32 @@
 
     <div class="content-area">
         <!-- Barra superior -->
-        <div class="d-flex justify-content-between align-items-center mb-4 p-3 rounded shadow-sm"
+        <div class="d-flex justify-content-end align-items-center gap-2 mb-4 p-3 rounded shadow-sm"
              style="background-color: #0d1f3f; border-left: 5px solid #0dcaf0;">
-            <h5 class="mb-0 fw-semibold text-white">
-            </h5>
 
-            <div class="d-flex gap-2">
-                <a href="{{ route('interfaces.principal') }}"
-                   class="btn btn-outline-light btn-sm px-3 rounded-pill shadow-sm">
-                    <i class="fas fa-home me-1"></i> Inicio
-                </a>
+            <a href="{{ route('interfaces.principal') }}"
+               class="btn btn-outline-light btn-sm px-3 rounded-pill shadow-sm">
+                <i class="fas fa-home me-1"></i> Inicio
+            </a>
 
-            </div>
+            @php
+                $adminNotiCount = \App\Models\Notificacion::where('usuario_id', auth()->id())
+                    ->where('leida', false)
+                    ->count();
+            @endphp
+
+            <a href="{{ route('usuario.notificaciones') }}"
+               class="btn btn-outline-light btn-sm position-relative rounded-circle shadow-sm"
+               style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-bell"></i>
+
+                @if($adminNotiCount > 0)
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ $adminNotiCount }}
+                        <span class="visually-hidden">notificaciones no leídas</span>
+                    </span>
+                @endif
+            </a>
         </div>
         @yield('contenido')
     </div>
