@@ -204,6 +204,22 @@
             </div>
         </div>
 
+        <!-- Rentas -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#terminales">
+                <span><i class="fas fa-map-marker-alt"></i> Registro Renta</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav" id="terminales">
+                <a href="{{ route('rentas.index') }}" class="{{ request()->routeIs('rentas.index') ? 'active' : '' }}">
+                    Ver Registro
+                </a>
+                <a href="{{ route('rentas.create') }}" class="{{ request()->routeIs('rentas.create') ? 'active' : '' }}">
+                    Agregar Renta
+                </a>
+            </div>
+        </div>
+
         <!-- Terminales -->
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#terminales">

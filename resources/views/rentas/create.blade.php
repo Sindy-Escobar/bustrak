@@ -3,11 +3,20 @@
 @section('title', 'Registro de Renta de Viaje Express')
 
 @section('content')
+    {{-- Definición de los Departamentos de Honduras para los selectores --}}
+    @php
+        $departamentos = [
+            'Atlántida', 'Colón', 'Comayagua', 'Copán', 'Cortés',
+            'Choluteca', 'El Paraíso', 'Francisco Morazán', 'Gracias a Dios',
+            'Intibucá', 'Islas de la Bahía', 'La Paz', 'Lempira',
+            'Ocotepeque', 'Olancho', 'Santa Bárbara', 'Valle', 'Yoro'
+        ];
+    @endphp
+
     <div class="container mt-4">
         {{-- Encabezado y título principal --}}
         <h2 class="mb-4 text-center">Registro de renta de viaje express </h2>
 
-        {{-- Mensajes de validación --}}
         @if ($errors->any())
             <div class="alert alert-danger">
                 <strong>¡Ups! Algo salió mal.</strong>
@@ -23,61 +32,79 @@
         <form action="{{ route('rentas.store') }}" method="POST" id="registroRentaForm" class="card p-4 shadow-sm rounded-3">
             @csrf
 
-            {{-- Sección 1: Datos del Nuevo Cliente y Partida --}}
+            {{-- Sección 1: Datos del Cliente y Partida --}}
             <h3>Datos del cliente y partida</h3>
             <hr>
-            {{-- Fila 1: Datos del Nuevo Cliente (Nombre, Email y DNI) --}}
+
+            {{-- Fila 1: Cliente (Nombre, Correo, DNI) --}}
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <label for="nombre_cliente" class="form-label">Ingrese su nombre</label>
-                    <input type="text" name="nombre_cliente" id="nombre_cliente" class="form-control" placeholder="" required value="{{ old('nombre_cliente') }}">
+                    <label for="nombre_cliente" class="form-label">Nombre del cliente</label>
+                    <input type="text" name="nombre_cliente" id="nombre_cliente" class="form-control" placeholder="Escriba el nombre" required value="{{ old('nombre_cliente') }}">
                 </div>
                 <div class="col-md-4">
-                    <label for="email_cliente" class="form-label">Ingrese su correo electronico</label>
-                    <input type="text" name="email_cliente" id="email_cliente" class="form-control" placeholder value="{{ old('email_cliente') }}">
+                    <label for="email_cliente" class="form-label">Correo electrónico</label>
+                    <input type="email" name="email_cliente" id="email_cliente" class="form-control" placeholder="Escriba el correo" value="{{ old('email_cliente') }}">
                 </div>
-                {{-- CAMPO DNI/Identificación que reemplaza a usuario_id --}}
                 <div class="col-md-4">
-                    <label for="dni_cliente" class="form-label">DNI / identificación</label>
-                    {{-- Se cambia el nombre del campo a 'dni_cliente' --}}
-                    {{-- Los atributos de validación se ajustan a lo que espera el Controller (max: 20, alfanumérico) --}}
-                    <input type="text" name="dni_cliente" id="dni_cliente" class="form-control" required
+                    <label for="dni_cliente_select" class="form-label">DNI / identificación del Cliente</label>
+                    <input type="text" name="dni_cliente" id="dni_cliente_select" class="form-control" required
                            maxlength="20"
-                           placeholder="Identificación única del cliente"
+                           placeholder="Escriba o seleccione la identificación"
+                           list="clientes_disponibles"
                            value="{{ old('dni_cliente') }}">
-                    {{-- SE ELIMINA EL CAMPO OCULTO 'id_cliente' ya que la lógica fue removida --}}
+                    <datalist id="clientes_disponibles">
+                        @if (isset($clientes))
+                            @foreach ($clientes as $cliente)
+                                <option value="{{ $cliente->dni }}" data-nombre="{{ $cliente->nombre }}" data-email="{{ $cliente->email }}">
+                                    {{ $cliente->nombre }} ({{ $cliente->dni }})
+                                </option>
+                            @endforeach
+                        @endif
+                    </datalist>
                 </div>
             </div>
 
+            {{-- 🔑 Fila 2: Punto de Partida (Origen) y Destino (MÁXIMA SEPARACIÓN) --}}
             <div class="row mb-4">
+                {{-- Origen: Usamos col-md-4 y me-5 (margin-end máxima) --}}
+                <div class="col-md-4 me-5">
+                    <label for="punto_partida" class="form-label">Origen</label>
+                    <select name="punto_partida" id="punto_partida" class="form-select" required>
+                        <option value="">Seleccione un Departamento...</option>
+                        @foreach ($departamentos as $depto)
+                            <option value="{{ $depto }}" {{ old('punto_partida') == $depto ? 'selected' : '' }}>{{ $depto }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Destino: Usamos col-md-4, dejando un gran espacio central --}}
                 <div class="col-md-4">
-                    <label for="punto_partida" class="form-label">Punto de partida</label>
-                    <input type="text" name="punto_partida" id="punto_partida" class="form-control" required value="{{ old('punto_partida') }}">
+                    <label for="destino" class="form-label">Destino</label>
+                    <select name="destino" id="destino" class="form-select" required>
+                        <option value="">Seleccione un Departamento...</option>
+                        @foreach ($departamentos as $depto)
+                            <option value="{{ $depto }}" {{ old('destino') == $depto ? 'selected' : '' }}>{{ $depto }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
 
             {{-- Sección 2: Detalles del Viaje --}}
             <h3>Detalles del viaje</h3>
             <hr>
-            {{-- Fila 2: Destino y Fecha de Inicio --}}
+
+            {{-- 🔑 Fila 3: Fechas y Tipo de Evento (ACOMETIDOS) --}}
             <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="destino" class="form-label">Destino</label>
-                    <input type="text" name="destino" id="destino" class="form-control" required value="{{ old('destino') }}">
-                </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
                     <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" required value="{{ old('fecha_inicio') }}">
                 </div>
-            </div>
-
-            {{-- Fila 3: Fecha de Fin y Tipo de Evento --}}
-            <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <label for="fecha_fin" class="form-label">Fecha de fin</label>
                     <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" required value="{{ old('fecha_fin') }}">
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <label for="tipo_evento" class="form-label">Tipo de evento</label>
                     <select name="tipo_evento" id="tipo_evento" class="form-select" required>
                         <option value="">Seleccione...</option>
@@ -90,7 +117,7 @@
                 </div>
             </div>
 
-            {{-- Fila 5: Pasajeros y Horarios --}}
+            {{-- 🔑 Fila 4: Pasajeros y Horarios (ACOMETIDOS) --}}
             <div class="row mb-3">
                 <div class="col-md-3">
                     <label for="num_pasajeros_confirmados" class="form-label">Pasajeros confirmados</label>
@@ -100,20 +127,64 @@
                     <label for="num_pasajeros_estimados" class="form-label">Pasajeros estimados</label>
                     <input type="number" name="num_pasajeros_estimados" id="num_pasajeros_estimados" class="form-control" value="{{ old('num_pasajeros_estimados') }}">
                 </div>
+
+                {{-- HORA DE SALIDA: Horario de apertura --}}
                 <div class="col-md-3">
-                    <label for="hora_salida" class="form-label">Hora de salida</label>
-                    <input type="time" name="hora_salida" id="hora_salida" class="form-control" value="{{ old('hora_salida') }}">
+                    <label class="form-label">Horario de apertura</label>
+                    <div class="input-group">
+                        <select name="hora_salida_select" id="hora_salida_select" class="form-select" required>
+                            <option value="">Hora</option>
+                            @for ($h = 1; $h <= 12; $h++)
+                                <option value="{{ $h }}" data-hora24="{{ $h == 12 ? 12 : $h }}" {{ old('hora_salida_select') == $h ? 'selected' : '' }}>{{ $h }} AM</option>
+                            @endfor
+                            @for ($h = 1; $h <= 11; $h++)
+                                <option value="{{ $h + 12 }}" data-hora24="{{ $h + 12 }}" {{ old('hora_salida_select') == $h + 12 ? 'selected' : '' }}>{{ $h }} PM</option>
+                            @endfor
+                            <option value="0" data-hora24="0" {{ old('hora_salida_select') == '0' ? 'selected' : '' }}>12 AM</option>
+                        </select>
+                        <span class="input-group-text px-2 border-start-0 border-end-0">:</span>
+                        <select name="minuto_salida_select" id="minuto_salida_select" class="form-select" required>
+                            <option value="">Min</option>
+                            @for ($m = 0; $m < 60; $m += 5)
+                                @php $min_str = str_pad($m, 2, '0', STR_PAD_LEFT); @endphp
+                                <option value="{{ $min_str }}" {{ old('minuto_salida_select') == $min_str ? 'selected' : '' }}>{{ $min_str }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <input type="hidden" name="hora_salida" id="hora_salida_final" value="{{ old('hora_salida') }}">
                 </div>
+
+                {{-- HORA DE RETORNO: Horario de cierre --}}
                 <div class="col-md-3">
-                    <label for="hora_retorno" class="form-label">Hora de retorno</label>
-                    <input type="time" name="hora_retorno" id="hora_retorno" class="form-control" value="{{ old('hora_retorno') }}">
+                    <label class="form-label">Horario de cierre</label>
+                    <div class="input-group">
+                        <select name="hora_retorno_select" id="hora_retorno_select" class="form-select" required>
+                            <option value="">Hora</option>
+                            @for ($h = 1; $h <= 12; $h++)
+                                <option value="{{ $h }}" data-hora24="{{ $h == 12 ? 12 : $h }}" {{ old('hora_retorno_select') == $h ? 'selected' : '' }}>{{ $h }} AM</option>
+                            @endfor
+                            @for ($h = 1; $h <= 11; $h++)
+                                <option value="{{ $h + 12 }}" data-hora24="{{ $h + 12 }}" {{ old('hora_retorno_select') == $h + 12 ? 'selected' : '' }}>{{ $h }} PM</option>
+                            @endfor
+                            <option value="0" data-hora24="0" {{ old('hora_retorno_select') == '0' ? 'selected' : '' }}>12 AM</option>
+                        </select>
+                        <span class="input-group-text px-2 border-start-0 border-end-0">:</span>
+                        <select name="minuto_retorno_select" id="minuto_retorno_select" class="form-select" required>
+                            <option value="">Min</option>
+                            @for ($m = 0; $m < 60; $m += 5)
+                                @php $min_str = str_pad($m, 2, '0', STR_PAD_LEFT); @endphp
+                                <option value="{{ $min_str }}" {{ old('minuto_retorno_select') == $min_str ? 'selected' : '' }}>{{ $min_str }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <input type="hidden" name="hora_retorno" id="hora_retorno_final" value="{{ old('hora_retorno') }}">
                 </div>
             </div>
 
             {{-- Sección 3: Finanzas --}}
             <h3>Información financiera</h3>
             <hr>
-            {{-- Fila 4: Tarifa, Descuento, Total y Anticipo --}}
+            {{-- Fila 5: Tarifa, Descuento, Total y Anticipo --}}
             <div class="row mb-4">
                 <div class="col-md-3">
                     <label for="tarifa" class="form-label">Tarifa base (Lps)</label>
@@ -150,22 +221,16 @@
         </form>
     </div>
 
-    {{-- Script para la lógica --}}
+    {{-- Script para la lógica (Se mantiene igual, solo se actualizan los ID's de fila/columna) --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // ... (Variables) ...
             const tipoEvento = document.getElementById('tipo_evento');
-            const descuentoDisplay = document.getElementById('descuento_display');
             const descuentoValorInput = document.getElementById('descuento_valor');
             const tarifaInput = document.getElementById('tarifa');
             const totalInput = document.getElementById('total');
             const limpiarBoton = document.getElementById('limpiarFormulario');
             const formulario = document.getElementById('registroRentaForm');
-
-            // --- CAMPOS CLIENTE ---
-            const nombreClienteInput = document.getElementById('nombre_cliente');
-            // const idClienteInput = document.getElementById('id_cliente'); // Se elimina
-
-            // Mapeo de eventos a porcentajes de descuento
             const descuentos = {
                 'Familiar': 5,
                 'Campamento': 8,
@@ -173,9 +238,74 @@
                 'Educativo': 15,
                 'Empresarial': 12
             };
+            const dniClienteSelect = document.getElementById('dni_cliente_select');
+            const nombreClienteInput = document.getElementById('nombre_cliente');
+            const emailClienteInput = document.getElementById('email_cliente');
+            const datalist = document.getElementById('clientes_disponibles');
+            const horaSalidaSelect = document.getElementById('hora_salida_select');
+            const minutoSalidaSelect = document.getElementById('minuto_salida_select');
+            const horaSalidaFinalInput = document.getElementById('hora_salida_final');
+            const horaRetornoSelect = document.getElementById('hora_retorno_select');
+            const minutoRetornoSelect = document.getElementById('minuto_retorno_select');
+            const horaRetornoFinalInput = document.getElementById('hora_retorno_final');
+
+
+            // --- FUNCIONES DE HORA ---
+            function updateFinalTimeInput(horaSelect, minutoSelect, finalInput) {
+                const hora24 = horaSelect.value;
+                const minutos = minutoSelect.value;
+                if (hora24 && minutos) {
+                    let hourValue = parseInt(hora24);
+                    const hora24Str = String(hourValue).padStart(2, '0');
+                    finalInput.value = `${hora24Str}:${minutos}`;
+                } else {
+                    finalInput.value = '';
+                }
+            }
+
+            // --- Lógica del Cliente con Datalist ---
+            dniClienteSelect.addEventListener('input', function() {
+                const selectedDNI = this.value;
+                const option = datalist.querySelector(`option[value="${selectedDNI}"]`);
+
+                if (option) {
+                    nombreClienteInput.value = option.getAttribute('data-nombre');
+                    emailClienteInput.value = option.getAttribute('data-email');
+                } else {
+                    if (selectedDNI === '') {
+                        nombreClienteInput.value = '';
+                        emailClienteInput.value = '';
+                    }
+                }
+            });
+
+            // --- Event Listeners y Inicialización ---
+            horaSalidaSelect.addEventListener('change', () => updateFinalTimeInput(horaSalidaSelect, minutoSalidaSelect, horaSalidaFinalInput));
+            minutoSalidaSelect.addEventListener('change', () => updateFinalTimeInput(horaSalidaSelect, minutoSalidaSelect, horaSalidaFinalInput));
+            horaRetornoSelect.addEventListener('change', () => updateFinalTimeInput(horaRetornoSelect, minutoRetornoSelect, horaRetornoFinalInput));
+            minutoRetornoSelect.addEventListener('change', () => updateFinalTimeInput(horaRetornoSelect, minutoRetornoSelect, horaRetornoFinalInput));
+            tipoEvento.addEventListener('change', establecerDescuento);
+            tarifaInput.addEventListener('input', calcularTotal);
+
+            // Inicialización al cargar la página
+            establecerDescuento();
+            calcularTotal();
+            updateFinalTimeInput(horaSalidaSelect, minutoSalidaSelect, horaSalidaFinalInput);
+            updateFinalTimeInput(horaRetornoSelect, minutoRetornoSelect, horaRetornoFinalInput);
+            dniClienteSelect.dispatchEvent(new Event('input'));
+
+            // Limpiar Formulario
+            limpiarBoton.addEventListener('click', function() {
+                formulario.reset();
+                descuentoValorInput.value = '0';
+                totalInput.value = '0.00';
+                horaSalidaFinalInput.value = '';
+                horaRetornoFinalInput.value = '';
+                nombreClienteInput.value = '';
+                emailClienteInput.value = '';
+            });
 
             // --- Funciones de Cálculo ---
-
             function calcularTotal() {
                 const tarifa = parseFloat(tarifaInput.value) || 0;
                 const descuentoPorcentaje = parseFloat(descuentoValorInput.value) || 0;
@@ -192,9 +322,8 @@
             function establecerDescuento() {
                 const evento = tipoEvento.value;
                 const porcentaje = descuentos[evento] || 0;
-
                 descuentoValorInput.value = porcentaje;
-
+                const descuentoDisplay = document.getElementById('descuento_display');
                 let encontrado = false;
                 for (let i = 0; i < descuentoDisplay.options.length; i++) {
                     if (descuentoDisplay.options[i].value == porcentaje) {
@@ -206,36 +335,8 @@
                 if (!encontrado) {
                     descuentoDisplay.selectedIndex = 0;
                 }
-
                 calcularTotal();
             }
-
-            // SE ELIMINÓ LA FUNCIÓN generarIdCliente()
-
-            // --- Event Listeners y Inicialización ---
-
-            tipoEvento.addEventListener('change', establecerDescuento);
-            tarifaInput.addEventListener('input', calcularTotal);
-
-            // Listener para el campo de nombre que generaba el ID fue removido.
-            // nombreClienteInput.addEventListener('input', generarIdCliente); // Se elimina
-
-            // Inicialización al cargar la página
-            establecerDescuento();
-            // generarIdCliente(); // Se elimina la inicialización
-
-            // Limpiar Formulario
-            limpiarBoton.addEventListener('click', function() {
-                // Limpia todos los campos del formulario
-                formulario.reset();
-
-                // Reinicia los campos de cálculo
-                descuentoValorInput.value = '0';
-                totalInput.value = '0.00';
-                descuentoDisplay.selectedIndex = 0;
-
-                // Regenerar/limpiar el ID del cliente oculto (Esta línea fue actualizada para no llamar a la función eliminada)
-            });
         });
     </script>
 @endsection
