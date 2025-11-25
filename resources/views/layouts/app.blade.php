@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #667eea 100%);
             min-height: 100vh;
             background-color: #001f3f;
             color: white;
@@ -14,7 +14,7 @@
 
         /* Navbar con degradado morado */
         .navbar {
-            background: linear-gradient(90deg, #7c6fd0 0%, #8b7fd8 100%) !important;
+            background: linear-gradient(90deg, #667eea 0%, #667eea 100%) !important;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
@@ -35,7 +35,7 @@
         }
 
         .btn-primary {
-            background: linear-gradient(90deg, #7c6fd0 0%, #8b7fd8 100%);
+            background: linear-gradient(90deg, #667eea 0%, #8b7fd8 100%);
             border: none;
             border-radius: 8px;
             padding: 10px 20px;
@@ -43,7 +43,7 @@
             background-color: #004080;
         }
         .btn-primary:hover {
-            background: linear-gradient(90deg, #6b5fbf 0%, #7a6ec7 100%);
+            background: linear-gradient(90deg, #667eea 0%, #667eea 100%);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(124, 111, 208, 0.4);
             background-color: #0059b3;

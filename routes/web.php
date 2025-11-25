@@ -30,6 +30,7 @@ use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\CheckinController;
 use App\Http\Controllers\SolicitudController;
+use App\Http\Controllers\DocumentoBusController;
 
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
@@ -309,6 +310,40 @@ Route::get('/viaje/{reserva}/registrar-puntos', [RegistroPuntosController::class
 
 Route::post('/viaje/{reserva}/registrar-puntos', [RegistroPuntosController::class, 'store'])
     ->name('puntos.store');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DocumentoBusController::class, 'dashboard'])->name('dashboard');
+
+});
+ //Documentos-buses Sindy
+Route::middleware(['auth'])->prefix('documentos-buses')->name('documentos-buses.')->group(function () {
+
+    // documentos-buses.dashboard, si se requiere en el menú específico de esa sección.
+    Route::get('/dashboard', [DocumentoBusController::class, 'dashboard'])->name('dashboard');
+
+    Route::get('/crear', [DocumentoBusController::class, 'create'])->name('create');
+    Route::post('/', [DocumentoBusController::class, 'store'])->name('store');
+    Route::post('/actualizar-estados', [DocumentoBusController::class, 'actualizarEstados'])->name('actualizar-estados');
+    Route::get('/exportar/pdf', [DocumentoBusController::class, 'exportarPDF'])->name('exportar-pdf');
+
+    // API - Obtener documentos por bus
+    Route::get('/api/bus/{busId}', [DocumentoBusController::class, 'porBus'])->name('api.por-bus');
+
+    // 2. RUTAS DE LISTADO (SIN PARÁMETROS)
+    // -------------------------------------------------------------------
+    Route::get('/', [DocumentoBusController::class, 'index'])->name('index');
+
+    // 3. RUTAS CON PARÁMETROS (VAN AL FINAL)
+    // -------------------------------------------------------------------
+    Route::get('/{id}/descargar', [DocumentoBusController::class, 'descargarArchivo'])->name('descargar');
+    Route::get('/{id}/editar', [DocumentoBusController::class, 'edit'])->name('edit');
+    // Esta ruta siempre debe ser la última dentro del grupo de rutas CRUD con {id}
+    Route::get('/{id}', [DocumentoBusController::class, 'show'])->name('show');
+    Route::put('/{id}', [DocumentoBusController::class, 'update'])->name('update');
+    Route::delete('/{id}', [DocumentoBusController::class, 'destroy'])->name('destroy');
+
+    // Tu ruta resource existente
+    Route::resource('documentos-buses', DocumentoBusController::class);
+});
 
 //Rutas Shirley
 Route::resource('rentas', RegistroRentaController::class);
