@@ -10,7 +10,6 @@
         </div>
     @endif
 
-    {{-- 📝 Contenedor Principal del Formulario --}}
     <div class="container px-0">
         <div class="card shadow-lg border-0 rounded-3">
             <div class="card-body p-4">
@@ -20,12 +19,10 @@
                     </h2>
                 </header>
 
-                {{-- ➡️ Formulario de Registro --}}
                 <div class="card-body p-4 p-md-5">
                     <form id="terminalForm" action="{{ route('terminales.store') }}" method="POST" novalidate>
                         @csrf
 
-                        {{-- 1️⃣ DATOS DE UBICACIÓN --}}
                         <h5 class="mb-3 mt-2" style="color:#1e63b8; font-weight:600; font-size:1.5rem;">
                             <i class="fas fa-map-marker-alt me-2"></i>1. Datos de ubicación
                         </h5>
@@ -42,7 +39,6 @@
                                 <div id="error-nombre" class="error-message"></div>
                             </div>
 
-                            {{-- Fila 2: Departamento y Municipio --}}
                             <div class="col-md-6">
                                 <label for="departamento" class="form-label">Departamento</label>
                                 <select id="departamento" name="departamento" required
@@ -87,7 +83,6 @@
                             </div>
                         </div>
 
-                        {{-- Fila 3: Dirección --}}
                         <div class="row mb-3">
                             <div class="col-12">
                                 <div class="mb-3">
@@ -102,7 +97,6 @@
                             </div>
                         </div>
 
-                        {{-- 1.5 COORDENADAS (OPCIONAL) --}}
                         <h5 class="mb-3 mt-5" style="color:#1e63b8; font-weight:600; font-size:1.5rem;">
                             <i class="fas fa-map-marker-alt me-2"></i>1.5 Coordenadas (Opcional)
                         </h5>
@@ -143,13 +137,11 @@
                             </div>
                         </div>
 
-                        {{-- 2️⃣ INFORMACIÓN DE CONTACTO --}}
                         <h5 class="mb-3 mt-5" style="color:#1e63b8; font-weight:600; font-size:1.5rem;">
                             <i class="fas fa-address-book me-2"></i>2. Información de contacto
                         </h5>
                         <hr class="mt-0 mb-4">
                         <div class="row g-4">
-                            {{-- Fila 4: Teléfono y Correo --}}
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="telefono" class="form-label">Teléfono</label>
@@ -174,7 +166,6 @@
                             </div>
                         </div>
 
-                        {{-- 3️⃣ HORARIOS Y DESCRIPCIÓN --}}
                         <h5 class="mb-3 mt-5" style="color:#1e63b8; font-weight:600; font-size:1.5rem;">
                             <i class="fas fa-clock me-2"></i>3. Horarios y detalles
                         </h5>
@@ -217,11 +208,9 @@
                             </div>
                         </div>
 
-                        {{-- CAMPOS OCULTOS para horarios --}}
                         <input type="hidden" name="horario_apertura" id="horario_apertura_hidden">
                         <input type="hidden" name="horario_cierre" id="horario_cierre_hidden">
 
-                        {{-- Fila 6: Descripción --}}
                         <div class="row mb-4">
                             <div class="col-12">
                                 <div class="mb-3">
@@ -236,7 +225,6 @@
                             </div>
                         </div>
 
-                        {{-- ⚙️ Botones de Acción --}}
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top">
                             <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ route('terminales.index') }}'">
                                 <i class="fas fa-arrow-left me-2"></i> Volver a la lista
@@ -256,7 +244,6 @@
             </div>
         </div>
 
-        {{-- 🧠 Lógica JavaScript COMPLETA --}}
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // 🏷️ Referencias a Elementos del DOM
@@ -271,7 +258,6 @@
                 const direccionTextarea = document.getElementById('direccion');
                 const descripcionTextarea = document.getElementById('descripcion');
 
-                // ⏰ Referencias de los SELECTS de Hora/Minuto
                 const horarioAperturaHoraSelect = document.getElementById('horario_apertura_hora');
                 const horarioAperturaMinutoSelect = document.getElementById('horario_apertura_minuto');
                 const horarioCierreHoraSelect = document.getElementById('horario_cierre_hora');
@@ -279,7 +265,6 @@
                 const horarioAperturaHidden = document.getElementById('horario_apertura_hidden');
                 const horarioCierreHidden = document.getElementById('horario_cierre_hidden');
 
-                // 🗺️ Data de Municipios
                 const municipiosData = {
                     'Atlántida': ['La Ceiba', 'El Porvenir', 'Tela', 'San Francisco', 'Arizona', 'Esparta', 'Jutiapa', 'La Másica'],
                     'Colón': ['Trujillo', 'Balfate', 'Iriona', 'Limón', 'Sabá', 'Santa Rosa de Aguán', 'Sonaguera', 'Tocoa', 'Bonito Oriental', 'Fe'],
@@ -301,7 +286,6 @@
                     'Yoro': ['Yoro', 'Arenal', 'El Negrito', 'El Progreso', 'Jocón', 'Morazán', 'Olanchito', 'Santa Rita', 'Sulaco', 'Victoria', 'Yorito']
                 };
 
-                // ❌ Funciones de Manejo de Errores
                 function showError(field, message) {
                     const fieldId = field.id;
                     const errorId = fieldId.startsWith('horario_') ? fieldId.substring(0, fieldId.lastIndexOf('_')) : fieldId;
@@ -339,13 +323,11 @@
                     }
                 }
 
-                // 📐 Función para Auto-Redimensionar Textareas
                 function autoResize() {
                     this.style.height = 'auto';
                     this.style.height = (this.scrollHeight) + 'px';
                 }
 
-                // 🏙️ Funciones de Ubicación y Código
                 function loadMunicipios() {
                     const selectedDepto = departamentoSelect.value;
                     municipioSelect.innerHTML = '';
@@ -387,7 +369,6 @@
                     clearError(codigoInput);
                 }
 
-                // ⏱️ Funciones de Horario
                 function generateHourOptions() {
                     const options = [];
                     for (let h = 0; h < 24; h++) {
@@ -459,7 +440,6 @@
                     updateHiddenFields();
                 }
 
-                // 🚀 Inicialización
                 populateTimeSelects();
 
                 if (departamentoSelect.value) {
@@ -492,7 +472,6 @@
                     field.addEventListener('change', function() { clearError(this); });
                 });
 
-                // 🗑️ Botón Limpiar
                 if (resetButton) {
                     resetButton.addEventListener('click', function() {
                         terminalForm.reset();
@@ -521,7 +500,6 @@
                     });
                 }
 
-                // 🛑 Validación del Formulario
                 terminalForm.addEventListener('submit', function(event) {
                     let isValid = true;
                     let firstInvalidField = null;
@@ -546,7 +524,6 @@
                             minutoSelect = document.getElementById(fieldId.startsWith('horario_apertura') ? 'horario_apertura_minuto' : 'horario_cierre_minuto');
                         }
 
-                        // Validación de campos de Horario
                         if (fieldId.startsWith('horario_') && (fieldId.endsWith('_hora') || fieldId.endsWith('_minuto'))) {
                             if (fieldId.endsWith('_hora')) {
                                 if (!horaSelect.value || !minutoSelect.value) {
@@ -558,25 +535,21 @@
                                 }
                             }
                         }
-                        // Validación de otros campos vacíos
                         else if (!value) {
                             message = 'Este campo es **obligatorio**.';
                             isFieldInvalid = true;
                         }
 
-                        // Validación de Teléfono
                         else if (fieldId === 'telefono' && !/^\d{8}$/.test(value)) {
                             message = 'El teléfono debe contener exactamente **8 dígitos** numéricos.';
                             isFieldInvalid = true;
                         }
 
-                        // Validación de Correo
                         else if (fieldId === 'correo' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
                             message = 'Ingrese un **correo electrónico válido** (ej: nombre@dominio.com).';
                             isFieldInvalid = true;
                         }
 
-                        // Validación Horario Cierre vs Apertura
                         const aperturaValue = horarioAperturaHidden.value;
                         const cierreValue = horarioCierreHidden.value;
 

@@ -344,3 +344,11 @@ Route::middleware(['auth'])->prefix('documentos-buses')->name('documentos-buses.
     // Tu ruta resource existente
     Route::resource('documentos-buses', DocumentoBusController::class);
 });
+
+//Rutas Shirley
+Route::resource('rentas', RegistroRentaController::class);
+Route::put('/reservas/{reserva}', [ReservaController::class, 'update'])->name('reserva.update');
+
+// NUEVAS RUTAS PARA CANJES
+Route::get('/mis-puntos', [RegistroPuntosController::class, 'index'])->name('puntos.index');
+Route::post('/canjear-puntos/{beneficio_id}', [RegistroPuntosController::class, 'canjear'])->name('puntos.canjear');

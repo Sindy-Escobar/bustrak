@@ -280,7 +280,7 @@
              text-decoration: none;
              box-shadow: 0 2px 6px rgba(0,0,0,0.15);
              transition: all 0.3s ease;
-             z-index: 50; /* esto asegura que quede por encima del fondo */
+             z-index: 50;
          }
 
 
@@ -288,6 +288,19 @@
             background: #1976d2;
             color: #ffffff;
             transform: translateX(-2px);
+        }
+
+        .top-logo-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .logo-container img {
+            width: 150px;
+            cursor: pointer;
         }
 
     </style>
@@ -298,21 +311,18 @@
     <div class="background">
         <div class="circle circle1"></div>
         <div class="circle circle2"></div>
-        <div class="bus-background">🚌</div>
+        <div class="bus-background"></div>
     </div>
 
     <div class="login-card">
-        <!-- Botón Volver al Inicio -->
-        <a href="{{ route('interfaces.principal') }}" class="btn-back">
-            Inicio
-        </a>
-        <div class="logo-container">
-            <div class="logo">
+        <div class="top-logo-wrapper">
+            <a href="{{ route('interfaces.principal') }}" class="logo-container">
                 <img src="/Imagenes/bustrak-logo.jpg" alt="BusTrak">
-            </div>
+            </a>
         </div>
 
-        @if ($errors->any())
+
+    @if ($errors->any())
             <div class="error-message">
                 @foreach ($errors->all() as $error)
                     {{ $error }}
