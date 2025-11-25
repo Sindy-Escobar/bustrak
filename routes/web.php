@@ -313,3 +313,8 @@ Route::post('/viaje/{reserva}/registrar-puntos', [RegistroPuntosController::clas
 //Rutas Shirley
 Route::resource('rentas', RegistroRentaController::class);
 Route::put('/reservas/{reserva}', [ReservaController::class, 'update'])->name('reserva.update');
+
+
+Route::get('/chofer/panel', function () {
+    return view('interfaces.chofer');
+})->name('chofer.panel');

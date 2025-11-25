@@ -326,7 +326,7 @@
              text-decoration: none;
              box-shadow: 0 2px 6px rgba(0,0,0,0.15);
              transition: all 0.3s ease;
-             z-index: 50; /* esto asegura que quede por encima del fondo */
+             z-index: 50;
          }
 
 
@@ -368,7 +368,7 @@
         <div class="logo-container">
             <div class="top-logo-wrapper">
                 <a href="{{ route('interfaces.principal') }}" class="logo-container">
-                    <img src="/Imagenes/bustrak-logo.jpg" alt="BusTrak">
+                    <img src="/Imagenes/bustrak-logo.png" alt="BusTrak">
                 </a>
             </div>
         </div>

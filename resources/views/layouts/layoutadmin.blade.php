@@ -141,8 +141,9 @@
 
         <div class="brand-logo">
             <h2>
-                <img src="{{ asset('Imagenes/bustrak-logo.jpg') }}" alt="Logo"
-                     style="border-radius: 35px; width: 120px; height: 60px;">
+                <img src="{{ asset('Imagenes/bustrak-logo.png') }}"
+                     alt="Logo"
+                     style="width: 90px; height: auto; border-radius: 0; display: block; margin: 0 auto;">
             </h2>
         </div>
 
@@ -206,11 +207,11 @@
 
         <!-- Rentas -->
         <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#terminales">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#Renta">
                 <span><i class="fas fa-map-marker-alt"></i> Registro Renta</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
-            <div class="collapse btn-toggle-nav" id="terminales">
+            <div class="collapse btn-toggle-nav" id="Renta">
                 <a href="{{ route('rentas.index') }}" class="{{ request()->routeIs('rentas.index') ? 'active' : '' }}">
                     Ver Registro
                 </a>
@@ -274,7 +275,6 @@
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
             <div class="collapse btn-toggle-nav" id="sesion">
-                <a href="{{ route('interfaces.principal') }}">Inicio</a>
                 <a href="{{ route('admin.change-password') }}">Cambiar Contraseña</a>
 
                 <a href="{{ route('logout') }}"
