@@ -16,7 +16,11 @@ class ViajesSeeder extends Seeder
         // Crear un bus de prueba si no existe
         $bus = Bus::firstOrCreate(
             ['placa' => 'AAA-001'],
-            ['modelo' => 'Volvo 9700', 'capacidad_asientos' => 40]
+            [
+                'modelo' => 'Volvo 9700',
+                'capacidad_asientos' => 40,
+                'numero_bus' => Bus::max('numero_bus') + 1 // obligatorio
+            ]
         );
 
         // Traer todas las ciudades
@@ -50,7 +54,6 @@ class ViajesSeeder extends Seeder
                 }
             }
         }
-
         $this->command->info("Seeder de viajes y asientos ejecutado correctamente.");
     }
 }
