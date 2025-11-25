@@ -33,7 +33,7 @@ class CalificacionChoferController extends Controller
         ]);
 
         CalificacionChofer::create([
-            'usuario_id' => Auth::id(),
+            'usuario_id' => null,
             'calificacion' => $request->calificacion,
             'comentario' => $request->comentario,
             'mejoras' => $request->mejoras,

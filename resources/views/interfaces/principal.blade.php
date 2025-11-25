@@ -441,6 +441,31 @@
     </div>
 </div>
 
+<!-- Modales adicionales de tu versión -->
+<div class="modal-waitlist" id="waitlistModal">
+    <div class="modal-content-waitlist">
+        <h2 id="modalTitle"><i class="fas fa-check-circle"></i> Confirmar Compra</h2>
+        <p id="modalMessage">¿Deseas confirmar la compra de este boleto?</p>
+        <div class="waitlist-info" id="waitlistDetails"></div>
+        <div class="modal-buttons">
+            <button class="btn-confirmar" onclick="confirmarAccion()"><i class="fas fa-check"></i> Confirmar</button>
+            <button class="btn-cancelar" onclick="cerrarModalConfirmacion()"><i class="fas fa-times"></i> Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Viajes Disponibles -->
+<div class="modal-viajes" id="modalViajes">
+    <div class="modal-viajes-content">
+        <div class="modal-viajes-header">
+            <h2 id="modalViajesTitle"><i class="fas fa-bus"></i> Viajes Disponibles</h2>
+            <button class="modal-viajes-close" onclick="cerrarModalViajes()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-viajes-body">
+            <div id="viajesContainer"></div>
+        </div>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const destinosData = {
