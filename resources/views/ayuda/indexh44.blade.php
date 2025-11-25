@@ -3,7 +3,7 @@
 @section('contenido')
     <div class="container mt-4">
         <h2 class="mb-3" style="color:#1e63b8;">
-            <i class="fas fa-headset me-2"></i>Mis Solicitudes
+            <i class="fas fa-headset me-2"></i>Mis Consultas
         </h2>
 
         @if($consultas->isEmpty())
