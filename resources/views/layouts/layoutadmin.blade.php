@@ -9,6 +9,7 @@
     <script src="https://kit.fontawesome.com/a2e0c8b2b1.js" crossorigin="anonymous"></script>
 
     <style>
+
         html { height: 100%; overflow-y: scroll; }
         body {
             margin: 0; font-family: "Segoe UI", Roboto, sans-serif;
@@ -18,24 +19,55 @@
 
         /* ===== SIDEBAR ===== */
         .sidebar {
-            width: 230px; background-color: #101827; color: #fff;
-            display: flex; flex-direction: column; padding-top: 1rem;
-            position: fixed; top: 0; left: 0; height: 100vh;
+            width: 230px;
+            background-color: #101827;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding-top: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
             box-shadow: 3px 0 8px rgba(0, 0, 0, 0.3);
-            overflow-y: auto; scrollbar-width: thin; scrollbar-color: #5cb3ff #101827;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: #5cb3ff #101827;
             transition: all 0.3s ease;
         }
         .sidebar::-webkit-scrollbar { width: 8px; }
         .sidebar::-webkit-scrollbar-thumb { background-color: #5cb3ff; border-radius: 4px; }
 
+        /* ===== BOTÓN TOGGLE INTERNO ===== */
         .toggle-sidebar-btn {
-            position: absolute; top: 20px; right: -20px; width: 40px; height: 45px;
-            background: #1976d2; border: none; border-radius: 50%;
-            color: white; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s ease; z-index: 1000; font-size: 18px;
+            position: absolute;
+            top: 20px;
+            right: -20px;
+            width: 40px;
+            height: 40px;
+            background: #1976d2;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 18px;
         }
-        .toggle-sidebar-btn:hover { background: #1565c0; transform: scale(1.15); }
+
+        .toggle-sidebar-btn:hover {
+            background: #1565c0;
+            transform: scale(1.15);
+        }
+
+        .toggle-sidebar-btn i {
+            transition: transform 0.3s ease;
+        }
 
         .brand-logo { text-align: center; margin-bottom: 0.5rem; padding: 0.5rem; }
         .brand-logo h2 { font-size: 1.8rem; font-weight: 800; color: #fff; }
@@ -66,9 +98,37 @@
             min-height: 100vh; transition: all 0.3s ease;
         }
 
-        .sidebar.collapsed { width: 80px; }
+        .sidebar.collapsed {
+            width: 80px;
+            overflow: visible;
+        }
         .content-area.expanded { margin-left: 80px; }
 
+        .sidebar.collapsed .brand-logo h2,
+        .sidebar.collapsed .user-info,
+        .sidebar.collapsed .btn-toggle span,
+        .sidebar.collapsed .btn-toggle .chevron,
+        .sidebar.collapsed .btn-toggle-nav {
+            display: none;
+        }
+
+        .sidebar.collapsed .btn-toggle {
+            justify-content: center;
+            padding: 0.7rem;
+        }
+
+        .sidebar.collapsed .btn-toggle i {
+            margin-right: 0;
+            font-size: 1.2rem;
+        }
+
+        .sidebar.collapsed .toggle-sidebar-btn i {
+            transform: rotate(180deg);
+        }
+
+        .content-area.expanded {
+            margin-left: 80px;
+        }
     </style>
 </head>
 
@@ -160,35 +220,7 @@
             </div>
         </div>
 
-        <!-- Notificaciones (TU PARTE) -->
-        <div class="nav-section">
-            <button class="btn-toggle d-flex justify-content-between align-items-center"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#notificaciones"
-                    aria-expanded="{{ request()->routeIs('admin.notificaciones.*') ? 'true' : 'false' }}">
-                <span><i class="fas fa-bell"></i> Notificaciones</span>
 
-                <div class="d-flex align-items-center gap-2">
-                    @php
-                        $adminNotiCount = \App\Models\Notificacion::where('usuario_id', auth()->id())
-                            ->where('leida', false)
-                            ->count();
-                    @endphp
-                    @if($adminNotiCount > 0)
-                        <span class="badge bg-danger">{{ $adminNotiCount }}</span>
-                    @endif
-                    <i class="fas fa-chevron-right chevron"></i>
-                </div>
-            </button>
-
-            <div class="collapse btn-toggle-nav {{ request()->routeIs('admin.notificaciones.*') ? 'show' : '' }}"
-                 id="notificaciones">
-                <a href="{{ route('admin.notificaciones') }}"
-                   class="{{ request()->routeIs('admin.notificaciones') ? 'active' : '' }}">
-                    Ver notificaciones
-                </a>
-            </div>
-        </div>
 
         <!-- Usuarios (PARTE DE MAIN) -->
         <div class="nav-section">
@@ -243,18 +275,37 @@
     </nav>
 
     <div class="content-area">
-        <div class="d-flex justify-content-between align-items-center mb-4 p-3 rounded shadow-sm"
+        <div class="d-flex justify-content-end align-items-center gap-2 mb-4 p-3 rounded shadow-sm"
              style="background-color: #0d1f3f; border-left: 5px solid #0dcaf0;">
-            <h5 class="mb-0 fw-semibold text-white"></h5>
 
             <a href="{{ route('interfaces.principal') }}"
                class="btn btn-outline-light btn-sm px-3 rounded-pill shadow-sm">
                 <i class="fas fa-home me-1"></i> Inicio
             </a>
+
+            @php
+                $adminNotiCount = \App\Models\Notificacion::where('usuario_id', auth()->id())
+                    ->where('leida', false)
+                    ->count();
+            @endphp
+
+            <a href="{{ route('admin.notificaciones') }}"
+               class="btn btn-outline-light btn-sm position-relative rounded-circle shadow-sm"
+               style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-bell"></i>
+
+                @if($adminNotiCount > 0)
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ $adminNotiCount }}
+                        <span class="visually-hidden">notificaciones no leídas</span>
+                    </span>
+                @endif
+            </a>
         </div>
 
         @yield('content')
     </div>
+
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
