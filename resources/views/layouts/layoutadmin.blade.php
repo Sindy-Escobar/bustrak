@@ -143,7 +143,19 @@
                 </a>
             </div>
         </div>
+        <!-- Documentacion de buses -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#documentacionBuses">
+                <span><i class="fas fa-file-contract"></i> Documentación de Buses</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
 
+            <div class="collapse btn-toggle-nav" id="documentacionBuses">
+                <a href="{{ route('documentos-buses.index') }}" class="{{ request()->routeIs('documentos-buses.index') ? 'active' : '' }}">
+                    Gestionar Documentacion
+                </a>
+            </div>
+        </div>
         <!-- Terminales -->
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#terminales">

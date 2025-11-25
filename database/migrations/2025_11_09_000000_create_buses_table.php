@@ -17,6 +17,7 @@ return new class extends Migration
 
             // Información básica del bus/vehículo
             $table->string('placa')->unique();
+            $table->string('numero_bus')->unique();
             $table->string('modelo');
             $table->integer('capacidad_asientos');
             $table->string('estado')->default('activo'); // Por ejemplo: activo, en mantenimiento, retirado
