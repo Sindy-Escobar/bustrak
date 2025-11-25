@@ -120,6 +120,8 @@
     </div>
 </div>
 
+
+<!-- ========== INICIO: Modal de Viajes Disponibles ========== -->
 <div class="modal-viajes" id="modalViajes">
     <div class="modal-viajes-content">
         <div class="modal-viajes-header">
@@ -131,6 +133,8 @@
         </div>
     </div>
 </div>
+
+    <!-- ========== FIN: Modal de Viajes Disponibles ========== -->
 
 <section class="hero position-relative">
     <div class="container">
