@@ -43,7 +43,7 @@
                         </div>
                     @endif
 
-                    <form id="soporteForm" method="POST" action="{{ route('soporte.enviar') }}">
+                    <form id="soporteForm" method="POST" action="{{ route('soporte.enviar') }}" autocomplete="off">
                         @csrf
 
                         <div class="mb-4">
@@ -54,7 +54,7 @@
                                    class="form-control @error('nombre') is-invalid @enderror"
                                    id="nombre"
                                    name="nombre"
-                                   value="{{ old('nombre', auth()->user()->name ?? '') }}"
+                                   value="{{ auth()->user()->name ?? '' }}"
                                    placeholder="Tu nombre completo"
                                    required>
                             @error('nombre')
@@ -70,7 +70,7 @@
                                    class="form-control @error('correo') is-invalid @enderror"
                                    id="correo"
                                    name="correo"
-                                   value="{{ old('correo', auth()->user()->email ?? '') }}"
+                                   value="{{ auth()->user()->email ?? '' }}"
                                    placeholder="tu@email.com"
                                    required>
                             @error('correo')
@@ -86,9 +86,9 @@
                                    class="form-control @error('asunto') is-invalid @enderror"
                                    id="asunto"
                                    name="asunto"
-                                   value="{{ old('asunto') }}"
                                    placeholder="Asunto de tu consulta"
-                                   required>
+                                   required
+                                   autocomplete="off">
                             @error('asunto')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
@@ -104,7 +104,8 @@
                                       rows="4"
                                       placeholder="Cuéntanos tu problema o duda en detalle..."
                                       maxlength="1000"
-                                      required>{{ old('mensaje') }}</textarea>
+                                      required
+                                      autocomplete="off"></textarea>
                             @error('mensaje')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
@@ -136,15 +137,30 @@
     </div>
 
     <script>
-        // Contador de caracteres
+        // Limpiar todos los campos del formulario al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
-            const mensajeTextarea = document.getElementById('mensaje');
+            const soporteForm = document.getElementById('soporteForm');
             const charCounter = document.getElementById('char-counter');
 
-            if (mensajeTextarea && charCounter) {
-                // Inicializar contador
-                charCounter.textContent = mensajeTextarea.value.length;
+            // Resetear el formulario completamente
+            if (soporteForm) {
+                soporteForm.reset();
+            }
 
+            // Limpiar todos los inputs y textareas
+            const inputs = document.querySelectorAll('input[type="text"], input[type="email"], textarea');
+            inputs.forEach(input => {
+                input.value = '';
+            });
+
+            // Reinicializar contador de caracteres
+            if (charCounter) {
+                charCounter.textContent = '0';
+            }
+
+            // Contador de caracteres
+            const mensajeTextarea = document.getElementById('mensaje');
+            if (mensajeTextarea && charCounter) {
                 mensajeTextarea.addEventListener('input', function() {
                     const length = this.value.length;
                     charCounter.textContent = length;

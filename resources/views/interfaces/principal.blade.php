@@ -444,31 +444,174 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const destinosData = {
-        'Atlántida': { lugares:['Parque Nacional Pico Bonito','Cayos Cochinos'], comidas:['Pan de Coco','Tapado Costeño'] },
-        'Cortés': { lugares:['Cataratas de Pulhapanzak','Fortaleza de San Fernando'], comidas:['Baleadas','Pollo Chuco'] },
-        'Francisco Morazán': { lugares:['Cristo del Picacho','Parque Nacional La Tigra'], comidas:['Carne Asada','Nacatamales'] },
-        'Choluteca': { lugares:['Rio Choluteca','Laguna de La Ciega'], comidas:['Sopa de Caracol','Tamales'] },
-        'Colón': { lugares:['Travesía por el Río Aguán','Playa Jutiapa'], comidas:['Arroz con Pollo','Pescado Frito'] },
-        'Comayagua': { lugares:['Catedral de Comayagua','Parque Central'], comidas:['Sopa de Mondongo','Tamalito'] },
-        'Copán': { lugares:['Ruinas de Copán','Museo de Copán'], comidas:['Baleadas','Tostones'] },
-        'El Paraíso': { lugares:['Parque Nacional La Tigra','Playa Blanca'], comidas:['Carne Guisada','Sopa de Res'] },
-        'Intibucá': { lugares:['Parque Nacional Celaque','Lago de Yojoa'], comidas:['Tortillas de Maíz','Carne Asada'] },
-        'La Paz': { lugares:['Parque Nacional Montaña de Santa Bárbara','Cerro Amarillo'], comidas:['Tamales','Sopa de Gallina'] },
-        'Lempira': { lugares:['Parque Nacional Celaque','Gracias'], comidas:['Carne Asada','Baleadas'] },
-        'Ocotepeque': { lugares:['Parque Nacional Celaque','Bosque de Opalaca'], comidas:['Tamales','Sopa de Gallina'] },
-        'Olancho': { lugares:['Parque Nacional Patuca','Río Guayape'], comidas:['Sopa de Caracol','Carne Asada'] },
-        'Santa Bárbara': { lugares:['Parque Nacional Cusuco','Cerro Azul'], comidas:['Baleadas','Carne Guisada'] },
-        'Valle': { lugares:['Playa de Cedeño','Parque Nacional'], comidas:['Mariscos','Tamales'] },
-        'Yoro': { lugares:['Cascadas de Pulhapanzak','Parque Nacional Montaña de Yoro'], comidas:['Baleadas','Pollo Asado'] }
+        'Atlántida': {
+            lugares: [
+                { nombre: 'Parque Nacional Pico Bonito', imagen: '/catalago/img/lugares/parque pico bonito.jpg' },
+                { nombre: 'Las Cascadas de Zacate', imagen: '/catalago/img/lugares/cascada zacate.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Pan de Coco', imagen: '/catalago/img/comidas/Pan de Coco.jpg' },
+                { nombre: 'Tapado Costeño', imagen: '/catalago/img/comidas/Tapado Costeño.jpg' }
+            ]
+        },
+        'Cortés': {
+            lugares: [
+                { nombre: 'Cataratas de Pulhapanzak', imagen: '/catalago/img/lugares/Cataratas de Pulhapanzak.jpg' },
+                { nombre: 'Fortaleza de San Fernando de Omoa', imagen: '/catalago/img/lugares/Fortaleza de San Fernando de Omoa.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Baleadas', imagen: '/catalago/img/comidas/Baleadas.jpg' },
+                { nombre: 'Pollo Chuco', imagen: '/catalago/img/comidas/Pollo Chuco.jpg' }
+            ]
+        },
+        'Francisco Morazán': {
+            lugares: [
+                { nombre: 'Cristo del Picacho', imagen: '/catalago/img/lugares/picacho.jpg' },
+                { nombre: 'Parque Nacional La Tigra', imagen: '/catalago/img/lugares/Parque Nacional La Tigra.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Carne Asada', imagen: '/catalago/img/comidas/Carne Asada.jpg' },
+                { nombre: 'Nacatamales', imagen: '/catalago/img/comidas/Nacatamales.jpg' }
+            ]
+        },
+        'Choluteca': {
+            lugares: [
+                { nombre: 'Playas de Cedeño', imagen: '/catalago/img/lugares/Playas de Cedeño.jpg' },
+                { nombre: 'Museo de Historia Regional', imagen: '/catalago/img/lugares/Museo de Historia Regional.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Curiles', imagen: '/catalago/img/comidas/Curiles.jpg' },
+                { nombre: 'Tamales Pisques', imagen: '/catalago/img/comidas/Tamales Pisques.jpg' }
+            ]
+        },
+        'Colón': {
+            lugares: [
+                { nombre: 'Playas de Trujillo', imagen: '/catalago/img/lugares/Playas de Trujillo.jpg' },
+                { nombre: 'Parque Nacional Capiro y Calentura', imagen: '/catalago/img/lugares/Parque Nacional Capiro y Calentura.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Machuca', imagen: '/catalago/img/comidas/Machuca.jpg' },
+                { nombre: 'Sopa de Caracol', imagen: '/catalago/img/comidas/Sopa de Caracol.jpg' }
+            ]
+        },
+        'Comayagua': {
+            lugares: [
+                { nombre: 'Catedral de Comayagua', imagen: '/catalago/img/lugares/Catedral de Comayagua.jpg' },
+                { nombre: 'Cuevas de Taulabe', imagen: '/catalago/img/lugares/Cuevas de Taulabe.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Sopa de Capirotada', imagen: '/catalago/img/comidas/Sopa de Capirotada.jpg' },
+                { nombre: 'Pinol', imagen: '/catalago/img/comidas/Pinol.jpg' }
+            ]
+        },
+        'Copán': {
+            lugares: [
+                { nombre: 'Ruinas de Copán', imagen: '/catalago/img/lugares/Ruinas de Copán.jpg' },
+                { nombre: 'Tuneles Mayas', imagen: '/catalago/img/lugares/Tuneles Mayas.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Montuca', imagen: '/catalago/img/comidas/Montuca.jpg' },
+                { nombre: 'Totopostes', imagen: '/catalago/img/comidas/Totopostes.jpg' }
+            ]
+        },
+        'El Paraíso': {
+            lugares: [
+                { nombre: 'Cascada de El Cacao', imagen: '/catalago/img/lugares/Cascada El Cacao.jpg' },
+                { nombre: 'Montaña de Teupasenti', imagen: '/catalago/img/lugares/Montaña de Teupasenti.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Ticuco', imagen: '/catalago/img/comidas/Ticuco.jpg' },
+                { nombre: 'Ayote en Miel', imagen: '/catalago/img/comidas/Ayote en Miel.jpg' }
+            ]
+        },
+        'Intibucá': {
+            lugares: [
+                { nombre: 'Lagos de Chiligatoro', imagen: '/catalago/img/lugares/Lagos de Chiligatoro.jpg' },
+                { nombre: 'Gruta de La Esperanza', imagen: '/catalago/img/lugares/Gruta de La Esperanza.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Sopa de Gallina India', imagen: '/catalago/img/comidas/Sopa de Gallina India.jpg' },
+                { nombre: 'Chicha', imagen: '/catalago/img/comidas/Chicha.jpg' }
+            ]
+        },
+        'La Paz': {
+            lugares: [
+                { nombre: 'Cascada de Santa Elena', imagen: '/catalago/img/lugares/Cascada de Santa Elena.jpg' },
+                { nombre: 'Parque Arqueológico Yarumela', imagen: '/catalago/img/lugares/Parque Arqueológico Yarumela.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Chancletas de Pataste', imagen: '/catalago/img/comidas/Chancletas de Pataste.jpg' },
+                { nombre: 'Sopa de Albóndigas', imagen: '/catalago/img/comidas/Sopa de Albóndigas.jpg' }
+            ]
+        },
+        'Lempira': {
+            lugares: [
+                { nombre: 'Parque Nacional Celaque', imagen: '/catalago/img/lugares/Parque Nacional Celaque.jpg' },
+                { nombre: 'Monumento a Lempira', imagen: '/catalago/img/lugares/Monumento a Lempira.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Atol Shuco', imagen: '/catalago/img/comidas/Atol Shuco.jpg' },
+                { nombre: 'Chilate', imagen: '/catalago/img/comidas/Chicha.jpg' }
+            ]
+        },
+        'Ocotepeque': {
+            lugares: [
+                { nombre: 'La Casa de la Cultura de Ocotepeque', imagen: '/catalago/img/lugares/La Casa de la Cultura de Ocotepeque.jpg' },
+                { nombre: 'Ruinas de la Antigua Ocotepeque', imagen: '/catalago/img/lugares/Ruinas de la Antigua Ocotepeque.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Sopa de Tortas de Pescado', imagen: '/catalago/img/comidas/Sopa de Tortas de Pescado.jpg' },
+                { nombre: 'Tamalitos de Cambray', imagen: '/catalago/img/comidas/Tamalitos de Cambray.jpg' }
+            ]
+        },
+        'Olancho': {
+            lugares: [
+                { nombre: 'Parque Nacional Sierra de Agalta', imagen: '/catalago/img/lugares/Parque Nacional Sierra de Agalta.jpg' },
+                { nombre: 'Cuevas de Cuyamel', imagen: '/catalago/img/lugares/Cuevas de Cuyamel.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Cuajada en Penca', imagen: '/catalago/img/comidas/Cuajada en Penca.jpg' },
+                { nombre: 'Carne de res con Yuca', imagen: '/catalago/img/comidas/Carne de res con Yuca.jpg' }
+            ]
+        },
+        'Santa Bárbara': {
+            lugares: [
+                { nombre: 'Parque Nacional Montaña de Santa Bárbara', imagen: '/catalago/img/lugares/Parque Nacional Montaña de Santa Bárbara.jpg' },
+                { nombre: 'Cuevas de la Kinkora', imagen: '/catalago/img/lugares/Cuevas de la Kinkora.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Montucas', imagen: '/catalago/img/comidas/Montuca.jpg' },
+                { nombre: 'Atol de Piña', imagen: '/catalago/img/comidas/Atol de Piña.jpg' }
+            ]
+        },
+        'Valle': {
+            lugares: [
+                { nombre: 'Puerto de San Lorenzo', imagen: '/catalago/img/lugares/Puerto de San Lorenzo.jpg' },
+                { nombre: 'Casco Urbano de Amapala', imagen: '/catalago/img/lugares/Casco Urbano de Amapala.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Pescado Frito', imagen: '/catalago/img/comidas/Pescado Frito.jpg' },
+                { nombre: 'Sopa Marinera', imagen: '/catalago/img/comidas/Sopa Marinera.jpg' }
+            ]
+        },
+        'Yoro': {
+            lugares: [
+                { nombre: 'Parque Nacional Pico Pijol', imagen: '/catalago/img/lugares/Parque Nacional Pico Pijol.jpg' },
+                { nombre: 'Cuevas de la Lluvia de Peces', imagen: '/catalago/img/lugares/Cuevas de la Lluvia de Peces.jpg' }
+            ],
+            comidas: [
+                { nombre: 'Sopa de Jutes', imagen: '/catalago/img/comidas/Sopa de Jutes.jpg' },
+                { nombre: 'Sopa de Frijoles con Hueso de Cerdo', imagen: '/catalago/img/comidas/Sopa de Frijoles con Hueso de Cerdo.jpg' }
+            ]
+        }
     };
-
 
     function abrirModalInfo(departamento) {
         const info = destinosData[departamento];
         if (!info) return;
         document.getElementById('modalInfoTitle').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${departamento}`;
-        const lugaresHtml = info.lugares.map(lugar => `<div class="info-card"><div class="info-card-img"><i class="fas fa-landmark"></i></div><div class="info-card-body"><div class="info-card-title">${lugar}</div></div></div>`).join('');
-        const comidasHtml = info.comidas.map(comida => `<div class="info-card"><div class="info-card-img"><i class="fas fa-utensils"></i></div><div class="info-card-body"><div class="info-card-title">${comida}</div></div></div>`).join('');
+        const lugaresHtml = info.lugares.map(lugar => `<div class="info-card"><div class="info-card-img"><img src="${lugar.imagen}" alt="${lugar.nombre}" style="width:100%; height:100%; object-fit:cover;"></div><div class="info-card-body"><div class="info-card-title">${lugar.nombre}</div></div></div>`).join('');
+        const comidasHtml = info.comidas.map(comida => `<div class="info-card"><div class="info-card-img"><img src="${comida.imagen}" alt="${comida.nombre}" style="width:100%; height:100%; object-fit:cover;"></div><div class="info-card-body"><div class="info-card-title">${comida.nombre}</div></div></div>`).join('');
         document.getElementById('lugaresGrid').innerHTML = lugaresHtml;
         document.getElementById('comidasGrid').innerHTML = comidasHtml;
         document.getElementById('modalInfo').classList.add('show');
