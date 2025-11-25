@@ -132,7 +132,7 @@
         </svg>
     </div>
 
-    <a href="/" class="btn btn-primary">Volver al inicio</a>
+    <a href="javascript:history.back()" class="btn btn-primary">Volver atras</a>
 </div>
 </body>
 </html>

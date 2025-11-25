@@ -31,6 +31,7 @@ use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\CheckinController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\DocumentoBusController;
+use App\Http\Controllers\CalificacionChoferController;
 
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
@@ -349,6 +350,17 @@ Route::middleware(['auth'])->prefix('documentos-buses')->name('documentos-buses.
 Route::resource('rentas', RegistroRentaController::class);
 Route::put('/reservas/{reserva}', [ReservaController::class, 'update'])->name('reserva.update');
 
+
+Route::get('/chofer/panel', function () {
+    return view('interfaces.chofer');
+})->name('chofer.panel');
 // NUEVAS RUTAS PARA CANJES
 Route::get('/mis-puntos', [RegistroPuntosController::class, 'index'])->name('puntos.index');
 Route::post('/canjear-puntos/{beneficio_id}', [RegistroPuntosController::class, 'canjear'])->name('puntos.canjear');
+
+/// Calificación de chofer
+Route::get('/calificar-chofer', [App\Http\Controllers\CalificacionChoferController::class, 'formulario'])
+    ->name('calificar.chofer');
+
+Route::post('/calificar-chofer', [App\Http\Controllers\CalificacionChoferController::class, 'guardar'])
+    ->name('calificar.chofer.guardar');

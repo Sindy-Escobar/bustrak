@@ -65,10 +65,11 @@ class EmpresaBusController extends Controller
 
             EmpresaBus::create($request->all());
 
-            return back()->with('success', 'Empresa registrada correctamente.');
+            return back()->with('success', 'Registro exitoso, su empresa sera
+            verificada y aceptada por un administrador.');
         }
 
         // Aquí apuntamos a tu vista real
-        return view('Empresa.MiEmpresa'); // Extiende layout de usuario dentro de esta vista
+        return view('Empresa.MiEmpresa');
     }
 }
