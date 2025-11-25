@@ -45,8 +45,10 @@ class CalificacionController extends Controller
 
 
         $existingCalificacion = Calificacion::where('reserva_id', $reserva_id)
-        ->where('usuario_id', Auth::id())
+            ->where('usuario_id', Auth::id() ?? null)
             ->first();
+
+
 
         if ($existingCalificacion) {
 
@@ -57,7 +59,7 @@ class CalificacionController extends Controller
 
         Calificacion::create([
             'reserva_id' => $reserva_id,
-            'usuario_id' => Auth::id(),
+            'usuario_id' => null,
             'estrellas' => $request->estrellas,
             'comentario' => $request->comentario,
         ]);

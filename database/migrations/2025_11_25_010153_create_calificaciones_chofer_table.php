@@ -16,10 +16,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Relación correcta con tu tabla "usuarios"
-            $table->foreign('usuario_id')
-                ->references('id')
-                ->on('usuarios')
-                ->onDelete('cascade');
+
         });
     }
 
