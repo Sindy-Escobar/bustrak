@@ -310,7 +310,9 @@
                                     class="{{ request()->routeIs('itinerario.index') ? 'active' : '' }}">
                     Ver Facturas
                 </a>
-
+                <a href="{{ route('calificar.chofer') }}" class="{{ request()->routeIs('calificar.chofer') ? 'active' : '' }}">
+                    Calificar al Conductor
+                </a>
             </div>
         </div>
 
