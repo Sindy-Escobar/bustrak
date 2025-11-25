@@ -253,8 +253,9 @@
         <!-- Logo de la Aplicación -->
         <div class="brand-logo">
             <h2>
-                <img src="{{ asset('Imagenes/bustrak-logo.jpg') }}" alt="Logo"
-                     style="border-radius: 35px; width: 120px; height: 60px;">
+                <img src="{{ asset('Imagenes/bustrak-logo.png') }}"
+                     alt="Logo"
+                     style="width: 90px; height: auto; border-radius: 0; display: block; margin: 0 auto;">
             </h2>
         </div>
 

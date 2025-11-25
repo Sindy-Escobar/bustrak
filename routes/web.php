@@ -350,6 +350,10 @@ Route::middleware(['auth'])->prefix('documentos-buses')->name('documentos-buses.
 Route::resource('rentas', RegistroRentaController::class);
 Route::put('/reservas/{reserva}', [ReservaController::class, 'update'])->name('reserva.update');
 
+
+Route::get('/chofer/panel', function () {
+    return view('interfaces.chofer');
+})->name('chofer.panel');
 // NUEVAS RUTAS PARA CANJES
 Route::get('/mis-puntos', [RegistroPuntosController::class, 'index'])->name('puntos.index');
 Route::post('/canjear-puntos/{beneficio_id}', [RegistroPuntosController::class, 'canjear'])->name('puntos.canjear');
