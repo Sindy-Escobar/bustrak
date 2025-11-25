@@ -1,4 +1,4 @@
-@extends('layouts.apps')
+z@extends('layouts.apps')
 
 @section('content')
     <div class="container-fluid py-4" style="min-height:100vh; background: #f3f7fb;">

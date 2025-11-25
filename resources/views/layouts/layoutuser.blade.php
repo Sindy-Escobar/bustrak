@@ -280,6 +280,10 @@
                     Ver Perfil
                 </a>
 
+                <a href="{{ route('puntos.index') }}" class="{{ request()->routeIs('puntos.index') ? 'active' : '' }}">
+                    Ver Puntos
+                </a>
+
             </div>
         </div>
 
@@ -355,6 +359,7 @@
             <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.soporte*') ? 'show' : '' }}" id="soporte">
                 <a href="/ayuda-soporte" class="active">Enviar consulta</a>
 
+                <a href="{{ route('consulta.mis') }}" class="active">Mis consultas</a>
 
                 <a href="{{ route('usuario.change-password') }}">
                     Cambiar Contraseña
