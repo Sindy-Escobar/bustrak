@@ -310,6 +310,11 @@
                class="btn btn-outline-light btn-sm px-3 rounded-pill shadow-sm">
                 <i class="fas fa-home me-1"></i> Inicio
             </a>
+            <a href="{{ route('admin.home.editor') }}"
+               class="btn btn-warning btn-sm px-3 rounded-pill shadow-sm">
+                <i class="fas fa-edit me-1"></i> Editar Página Principal
+            </a>
+
 
             @php
                 $adminNotiCount = \App\Models\Notificacion::where('usuario_id', auth()->id())

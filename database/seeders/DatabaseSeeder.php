@@ -34,10 +34,26 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+
+        // Usuario cliente predeterminado
+        User::firstOrCreate(
+            ['email' => 'jose@hn.com'],
+            [
+                'name' => 'Cliente Predeterminado',
+                'password' => Hash::make('12345678'),
+                'email_verified_at' => now(),
+                'role' => 'cliente',
+                'estado' => 'activo',
+            ]
+        );
+
+
+
         //  Otros seeders de datos base
         $this->call([
             CiudadesSeeder::class,
             ViajesSeeder::class,
         ]);
+
     }
 }
