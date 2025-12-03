@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 // Controladores
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\HomeEditorController;
+use App\Http\Controllers\Api\DestinosController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\RegistroPuntosController;
 use App\Http\Controllers\CalificacionController;
@@ -368,6 +371,28 @@ Route::post('/calificar-chofer', [App\Http\Controllers\CalificacionChoferControl
     ->name('calificar.chofer.guardar');
 
 
+
+//Roberto Api
+Route::prefix('api')->group(function () {
+    Route::get('/destinos', [DestinosController::class, 'index']);
+});
+
+//editar pagina principal
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/home-editor', [HomeEditorController::class, 'index'])
+        ->name('admin.home.editor');
+
+    Route::post('/admin/home-editor/update', [HomeEditorController::class, 'update'])
+        ->name('admin.home.update');
+});
+Route::prefix('admin')->name('admin.')->group(function() {
+    Route::resource('departamentos', App\Http\Controllers\Admin\DepartamentoController::class);
+    Route::resource('lugares', App\Http\Controllers\Admin\LugarController::class);
+    Route::resource('comidas', App\Http\Controllers\Admin\ComidaController::class);
+});
+Route::get('/principal', [HomeController::class, 'index'])->name('interfaces.principal');
+
+//aqui acaba analisis periodo 3, año 2025
 // Rutas de facturas para clientes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('cliente/facturas')->name('cliente.')->group(function () {
