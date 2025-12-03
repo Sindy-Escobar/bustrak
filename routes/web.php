@@ -35,6 +35,8 @@ use App\Http\Controllers\CheckinController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\DocumentoBusController;
 use App\Http\Controllers\CalificacionChoferController;
+use App\Http\Controllers\Cliente\FacturaController;
+
 
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
@@ -391,3 +393,15 @@ Route::prefix('admin')->name('admin.')->group(function() {
 Route::get('/principal', [HomeController::class, 'index'])->name('interfaces.principal');
 
 //aqui acaba analisis periodo 3, año 2025
+// Rutas de facturas para clientes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::prefix('cliente/facturas')->name('cliente.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Cliente\FacturaController::class, 'index'])->name('facturas');
+        Route::get('/{id}', [\App\Http\Controllers\Cliente\FacturaController::class, 'show'])->name('facturas.ver');
+        Route::get('/{id}/descargar', [\App\Http\Controllers\Cliente\FacturaController::class, 'descargarPDF'])->name('facturas.pdf');
+        Route::post('/{id}/enviar-email', [\App\Http\Controllers\Cliente\FacturaController::class, 'enviarEmail'])->name('facturas.enviar');
+    });
+});
+
+// Endpoint público para verificar autenticidad del QR
+Route::get('/facturas/verificar/{numeroFactura}', [\App\Http\Controllers\Cliente\FacturaController::class, 'verificarAutenticidad'])->name('facturas.verificar');

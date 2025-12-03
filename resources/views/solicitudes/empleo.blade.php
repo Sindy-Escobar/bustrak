@@ -36,7 +36,11 @@
                             </label>
                             <input type="text" class="form-control @error('nombre_completo') is-invalid @enderror"
                                    id="nombre_completo" name="nombre_completo" value="{{ old('nombre_completo') }}"
-                                   placeholder="Ingrese su nombre completo" required>
+                                   placeholder="Ingrese su nombre completo"
+                                   pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+"
+                                   title="Solo se permiten letras y espacios"
+                                   data-validation="letters"
+                                   required>
                             @error('nombre_completo')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
@@ -60,7 +64,9 @@
                             </label>
                             <input type="text" class="form-control @error('puesto_deseado') is-invalid @enderror"
                                    id="puesto_deseado" name="puesto_deseado" value="{{ old('puesto_deseado') }}"
-                                   placeholder="Ej: Conductor, Gerente, etc." required>
+                                   placeholder="Ej: Conductor, Gerente, etc."
+                                   data-validation="alphanumeric"
+                                   required>
                             @error('puesto_deseado')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
@@ -109,4 +115,41 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Validación inteligente para cada campo según su propósito
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Obtener todos los inputs con data-validation
+            const inputs = document.querySelectorAll('[data-validation]');
+
+            inputs.forEach(function(input) {
+                input.addEventListener('input', function(e) {
+                    const validationType = this.getAttribute('data-validation');
+
+                    switch(validationType) {
+                        case 'letters':
+                            // Solo letras y espacios (para nombres)
+                            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                            break;
+
+                        case 'numbers':
+                            // Solo números
+                            this.value = this.value.replace(/[^0-9]/g, '');
+                            break;
+
+                        case 'alphanumeric':
+                            // Letras, números y espacios (para puestos como "Gerente 1", "Supervisor A")
+                            this.value = this.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g, '');
+                            break;
+
+                        case 'text':
+                            // Texto libre con letras, números, espacios y puntuación básica
+                            this.value = this.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:()\-]/g, '');
+                            break;
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

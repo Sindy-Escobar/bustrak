@@ -311,8 +311,8 @@
                    class="{{ request()->routeIs('itinerario.index') ? 'active' : '' }}">
                     Itinerario de reservas
                 </a>
-                <a href="{{ route('itinerario.index') }}"
-                                    class="{{ request()->routeIs('itinerario.index') ? 'active' : '' }}">
+                <a href="{{ route('cliente.facturas') }}"
+                   class="{{ request()->routeIs('cliente.facturas*') ? 'active' : '' }}">
                     Ver Facturas
                 </a>
                 <a href="{{ route('calificar.chofer') }}" class="{{ request()->routeIs('calificar.chofer') ? 'active' : '' }}">
