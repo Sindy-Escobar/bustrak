@@ -33,6 +33,8 @@ use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\DocumentoBusController;
 use App\Http\Controllers\CalificacionChoferController;
 use App\Http\Controllers\Cliente\FacturaController;
+use App\Http\Controllers\PrincipalController;
+
 
 
 // Toggle activar/inactivar
@@ -142,9 +144,13 @@ Route::resource('terminales', RegistroTeminalController::class)->parameters([
 Route::get('/hu10/empresas-buses', [EmpresaBusController::class, 'index'])
     ->name('hu10.empresas.buses');
 
-Route::get('/principal', function () {
-    return view('interfaces.principal');
-})->name('interfaces.principal');
+
+// vista principal
+Route::get('/principal', [PrincipalController::class, 'index'])
+    ->name('interfaces.principal');
+
+// AGREGA esta ruta nueva para la API:
+Route::get('/api/departamento/{id}', [PrincipalController::class, 'getDepartamento']);
 
 // Abordajes
 Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(AbordajeController::class)->group(function () {

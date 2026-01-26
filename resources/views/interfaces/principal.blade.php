@@ -138,28 +138,318 @@
         .departments .card:hover { transform: scale(1.05); }
         .departments img { height: 150px; object-fit: cover; border-radius: 10px; }
 
-        /* MODAL */
-        .modal-info { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 3000; padding: 20px; align-items: center; justify-content: center; }
-        .modal-info.show { display: flex; }
-        .modal-info-content { background: white; border-radius: 12px; max-width: 1200px; width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; }
-        .modal-info-header { background: linear-gradient(180deg, #1e63b8, #1976d2); color: white; padding: 24px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
-        .modal-info-header h2 { margin: 0; font-size: 1.5rem; font-weight: 700; }
-        .modal-info-close { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .modal-info-close:hover { background: rgba(255,255,255,0.3); }
-        .modal-info-body { padding: 24px; }
-        .info-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb; flex-wrap: wrap; }
-        .info-tab { padding: 10px 20px; border: none; background: none; cursor: pointer; font-weight: 600; color: #6b7280; border-bottom: 3px solid transparent; transition: all 0.3s; font-size: 14px; }
-        .info-tab.active { color: #1976d2; border-bottom-color: #1976d2; }
-        .info-tab:hover { color: #1976d2; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        .info-card { border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; transition: all 0.3s; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .info-card:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
-        .info-card-img { width: 100%; height: 160px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; }
-        .info-card-body { padding: 16px; }
-        .info-card-title { font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 8px; }
-        @media (max-width: 768px) { .cards-grid { grid-template-columns: 1fr; } }
+
+        /* Modal overlay con backdrop blur */
+        .modal-info {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 3000;
+            padding: 20px;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-info.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Contenedor del modal con animación */
+        .modal-info-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 1200px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header mejorado con gradiente */
+        .modal-info-header {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            padding: 28px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-info-header h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-info-header h2 i {
+            font-size: 32px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        /* Botón cerrar mejorado */
+        .modal-info-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-info-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+            border-color: white;
+        }
+
+        /* Body del modal */
+        .modal-info-body {
+            padding: 32px;
+            overflow-y: auto;
+            max-height: calc(90vh - 100px);
+        }
+
+        /* Tabs mejoradas */
+        .info-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            border-bottom: 3px solid #e5e7eb;
+            flex-wrap: wrap;
+            padding-bottom: 4px;
+        }
+
+        .info-tab {
+            padding: 14px 28px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            bottom: -3px;
+        }
+
+        .info-tab:hover {
+            color: #1976d2;
+            background: rgba(25, 118, 210, 0.05);
+        }
+
+        .info-tab.active {
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+            background: rgba(25, 118, 210, 0.08);
+        }
+
+        .info-tab i {
+            font-size: 18px;
+        }
+
+        /* Contenido de tabs */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Grid de cards mejorado */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        /* Cards mejoradas con efectos */
+        .info-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+        }
+
+        .info-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: #1976d2;
+        }
+
+        /* Imagen de la card con efecto zoom */
+        .info-card-img {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .info-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .info-card:hover .info-card-img img {
+            transform: scale(1.1);
+        }
+
+        /* Overlay oscuro en hover */
+        .info-card-img::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .info-card:hover .info-card-img::after {
+            opacity: 1;
+        }
+
+        /* Body de la card */
+        .info-card-body {
+            padding: 20px;
+            background: white;
+        }
+
+        .info-card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+            line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+
+        .info-card:hover .info-card-title {
+            color: #1976d2;
+        }
+
+        /* Estados de carga y vacío */
+        .loading-state,
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .loading-state i,
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Scrollbar personalizada */
+        .modal-info-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-info-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .modal-info-body::-webkit-scrollbar-thumb {
+            background: #1976d2;
+            border-radius: 10px;
+        }
+
+        .modal-info-body::-webkit-scrollbar-thumb:hover {
+            background: #1565c0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .modal-info-content {
+                border-radius: 16px;
+                max-height: 95vh;
+            }
+
+            .modal-info-header {
+                padding: 20px;
+            }
+
+            .modal-info-header h2 {
+                font-size: 22px;
+            }
+
+            .modal-info-header h2 i {
+                font-size: 24px;
+            }
+
+            .modal-info-body {
+                padding: 20px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .info-tab {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -258,28 +548,16 @@
     <div class="container py-5">
         <h2 class="mb-4 text-center">Destinos turísticos en nuestra bella Honduras</h2>
         <div class="row row-cols-1 row-cols-md-4 g-3 departments">
-            <div class="col"><div class="card" onclick="abrirModalInfo('Atlántida')"><img src="/catalago/img/atlantida.jpg"><div class="card-body text-center"><h6>Atlántida</h6></div></div></div>
-            <div class="col"><div class="card" onclick="abrirModalInfo('Choluteca')"><img src="/catalago/img/choluteca.jpg"><div class="card-body text-center"><h6>Choluteca</h6></div></div></div>
-            <div class="col"><div class="card" onclick="abrirModalInfo('Colón')"><img src="/catalago/img/colon.jpg"><div class="card-body text-center"><h6>Colón</h6></div></div></div>
-            <div class="col"><div class="card" onclick="abrirModalInfo('Comayagua')"><img src="/catalago/img/comayagua.jpg"><div class="card-body text-center"><h6>Comayagua</h6></div></div></div>
-
-            <div class="col"><div class="card" onclick="abrirModalInfo('Copán')"><img src="/catalago/img/copan.jpg" class="card-img-top"><div class="card-body text-center"><h6>Copán</h6></div></div></div>
-            <div class="col"><div class="card" onclick="abrirModalInfo('Cortés')"><img src="/catalago/img/cortes.jpg"><div class="card-body text-center"><h6>Cortés</h6></div></div></div>
-            <div class="col"><div class="card" onclick="abrirModalInfo('El Paraíso')"><img src="/catalago/img/elparaiso.jpg"><div class="card-body text-center"><h6>El Paraíso</h6></div></div></div>
-            <div class="col"><div class="card" onclick="abrirModalInfo('Francisco Morazán')"><img src="/catalago/img/francisco.jpg"><div class="card-body text-center"><h6>Francisco Morazán</h6></div></div></div>
-
-
-            <div class="col"><div class="card" onclick="abrirModalInfo('Intibucá')"><img src="/catalago/img/intibuca.jpg"><div class="card-body text-center"><h6>Intibucá</h6></div></div></div>
-
-            <div class="col"><div class="card" onclick="abrirModalInfo('La Paz')"><img src="/catalago/img/lapaz.jpg"><div class="card-body text-center"><h6>La Paz</h6></div></div></div>
-
-            <div class="col"><div class="card" onclick="abrirModalInfo('Lempira')"><img src="/catalago/img/lempira.jpg"><div class="card-body text-center"><h6>Lempira</h6></div></div></div>
-            <div class="col"><div class="card" onclick="abrirModalInfo('Ocotepeque')"><img src="/catalago/img/ocotepeque.jpg"><div class="card-body text-center"><h6>Ocotepeque</h6></div></div></div>
-            <div class="col"><div class="card" onclick="abrirModalInfo('Olancho')"><img src="/catalago/img/olancho.jpg"><div class="card-body text-center"><h6>Olancho</h6></div></div></div>
-            <div class="col"><div class="card" onclick="abrirModalInfo('Santa Bárbara')"><img src="/catalago/img/santabarbara.jpg"><div class="card-body text-center"><h6>Santa Bárbara</h6></div></div></div>
-
-            <div class="col"><div class="card" onclick="abrirModalInfo('Valle')"><img src="/catalago/img/valle.jpg"><div class="card-body text-center"><h6>Valle</h6></div></div></div>
-            <div class="col"><div class="card" onclick="abrirModalInfo('Yoro')"><img src="/catalago/img/yoro.jpg"><div class="card-body text-center"><h6>Yoro</h6></div></div></div>
+            @foreach($departamentos as $departamento)
+                <div class="col">
+                    <div class="card" onclick="abrirModalInfo({{ $departamento->id }}, '{{ $departamento->nombre }}')">
+                        <img src="{{ $departamento->imagen }}" alt="{{ $departamento->nombre }}">
+                        <div class="card-body text-center">
+                            <h6>{{ $departamento->nombre }}</h6>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
 
@@ -443,178 +721,97 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    const destinosData = {
-        'Atlántida': {
-            lugares: [
-                { nombre: 'Parque Nacional Pico Bonito', imagen: '/catalago/img/lugares/parque pico bonito.jpg' },
-                { nombre: 'Las Cascadas de Zacate', imagen: '/catalago/img/lugares/cascada zacate.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Pan de Coco', imagen: '/catalago/img/comidas/Pan de Coco.jpg' },
-                { nombre: 'Tapado Costeño', imagen: '/catalago/img/comidas/Tapado Costeño.jpg' }
-            ]
-        },
-        'Cortés': {
-            lugares: [
-                { nombre: 'Cataratas de Pulhapanzak', imagen: '/catalago/img/lugares/Cataratas de Pulhapanzak.jpg' },
-                { nombre: 'Fortaleza de San Fernando de Omoa', imagen: '/catalago/img/lugares/Fortaleza de San Fernando de Omoa.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Baleadas', imagen: '/catalago/img/comidas/Baleadas.jpg' },
-                { nombre: 'Pollo Chuco', imagen: '/catalago/img/comidas/Pollo Chuco.jpg' }
-            ]
-        },
-        'Francisco Morazán': {
-            lugares: [
-                { nombre: 'Cristo del Picacho', imagen: '/catalago/img/lugares/picacho.jpg' },
-                { nombre: 'Parque Nacional La Tigra', imagen: '/catalago/img/lugares/Parque Nacional La Tigra.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Carne Asada', imagen: '/catalago/img/comidas/Carne Asada.jpg' },
-                { nombre: 'Nacatamales', imagen: '/catalago/img/comidas/Nacatamales.jpg' }
-            ]
-        },
-        'Choluteca': {
-            lugares: [
-                { nombre: 'Playas de Cedeño', imagen: '/catalago/img/lugares/Playas de Cedeño.jpg' },
-                { nombre: 'Museo de Historia Regional', imagen: '/catalago/img/lugares/Museo de Historia Regional.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Curiles', imagen: '/catalago/img/comidas/Curiles.jpg' },
-                { nombre: 'Tamales Pisques', imagen: '/catalago/img/comidas/Tamales Pisques.jpg' }
-            ]
-        },
-        'Colón': {
-            lugares: [
-                { nombre: 'Playas de Trujillo', imagen: '/catalago/img/lugares/Playas de Trujillo.jpg' },
-                { nombre: 'Parque Nacional Capiro y Calentura', imagen: '/catalago/img/lugares/Parque Nacional Capiro y Calentura.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Machuca', imagen: '/catalago/img/comidas/Machuca.jpg' },
-                { nombre: 'Sopa de Caracol', imagen: '/catalago/img/comidas/Sopa de Caracol.jpg' }
-            ]
-        },
-        'Comayagua': {
-            lugares: [
-                { nombre: 'Catedral de Comayagua', imagen: '/catalago/img/lugares/Catedral de Comayagua.jpg' },
-                { nombre: 'Cuevas de Taulabe', imagen: '/catalago/img/lugares/Cuevas de Taulabe.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Sopa de Capirotada', imagen: '/catalago/img/comidas/Sopa de Capirotada.jpg' },
-                { nombre: 'Pinol', imagen: '/catalago/img/comidas/Pinol.jpg' }
-            ]
-        },
-        'Copán': {
-            lugares: [
-                { nombre: 'Ruinas de Copán', imagen: '/catalago/img/lugares/Ruinas de Copán.jpg' },
-                { nombre: 'Tuneles Mayas', imagen: '/catalago/img/lugares/Tuneles Mayas.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Montuca', imagen: '/catalago/img/comidas/Montuca.jpg' },
-                { nombre: 'Totopostes', imagen: '/catalago/img/comidas/Totopostes.jpg' }
-            ]
-        },
-        'El Paraíso': {
-            lugares: [
-                { nombre: 'Cascada de El Cacao', imagen: '/catalago/img/lugares/Cascada El Cacao.jpg' },
-                { nombre: 'Montaña de Teupasenti', imagen: '/catalago/img/lugares/Montaña de Teupasenti.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Ticuco', imagen: '/catalago/img/comidas/Ticuco.jpg' },
-                { nombre: 'Ayote en Miel', imagen: '/catalago/img/comidas/Ayote en Miel.jpg' }
-            ]
-        },
-        'Intibucá': {
-            lugares: [
-                { nombre: 'Lagos de Chiligatoro', imagen: '/catalago/img/lugares/Lagos de Chiligatoro.jpg' },
-                { nombre: 'Gruta de La Esperanza', imagen: '/catalago/img/lugares/Gruta de La Esperanza.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Sopa de Gallina India', imagen: '/catalago/img/comidas/Sopa de Gallina India.jpg' },
-                { nombre: 'Chicha', imagen: '/catalago/img/comidas/Chicha.jpg' }
-            ]
-        },
-        'La Paz': {
-            lugares: [
-                { nombre: 'Cascada de Santa Elena', imagen: '/catalago/img/lugares/Cascada de Santa Elena.jpg' },
-                { nombre: 'Parque Arqueológico Yarumela', imagen: '/catalago/img/lugares/Parque Arqueológico Yarumela.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Chancletas de Pataste', imagen: '/catalago/img/comidas/Chancletas de Pataste.jpg' },
-                { nombre: 'Sopa de Albóndigas', imagen: '/catalago/img/comidas/Sopa de Albóndigas.jpg' }
-            ]
-        },
-        'Lempira': {
-            lugares: [
-                { nombre: 'Parque Nacional Celaque', imagen: '/catalago/img/lugares/Parque Nacional Celaque.jpg' },
-                { nombre: 'Monumento a Lempira', imagen: '/catalago/img/lugares/Monumento a Lempira.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Atol Shuco', imagen: '/catalago/img/comidas/Atol Shuco.jpg' },
-                { nombre: 'Chilate', imagen: '/catalago/img/comidas/Chicha.jpg' }
-            ]
-        },
-        'Ocotepeque': {
-            lugares: [
-                { nombre: 'La Casa de la Cultura de Ocotepeque', imagen: '/catalago/img/lugares/La Casa de la Cultura de Ocotepeque.jpg' },
-                { nombre: 'Ruinas de la Antigua Ocotepeque', imagen: '/catalago/img/lugares/Ruinas de la Antigua Ocotepeque.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Sopa de Tortas de Pescado', imagen: '/catalago/img/comidas/Sopa de Tortas de Pescado.jpg' },
-                { nombre: 'Tamalitos de Cambray', imagen: '/catalago/img/comidas/Tamalitos de Cambray.jpg' }
-            ]
-        },
-        'Olancho': {
-            lugares: [
-                { nombre: 'Parque Nacional Sierra de Agalta', imagen: '/catalago/img/lugares/Parque Nacional Sierra de Agalta.jpg' },
-                { nombre: 'Cuevas de Cuyamel', imagen: '/catalago/img/lugares/Cuevas de Cuyamel.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Cuajada en Penca', imagen: '/catalago/img/comidas/Cuajada en Penca.jpg' },
-                { nombre: 'Carne de res con Yuca', imagen: '/catalago/img/comidas/Carne de res con Yuca.jpg' }
-            ]
-        },
-        'Santa Bárbara': {
-            lugares: [
-                { nombre: 'Parque Nacional Montaña de Santa Bárbara', imagen: '/catalago/img/lugares/Parque Nacional Montaña de Santa Bárbara.jpg' },
-                { nombre: 'Cuevas de la Kinkora', imagen: '/catalago/img/lugares/Cuevas de la Kinkora.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Montucas', imagen: '/catalago/img/comidas/Montuca.jpg' },
-                { nombre: 'Atol de Piña', imagen: '/catalago/img/comidas/Atol de Piña.jpg' }
-            ]
-        },
-        'Valle': {
-            lugares: [
-                { nombre: 'Puerto de San Lorenzo', imagen: '/catalago/img/lugares/Puerto de San Lorenzo.jpg' },
-                { nombre: 'Casco Urbano de Amapala', imagen: '/catalago/img/lugares/Casco Urbano de Amapala.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Pescado Frito', imagen: '/catalago/img/comidas/Pescado Frito.jpg' },
-                { nombre: 'Sopa Marinera', imagen: '/catalago/img/comidas/Sopa Marinera.jpg' }
-            ]
-        },
-        'Yoro': {
-            lugares: [
-                { nombre: 'Parque Nacional Pico Pijol', imagen: '/catalago/img/lugares/Parque Nacional Pico Pijol.jpg' },
-                { nombre: 'Cuevas de la Lluvia de Peces', imagen: '/catalago/img/lugares/Cuevas de la Lluvia de Peces.jpg' }
-            ],
-            comidas: [
-                { nombre: 'Sopa de Jutes', imagen: '/catalago/img/comidas/Sopa de Jutes.jpg' },
-                { nombre: 'Sopa de Frijoles con Hueso de Cerdo', imagen: '/catalago/img/comidas/Sopa de Frijoles con Hueso de Cerdo.jpg' }
-            ]
-        }
-    };
+    async function abrirModalInfo(departamentoId, nombreDepartamento) {
+        try {
+            // Mostrar modal con animación
+            const modal = document.getElementById('modalInfo');
+            modal.classList.add('show');
 
-    function abrirModalInfo(departamento) {
-        const info = destinosData[departamento];
-        if (!info) return;
-        document.getElementById('modalInfoTitle').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${departamento}`;
-        const lugaresHtml = info.lugares.map(lugar => `<div class="info-card"><div class="info-card-img"><img src="${lugar.imagen}" alt="${lugar.nombre}" style="width:100%; height:100%; object-fit:cover;"></div><div class="info-card-body"><div class="info-card-title">${lugar.nombre}</div></div></div>`).join('');
-        const comidasHtml = info.comidas.map(comida => `<div class="info-card"><div class="info-card-img"><img src="${comida.imagen}" alt="${comida.nombre}" style="width:100%; height:100%; object-fit:cover;"></div><div class="info-card-body"><div class="info-card-title">${comida.nombre}</div></div></div>`).join('');
-        document.getElementById('lugaresGrid').innerHTML = lugaresHtml;
-        document.getElementById('comidasGrid').innerHTML = comidasHtml;
-        document.getElementById('modalInfo').classList.add('show');
+            // Actualizar título
+            document.getElementById('modalInfoTitle').innerHTML =
+                `<i class="fas fa-map-marker-alt"></i> ${nombreDepartamento}`;
+
+            // Mostrar estado de carga con icono animado
+            const loadingHTML = `
+            <div class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando información...</p>
+            </div>
+        `;
+            document.getElementById('lugaresGrid').innerHTML = loadingHTML;
+            document.getElementById('comidasGrid').innerHTML = loadingHTML;
+
+            // Hacer petición AJAX
+            const response = await fetch(`/api/departamento/${departamentoId}`);
+
+            if (!response.ok) {
+                throw new Error('Error al cargar la información');
+            }
+
+            const data = await response.json();
+
+            // Generar HTML de lugares con estructura mejorada
+            const lugaresHtml = data.lugares && data.lugares.length > 0
+                ? data.lugares.map(lugar => `
+                <div class="info-card">
+                    <div class="info-card-img">
+                        <img src="${lugar.imagen}"
+                             alt="${lugar.nombre}"
+                             onerror="this.src='https://via.placeholder.com/300x200?text=Sin+Imagen'">
+                    </div>
+                    <div class="info-card-body">
+                        <div class="info-card-title">${lugar.nombre}</div>
+                    </div>
+                </div>
+            `).join('')
+                : `
+                <div class="empty-state">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <p>No hay lugares turísticos registrados</p>
+                </div>
+            `;
+
+            // Generar HTML de comidas con estructura mejorada
+            const comidasHtml = data.comidas && data.comidas.length > 0
+                ? data.comidas.map(comida => `
+                <div class="info-card">
+                    <div class="info-card-img">
+                        <img src="${comida.imagen}"
+                             alt="${comida.nombre}"
+                             onerror="this.src='https://via.placeholder.com/300x200?text=Sin+Imagen'">
+                    </div>
+                    <div class="info-card-body">
+                        <div class="info-card-title">${comida.nombre}</div>
+                    </div>
+                </div>
+            `).join('')
+                : `
+                <div class="empty-state">
+                    <i class="fas fa-utensils"></i>
+                    <p>No hay comidas típicas registradas</p>
+                </div>
+            `;
+
+            // Insertar en el DOM con pequeño delay para mejor UX
+            setTimeout(() => {
+                document.getElementById('lugaresGrid').innerHTML = lugaresHtml;
+                document.getElementById('comidasGrid').innerHTML = comidasHtml;
+            }, 300);
+
+        } catch (error) {
+            console.error('Error:', error);
+
+            // Mostrar error en el modal en lugar de cerrarlo
+            const errorHTML = `
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i>
+                <p style="color: #ef4444;">Error al cargar la información</p>
+                <p style="font-size: 14px;">Por favor, intente nuevamente</p>
+            </div>
+        `;
+            document.getElementById('lugaresGrid').innerHTML = errorHTML;
+            document.getElementById('comidasGrid').innerHTML = errorHTML;
+        }
     }
 
     function cerrarModalInfo() {
@@ -622,11 +819,28 @@
     }
 
     function cambiarTab(tab) {
+        // Remover active de todos los tabs
         document.querySelectorAll('.info-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+        // Agregar active al tab seleccionado
         event.target.classList.add('active');
         document.getElementById(tab + 'Tab').classList.add('active');
     }
+
+    // Cerrar modal al hacer clic fuera
+    document.getElementById('modalInfo')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            cerrarModalInfo();
+        }
+    });
+
+    // Cerrar modal con tecla ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            cerrarModalInfo();
+        }
+    });
 </script>
 
 
