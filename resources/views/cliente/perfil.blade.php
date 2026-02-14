@@ -100,4 +100,60 @@
         </div>
     </div>
 
+    <!-- Modal para editar perfil -->
+    <div class="modal fade" id="editarPerfil" tabindex="-1" aria-labelledby="editarPerfilLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarPerfilLabel">Editar Perfil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('cliente.update') }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="row g-3">
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nombre Completo</label>
+                            <input type="text" name="name" id="name"
+                                   class="form-control" value="{{ old('name', $usuario->name) }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Correo Electrónico</label>
+                            <input type="email" name="email" id="email"
+                                   class="form-control" value="{{ old('email', $usuario->email) }}">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="telefono" class="form-label">Teléfono</label>
+                            <input type="text" name="telefono" id="telefono"
+                                   class="form-control" value="{{ old('telefono', $usuario->telefono) }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="dni" class="form-label">DNI</label>
+                            <input type="text" name="dni" id="dni"
+                                   class="form-control" value="{{ old('dni', $usuario->dni) }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="password" class="form-label">Nueva Contraseña (Opcional)</label>
+                            <input type="password" name="password" id="password" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="password_confirmation" class="form-label">Confirmar Nueva Contraseña</label>
+                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control">
+                        </div>
+                        <!-- Puedes agregar más campos aquí -->
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 @endsection

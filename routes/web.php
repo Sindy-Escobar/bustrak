@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 // Controladores
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\HomeEditorController;
+use App\Http\Controllers\Api\DestinosController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\RegistroPuntosController;
 use App\Http\Controllers\CalificacionController;
@@ -32,6 +35,8 @@ use App\Http\Controllers\CheckinController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\DocumentoBusController;
 use App\Http\Controllers\CalificacionChoferController;
+use App\Http\Controllers\Cliente\FacturaController;
+
 
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
@@ -364,3 +369,39 @@ Route::get('/calificar-chofer', [App\Http\Controllers\CalificacionChoferControll
 
 Route::post('/calificar-chofer', [App\Http\Controllers\CalificacionChoferController::class, 'guardar'])
     ->name('calificar.chofer.guardar');
+
+
+
+//Roberto Api
+Route::prefix('api')->group(function () {
+    Route::get('/destinos', [DestinosController::class, 'index']);
+});
+
+//editar pagina principal
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/home-editor', [HomeEditorController::class, 'index'])
+        ->name('admin.home.editor');
+
+    Route::post('/admin/home-editor/update', [HomeEditorController::class, 'update'])
+        ->name('admin.home.update');
+});
+Route::prefix('admin')->name('admin.')->group(function() {
+    Route::resource('departamentos', App\Http\Controllers\Admin\DepartamentoController::class);
+    Route::resource('lugares', App\Http\Controllers\Admin\LugarController::class);
+    Route::resource('comidas', App\Http\Controllers\Admin\ComidaController::class);
+});
+Route::get('/principal', [HomeController::class, 'index'])->name('interfaces.principal');
+
+//aqui acaba analisis periodo 3, año 2025
+// Rutas de facturas para clientes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::prefix('cliente/facturas')->name('cliente.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Cliente\FacturaController::class, 'index'])->name('facturas');
+        Route::get('/{id}', [\App\Http\Controllers\Cliente\FacturaController::class, 'show'])->name('facturas.ver');
+        Route::get('/{id}/descargar', [\App\Http\Controllers\Cliente\FacturaController::class, 'descargarPDF'])->name('facturas.pdf');
+        Route::post('/{id}/enviar-email', [\App\Http\Controllers\Cliente\FacturaController::class, 'enviarEmail'])->name('facturas.enviar');
+    });
+});
+
+// Endpoint público para verificar autenticidad del QR
+Route::get('/facturas/verificar/{numeroFactura}', [\App\Http\Controllers\Cliente\FacturaController::class, 'verificarAutenticidad'])->name('facturas.verificar');

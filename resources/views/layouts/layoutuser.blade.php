@@ -280,6 +280,10 @@
                     Ver Perfil
                 </a>
 
+                <a href="{{ route('puntos.index') }}" class="{{ request()->routeIs('puntos.index') ? 'active' : '' }}">
+                    Ver Puntos
+                </a>
+
             </div>
         </div>
 
@@ -307,8 +311,8 @@
                    class="{{ request()->routeIs('itinerario.index') ? 'active' : '' }}">
                     Itinerario de reservas
                 </a>
-                <a href="{{ route('itinerario.index') }}"
-                                    class="{{ request()->routeIs('itinerario.index') ? 'active' : '' }}">
+                <a href="{{ route('cliente.facturas') }}"
+                   class="{{ request()->routeIs('cliente.facturas*') ? 'active' : '' }}">
                     Ver Facturas
                 </a>
                 <a href="{{ route('calificar.chofer') }}" class="{{ request()->routeIs('calificar.chofer') ? 'active' : '' }}">
@@ -355,6 +359,7 @@
             <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.soporte*') ? 'show' : '' }}" id="soporte">
                 <a href="/ayuda-soporte" class="active">Enviar consulta</a>
 
+                <a href="{{ route('consulta.mis') }}" class="active">Mis consultas</a>
 
                 <a href="{{ route('usuario.change-password') }}">
                     Cambiar Contraseña
