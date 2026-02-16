@@ -38,6 +38,10 @@ use App\Http\Controllers\CalificacionChoferController;
 use App\Http\Controllers\Cliente\FacturaController;
 use App\Http\Controllers\ComentarioConductorController;
 use App\Http\Controllers\AutorizacionMenorController;
+use App\Http\Controllers\PrincipalController;
+use App\Http\Controllers\TipoServicioController;
+
+
 
 
 // Toggle activar/inactivar
@@ -147,9 +151,13 @@ Route::resource('terminales', RegistroTeminalController::class)->parameters([
 Route::get('/hu10/empresas-buses', [EmpresaBusController::class, 'index'])
     ->name('hu10.empresas.buses');
 
-Route::get('/principal', function () {
-    return view('interfaces.principal');
-})->name('interfaces.principal');
+
+// vista principal
+Route::get('/principal', [PrincipalController::class, 'index'])
+    ->name('interfaces.principal');
+
+// AGREGA esta ruta nueva para la API:
+Route::get('/api/departamento/{id}', [PrincipalController::class, 'getDepartamento']);
 
 // Abordajes
 Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(AbordajeController::class)->group(function () {
@@ -432,4 +440,32 @@ Route::middleware(['auth'])->group(function () {
     // Para validar en terminal
     Route::get('/validar-autorizacion', [AutorizacionMenorController::class, 'validar'])
         ->name('autorizacion.validar');
+// ============================================
+// Historia de Usuario #1: Selección de Tipo de Servicio
+// Responsable: Carolina Nazareth Chavarría Valladares
+// Sprint: #1
+// ============================================
+
+
+
+Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
+
+    // Selección de tipo de servicio
+    Route::get('/seleccionar-servicio', [TipoServicioController::class, 'index'])
+        ->name('seleccion-tipo-servicio');
+
+    Route::post('/tipo-servicio/seleccionar', [TipoServicioController::class, 'seleccionar'])
+        ->name('tipo-servicio.seleccionar');
+
+    Route::delete('/tipo-servicio/limpiar', [TipoServicioController::class, 'limpiarSeleccion'])
+        ->name('tipo-servicio.limpiar');
+
+    // Placeholder para siguiente paso (Historia #2)
+    Route::get('/buscar-servicios', function () {
+        if (session()->has('tipo_servicio_seleccionado')) {
+            return redirect()->route('cliente.perfil')
+                ->with('success', '¡Tipo de servicio seleccionado correctamente! Tu selección ha sido guardada.');
+        }
+        return redirect()->route('cliente.seleccion-tipo-servicio');
+    })->name('buscar-servicios');
 });
