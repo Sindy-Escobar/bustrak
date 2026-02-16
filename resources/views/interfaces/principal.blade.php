@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
+        body { font-family: Arial, sans-serif; background: #EAF6FF; }
+
+        /* Back to Top */
         #backToTop {
             position: fixed;
             bottom: 30px;
@@ -27,7 +30,6 @@
             cursor: pointer;
             background-color: transparent;
             transition: transform 0.3s, border-color 0.3s, color 0.3s;
-            display: flex;
         }
 
         #backToTop:hover {
@@ -36,86 +38,73 @@
             color: #06174f;
         }
 
+        /* Botones */
+        .btn-login, .btn-registro {
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
 
         .btn-login {
             background-color: #007bff !important;
             color: white !important;
             border: none !important;
-            border-radius: 12px;
-            padding: 10px 20px;
-            font-size: 18px;
-            font-weight: 600;
         }
-        .btn-login:hover { opacity: 0.85; }
+
+        .btn-login:hover {
+            opacity: 0.85;
+        }
 
         .btn-registro {
             background-color: #28a745 !important;
             color: white !important;
             border: none !important;
-            border-radius: 12px;
-            padding: 10px 20px;
-            font-size: 18px;
-            font-weight: 600;
         }
-        .btn-registro:hover { opacity: 0.85; }
+
+        .btn-registro:hover {
+            opacity: 0.85;
+        }
 
         .btn-outline-light {
             color: #fff !important;
             border: 2px solid #fff !important;
         }
+
         .btn-outline-light:hover {
             background-color: #fff !important;
             color: #1976d2 !important;
         }
+
         .btn-gradient {
             background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
             color: white;
             border: none;
             transition: all 0.3s;
         }
+
         .btn-gradient:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             opacity: 0.95;
         }
 
-        body { font-family: Arial, sans-serif; background: #EAF6FF; }
-
-        /* BOTONES LOGIN / REGISTRO */
-        .hero-buttons a {
-            padding: 8px 18px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 10px;
-        }
-        .btn-login {
-            background-color: #007bff !important;
-            color: white !important;
-            border: none !important;
-        }
-        .btn-login:hover { opacity: 0.85; }
-        .btn-registro {
-            background-color: #28a745 !important;
-            color: white !important;
-            border: none !important;
-        }
-        .btn-registro:hover { opacity: 0.85; }
-
-        /* HERO */
+        /* Hero */
         .hero-section {
             background-repeat: no-repeat;
             background-position: right top;
             background-size: 550px;
             padding: 80px 0;
         }
+
         .hero-title {
             font-size: 58px;
             font-weight: 800;
             line-height: 1.1;
             color: #1c1c1c;
             text-align: left;
-            text-shadow: none;
         }
+
         .hero-subtitle {
             font-size: 22px;
             margin-top: 15px;
@@ -123,23 +112,40 @@
             text-align: left;
         }
 
-        /* INFO BOXES */
+        /* Info Box */
         .info-box {
             background: white;
             border-radius: 18px;
             padding: 25px;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
         }
-        .info-icon { width: 60px; }
-        .info-text { font-size: 18px; font-weight: 500; }
 
-        /* DEPARTAMENTOS */
-        .departments .card { cursor: pointer; transition: transform 0.2s; }
-        .departments .card:hover { transform: scale(1.05); }
-        .departments img { height: 150px; object-fit: cover; border-radius: 10px; }
+        .info-icon {
+            width: 60px;
+        }
 
+        .info-text {
+            font-size: 18px;
+            font-weight: 500;
+        }
 
-        /* Modal overlay con backdrop blur */
+        /* Departamentos */
+        .departments .card {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .departments .card:hover {
+            transform: scale(1.05);
+        }
+
+        .departments img {
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        /* Modal */
         .modal-info {
             display: none;
             position: fixed;
@@ -165,7 +171,6 @@
             to { opacity: 1; }
         }
 
-        /* Contenedor del modal con animación */
         .modal-info-content {
             background: white;
             border-radius: 20px;
@@ -188,7 +193,6 @@
             }
         }
 
-        /* Header mejorado con gradiente */
         .modal-info-header {
             background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
             color: white;
@@ -216,7 +220,6 @@
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
         }
 
-        /* Botón cerrar mejorado */
         .modal-info-close {
             background: rgba(255, 255, 255, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.3);
@@ -238,14 +241,13 @@
             border-color: white;
         }
 
-        /* Body del modal */
         .modal-info-body {
             padding: 32px;
             overflow-y: auto;
             max-height: calc(90vh - 100px);
         }
 
-        /* Tabs mejoradas */
+        /* Tabs */
         .info-tabs {
             display: flex;
             gap: 8px;
@@ -288,7 +290,6 @@
             font-size: 18px;
         }
 
-        /* Contenido de tabs */
         .tab-content {
             display: none;
         }
@@ -297,14 +298,13 @@
             display: block;
         }
 
-        /* Grid de cards mejorado */
+        /* Cards Grid */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 24px;
         }
 
-        /* Cards mejoradas con efectos */
         .info-card {
             border: 2px solid #e5e7eb;
             border-radius: 16px;
@@ -321,7 +321,6 @@
             border-color: #1976d2;
         }
 
-        /* Imagen de la card con efecto zoom */
         .info-card-img {
             width: 100%;
             height: 200px;
@@ -341,7 +340,6 @@
             transform: scale(1.1);
         }
 
-        /* Overlay oscuro en hover */
         .info-card-img::after {
             content: '';
             position: absolute;
@@ -358,7 +356,6 @@
             opacity: 1;
         }
 
-        /* Body de la card */
         .info-card-body {
             padding: 20px;
             background: white;
@@ -377,7 +374,7 @@
             color: #1976d2;
         }
 
-        /* Estados de carga y vacío */
+        /* Estados */
         .loading-state,
         .empty-state {
             text-align: center;
@@ -398,7 +395,7 @@
             50% { opacity: 0.8; }
         }
 
-        /* Scrollbar personalizada */
+        /* Scrollbar */
         .modal-info-body::-webkit-scrollbar {
             width: 8px;
         }
@@ -479,37 +476,36 @@
                     </a>
                 </div>
             @endauth
-
-
-
         </div>
-
     </div>
 </nav>
 
 <!-- HERO -->
 <div class="container hero-section">
     <div class="row align-items-center">
-        <!-- Columna izquierda: Texto -->
         <div class="col-md-6">
             <h1 class="hero-title">
-                Encuentra pasajes<br>
-                en bus baratos<br>
-                en Honduras
+                {!! $homeConfig->titulo ?? 'Encuentra pasajes<br>en bus baratos<br>en Honduras' !!}
             </h1>
             <p class="hero-subtitle">
-                Busca y compra fácilmente tu próximo pasaje en bus con Bustrak, tu mejor opción.
+                {{ $homeConfig->subtitulo ?? 'Busca y compra fácilmente tu próximo pasaje en bus con Bustrak, tu mejor opción.' }}
             </p>
+
+            @if(!empty($homeConfig->texto_boton))
+                <a href="{{ $homeConfig->link_boton ?? '#' }}" class="btn btn-gradient mt-3">
+                    {{ $homeConfig->texto_boton }}
+                </a>
+            @endif
         </div>
-        <!-- Columna derecha: Imagen -->
+
         <div class="col-md-6 text-center">
-            <img src="/catalago/img/fondo.png" alt="Imagen hero" class="img-fluid"
-                 style="max-height:400px;">
+            <img src="{{ $homeConfig->imagen_banner ?? '/catalago/img/fondo.png' }}"
+                 alt="Imagen hero" class="img-fluid" style="max-height:400px;">
         </div>
     </div>
 </div>
-<hr style="border: 0; height: 1px; background-color: #1976d2; margin: 50px 0;">
 
+<hr style="border: 0; height: 1px; background-color: #1976d2; margin: 50px 0;">
 
 <!-- INFORMACIÓN -->
 <div class="container mt-4">
@@ -517,34 +513,26 @@
         <div class="col-md-4">
             <div class="info-box d-flex align-items-start gap-3">
                 <img class="info-icon" src="https://www.busbud.com/pubweb-assets/images/usp/52ba7ae.usp-v3-trust-coverage.png">
-                <p class="info-text">
-                    Únete a más de 1 millon de viajeros al rededor de todo el pais.
-                </p>
+                <p class="info-text">Únete a más de 1 millon de viajeros al rededor de todo el pais.</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="info-box d-flex align-items-start gap-3">
                 <img class="info-icon" src="https://www.busbud.com/pubweb-assets/images/usp/3136d75.usp-v3-support.png">
-                <p class="info-text">
-                    Disfruta de nuestro servicio de atención al cliente disponible 24/7.
-                </p>
+                <p class="info-text">Disfruta de nuestro servicio de atención al cliente disponible 24/7.</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="info-box d-flex align-items-start gap-3">
                 <img class="info-icon" src="https://www.busbud.com/pubweb-assets/images/usp/5619a22.usp-v3-cfar.png">
-                <p class="info-text">
-                    Puedes cancelar en cualquier momento y recibir un reembolso.
-                </p>
+                <p class="info-text">Puedes cancelar en cualquier momento y recibir un reembolso.</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- DEPARTAMENTOS -->
+<!-- Departamentos -->
 <section class="py-5">
-    <hr style="border: 0; height: 1px; background-color: #1976d2; margin: 50px 0;">
-
     <div class="container py-5">
         <h2 class="mb-4 text-center">Destinos turísticos en nuestra bella Honduras</h2>
         <div class="row row-cols-1 row-cols-md-4 g-3 departments">
@@ -560,144 +548,9 @@
             @endforeach
         </div>
     </div>
-
-    <hr style="border: 0; height: 1px; background-color: #1976d2; margin: 50px 0;">
-
-    <div class="container mt-5">
-        <div class="row align-items-center">
-            <!-- Imagen a la izquierda -->
-            <div class="col-md-4 text-center">
-                <img src="/catalago/img/fondo1.png" class="img-fluid" alt="Imagen ilustrativa">
-            </div>
-            <!-- Texto a la derecha -->
-            <div class="col-md-8">
-                <h2 class="fw-bold mb-3">¿Por qué Bustrak es tu mejor opción?</h2>
-                <p class="mb-2" style="font-size: 18px;">La mejor manera de comprar pasajes de bus</p>
-                <p style="font-size: 16px; line-height: 1.6;">
-                    Bustrak.com te ofrece una variedad de rutas a 16 departamentos del pais con la mayor comodidad en nuestros buses super cómodos, seguridad 100% fiable con nuestros choferes experimentados, tendrás el mejor viaje por carretera, porque Bustrak te conecta por toda Honduras.                </p>
-            </div>
-        </div>
-    </div>
-    <hr style="border: 0; height: 1px; background-color: #1976d2; margin: 50px 0;">
-
-    <div class="container">
-        <h2 class="text-center fw-bold mb-4">Beneficios en algunos de nuestros buses</h2>
-        <p class="text-center mb-5" style="font-size: 18px;">
-            En <strong>Bustrak</strong> su seguridad y comodidad es nuestra prioridad.<br>
-            Nuestros servicios le permiten viajar por Honduras de forma confortable para que tenga un recorrido placentero y seguro con nuestros conductores certificados. Además, le ofrecemos los siguientes servicios exclusivos en nuestras unidades:
-        </p>
-
-        <div class="row g-4 justify-content-center">
-            <div class="col-6 col-md-4">
-                <div class="info-card text-center p-3">
-                    <i class="fas fa-wifi fa-2x mb-2" style="color:#1976d2;"></i>
-                    <h6>WIFI a bordo</h6>
-                </div>
-            </div>
-            <div class="col-6 col-md-4">
-                <div class="info-card text-center p-3">
-                    <i class="fas fa-snowflake fa-2x mb-2" style="color:#1976d2;"></i>
-                    <h6>Aire acondicionado</h6>
-                </div>
-            </div>
-            <div class="col-6 col-md-4">
-                <div class="info-card text-center p-3">
-                    <i class="fas fa-suitcase fa-2x mb-2" style="color:#1976d2;"></i>
-                    <h6>Kit de viajes</h6>
-                </div>
-            </div>
-
-            <div class="col-6 col-md-4">
-                <div class="info-card text-center p-3">
-                    <i class="fas fa-coffee fa-2x mb-2" style="color:#1976d2;"></i>
-                    <h6>Paradas de cortesía</h6>
-                </div>
-            </div>
-            <div class="col-6 col-md-4">
-                <div class="info-card text-center p-3">
-                    <i class="fas fa-bolt fa-2x mb-2" style="color:#1976d2;"></i>
-                    <h6>Conexiones eléctricas y USB</h6>
-                </div>
-            </div>
-            <div class="col-6 col-md-4">
-                <div class="info-card text-center p-3">
-                    <i class="fas fa-map-marker-alt fa-2x mb-2" style="color:#1976d2;"></i>
-                    <h6>Sistema de geolocalización GPS</h6>
-                </div>
-            </div>
-            <div class="col-6 col-md-4">
-                <div class="info-card text-center p-3">
-                    <i class="fas fa-tv fa-2x mb-2" style="color:#1976d2;"></i>
-                    <h6>Entretenimiento a bordo</h6>
-                </div>
-            </div>
-            <div class="col-6 col-md-4">
-                <div class="info-card text-center p-3">
-                    <i class="fas fa-video fa-2x mb-2" style="color:#1976d2;"></i>
-                    <h6>Cámaras de video vigilancia</h6>
-                </div>
-            </div>
-            <div class="col-6 col-md-4">
-                <div class="info-card text-center p-3">
-                    <i class="fas fa-ellipsis-h fa-2x mb-2" style="color:#1976d2;"></i>
-                    <h6>Y mucho más</h6>
-                </div>
-            </div>
-
-
-        </div>
-    </div>
-
-
-    <hr style="border: 0; height: 1px; background-color: #1976d2; margin: 50px 0;">
-
-    <!-- SECCIÓN: Prepare su viaje -->
-    <section class="container my-5">
-        <h2 class="text-center mb-4">Prepare su viaje</h2>
-        <p class="text-center mb-5">Recomendaciones para hacer de su viaje una experiencia inolvidable.</p>
-
-        <div class="row g-4 text-center">
-            <!-- Fila 1 -->
-            <div class="col-12 col-md-6">
-                <img loading="lazy" alt="Planee su viaje" src="https://www.ticabus.com/documents/7092829/7093204/ico_planea.svg/227152e1-824b-3052-c301-3ee496d1ef9f?t=1732002538128" class="img-fluid mb-2" style="max-height:50px;">
-                <h6>Planee su viaje</h6>
-                <p>Elija su destino, fecha de viaje, horario y punto de abordaje.</p>
-            </div>
-
-            <div class="col-12 col-md-6">
-                <img loading="lazy" alt="Compre su boleto" src="https://www.ticabus.com/documents/7092829/7093204/ico_compra.svg/537e738f-b33c-4091-7cfa-1053d9b4fa2c?t=1732002538017" class="img-fluid mb-2" style="max-height:50px;">
-                <h6>Compre su boleto</h6>
-                <p>Adquiera sus boletos en línea aquí.</p>
-            </div>
-
-            <!-- Fila 2 -->
-            <div class="col-12 col-md-6">
-                <img loading="lazy" alt="Aborde a tiempo" src="https://www.ticabus.com/documents/7092829/7093204/ico_aborda.svg/101af751-58dc-674b-ee0e-00bd950ce590?t=1732002537917" class="img-fluid mb-2" style="max-height:50px;">
-                <h6>Aborde a tiempo</h6>
-                <p>Preséntese una hora antes de su horario de salida en el punto de abordaje para el chequeo del equipaje.</p>
-            </div>
-
-            <div class="col-12 col-md-6">
-                <img loading="lazy" alt="Equipaje" src="https://www.ticabus.com/documents/7092829/7093204/ico_equipaje.svg/7096cfbe-1126-f415-2858-a8dfab33ce35?t=1732002537690" class="img-fluid mb-2" style="max-height:50px;">
-                <h6>Equipaje</h6>
-                <p>Cada pasajero tiene derecho a llevar dos maletas de 15 kilos cada una y un bolso de mano.</p>
-            </div>
-        </div>
-
-        <!-- AVISO AL FINAL -->
-        <div class="mt-4 p-4 bg-light rounded text-center">
-            <small>
-                *La empresa no se hace responsable por pérdida o daños de valores, caja frágil, equipo de cómputo, electrónico y electrodoméstico.
-                Los objetos quedan bajo la responsabilidad del pasajero.
-            </small>
-        </div>
-    </section>
-
-
-
 </section>
 
-<!-- MODAL -->
+<!-- Modal -->
 <div class="modal-info" id="modalInfo">
     <div class="modal-info-content">
         <div class="modal-info-header">
@@ -706,42 +559,161 @@
         </div>
         <div class="modal-info-body">
             <div class="info-tabs">
-                <button class="info-tab active" onclick="cambiarTab('lugares')"><i class="fas fa-landmark"></i> Lugares Turísticos</button>
-                <button class="info-tab" onclick="cambiarTab('comidas')"><i class="fas fa-utensils"></i> Comidas Típicas</button>
+                <button class="info-tab active" onclick="cambiarTab('lugares', event)"><i class="fas fa-landmark"></i> Lugares Turísticos</button>
+                <button class="info-tab" onclick="cambiarTab('comidas', event)"><i class="fas fa-utensils"></i> Comidas Típicas</button>
             </div>
-            <div id="lugaresTab" class="tab-content active">
-                <div class="cards-grid" id="lugaresGrid"></div>
+            <div id="lugaresTab" class="tab-content active"><div class="cards-grid" id="lugaresGrid"></div></div>
+            <div id="comidasTab" class="tab-content"><div class="cards-grid" id="comidasGrid"></div></div>
+        </div>
+    </div>
+</div>
+
+<hr style="border: 0; height: 1px; background-color: #1976d2; margin: 50px 0;">
+
+<div class="container mt-5">
+    <div class="row align-items-center">
+        <div class="col-md-4 text-center">
+            <img src="/catalago/img/fondo1.png" class="img-fluid" alt="Imagen ilustrativa">
+        </div>
+        <div class="col-md-8">
+            <h2 class="fw-bold mb-3">¿Por qué Bustrak es tu mejor opción?</h2>
+            <p class="mb-2" style="font-size: 18px;">La mejor manera de comprar pasajes de bus</p>
+            <p style="font-size: 16px; line-height: 1.6;">
+                Bustrak.com te ofrece una variedad de rutas a 16 departamentos del pais con la mayor comodidad en nuestros buses super cómodos, seguridad 100% fiable con nuestros choferes experimentados, tendrás el mejor viaje por carretera, porque Bustrak te conecta por toda Honduras.
+            </p>
+        </div>
+    </div>
+</div>
+
+<hr style="border: 0; height: 1px; background-color: #1976d2; margin: 50px 0;">
+
+<div class="container">
+    <h2 class="text-center fw-bold mb-4">Beneficios en algunos de nuestros buses</h2>
+    <p class="text-center mb-5" style="font-size: 18px;">
+        En <strong>Bustrak</strong> su seguridad y comodidad es nuestra prioridad.<br>
+        Nuestros servicios le permiten viajar por Honduras de forma confortable para que tenga un recorrido placentero y seguro con nuestros conductores certificados. Además, le ofrecemos los siguientes servicios exclusivos en nuestras unidades:
+    </p>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-6 col-md-4">
+            <div class="info-card text-center p-3">
+                <i class="fas fa-wifi fa-2x mb-2" style="color:#1976d2;"></i>
+                <h6>WIFI a bordo</h6>
             </div>
-            <div id="comidasTab" class="tab-content">
-                <div class="cards-grid" id="comidasGrid"></div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="info-card text-center p-3">
+                <i class="fas fa-snowflake fa-2x mb-2" style="color:#1976d2;"></i>
+                <h6>Aire acondicionado</h6>
+            </div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="info-card text-center p-3">
+                <i class="fas fa-suitcase fa-2x mb-2" style="color:#1976d2;"></i>
+                <h6>Kit de viajes</h6>
+            </div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="info-card text-center p-3">
+                <i class="fas fa-coffee fa-2x mb-2" style="color:#1976d2;"></i>
+                <h6>Paradas de cortesía</h6>
+            </div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="info-card text-center p-3">
+                <i class="fas fa-bolt fa-2x mb-2" style="color:#1976d2;"></i>
+                <h6>Conexiones eléctricas y USB</h6>
+            </div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="info-card text-center p-3">
+                <i class="fas fa-map-marker-alt fa-2x mb-2" style="color:#1976d2;"></i>
+                <h6>Sistema de geolocalización GPS</h6>
+            </div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="info-card text-center p-3">
+                <i class="fas fa-tv fa-2x mb-2" style="color:#1976d2;"></i>
+                <h6>Entretenimiento a bordo</h6>
+            </div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="info-card text-center p-3">
+                <i class="fas fa-video fa-2x mb-2" style="color:#1976d2;"></i>
+                <h6>Cámaras de video vigilancia</h6>
+            </div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="info-card text-center p-3">
+                <i class="fas fa-ellipsis-h fa-2x mb-2" style="color:#1976d2;"></i>
+                <h6>Y mucho más</h6>
             </div>
         </div>
     </div>
 </div>
 
+<hr style="border: 0; height: 1px; background-color: #1976d2; margin: 50px 0;">
+
+<!-- SECCIÓN: Prepare su viaje -->
+<section class="container my-5">
+    <h2 class="text-center mb-4">Prepare su viaje</h2>
+    <p class="text-center mb-5">Recomendaciones para hacer de su viaje una experiencia inolvidable.</p>
+
+    <div class="row g-4 text-center">
+        <div class="col-12 col-md-6">
+            <img loading="lazy" alt="Planee su viaje" src="https://www.ticabus.com/documents/7092829/7093204/ico_planea.svg/227152e1-824b-3052-c301-3ee496d1ef9f?t=1732002538128" class="img-fluid mb-2" style="max-height:50px;">
+            <h6>Planee su viaje</h6>
+            <p>Elija su destino, fecha de viaje, horario y punto de abordaje.</p>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <img loading="lazy" alt="Compre su boleto" src="https://www.ticabus.com/documents/7092829/7093204/ico_compra.svg/537e738f-b33c-4091-7cfa-1053d9b4fa2c?t=1732002538017" class="img-fluid mb-2" style="max-height:50px;">
+            <h6>Compre su boleto</h6>
+            <p>Adquiera sus boletos en línea aquí.</p>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <img loading="lazy" alt="Aborde a tiempo" src="https://www.ticabus.com/documents/7092829/7093204/ico_aborda.svg/101af751-58dc-674b-ee0e-00bd950ce590?t=1732002537917" class="img-fluid mb-2" style="max-height:50px;">
+            <h6>Aborde a tiempo</h6>
+            <p>Preséntese una hora antes de su horario de salida en el punto de abordaje para el chequeo del equipaje.</p>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <img loading="lazy" alt="Equipaje" src="https://www.ticabus.com/documents/7092829/7093204/ico_equipaje.svg/7096cfbe-1126-f415-2858-a8dfab33ce35?t=1732002537690" class="img-fluid mb-2" style="max-height:50px;">
+            <h6>Equipaje</h6>
+            <p>Cada pasajero tiene derecho a llevar dos maletas de 15 kilos cada una y un bolso de mano.</p>
+        </div>
+    </div>
+
+    <div class="mt-4 p-4 bg-light rounded text-center">
+        <small>
+            *La empresa no se hace responsable por pérdida o daños de valores, caja frágil, equipo de cómputo, electrónico y electrodoméstico.
+            Los objetos quedan bajo la responsabilidad del pasajero.
+        </small>
+    </div>
+</section>
+
+<a href="#" id="backToTop" title="Ir arriba"><i class="fas fa-arrow-up"></i></a>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     async function abrirModalInfo(departamentoId, nombreDepartamento) {
         try {
-            // Mostrar modal con animación
             const modal = document.getElementById('modalInfo');
             modal.classList.add('show');
 
-            // Actualizar título
             document.getElementById('modalInfoTitle').innerHTML =
                 `<i class="fas fa-map-marker-alt"></i> ${nombreDepartamento}`;
 
-            // Mostrar estado de carga con icono animado
             const loadingHTML = `
-            <div class="loading-state">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Cargando información...</p>
-            </div>
-        `;
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Cargando información...</p>
+                </div>
+            `;
             document.getElementById('lugaresGrid').innerHTML = loadingHTML;
             document.getElementById('comidasGrid').innerHTML = loadingHTML;
 
-            // Hacer petición AJAX
             const response = await fetch(`/api/departamento/${departamentoId}`);
 
             if (!response.ok) {
@@ -750,7 +722,6 @@
 
             const data = await response.json();
 
-            // Generar HTML de lugares con estructura mejorada
             const lugaresHtml = data.lugares && data.lugares.length > 0
                 ? data.lugares.map(lugar => `
                 <div class="info-card">
@@ -771,7 +742,6 @@
                 </div>
             `;
 
-            // Generar HTML de comidas con estructura mejorada
             const comidasHtml = data.comidas && data.comidas.length > 0
                 ? data.comidas.map(comida => `
                 <div class="info-card">
@@ -792,7 +762,6 @@
                 </div>
             `;
 
-            // Insertar en el DOM con pequeño delay para mejor UX
             setTimeout(() => {
                 document.getElementById('lugaresGrid').innerHTML = lugaresHtml;
                 document.getElementById('comidasGrid').innerHTML = comidasHtml;
@@ -801,14 +770,13 @@
         } catch (error) {
             console.error('Error:', error);
 
-            // Mostrar error en el modal en lugar de cerrarlo
             const errorHTML = `
-            <div class="empty-state">
-                <i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i>
-                <p style="color: #ef4444;">Error al cargar la información</p>
-                <p style="font-size: 14px;">Por favor, intente nuevamente</p>
-            </div>
-        `;
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i>
+                    <p style="color: #ef4444;">Error al cargar la información</p>
+                    <p style="font-size: 14px;">Por favor, intente nuevamente</p>
+                </div>
+            `;
             document.getElementById('lugaresGrid').innerHTML = errorHTML;
             document.getElementById('comidasGrid').innerHTML = errorHTML;
         }
@@ -818,38 +786,25 @@
         document.getElementById('modalInfo').classList.remove('show');
     }
 
-    function cambiarTab(tab) {
-        // Remover active de todos los tabs
+    function cambiarTab(tab, event) {
         document.querySelectorAll('.info-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-        // Agregar active al tab seleccionado
-        event.target.classList.add('active');
+        event.target.closest('.info-tab').classList.add('active');
         document.getElementById(tab + 'Tab').classList.add('active');
     }
 
-    // Cerrar modal al hacer clic fuera
     document.getElementById('modalInfo')?.addEventListener('click', function(e) {
         if (e.target === this) {
             cerrarModalInfo();
         }
     });
 
-    // Cerrar modal con tecla ESC
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             cerrarModalInfo();
         }
     });
-</script>
 
-
-<!-- Botón de subir al inicio -->
-<a href="#" id="backToTop" title="Ir arriba">
-    <i class="fas fa-arrow-up"></i>
-</a>
-<script>
-    // Mostrar el botón cuando se hace scroll
     window.addEventListener('scroll', function() {
         const btn = document.getElementById('backToTop');
         if (window.scrollY > 200) {
@@ -859,13 +814,11 @@
         }
     });
 
-    // Al hacer click, subir suavemente al inicio
-    document.getElementById('backToTop').addEventListener('click', function(e){
+    document.getElementById('backToTop').addEventListener('click', function(e) {
         e.preventDefault();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 </script>
-
 
 </body>
 </html>

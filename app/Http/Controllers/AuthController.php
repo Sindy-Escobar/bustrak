@@ -51,7 +51,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
-            // ✅ Guardar plain_password si no existe
+            //  Guardar plain_password si no existe
             if (!$user->plain_password) {
                 $user->plain_password = $request->password;
                 $user->save();
