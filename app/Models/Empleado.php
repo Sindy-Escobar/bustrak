@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ComentarioConductor;
+
 
 class Empleado extends Model
 {
@@ -30,4 +32,13 @@ class Empleado extends Model
     ];
 
     public $timestamps = true; // mantener created_at y updated_at
+
+    /**
+     * Relación con los comentarios del conductor
+     */
+    public function comentarios(): HasMany
+    {
+        return $this->hasMany(ComentarioConductor::class, 'empleado_id');
+    }
 }
+

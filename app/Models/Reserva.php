@@ -16,6 +16,14 @@ class Reserva extends Model
         'codigo_reserva',
         'fecha_reserva',
         'estado',
+        'fecha_nacimiento_pasajero',  //  NUEVO
+        'es_menor',                     //  NUEVO
+    ];
+
+    protected $casts = [
+        'fecha_reserva' => 'datetime',
+        'fecha_nacimiento_pasajero' => 'date',  // NUEVO
+        'es_menor' => 'boolean',                 //  NUEVO
     ];
 
     public function user()
@@ -25,11 +33,17 @@ class Reserva extends Model
 
     public function viaje()
     {
-        return $this->belongsTo(Viaje::class);
+        return $this->belongsTo(Viaje::class, 'viaje_id');
     }
 
     public function asiento()
     {
         return $this->belongsTo(Asiento::class);
+    }
+
+    // NUEVO: Relación con autorización de menor
+    public function autorizacionMenor()
+    {
+        return $this->hasOne(AutorizacionMenor::class);
     }
 }
