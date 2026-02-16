@@ -37,6 +37,8 @@ use App\Http\Controllers\DocumentoBusController;
 use App\Http\Controllers\CalificacionChoferController;
 use App\Http\Controllers\Cliente\FacturaController;
 use App\Http\Controllers\PrincipalController;
+use App\Http\Controllers\TipoServicioController;
+
 
 
 
@@ -411,3 +413,34 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Endpoint público para verificar autenticidad del QR
 Route::get('/facturas/verificar/{numeroFactura}', [\App\Http\Controllers\Cliente\FacturaController::class, 'verificarAutenticidad'])->name('facturas.verificar');
+
+
+// ============================================
+// Historia de Usuario #1: Selección de Tipo de Servicio
+// Responsable: Carolina Nazareth Chavarría Valladares
+// Sprint: #1
+// ============================================
+
+
+
+Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
+
+    // Selección de tipo de servicio
+    Route::get('/seleccionar-servicio', [TipoServicioController::class, 'index'])
+        ->name('seleccion-tipo-servicio');
+
+    Route::post('/tipo-servicio/seleccionar', [TipoServicioController::class, 'seleccionar'])
+        ->name('tipo-servicio.seleccionar');
+
+    Route::delete('/tipo-servicio/limpiar', [TipoServicioController::class, 'limpiarSeleccion'])
+        ->name('tipo-servicio.limpiar');
+
+    // Placeholder para siguiente paso (Historia #2)
+    Route::get('/buscar-servicios', function () {
+        if (session()->has('tipo_servicio_seleccionado')) {
+            return redirect()->route('cliente.perfil')
+                ->with('success', '¡Tipo de servicio seleccionado correctamente! Tu selección ha sido guardada.');
+        }
+        return redirect()->route('cliente.seleccion-tipo-servicio');
+    })->name('buscar-servicios');
+});
