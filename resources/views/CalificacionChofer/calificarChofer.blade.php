@@ -5,21 +5,17 @@
 @section('contenido')
     <div class="container-fluid py-5 px-0">
 
-        <!-- Mensaje de éxito -->
         @if(session('success'))
             <div class="alert alert-success text-center fw-bold shadow-sm" id="success-alert">
                 {{ session('success') }}
             </div>
         @endif
 
-        <!-- Banner de aviso general -->
         <div id="alert-required" class="alert alert-danger text-center fw-bold shadow-sm d-none">
             Por favor, completa todos los campos obligatorios antes de enviar.
         </div>
 
-        <!-- Card ajustada al ancho del content-area -->
-        <div class="card shadow-sm mx-auto w-100"
-             style="border-radius: 8px; background-color: #ffffff; border: 1px solid #e3e6f0;">
+        <div class="card shadow-sm mx-auto w-100" style="border-radius: 8px; background-color: #ffffff; border: 1px solid #e3e6f0;">
             <div class="card-header text-center py-3" style="background-color: #0d6efd; color: #fff; font-size: 1.4rem; font-weight: 600;">
                 Califica al Conductor
             </div>
@@ -27,28 +23,27 @@
             <div class="card-body p-4">
                 <p class="text-center text-muted mb-4">Tu opinión nos ayuda a mejorar la experiencia de viaje.</p>
 
-                <form id="formCalificacion" action="{{ route('calificar.chofer.guardar') }}" method="POST">
-                    @csrf
+                {{-- FORMULARIO UNIFICADO --}}
+                <form id="formCalificacion" action="{{ route('calificar.chofer.guardar', $empleadoId) }}" method="POST">
+                    @csrf {{-- Token de seguridad obligatorio --}}
 
                     <div class="text-center mb-4">
                         <div class="rating-stars">
                             @for($i=5; $i>=1; $i--)
-                                <input type="radio" name="calificacion" id="star{{$i}}" value="{{$i}}">
+                                <input type="radio" name="calificacion" id="star{{$i}}" value="{{$i}}" class="required-field">
                                 <label for="star{{$i}}" title="{{$i}} estrellas">★</label>
                             @endfor
                         </div>
+                        <small class="text-danger d-none" id="error-stars">Debes seleccionar una calificación</small>
                     </div>
 
                     @php
                         $fieldStyle = 'width: 100%; border: 1px solid #d1d3e2; border-radius: 4px; transition: all 0.3s;';
-                    @endphp
-
-                    @php
                         $textFields = [
                             ['label' => 'Comentario general', 'name' => 'comentario', 'placeholder' => 'Escribe tu opinión general...'],
                             ['label' => '¿Qué debería mejorar el conductor?', 'name' => 'mejoras', 'placeholder' => 'Sugerencias concretas...'],
                             ['label' => '¿Qué te gustó más del viaje?', 'name' => 'positivo', 'placeholder' => 'Aspectos positivos...'],
-                            ['label' => '¿Viste comportamientos no adecuados por parte del conductor?', 'name' => 'comportamientos', 'placeholder' => 'Describe si notaste algo...'],
+                            ['label' => '¿Viste comportamientos no adecuados?', 'name' => 'comportamientos', 'placeholder' => 'Describe si notaste algo...'],
                         ];
                     @endphp
 

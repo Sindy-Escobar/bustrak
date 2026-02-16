@@ -36,6 +36,8 @@ use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\DocumentoBusController;
 use App\Http\Controllers\CalificacionChoferController;
 use App\Http\Controllers\Cliente\FacturaController;
+use App\Http\Controllers\ComentarioConductorController;
+use App\Http\Controllers\AutorizacionMenorController;
 use App\Http\Controllers\PrincipalController;
 use App\Http\Controllers\TipoServicioController;
 
@@ -51,8 +53,8 @@ Route::patch('/admin/usuarios/{id}/validar', [AdminController::class, 'validar']
 // ======================================================
 // RUTAS VALIDAR EMPRESAS
 // ======================================================
-Route::get('/validar-empresas', [ValidarEmpresaController2::class, 'index'])
-    ->name('empresas.validar');
+//Route::get('/validar-empresas', [ValidarEmpresaController2::class, 'index'])
+   // ->name('empresas.validar');
 
 // Visualización de terminales
 Route::get('/ver_terminales', [RegistroTeminalController::class, 'ver_terminales'])->name('terminales.ver_terminales');
@@ -372,13 +374,12 @@ Route::get('/mis-puntos', [RegistroPuntosController::class, 'index'])->name('pun
 Route::post('/canjear-puntos/{beneficio_id}', [RegistroPuntosController::class, 'canjear'])->name('puntos.canjear');
 
 /// Calificación de chofer
-Route::get('/calificar-chofer', [App\Http\Controllers\CalificacionChoferController::class, 'formulario'])
+/*Route::get('/calificar-chofer', [App\Http\Controllers\CalificacionChoferController::class, 'formulario'])
     ->name('calificar.chofer');
 
 Route::post('/calificar-chofer', [App\Http\Controllers\CalificacionChoferController::class, 'guardar'])
     ->name('calificar.chofer.guardar');
-
-
+*/
 
 //Roberto Api
 Route::prefix('api')->group(function () {
@@ -415,6 +416,30 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/facturas/verificar/{numeroFactura}', [\App\Http\Controllers\Cliente\FacturaController::class, 'verificarAutenticidad'])->name('facturas.verificar');
 
 
+// Cambiamos 'create' por 'formulario' para que sea más descriptivo
+Route::get('/calificar-chofer/{empleadoId}', [CalificacionChoferController::class, 'formulario'])->name('calificar.chofer');
+
+// Esta se queda igual
+Route::post('/calificar-chofer/guardar/{empleadoId}', [CalificacionChoferController::class, 'guardar'])->name('calificar.chofer.guardar');
+
+// Esta también está bien
+Route::get('/comentarios/conductor/{empleadoId}', [ComentarioConductorController::class, 'mostrarComentarios'])->name('comentarios.conductor');
+
+// visualizacion de menores de edad
+// Rutas de autorización de menores (HU17)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/autorizacion-menor/{reserva}', [AutorizacionMenorController::class, 'create'])
+        ->name('autorizacion.create');
+
+    Route::post('/autorizacion-menor/{reserva}', [AutorizacionMenorController::class, 'store'])
+        ->name('autorizacion.store');
+
+    Route::get('/autorizacion-menor/{reserva}/mostrar', [AutorizacionMenorController::class, 'mostrar'])
+        ->name('autorizacion.mostrar');
+
+    // Para validar en terminal
+    Route::get('/validar-autorizacion', [AutorizacionMenorController::class, 'validar'])
+        ->name('autorizacion.validar');
 // ============================================
 // Historia de Usuario #1: Selección de Tipo de Servicio
 // Responsable: Carolina Nazareth Chavarría Valladares

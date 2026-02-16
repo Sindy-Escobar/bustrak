@@ -20,7 +20,6 @@ class ViajesSeeder extends Seeder
                 'modelo' => 'Volvo 9700',
                 'capacidad_asientos' => 40,
                 'numero_bus' => Bus::max('numero_bus') + 1 // obligatorio
-
             ]
         );
 
