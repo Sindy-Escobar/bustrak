@@ -40,6 +40,7 @@ use App\Http\Controllers\ComentarioConductorController;
 use App\Http\Controllers\AutorizacionMenorController;
 use App\Http\Controllers\PrincipalController;
 use App\Http\Controllers\TipoServicioController;
+use App\Http\Controllers\ServicioController;
 
 
 
@@ -440,6 +441,9 @@ Route::middleware(['auth'])->group(function () {
     // Para validar en terminal
     Route::get('/validar-autorizacion', [AutorizacionMenorController::class, 'validar'])
         ->name('autorizacion.validar');
+});
+
+
 // ============================================
 // Historia de Usuario #1: Selección de Tipo de Servicio
 // Responsable: Carolina Nazareth Chavarría Valladares
@@ -468,4 +472,36 @@ Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function
         }
         return redirect()->route('cliente.seleccion-tipo-servicio');
     })->name('buscar-servicios');
+});
+
+
+// ============================================
+// Historia de Usuario #3: Servicios por Estación
+// Responsable: Carolina Nazareth Chavarría Valladares
+// Sprint: #1
+// ============================================
+
+Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
+
+    // Visualizar servicios disponibles por estación
+    Route::get('/servicios-por-estacion', [ServicioController::class, 'index'])
+        ->name('servicios.index');
+
+    Route::get('/servicios/terminal/{terminalId}', [ServicioController::class, 'porTerminal'])
+        ->name('servicios.por-terminal');
+
+});
+
+// Rutas de administrador para gestionar servicios
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+
+    Route::get('/servicios', [ServicioController::class, 'index'])
+        ->name('servicios');
+
+    Route::get('/servicios/crear', [ServicioController::class, 'crear'])
+        ->name('servicios.crear');
+
+    Route::post('/servicios', [ServicioController::class, 'guardar'])
+        ->name('servicios.guardar');
+
 });

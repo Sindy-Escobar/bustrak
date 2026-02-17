@@ -12,7 +12,7 @@ class TipoServicioController extends Controller
 {
     public function index()
     {
-        $tiposServicio = TipoServicio::activos()->ordenadosPorNombre()->get();
+        $tiposServicio = TipoServicio::all();
         return view('cliente.seleccion-tipo-servicio', compact('tiposServicio'));
     }
 
@@ -58,7 +58,8 @@ class TipoServicioController extends Controller
             'success' => true,
             'message' => '¡Tipo de servicio seleccionado correctamente!',
             'data' => $tipoServicio,
-            'redirect' => route('cliente.reserva.create')        ]);
+            'redirect' => route('cliente.reserva.create')
+        ]);
     }
 
     public function limpiarSeleccion()

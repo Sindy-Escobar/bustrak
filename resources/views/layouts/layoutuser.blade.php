@@ -320,6 +320,15 @@
                    class="{{ request()->routeIs('cliente.historial') ? 'active' : '' }}">
                     Calificar Servicio
                 </a>
+                <a href="{{ route('cliente.servicios.index') }}"
+                   class="{{ request()->routeIs('cliente.servicios.index') ? 'active' : '' }}">
+                    Ver Servicios
+                </a>
+
+                <a href="{{ route('cliente.seleccion-tipo-servicio') }}"
+                   class="{{ request()->routeIs('cliente.seleccion-tipo-servicio') ? 'active' : '' }}">
+                    Tipos de Servicio
+                </a>
             </div>
         </div>
 

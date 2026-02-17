@@ -8,15 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('tipos_servicio', function (Blueprint $table) {
+        Schema::create('servicios', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre', 50)->unique();
+            $table->string('nombre', 100);
             $table->text('descripcion');
-            $table->decimal('tarifa_base', 10, 2)->default(0);
-            $table->string('icono', 50)->default('fas fa-bus');
-            $table->string('color', 7)->default('#1976d2');
+            $table->unsignedBigInteger('terminal_id')->nullable();
+            $table->string('icono', 50)->default('fas fa-concierge-bell');
             $table->boolean('activo')->default(true);
             $table->timestamps();
+
+            $table->foreign('terminal_id')
+                ->references('id')
+                ->on('registro_terminal')
+                ->onDelete('set null');
 
             $table->index('activo');
         });
@@ -24,6 +28,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('tipos_servicio');
+        Schema::dropIfExists('servicios');
     }
 };
