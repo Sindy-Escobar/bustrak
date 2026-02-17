@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
+        body { font-family: Arial, sans-serif; background: #EAF6FF; }
+
+        /* Back to Top */
         #backToTop {
             position: fixed;
             bottom: 30px;
@@ -27,7 +30,6 @@
             cursor: pointer;
             background-color: transparent;
             transition: transform 0.3s, border-color 0.3s, color 0.3s;
-            display: flex;
         }
 
         #backToTop:hover {
@@ -36,86 +38,73 @@
             color: #06174f;
         }
 
+        /* Botones */
+        .btn-login, .btn-registro {
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
 
         .btn-login {
             background-color: #007bff !important;
             color: white !important;
             border: none !important;
-            border-radius: 12px;
-            padding: 10px 20px;
-            font-size: 18px;
-            font-weight: 600;
         }
-        .btn-login:hover { opacity: 0.85; }
+
+        .btn-login:hover {
+            opacity: 0.85;
+        }
 
         .btn-registro {
             background-color: #28a745 !important;
             color: white !important;
             border: none !important;
-            border-radius: 12px;
-            padding: 10px 20px;
-            font-size: 18px;
-            font-weight: 600;
         }
-        .btn-registro:hover { opacity: 0.85; }
+
+        .btn-registro:hover {
+            opacity: 0.85;
+        }
 
         .btn-outline-light {
             color: #fff !important;
             border: 2px solid #fff !important;
         }
+
         .btn-outline-light:hover {
             background-color: #fff !important;
             color: #1976d2 !important;
         }
+
         .btn-gradient {
             background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
             color: white;
             border: none;
             transition: all 0.3s;
         }
+
         .btn-gradient:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             opacity: 0.95;
         }
 
-        body { font-family: Arial, sans-serif; background: #EAF6FF; }
-
-        /* BOTONES LOGIN / REGISTRO */
-        .hero-buttons a {
-            padding: 8px 18px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 10px;
-        }
-        .btn-login {
-            background-color: #007bff !important;
-            color: white !important;
-            border: none !important;
-        }
-        .btn-login:hover { opacity: 0.85; }
-        .btn-registro {
-            background-color: #28a745 !important;
-            color: white !important;
-            border: none !important;
-        }
-        .btn-registro:hover { opacity: 0.85; }
-
-        /* HERO */
+        /* Hero */
         .hero-section {
             background-repeat: no-repeat;
             background-position: right top;
             background-size: 550px;
             padding: 80px 0;
         }
+
         .hero-title {
             font-size: 58px;
             font-weight: 800;
             line-height: 1.1;
             color: #1c1c1c;
             text-align: left;
-            text-shadow: none;
         }
+
         .hero-subtitle {
             font-size: 22px;
             margin-top: 15px;
@@ -123,57 +112,341 @@
             text-align: left;
         }
 
-        /* INFO BOXES */
+        /* Info Box */
         .info-box {
             background: white;
             border-radius: 18px;
             padding: 25px;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
         }
-        .info-icon { width: 60px; }
-        .info-text { font-size: 18px; font-weight: 500; }
 
-        /* General y Back to Top */
-        body { font-family: Arial, sans-serif; background: #EAF6FF; }
-        #backToTop { position: fixed; bottom: 30px; right: 10px; width: 50px; height: 50px; border-radius: 50%; border: 2px solid #000; color: #000; font-size: 24px; display: none; align-items: center; justify-content: center; cursor: pointer; background-color: transparent; transition: transform 0.3s, border-color 0.3s, color 0.3s; z-index:1000; display:flex; }
-        #backToTop:hover { transform: translateY(-2px); border-color: #06174f; color: #06174f; }
+        .info-icon {
+            width: 60px;
+        }
 
-        .btn-login, .btn-registro { border-radius:12px; font-weight:600; padding:10px 20px; font-size:18px; }
-        .btn-login { background-color:#007bff;color:white;border:none; } .btn-login:hover{opacity:0.85;}
-        .btn-registro { background-color:#28a745;color:white;border:none;} .btn-registro:hover{opacity:0.85;}
-
-        /* Hero */
-        .hero-section { background-repeat:no-repeat; background-position:right top; background-size:550px; padding:80px 0; }
-        .hero-title { font-size:58px;font-weight:800;line-height:1.1;color:#1c1c1c;text-align:left; }
-        .hero-subtitle { font-size:22px;margin-top:15px;color:#4b4b4b;text-align:left; }
+        .info-text {
+            font-size: 18px;
+            font-weight: 500;
+        }
 
         /* Departamentos */
-        .departments .card { cursor:pointer; transition: transform 0.2s; }
-        .departments .card:hover { transform: scale(1.05); }
-        .departments img { height:150px; object-fit:cover; border-radius:10px; }
+        .departments .card {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
 
-        /* Modal info */
-        .modal-info { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index:3000; padding:20px; align-items:center; justify-content:center; }
-        .modal-info.show { display:flex; }
-        .modal-info-content { background:white; border-radius:12px; max-width:1200px; width:100%; box-shadow:0 10px 40px rgba(0,0,0,0.3); max-height:85vh; overflow-y:auto; }
-        .modal-info-header { background:linear-gradient(180deg,#1e63b8,#1976d2); color:white; padding:24px; border-radius:12px 12px 0 0; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10; }
-        .modal-info-header h2 { margin:0; font-size:1.5rem; font-weight:700; }
-        .modal-info-close { background: rgba(255,255,255,0.2); border:none; color:white; width:40px; height:40px; border-radius:50%; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-        .modal-info-close:hover { background: rgba(255,255,255,0.3); }
-        .modal-info-body { padding:24px; }
-        .info-tabs { display:flex; gap:10px; margin-bottom:20px; border-bottom:2px solid #e5e7eb; flex-wrap:wrap; }
-        .info-tab { padding:10px 20px; border:none; background:none; cursor:pointer; font-weight:600; color:#6b7280; border-bottom:3px solid transparent; transition: all 0.3s; font-size:14px; }
-        .info-tab.active { color:#1976d2; border-bottom-color:#1976d2; }
-        .info-tab:hover { color:#1976d2; }
-        .tab-content { display:none; }
-        .tab-content.active { display:block; }
-        .cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; }
-        .info-card { border:1px solid #e5e7eb; border-radius:10px; overflow:hidden; transition: all 0.3s; background:white; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
-        .info-card:hover { transform:translateY(-8px); box-shadow:0 12px 24px rgba(0,0,0,0.15); }
-        .info-card-img { width:100%; height:160px; display:flex; align-items:center; justify-content:center; font-size:3rem; color:white; }
-        .info-card-body { padding:16px; }
-        .info-card-title { font-size:16px; font-weight:700; color:#1f2937; margin-bottom:8px; }
-        @media(max-width:768px){.cards-grid{grid-template-columns:1fr;}}
+        .departments .card:hover {
+            transform: scale(1.05);
+        }
+
+        .departments img {
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        /* Modal */
+        .modal-info {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 3000;
+            padding: 20px;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-info.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-info-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 1200px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-info-header {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            padding: 28px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-info-header h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-info-header h2 i {
+            font-size: 32px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        .modal-info-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-info-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+            border-color: white;
+        }
+
+        .modal-info-body {
+            padding: 32px;
+            overflow-y: auto;
+            max-height: calc(90vh - 100px);
+        }
+
+        /* Tabs */
+        .info-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            border-bottom: 3px solid #e5e7eb;
+            flex-wrap: wrap;
+            padding-bottom: 4px;
+        }
+
+        .info-tab {
+            padding: 14px 28px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            bottom: -3px;
+        }
+
+        .info-tab:hover {
+            color: #1976d2;
+            background: rgba(25, 118, 210, 0.05);
+        }
+
+        .info-tab.active {
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+            background: rgba(25, 118, 210, 0.08);
+        }
+
+        .info-tab i {
+            font-size: 18px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .info-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+        }
+
+        .info-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: #1976d2;
+        }
+
+        .info-card-img {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .info-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .info-card:hover .info-card-img img {
+            transform: scale(1.1);
+        }
+
+        .info-card-img::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .info-card:hover .info-card-img::after {
+            opacity: 1;
+        }
+
+        .info-card-body {
+            padding: 20px;
+            background: white;
+        }
+
+        .info-card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+            line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+
+        .info-card:hover .info-card-title {
+            color: #1976d2;
+        }
+
+        /* Estados */
+        .loading-state,
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .loading-state i,
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Scrollbar */
+        .modal-info-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-info-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .modal-info-body::-webkit-scrollbar-thumb {
+            background: #1976d2;
+            border-radius: 10px;
+        }
+
+        .modal-info-body::-webkit-scrollbar-thumb:hover {
+            background: #1565c0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .modal-info-content {
+                border-radius: 16px;
+                max-height: 95vh;
+            }
+
+            .modal-info-header {
+                padding: 20px;
+            }
+
+            .modal-info-header h2 {
+                font-size: 22px;
+            }
+
+            .modal-info-header h2 i {
+                font-size: 24px;
+            }
+
+            .modal-info-body {
+                padding: 20px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .info-tab {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -203,11 +476,7 @@
                     </a>
                 </div>
             @endauth
-
-
-
         </div>
-
     </div>
 </nav>
 
@@ -238,32 +507,25 @@
 
 <hr style="border: 0; height: 1px; background-color: #1976d2; margin: 50px 0;">
 
-
 <!-- INFORMACIÓN -->
 <div class="container mt-4">
     <div class="row g-4">
         <div class="col-md-4">
             <div class="info-box d-flex align-items-start gap-3">
                 <img class="info-icon" src="https://www.busbud.com/pubweb-assets/images/usp/52ba7ae.usp-v3-trust-coverage.png">
-                <p class="info-text">
-                    Únete a más de 1 millon de viajeros al rededor de todo el pais.
-                </p>
+                <p class="info-text">Únete a más de 1 millon de viajeros al rededor de todo el pais.</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="info-box d-flex align-items-start gap-3">
                 <img class="info-icon" src="https://www.busbud.com/pubweb-assets/images/usp/3136d75.usp-v3-support.png">
-                <p class="info-text">
-                    Disfruta de nuestro servicio de atención al cliente disponible 24/7.
-                </p>
+                <p class="info-text">Disfruta de nuestro servicio de atención al cliente disponible 24/7.</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="info-box d-flex align-items-start gap-3">
                 <img class="info-icon" src="https://www.busbud.com/pubweb-assets/images/usp/5619a22.usp-v3-cfar.png">
-                <p class="info-text">
-                    Puedes cancelar en cualquier momento y recibir un reembolso.
-                </p>
+                <p class="info-text">Puedes cancelar en cualquier momento y recibir un reembolso.</p>
             </div>
         </div>
     </div>
@@ -273,7 +535,18 @@
 <section class="py-5">
     <div class="container py-5">
         <h2 class="mb-4 text-center">Destinos turísticos en nuestra bella Honduras</h2>
-        <div class="row row-cols-1 row-cols-md-4 g-3 departments" id="departamentosGrid"></div>
+        <div class="row row-cols-1 row-cols-md-4 g-3 departments">
+            @foreach($departamentos as $departamento)
+                <div class="col">
+                    <div class="card" onclick="abrirModalInfo({{ $departamento->id }}, '{{ $departamento->nombre }}')">
+                        <img src="{{ $departamento->imagen }}" alt="{{ $departamento->nombre }}">
+                        <div class="card-body text-center">
+                            <h6>{{ $departamento->nombre }}</h6>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
     </div>
 </section>
 
@@ -294,6 +567,7 @@
         </div>
     </div>
 </div>
+
 <hr style="border: 0; height: 1px; background-color: #1976d2; margin: 50px 0;">
 
 <div class="container mt-5">
@@ -305,10 +579,12 @@
             <h2 class="fw-bold mb-3">¿Por qué Bustrak es tu mejor opción?</h2>
             <p class="mb-2" style="font-size: 18px;">La mejor manera de comprar pasajes de bus</p>
             <p style="font-size: 16px; line-height: 1.6;">
-                Bustrak.com te ofrece una variedad de rutas a 16 departamentos del pais con la mayor comodidad en nuestros buses super cómodos, seguridad 100% fiable con nuestros choferes experimentados, tendrás el mejor viaje por carretera, porque Bustrak te conecta por toda Honduras.                </p>
+                Bustrak.com te ofrece una variedad de rutas a 16 departamentos del pais con la mayor comodidad en nuestros buses super cómodos, seguridad 100% fiable con nuestros choferes experimentados, tendrás el mejor viaje por carretera, porque Bustrak te conecta por toda Honduras.
+            </p>
         </div>
     </div>
 </div>
+
 <hr style="border: 0; height: 1px; background-color: #1976d2; margin: 50px 0;">
 
 <div class="container">
@@ -337,7 +613,6 @@
                 <h6>Kit de viajes</h6>
             </div>
         </div>
-
         <div class="col-6 col-md-4">
             <div class="info-card text-center p-3">
                 <i class="fas fa-coffee fa-2x mb-2" style="color:#1976d2;"></i>
@@ -374,11 +649,8 @@
                 <h6>Y mucho más</h6>
             </div>
         </div>
-
-
     </div>
 </div>
-
 
 <hr style="border: 0; height: 1px; background-color: #1976d2; margin: 50px 0;">
 
@@ -388,7 +660,6 @@
     <p class="text-center mb-5">Recomendaciones para hacer de su viaje una experiencia inolvidable.</p>
 
     <div class="row g-4 text-center">
-        <!-- Fila 1 -->
         <div class="col-12 col-md-6">
             <img loading="lazy" alt="Planee su viaje" src="https://www.ticabus.com/documents/7092829/7093204/ico_planea.svg/227152e1-824b-3052-c301-3ee496d1ef9f?t=1732002538128" class="img-fluid mb-2" style="max-height:50px;">
             <h6>Planee su viaje</h6>
@@ -401,7 +672,6 @@
             <p>Adquiera sus boletos en línea aquí.</p>
         </div>
 
-        <!-- Fila 2 -->
         <div class="col-12 col-md-6">
             <img loading="lazy" alt="Aborde a tiempo" src="https://www.ticabus.com/documents/7092829/7093204/ico_aborda.svg/101af751-58dc-674b-ee0e-00bd950ce590?t=1732002537917" class="img-fluid mb-2" style="max-height:50px;">
             <h6>Aborde a tiempo</h6>
@@ -415,7 +685,6 @@
         </div>
     </div>
 
-    <!-- AVISO AL FINAL -->
     <div class="mt-4 p-4 bg-light rounded text-center">
         <small>
             *La empresa no se hace responsable por pérdida o daños de valores, caja frágil, equipo de cómputo, electrónico y electrodoméstico.
@@ -424,79 +693,118 @@
     </div>
 </section>
 
-
 <a href="#" id="backToTop" title="Ir arriba"><i class="fas fa-arrow-up"></i></a>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    let destinosData = {};
+    async function abrirModalInfo(departamentoId, nombreDepartamento) {
+        try {
+            const modal = document.getElementById('modalInfo');
+            modal.classList.add('show');
 
-    // Cargar departamentos desde API
+            document.getElementById('modalInfoTitle').innerHTML =
+                `<i class="fas fa-map-marker-alt"></i> ${nombreDepartamento}`;
 
-    fetch('/api/destinos')
-        .then(res => res.json())
-        .then(data => {
-            destinosData = data;
-            const grid = document.getElementById('departamentosGrid');
-            if(Object.keys(data).length === 0){
-                grid.innerHTML = '<p class="text-center">No hay departamentos registrados.</p>';
-                return;
-            }
-            Object.keys(data).forEach(dep => {
-                const depImg = data[dep].imagen || '/catalago/img/default.jpg';
-                grid.innerHTML += `<div class="col">
-                <div class="card" onclick="abrirModalInfo('${dep}')">
-                    <img src="${depImg}" class="card-img-top" alt="${dep}">
-                    <div class="card-body text-center"><h6>${dep}</h6></div>
+            const loadingHTML = `
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Cargando información...</p>
                 </div>
-            </div>`;
-            });
-        }).catch(err => {
-        document.getElementById('departamentosGrid').innerHTML = '<p class="text-center text-danger">Error al cargar departamentos.</p>';
-        console.error(err);
-    });
+            `;
+            document.getElementById('lugaresGrid').innerHTML = loadingHTML;
+            document.getElementById('comidasGrid').innerHTML = loadingHTML;
 
-    // Modal
-    function abrirModalInfo(departamento){
-        const info = destinosData[departamento];
-        if(!info) return;
-        document.getElementById('modalInfoTitle').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${departamento}`;
-        document.getElementById('lugaresGrid').innerHTML = info.lugares.map(l => `
-        <div class="info-card">
-            <div class="info-card-img"><img src="${l.imagen}" alt="${l.nombre}" style="width:100%;height:100%;object-fit:cover;"></div>
-            <div class="info-card-body"><div class="info-card-title">${l.nombre}</div></div>
-        </div>`).join('');
-        document.getElementById('comidasGrid').innerHTML = info.comidas.map(c => `
-        <div class="info-card">
-            <div class="info-card-img"><img src="${c.imagen}" alt="${c.nombre}" style="width:100%;height:100%;object-fit:cover;"></div>
-            <div class="info-card-body"><div class="info-card-title">${c.nombre}</div></div>
-        </div>`).join('');
-        document.getElementById('modalInfo').classList.add('show');
+            const response = await fetch(`/api/departamento/${departamentoId}`);
+
+            if (!response.ok) {
+                throw new Error('Error al cargar la información');
+            }
+
+            const data = await response.json();
+
+            const lugaresHtml = data.lugares && data.lugares.length > 0
+                ? data.lugares.map(lugar => `
+                <div class="info-card">
+                    <div class="info-card-img">
+                        <img src="${lugar.imagen}"
+                             alt="${lugar.nombre}"
+                             onerror="this.src='https://via.placeholder.com/300x200?text=Sin+Imagen'">
+                    </div>
+                    <div class="info-card-body">
+                        <div class="info-card-title">${lugar.nombre}</div>
+                    </div>
+                </div>
+            `).join('')
+                : `
+                <div class="empty-state">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <p>No hay lugares turísticos registrados</p>
+                </div>
+            `;
+
+            const comidasHtml = data.comidas && data.comidas.length > 0
+                ? data.comidas.map(comida => `
+                <div class="info-card">
+                    <div class="info-card-img">
+                        <img src="${comida.imagen}"
+                             alt="${comida.nombre}"
+                             onerror="this.src='https://via.placeholder.com/300x200?text=Sin+Imagen'">
+                    </div>
+                    <div class="info-card-body">
+                        <div class="info-card-title">${comida.nombre}</div>
+                    </div>
+                </div>
+            `).join('')
+                : `
+                <div class="empty-state">
+                    <i class="fas fa-utensils"></i>
+                    <p>No hay comidas típicas registradas</p>
+                </div>
+            `;
+
+            setTimeout(() => {
+                document.getElementById('lugaresGrid').innerHTML = lugaresHtml;
+                document.getElementById('comidasGrid').innerHTML = comidasHtml;
+            }, 300);
+
+        } catch (error) {
+            console.error('Error:', error);
+
+            const errorHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i>
+                    <p style="color: #ef4444;">Error al cargar la información</p>
+                    <p style="font-size: 14px;">Por favor, intente nuevamente</p>
+                </div>
+            `;
+            document.getElementById('lugaresGrid').innerHTML = errorHTML;
+            document.getElementById('comidasGrid').innerHTML = errorHTML;
+        }
     }
 
-    function cerrarModalInfo(){ document.getElementById('modalInfo').classList.remove('show'); }
-    function cambiarTab(tab,event){
-        document.querySelectorAll('.info-tab').forEach(t=>t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-        event.target.classList.add('active');
-        document.getElementById(tab+'Tab').classList.add('active');
+    function cerrarModalInfo() {
+        document.getElementById('modalInfo').classList.remove('show');
     }
 
-    // Back to Top
-    window.addEventListener('scroll',()=>{
-        document.getElementById('backToTop').style.display = (window.scrollY>200)?'flex':'none';
-    });
-    document.getElementById('backToTop').addEventListener('click',e=>{
-        e.preventDefault();
-        window.scrollTo({top:0,behavior:'smooth'});
-    });
-</script>
+    function cambiarTab(tab, event) {
+        document.querySelectorAll('.info-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        event.target.closest('.info-tab').classList.add('active');
+        document.getElementById(tab + 'Tab').classList.add('active');
+    }
 
+    document.getElementById('modalInfo')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            cerrarModalInfo();
+        }
+    });
 
-<a href="#" id="backToTop" title="Ir arriba">
-    <i class="fas fa-arrow-up"></i>
-</a>
-<script>
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            cerrarModalInfo();
+        }
+    });
+
     window.addEventListener('scroll', function() {
         const btn = document.getElementById('backToTop');
         if (window.scrollY > 200) {
@@ -506,12 +814,11 @@
         }
     });
 
-    document.getElementById('backToTop').addEventListener('click', function(e){
+    document.getElementById('backToTop').addEventListener('click', function(e) {
         e.preventDefault();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 </script>
-
 
 </body>
 </html>

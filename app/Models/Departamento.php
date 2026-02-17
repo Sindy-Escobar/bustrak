@@ -1,17 +1,22 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Departamento extends Model
 {
-    protected $fillable = ['nombre','imagen'];
+    protected $table = 'departamentos';
+    protected $fillable = ['nombre', 'imagen'];
+    public $timestamps = false;
 
-    public function lugares() {
-        return $this->hasMany(Lugar::class);
+    public function lugaresTuristicos()
+    {
+        return $this->hasMany(LugarTuristico::class, 'departamento_id');
     }
 
-    public function comidas() {
-        return $this->hasMany(Comida::class);
+    public function comidasTipicas()
+    {
+        return $this->hasMany(ComidaTipica::class, 'departamento_id');
     }
 }
