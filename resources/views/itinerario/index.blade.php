@@ -55,6 +55,120 @@
                             <button type="button" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditar{{ $reserva->id }}">
                                 <i class="fas fa-edit me-1"></i>Editar
                             </button>
+                            {{-- NUEVO: Actualizar Estado (HU10) --}}
+                            <button type="button"
+                                    class="btn btn-outline-info btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEstado{{ $reserva->id }}">
+                                <i class="fas fa-sync-alt me-1"></i>Estado
+                            </button>
+                        </div>
+
+                        {{--  NUEVO: Modal de Estado (HU10) --}}
+                        <div class="modal fade" id="modalEstado{{ $reserva->id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-info text-white">
+                                        <h5 class="modal-title">
+                                            <i class="fas fa-sync-alt me-2"></i>Actualizar Estado del Viaje
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <form action="{{ route('itinerario.estado', $reserva->id) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+
+                                        <div class="modal-body">
+                                            {{-- Info del viaje --}}
+                                            <div class="alert alert-light border mb-3">
+                                                <i class="fas fa-bus me-2 text-primary"></i>
+                                                <strong>{{ $reserva->viaje->origen->nombre ?? 'N/A' }}</strong>
+                                                →
+                                                <strong>{{ $reserva->viaje->destino->nombre ?? 'N/A' }}</strong>
+                                                <br>
+                                                <small class="text-muted">
+                                                    {{ \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('d/m/Y H:i') }}
+                                                </small>
+                                            </div>
+
+                                            {{-- Estado actual --}}
+                                            <p class="mb-2">
+                                                <strong>Estado actual:</strong>
+                                                <span class="badge {{
+                            $reserva->estado == 'confirmada' ? 'bg-success' :
+                            ($reserva->estado == 'en_ruta' ? 'bg-info' :
+                            ($reserva->estado == 'finalizado' ? 'bg-secondary' : 'bg-warning text-dark'))
+                        }}">
+                            {{ strtoupper($reserva->estado ?? 'PENDIENTE') }}
+                        </span>
+                                            </p>
+
+                                            {{-- Nuevo estado --}}
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">
+                                                    <i class="fas fa-list me-2 text-info"></i>Selecciona nuevo estado:
+                                                </label>
+                                                <div class="d-grid gap-2">
+                                                    <div class="form-check border rounded p-3 {{ $reserva->estado == 'pendiente' ? 'border-warning bg-warning bg-opacity-10' : '' }}">
+                                                        <input class="form-check-input" type="radio" name="estado"
+                                                               value="pendiente" id="pendiente{{ $reserva->id }}"
+                                                            {{ $reserva->estado == 'pendiente' ? 'checked' : '' }}>
+                                                        <label class="form-check-label w-100" for="pendiente{{ $reserva->id }}">
+                                                            <i class="fas fa-clock text-warning me-2"></i>
+                                                            <strong>Pendiente</strong>
+                                                            <small class="text-muted d-block">El viaje aún no ha comenzado</small>
+                                                        </label>
+                                                    </div>
+
+                                                    <div class="form-check border rounded p-3 {{ $reserva->estado == 'confirmada' ? 'border-success bg-success bg-opacity-10' : '' }}">
+                                                        <input class="form-check-input" type="radio" name="estado"
+                                                               value="confirmada" id="confirmada{{ $reserva->id }}"
+                                                            {{ $reserva->estado == 'confirmada' ? 'checked' : '' }}>
+                                                        <label class="form-check-label w-100" for="confirmada{{ $reserva->id }}">
+                                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                                            <strong>Confirmada</strong>
+                                                            <small class="text-muted d-block">Reserva confirmada y lista</small>
+                                                        </label>
+                                                    </div>
+
+                                                    <div class="form-check border rounded p-3 {{ $reserva->estado == 'en_ruta' ? 'border-info bg-info bg-opacity-10' : '' }}">
+                                                        <input class="form-check-input" type="radio" name="estado"
+                                                               value="en_ruta" id="en_ruta{{ $reserva->id }}"
+                                                            {{ $reserva->estado == 'en_ruta' ? 'checked' : '' }}>
+                                                        <label class="form-check-label w-100" for="en_ruta{{ $reserva->id }}">
+                                                            <i class="fas fa-bus text-info me-2"></i>
+                                                            <strong>En Ruta</strong>
+                                                            <small class="text-muted d-block">El viaje está en progreso</small>
+                                                        </label>
+                                                    </div>
+
+                                                    <div class="form-check border rounded p-3 {{ $reserva->estado == 'finalizado' ? 'border-secondary bg-secondary bg-opacity-10' : '' }}">
+                                                        <input class="form-check-input" type="radio" name="estado"
+                                                               value="finalizado" id="finalizado{{ $reserva->id }}"
+                                                            {{ $reserva->estado == 'finalizado' ? 'checked' : '' }}>
+                                                        <label class="form-check-label w-100" for="finalizado{{ $reserva->id }}">
+                                                            <i class="fas fa-flag-checkered text-secondary me-2"></i>
+                                                            <strong>Finalizado</strong>
+                                                            <small class="text-muted d-block">El viaje ha concluido</small>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                <i class="fas fa-times me-1"></i>Cancelar
+                                            </button>
+                                            <button type="submit" class="btn btn-info text-white">
+                                                <i class="fas fa-save me-1"></i>Guardar Estado
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                         </div>
                     </div>
 

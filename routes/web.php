@@ -55,7 +55,7 @@ Route::patch('/admin/usuarios/{id}/validar', [AdminController::class, 'validar']
 // RUTAS VALIDAR EMPRESAS
 // ======================================================
 //Route::get('/validar-empresas', [ValidarEmpresaController2::class, 'index'])
-   // ->name('empresas.validar');
+// ->name('empresas.validar');
 
 // Visualización de terminales
 Route::get('/ver_terminales', [RegistroTeminalController::class, 'ver_terminales'])->name('terminales.ver_terminales');
@@ -191,6 +191,9 @@ Route::middleware('auth')->prefix('itinerario')->name('itinerario.')->controller
     Route::get('/compartir/{id}/pdf', 'descargarCompartido')->name('pdf.compartido');
     Route::post('/actualizar', 'actualizarItinerario')->name('actualizar');
     Route::get('/historial', 'historialVisualizaciones')->name('historial');
+
+    // CORREGIDO: Sin duplicar prefijo ni nombre
+    Route::patch('/{reserva}/estado', 'actualizarEstado')->name('estado');
 });
 
 // Catálogo
@@ -331,7 +334,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DocumentoBusController::class, 'dashboard'])->name('dashboard');
 
 });
- //Documentos-buses Sindy
+//Documentos-buses Sindy
 Route::middleware(['auth'])->prefix('documentos-buses')->name('documentos-buses.')->group(function () {
 
     // documentos-buses.dashboard, si se requiere en el menú específico de esa sección.
@@ -450,8 +453,6 @@ Route::middleware(['auth'])->group(function () {
 // Sprint: #1
 // ============================================
 
-
-
 Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
 
     // Selección de tipo de servicio
@@ -473,7 +474,6 @@ Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function
         return redirect()->route('cliente.seleccion-tipo-servicio');
     })->name('buscar-servicios');
 });
-
 
 // ============================================
 // Historia de Usuario #3: Servicios por Estación

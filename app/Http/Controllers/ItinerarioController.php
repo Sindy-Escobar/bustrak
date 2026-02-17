@@ -169,4 +169,22 @@ class ItinerarioController extends Controller
 
         return view('itinerario.compartir', compact('reserva', 'url'));
     }
+    /**
+     * HU10: Actualizar estado del viaje
+     */
+    public function actualizarEstado(Request $request, $reservaId)
+    {
+        $request->validate([
+            'estado' => 'required|in:pendiente,en_ruta,finalizado,confirmada'
+        ]);
+
+        $reserva = Reserva::where('id', $reservaId)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $reserva->update(['estado' => $request->estado]);
+
+        return redirect()->route('itinerario.index')
+            ->with('success', 'Estado del viaje actualizado correctamente.');
+    }
 }
