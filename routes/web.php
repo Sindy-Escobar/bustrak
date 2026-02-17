@@ -182,6 +182,9 @@ Route::middleware('auth')->prefix('itinerario')->name('itinerario.')->controller
     Route::get('/compartir/{id}/pdf', 'descargarCompartido')->name('pdf.compartido');
     Route::post('/actualizar', 'actualizarItinerario')->name('actualizar');
     Route::get('/historial', 'historialVisualizaciones')->name('historial');
+
+    // CORREGIDO: Sin duplicar prefijo ni nombre
+    Route::patch('/{reserva}/estado', 'actualizarEstado')->name('estado');
 });
 
 // Catálogo
