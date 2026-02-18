@@ -350,15 +350,11 @@
                     serviciosGrid.appendChild(card);
                 });
             }
-
-            // Scroll suave hacia los servicios
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function volver() {
             document.getElementById('terminalesGrid').style.display = 'grid';
             document.getElementById('serviciosSection').style.display = 'none';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
 @endsection

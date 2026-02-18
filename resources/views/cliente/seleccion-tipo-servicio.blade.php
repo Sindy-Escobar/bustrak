@@ -431,14 +431,5 @@
                 alert.style.display = 'none';
             }, 5000);
         }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            @if(session()->has('tipo_servicio_seleccionado'))
-            const servicioAnterior = {{ session()->get('tipo_servicio_seleccionado')['id'] ?? 'null' }};
-            if (servicioAnterior) {
-                seleccionarServicio(servicioAnterior);
-            }
-            @endif
-        });
     </script>
 @endsection
