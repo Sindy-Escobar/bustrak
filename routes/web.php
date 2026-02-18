@@ -41,7 +41,7 @@ use App\Http\Controllers\AutorizacionMenorController;
 use App\Http\Controllers\PrincipalController;
 use App\Http\Controllers\TipoServicioController;
 use App\Http\Controllers\ServicioController;
-
+use App\Http\Controllers\ReembolsoController;
 
 
 
@@ -503,5 +503,33 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::post('/servicios', [ServicioController::class, 'guardar'])
         ->name('servicios.guardar');
+
+});
+
+
+// ============================================
+// Historia de Usuario #6: Procesar Reembolso de Boletos
+// Responsable: Carolina Nazareth Chavarría Valladares
+// Sprint: #1
+// ============================================
+
+
+
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+
+    Route::get('/reembolsos', [ReembolsoController::class, 'index'])
+        ->name('reembolsos');
+
+    Route::get('/reembolsos/crear', [ReembolsoController::class, 'crear'])
+        ->name('reembolsos.crear');
+
+    Route::post('/reembolsos/procesar', [ReembolsoController::class, 'procesar'])
+        ->name('reembolsos.procesar');
+
+    Route::post('/reembolsos/{id}/entregar', [ReembolsoController::class, 'marcarEntregado'])
+        ->name('reembolsos.entregar');
+
+    Route::get('/reembolsos/{id}/comprobante', [ReembolsoController::class, 'comprobante'])
+        ->name('reembolsos.comprobante');
 
 });

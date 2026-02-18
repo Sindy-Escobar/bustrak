@@ -46,4 +46,9 @@ class Reserva extends Model
     {
         return $this->hasOne(AutorizacionMenor::class);
     }
+
+    public function reembolsos()
+    {
+        return $this->hasMany(\App\Models\Reembolso::class, 'reserva_id');
+    }
 }
