@@ -278,7 +278,25 @@
                     Constancias de Trabajo
                 </a>
             </div>
+
         </div>
+
+        <!-- Reembolsos -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#reembolsos"
+                    aria-expanded="{{ request()->routeIs('admin.reembolsos*') ? 'true' : 'false' }}">
+                <span><i class="fas fa-undo-alt"></i> Reembolsos</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('admin.reembolsos*') ? 'show' : '' }}" id="reembolsos">
+                <a href="{{ route('admin.reembolsos') }}"
+                   class="{{ request()->routeIs('admin.reembolsos') ? 'active' : '' }}">
+                    Procesar Reembolsos
+                </a>
+
+            </div>
+        </div>
+
 
         <!-- Cerrar sesión -->
         <div class="nav-section">
