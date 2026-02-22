@@ -16,6 +16,7 @@ class Viaje extends Model
         'bus_id',
         'fecha_hora_salida',
         'asientos_totales',
+        'empleado_id',
     ];
 
     public function origen()
@@ -31,6 +32,11 @@ class Viaje extends Model
     public function bus()
     {
         return $this->belongsTo(Bus::class);
+    }
+
+    public function empleado()
+    {
+        return $this->belongsTo(Empleado::class, 'empleado_id');
     }
 
     public function asientos()
