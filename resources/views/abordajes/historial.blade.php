@@ -175,10 +175,40 @@
                     }
                 });
         }
-
         // Mostrar datos del pasajero
         function mostrarDatosPasajero(datos) {
+            let htmlAutorizacion = '';
+
+            // SI ES MENOR, MOSTRAR ALERTA
+            if (datos.autorizacion_menor) {
+                const menor = datos.autorizacion_menor;
+                htmlAutorizacion = `
+            <div class="alert alert-warning border-warning mb-3">
+                <h6 class="alert-heading">
+                    <i class="fas fa-child me-2"></i>
+                     PASAJERO MENOR DE EDAD
+                </h6>
+                <hr>
+                <p class="mb-2"><strong>DNI Menor:</strong> ${menor.menor_dni}</p>
+                <p class="mb-2"><strong>Edad:</strong> ${menor.menor_edad} años</p>
+                <hr>
+                <h6 class="text-success"><i class="fas fa-check-circle me-2"></i>Autorización Válida</h6>
+                <p class="mb-1"><strong>Tutor:</strong> ${menor.tutor_nombre}</p>
+                <p class="mb-1"><strong>DNI Tutor:</strong> ${menor.tutor_dni}</p>
+                <p class="mb-1"><strong>Parentesco:</strong> ${menor.parentesco}</p>
+                <p class="mb-1"><strong>Código Autorización:</strong>
+                    <span class="badge bg-success">${menor.codigo_autorizacion}</span>
+                </p>
+                <hr>
+                <p class="mb-0 text-danger">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    <strong>VERIFICAR:</strong> El tutor debe estar presente y mostrar su DNI original.
+                </p>
+            </div>
+        `;
+            }
             const html = `
+        ${htmlAutorizacion}
         <div class="mb-3">
             <h6 class="text-primary"><i class="fas fa-user me-2"></i>Información del Pasajero</h6>
             <p class="mb-1"><strong>Nombre:</strong> ${datos.pasajero.nombre_completo}</p>
@@ -204,7 +234,6 @@
             document.getElementById('datosPasajero').innerHTML = html;
             document.getElementById('areaDatos').style.display = 'block';
         }
-
         // Confirmar abordajes
         function confirmarAbordaje() {
             if (!reservaActual) {

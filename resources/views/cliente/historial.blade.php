@@ -52,10 +52,10 @@
 
                             // Buscar si ya calificó
                             $comentarioGuardado = null;
-                            if($usuario) {
+                            if($usuario && $reserva->viaje && $reserva->viaje->empleado_id) {
                                 $comentarioGuardado = \App\Models\ComentarioConductor::where('empleado_id', $reserva->viaje->empleado_id)
-                                    ->where('usuario_id', $usuario->id)
-                                    ->first();
+                                     ->where('usuario_id', $usuario->id)
+                                     ->first();
                             }
                         @endphp
 

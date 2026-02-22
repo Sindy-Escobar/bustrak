@@ -20,15 +20,36 @@
                     </div>
                 @endif
 
-                {{-- Código QR --}}
+                {{-- ✅ NUEVO: Código QR de Reserva para Check-in (MÁS IMPORTANTE) --}}
                 <div class="text-center mb-4">
-                    <h5 class="text-muted mb-3">Código de Autorización</h5>
-                    <div class="bg-light p-4 rounded d-inline-block">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ urlencode($autorizacion->codigo_autorizacion) }}"
-                             alt="Código QR"
+                    <div class="alert alert-primary">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>IMPORTANTE:</strong> Este es el código QR que debes presentar en la terminal para el check-in/abordaje.
+                    </div>
+                    <h5 class="text-primary mb-3 fw-bold">
+                        <i class="fas fa-qrcode me-2"></i>Código QR para Check-in/Abordaje
+                    </h5>
+                    <div class="bg-light p-4 rounded d-inline-block border border-primary border-3">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ urlencode($reserva->codigo_reserva) }}"
+                             alt="Código QR Reserva"
                              class="img-fluid">
                     </div>
-                    <h3 class="text-primary mt-3 font-monospace">{{ $autorizacion->codigo_autorizacion }}</h3>
+                    <h3 class="text-primary mt-3 font-monospace fw-bold">{{ $reserva->codigo_reserva }}</h3>
+                    <p class="text-muted">Código de Reserva</p>
+                </div>
+
+                <hr class="my-4">
+
+                {{-- Código QR de Autorización (Secundario) --}}
+                <div class="text-center mb-4">
+                    <h6 class="text-muted mb-3">Código de Autorización de Menor</h6>
+                    <div class="bg-light p-3 rounded d-inline-block">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ urlencode($autorizacion->codigo_autorizacion) }}"
+                             alt="Código QR Autorización"
+                             class="img-fluid">
+                    </div>
+                    <p class="text-muted small mt-2 mb-0">{{ $autorizacion->codigo_autorizacion }}</p>
+                    <p class="text-muted small">(Para validación adicional de autorización)</p>
                 </div>
 
                 <hr>
@@ -76,9 +97,9 @@
                 <div class="alert alert-warning">
                     <h6 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Instrucciones Importantes</h6>
                     <ul class="mb-0">
-                        <li>Presenta este código QR en la terminal al momento del abordaje</li>
+                        <li><strong>Presenta el CÓDIGO DE RESERVA</strong> (el QR grande azul) en la terminal al momento del abordaje</li>
                         <li>El tutor debe presentarse con su DNI original</li>
-                        <li>Guarda este código en tu celular o imprímelo</li>
+                        <li>Guarda ambos códigos en tu celular o imprímelos</li>
                         <li>Se ha enviado una copia a: <strong>{{ $autorizacion->tutor_email }}</strong></li>
                     </ul>
                 </div>
