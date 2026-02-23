@@ -67,7 +67,7 @@
                                             <i class="fas fa-user"></i>
                                         </div>
                                         <div>
-                                            <h6 class="mb-0">{{ $comentario->usuario->nombre_completo ?? 'Usuario' }}</h6>
+                                            <h6 class="mb-0">{{ $comentario->usuario->name ?? 'Usuario Anónimo' }}</h6>
                                             <small class="text-muted">{{ $comentario->created_at->format('d/m/Y') }}</small>
                                         </div>
                                     </div>
