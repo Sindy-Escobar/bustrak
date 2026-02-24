@@ -148,6 +148,13 @@ Route::resource('terminales', RegistroTeminalController::class)->parameters([
     'terminales' => 'terminal',
 ]);
 
+Route::get('terminales/{terminal}/servicios', [RegistroTeminalController::class, 'servicios'])
+    ->name('terminales.servicios');
+Route::post('terminales/{terminal}/servicios', [RegistroTeminalController::class, 'storeServicio'])
+    ->name('terminales.servicios.store');
+Route::delete('terminales/{terminal}/servicios/{servicio}', [RegistroTeminalController::class, 'destroyServicio'])
+    ->name('terminales.servicios.destroy');
+
 // HU10 - empresas buses
 Route::get('/hu10/empresas-buses', [EmpresaBusController::class, 'index'])
     ->name('hu10.empresas.buses');

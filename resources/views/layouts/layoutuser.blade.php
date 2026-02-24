@@ -322,13 +322,10 @@
                 </a>
                 <a href="{{ route('cliente.servicios.index') }}"
                    class="{{ request()->routeIs('cliente.servicios.index') ? 'active' : '' }}">
-                    Ver Servicios
+                    Consultar Servicios Disponible de Buses
                 </a>
 
-                <a href="{{ route('cliente.seleccion-tipo-servicio') }}"
-                   class="{{ request()->routeIs('cliente.seleccion-tipo-servicio') ? 'active' : '' }}">
-                    Tipos de Servicio
-                </a>
+
             </div>
         </div>
 

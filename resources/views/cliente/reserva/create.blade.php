@@ -64,9 +64,13 @@
                     Después de confirmar la reserva, deberás completar la autorización del tutor.
                 </div>
 
+
                 <button type="submit" class="btn btn-primary">
                     Buscar Viajes
                 </button>
+                <a href="{{ route('cliente.seleccion-tipo-servicio') }}" class="btn btn-primary ms-2">
+                    <i class="fas fa-concierge-bell me-2"></i> Seleccionar Tipos de Servicios
+                </a>
             </form>
         </div>
     </div>
@@ -119,6 +123,30 @@
                 alerta.classList.add('d-none');
             }
         });
+
+
+        // Guardar campos antes de ir a seleccionar servicio
+        document.querySelector('a[href*="seleccionar-servicio"]').addEventListener('click', function() {
+            localStorage.setItem('reserva_origen', document.getElementById('ciudad_origen_id').value);
+            localStorage.setItem('reserva_destino', document.getElementById('ciudad_destino_id').value);
+            localStorage.setItem('reserva_fecha_nac', document.getElementById('fecha_nacimiento').value);
+        });
+
+        // Restaurar campos solo si viene de seleccionar servicio
+        const vieneDeServicio = document.referrer.includes('seleccionar-servicio');
+        if (vieneDeServicio) {
+            const origen = localStorage.getItem('reserva_origen');
+            const destino = localStorage.getItem('reserva_destino');
+            const fechaNac = localStorage.getItem('reserva_fecha_nac');
+
+            if (origen) document.getElementById('ciudad_origen_id').value = origen;
+            if (destino) document.getElementById('ciudad_destino_id').value = destino;
+            if (fechaNac) document.getElementById('fecha_nacimiento').value = fechaNac;
+
+            localStorage.removeItem('reserva_origen');
+            localStorage.removeItem('reserva_destino');
+            localStorage.removeItem('reserva_fecha_nac');
+        }
     </script>
 
 @endsection

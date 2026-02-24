@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Servicio;
+
 
 class RegistroTerminal extends Model
 {
@@ -22,4 +24,9 @@ class RegistroTerminal extends Model
         'latitud',    // ✅ Asegúrate que esté
         'longitud',   // ✅ Asegúrate que esté
     ];
+
+    public function servicios()
+    {
+        return $this->hasMany(Servicio::class, 'terminal_id');
+    }
 }

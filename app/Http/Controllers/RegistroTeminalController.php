@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\RegistroTerminal;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
+use App\Models\Servicio;
+
 
 class RegistroTeminalController extends Controller
 {
@@ -97,8 +99,21 @@ class RegistroTeminalController extends Controller
         ]);
 
         try {
-            // ✅ SOLO CREAR EN registro_terminal
-            RegistroTerminal::create($validatedData);
+            $terminal = RegistroTerminal::create($validatedData);
+
+            if ($request->has('servicios')) {
+                foreach ($request->servicios as $servicio) {
+                    if (!empty($servicio['nombre'])) {
+                        $terminal->servicios()->create([
+                            'nombre'      => $servicio['nombre'],
+                            'descripcion' => $servicio['descripcion'] ?? null,
+                            'icono'       => 'fas fa-concierge-bell',
+                            'activo'      => true,
+                            'terminal_id' => $terminal->id,
+                        ]);
+                    }
+                }
+            }
 
             return redirect()->route('terminales.index')->with('success', 'Terminal creada correctamente.');
 
@@ -106,19 +121,6 @@ class RegistroTeminalController extends Controller
             Log::error('Error FATAL al crear la terminal: ' . $e->getMessage());
             return back()->withInput()->with('error', 'Error del sistema al guardar: ' . $e->getMessage());
         }
-    }
-
-    public function show(RegistroTerminal $terminal)
-    {
-        return view('terminales.show', compact('terminal'));
-    }
-
-    public function edit(RegistroTerminal $terminal)
-    {
-        $departamentos = $this->departamentosHonduras;
-        $municipiosHonduras = $this->municipiosHonduras;
-
-        return view('terminales.edit', compact('terminal', 'departamentos', 'municipiosHonduras'));
     }
 
     public function update(Request $request, RegistroTerminal $terminal)
@@ -143,7 +145,6 @@ class RegistroTeminalController extends Controller
                 'longitud' => 'nullable|numeric|between:-180,180',
             ]);
 
-            // ✅ SOLO ACTUALIZAR EN registro_terminal
             $terminal->update($validatedData);
 
             return redirect()->route('terminales.index')->with('success', 'Terminal actualizada correctamente.');
@@ -158,4 +159,40 @@ class RegistroTeminalController extends Controller
     {
         // Lógica de eliminación...
     }
+    public function servicios(RegistroTerminal $terminal)
+    {
+        $servicios = $terminal->servicios()->activos()->ordenadosPorNombre()->paginate(10);
+        return view('terminales.servicios.index', compact('terminal', 'servicios'));
+    }
+
+    public function storeServicio(Request $request, RegistroTerminal $terminal)
+    {
+        $request->validate([
+            'nombre'      => 'required|string|max:100',
+            'descripcion' => 'nullable|string|max:500',
+            'icono'       => 'nullable|string|max:50',
+        ]);
+
+        $terminal->servicios()->create([
+            'nombre'      => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'icono'       => $request->icono ?? 'fas fa-concierge-bell',
+            'activo'      => true,
+            'terminal_id' => $terminal->id,
+        ]);
+
+        return redirect()
+            ->route('terminales.servicios', $terminal)
+            ->with('success', 'Servicio agregado correctamente.');
+    }
+
+    public function destroyServicio(RegistroTerminal $terminal, Servicio $servicio)
+    {
+        $servicio->delete();
+
+        return redirect()
+            ->route('terminales.servicios', $terminal)
+            ->with('success', 'Servicio eliminado correctamente.');
+    }
+
 }

@@ -2,12 +2,6 @@
 
 @section('contenido')
     <style>
-        .seleccion-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
         .breadcrumb {
             background-color: transparent;
             padding: 0;
@@ -16,9 +10,9 @@
         .header-card {
             background: linear-gradient(135deg, #5cb3ff 0%, #1e63b8 100%);
             border-radius: 16px;
-            padding: 40px;
+            padding: 20px;
             color: white;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -27,16 +21,16 @@
 
         .header-card h1 {
             margin: 0;
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
         }
 
         .header-card p {
-            margin: 12px 0 0 0;
-            font-size: 14px;
+            margin: 8px 0 0 0;
+            font-size: 13px;
             opacity: 0.95;
         }
 
@@ -44,63 +38,66 @@
             background: white;
             border-radius: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 40px;
-            margin-top: 20px;
+            padding: 20px;
+            margin-top: 10px;
         }
 
         .card h2 {
             color: #333;
-            margin-bottom: 30px;
-            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
             font-weight: 600;
         }
 
         .card h2 i {
             color: #5cb3ff;
-            margin-right: 15px;
+            margin-right: 10px;
         }
 
         .info-card {
             background: #f8f9fa;
             border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 30px;
+            padding: 12px;
+            margin-bottom: 15px;
         }
 
         .info-card h3 {
             color: #333;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         .info-card p {
             color: #666;
-            line-height: 1.6;
+            line-height: 1.4;
             margin: 0;
-            font-size: 15px;
+            font-size: 13px;
         }
 
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
         }
 
         .service-card {
             background: white;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
-            padding: 30px;
+            padding: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
             border-color: #5cb3ff;
         }
 
@@ -111,33 +108,39 @@
         }
 
         .service-icon {
-            font-size: 3.5rem;
-            margin-bottom: 15px;
-            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            width: 50px;
+            height: 50px;
+            background: rgba(92, 179, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: #5cb3ff;
         }
 
         .service-name {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1rem;
+            font-weight: 700;
             color: #333;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
 
         .service-description {
             color: #666;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            min-height: 75px;
-            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 0;
+            font-size: 12px;
+            flex-grow: 1;
         }
 
         .service-card input[type="radio"] {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 24px;
-            height: 24px;
+            top: 12px;
+            right: 12px;
+            width: 18px;
+            height: 18px;
             cursor: pointer;
             appearance: none;
             border: 2px solid #e0e0e0;
@@ -158,7 +161,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: white;
-            font-size: 14px;
+            font-size: 11px;
             font-weight: bold;
         }
 
@@ -192,40 +195,26 @@
 
         .button-container {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 15px;
         }
 
         .alert-custom {
-            padding: 12px 15px;
+            padding: 10px 15px;
             border-radius: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             font-size: 13px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border-left: 4px solid #28a745;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border-left: 4px solid #dc3545;
-        }
-
-        .alert-warning {
-            background: #fff3cd;
-            color: #856404;
-            border-left: 4px solid #ffc107;
-        }
+        .alert-success { background: #d4edda; color: #155724; border-left: 4px solid #28a745; }
+        .alert-error { background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545; }
+        .alert-warning { background: #fff3cd; color: #856404; border-left: 4px solid #ffc107; }
 
         .loading-container {
             text-align: center;
-            padding: 80px 20px;
+            padding: 40px 20px;
             color: #666;
         }
 
@@ -233,10 +222,10 @@
             border: 4px solid #f3f3f3;
             border-top: 4px solid #5cb3ff;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            margin: 0 auto 15px;
         }
 
         @keyframes spin {
@@ -245,26 +234,15 @@
         }
 
         @media (max-width: 768px) {
-            .services-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .header-card {
-                padding: 30px 20px;
-            }
-
-            .header-card h1 {
-                font-size: 24px;
-            }
-
-            .card {
-                padding: 30px 20px;
-            }
+            .services-grid { grid-template-columns: 1fr; }
+            .header-card { padding: 15px; }
+            .header-card h1 { font-size: 18px; }
+            .card { padding: 15px; }
         }
     </style>
 
     <div class="container-fluid px-4">
-        <nav aria-label="breadcrumb" class="mb-4">
+        <nav aria-label="breadcrumb" class="mb-3">
             <ol class="breadcrumb" style="background-color: transparent; padding: 0;">
                 <li class="breadcrumb-item"><a href="{{ route('cliente.perfil') }}">Inicio</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Seleccionar Servicio</li>
@@ -283,9 +261,7 @@
                 </div>
 
                 <div class="card">
-                    <h2>
-                        <i class="fas fa-route"></i>Tipos de Servicio Disponibles
-                    </h2>
+                    <h2><i class="fas fa-route"></i>Tipos de Servicio Disponibles</h2>
 
                     <div id="alertContainer"></div>
 
@@ -294,10 +270,7 @@
                             <i class="fas fa-info-circle me-2" style="color: #5cb3ff;"></i>
                             ¿Qué tipo de servicio necesitas?
                         </h3>
-                        <p>
-                            Cada tipo de servicio está diseñado para diferentes necesidades de transporte.
-                            Revisa las características de cada uno para elegir el que mejor se ajuste a tu viaje.
-                        </p>
+                        <p>Cada tipo de servicio está diseñado para diferentes necesidades de transporte. Revisa las características de cada uno para elegir el que mejor se ajuste a tu viaje.</p>
                     </div>
 
                     <div class="loading-container" id="loadingContainer" style="display: none;">
@@ -308,12 +281,7 @@
                     <div class="services-grid" id="servicesGrid">
                         @foreach($tiposServicio as $servicio)
                             <div class="service-card" data-servicio-id="{{ $servicio->id }}" onclick="seleccionarServicio({{ $servicio->id }})">
-                                <input
-                                    type="radio"
-                                    name="tipo_servicio"
-                                    value="{{ $servicio->id }}"
-                                    id="servicio_{{ $servicio->id }}"
-                                >
+                                <input type="radio" name="tipo_servicio" value="{{ $servicio->id }}" id="servicio_{{ $servicio->id }}">
                                 <div class="service-icon">
                                     <i class="{{ $servicio->icono }}"></i>
                                 </div>
@@ -324,12 +292,7 @@
                     </div>
 
                     <div class="button-container">
-                        <button
-                            id="btnContinuar"
-                            class="btn-continue"
-                            onclick="procesarSeleccion()"
-                            disabled
-                        >
+                        <button id="btnContinuar" class="btn-continue" onclick="procesarSeleccion()" disabled>
                             <span>Continuar con la Reserva</span>
                             <i class="fas fa-arrow-right"></i>
                         </button>
@@ -345,13 +308,9 @@
         const csrfToken = '{{ csrf_token() }}';
 
         function seleccionarServicio(id) {
-            document.querySelectorAll('.service-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-
+            document.querySelectorAll('.service-card').forEach(card => card.classList.remove('selected'));
             const card = document.querySelector(`[data-servicio-id="${id}"]`);
             const radio = document.getElementById(`servicio_${id}`);
-
             if (card && radio) {
                 card.classList.add('selected');
                 radio.checked = true;
@@ -366,14 +325,11 @@
                 mostrarAlerta('Por favor, selecciona un tipo de servicio', 'warning');
                 return;
             }
-
             const btn = document.getElementById('btnContinuar');
             const btnTextoOriginal = btn.innerHTML;
-
             try {
                 btn.disabled = true;
                 btn.innerHTML = '<span class="spinner" style="width: 20px; height: 20px; margin-right: 8px; border-width: 3px;"></span> Procesando...';
-
                 const response = await fetch('{{ route("cliente.tipo-servicio.seleccionar") }}', {
                     method: 'POST',
                     headers: {
@@ -381,28 +337,18 @@
                         'X-CSRF-TOKEN': csrfToken,
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify({
-                        tipo_servicio_id: servicioSeleccionado
-                    })
+                    body: JSON.stringify({ tipo_servicio_id: servicioSeleccionado })
                 });
-
                 const result = await response.json();
-
                 if (result.success) {
                     mostrarAlerta('¡Tipo de servicio seleccionado correctamente!', 'success');
-
-                    setTimeout(() => {
-                        if (result.redirect) {
-                            window.location.href = result.redirect;
-                        }
-                    }, 1500);
+                    setTimeout(() => { window.location.href = '{{ route("cliente.reserva.create") }}'; }, 1500);
                 } else {
                     mostrarAlerta(result.message || 'Error al procesar la selección', 'error');
                     btn.disabled = false;
                     btn.innerHTML = btnTextoOriginal;
                 }
             } catch (error) {
-                console.error('Error:', error);
                 mostrarAlerta('Error de conexión al procesar la selección', 'error');
                 btn.disabled = false;
                 btn.innerHTML = btnTextoOriginal;
@@ -410,26 +356,14 @@
         }
 
         function mostrarAlerta(mensaje, tipo = 'info') {
-            const iconos = {
-                success: 'fa-check-circle',
-                error: 'fa-times-circle',
-                warning: 'fa-exclamation-triangle'
-            };
-
+            const iconos = { success: 'fa-check-circle', error: 'fa-times-circle', warning: 'fa-exclamation-triangle' };
             const alert = document.createElement('div');
             alert.className = `alert-custom alert-${tipo}`;
-            alert.innerHTML = `
-                <i class="fas ${iconos[tipo] || 'fa-info-circle'}"></i>
-                <span>${mensaje}</span>
-            `;
-
+            alert.innerHTML = `<i class="fas ${iconos[tipo] || 'fa-info-circle'}"></i><span>${mensaje}</span>`;
             const container = document.getElementById('alertContainer');
             container.innerHTML = '';
             container.appendChild(alert);
-
-            setTimeout(() => {
-                alert.style.display = 'none';
-            }, 5000);
+            setTimeout(() => { alert.style.display = 'none'; }, 5000);
         }
     </script>
 @endsection

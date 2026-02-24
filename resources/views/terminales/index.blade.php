@@ -105,6 +105,9 @@
                                 <td>
                                     <a href="{{ route('terminales.edit', $terminal) }}" class="btn btn-primary btn-sm">Editar</a>
 
+                                    <a href="{{ route('terminales.servicios', $terminal) }}" class="btn btn-success btn-sm">
+                                        <i class="fas fa-concierge-bell me-1"></i>Servicios
+                                    </a>
                                 </td>
                             </tr>
                         @empty
