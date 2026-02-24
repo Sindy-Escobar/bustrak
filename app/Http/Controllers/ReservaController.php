@@ -23,7 +23,8 @@ class ReservaController extends Controller
     public function create()
     {
         $ciudades = Ciudad::all();
-        return view('cliente.reserva.create', compact('ciudades'));
+        $tiposServicio = \App\Models\TipoServicio::where('activo', true)->get();
+        return view('cliente.reserva.create', compact('ciudades', 'tiposServicio'));
     }
 
     /**

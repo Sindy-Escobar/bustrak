@@ -225,10 +225,25 @@
                             </div>
                         </div>
 
+                        {{-- 4️⃣ SERVICIOS --}}
+                        <h5 class="mb-3 mt-5" style="color:#1e63b8; font-weight:600; font-size:1.5rem;">
+                            <i class="fas fa-concierge-bell me-2"></i>4. Servicios de la Terminal
+                        </h5>
+                        <hr class="mt-0 mb-4">
+
+                        <div id="servicios-container"></div>
+
+                        <button type="button" class="btn btn-success mb-4" id="btn-agregar-servicio">
+                            <i class="fas fa-plus me-2"></i>Agregar Servicio
+                        </button>
+
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top">
                             <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ route('terminales.index') }}'">
                                 <i class="fas fa-arrow-left me-2"></i> Volver a la lista
                             </button>
+
+
+
 
                             <div class="d-flex gap-2">
                                 <button type="button" class="btn btn-warning reset-btn">
@@ -583,6 +598,45 @@
                             firstInvalidField.focus();
                         }
                     }
+                });
+
+                // SERVICIOS DINÁMICOS
+                let servicioIndex = 0;
+                const serviciosContainer = document.getElementById('servicios-container');
+                const btnAgregarServicio = document.getElementById('btn-agregar-servicio');
+
+                btnAgregarServicio.addEventListener('click', function() {
+                    const fila = document.createElement('div');
+                    fila.className = 'row g-3 mb-3 align-items-end servicio-fila';
+                    fila.innerHTML = `
+        <div class="col-md-4">
+            <label class="form-label fw-bold">Nombre del Servicio</label>
+            <input type="text" name="servicios[${servicioIndex}][nombre]" class="form-control" placeholder="Ej: Cafetería, Sanitarios..." maxlength="100">
+        </div>
+        <div class="col-md-5">
+            <label class="form-label fw-bold">Descripción</label>
+            <input type="text" name="servicios[${servicioIndex}][descripcion]" class="form-control" placeholder="Breve descripción..." maxlength="500">
+        </div>
+        <div class="col-md-2">
+            <label class="form-label fw-bold">Número de Estación</label>
+            <input type="text" name="servicios[${servicioIndex}][numero_estacion]" class="form-control bg-light" readonly>
+        </div>
+        <div class="col-md-1 d-flex align-items-end">
+            <button type="button" class="btn btn-danger btn-eliminar-servicio w-100">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `;
+                    serviciosContainer.appendChild(fila);
+
+                    // Llenar automáticamente el número de estación con el código generado
+                    fila.querySelector(`input[name="servicios[${servicioIndex}][numero_estacion]"]`).value = codigoInput.value;
+
+                    servicioIndex++;
+
+                    fila.querySelector('.btn-eliminar-servicio').addEventListener('click', function() {
+                        fila.remove();
+                    });
                 });
 
             });
