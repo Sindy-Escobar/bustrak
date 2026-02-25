@@ -365,5 +365,14 @@
             container.appendChild(alert);
             setTimeout(() => { alert.style.display = 'none'; }, 5000);
         }
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const tipoGuardado = {{ session('tipo_servicio_seleccionado.id') ?? 'null' }};
+            if (tipoGuardado) {
+                seleccionarServicio(tipoGuardado);
+            }
+        });
+
     </script>
 @endsection

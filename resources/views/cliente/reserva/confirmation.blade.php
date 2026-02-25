@@ -19,6 +19,7 @@
                 <li>Hora Salida: {{ $reserva->viaje->fecha_hora_salida }}</li>
                 <li>Asiento: #{{ $reserva->asiento->numero_asiento }}</li>
                 <li>Código Reserva: {{ $reserva->codigo_reserva }}</li>
+                <li>Tipo de Servicio: {{ $reserva->tipoServicio->nombre ?? 'No especificado' }}</li>
             </ul>
             {!! $qrCode !!}
         </div>
@@ -41,8 +42,15 @@
     </div>
 
     <script>
-        // Mostrar modal automáticamente
-        var myModal = new bootstrap.Modal(document.getElementById('qrModal'));
-        myModal.show();
+
+            // Mostrar modal automáticamente
+            var myModal = new bootstrap.Modal(document.getElementById('qrModal'));
+            myModal.show();
+
+            // Limpiar datos guardados
+            localStorage.removeItem('reserva_origen');
+            localStorage.removeItem('reserva_destino');
+            localStorage.removeItem('reserva_fecha_nac');
+
     </script>
 @endsection

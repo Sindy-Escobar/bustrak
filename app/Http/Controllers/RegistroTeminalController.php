@@ -123,6 +123,14 @@ class RegistroTeminalController extends Controller
         }
     }
 
+    // ✅ MÉTODO EDIT AGREGADO
+    public function edit(RegistroTerminal $terminal)
+    {
+        $departamentos = $this->departamentosHonduras;
+        $municipiosHonduras = $this->municipiosHonduras;
+        return view('terminales.edit', compact('terminal', 'departamentos', 'municipiosHonduras'));
+    }
+
     public function update(Request $request, RegistroTerminal $terminal)
     {
         try {
@@ -159,6 +167,7 @@ class RegistroTeminalController extends Controller
     {
         // Lógica de eliminación...
     }
+
     public function servicios(RegistroTerminal $terminal)
     {
         $servicios = $terminal->servicios()->activos()->ordenadosPorNombre()->paginate(10);
@@ -194,5 +203,4 @@ class RegistroTeminalController extends Controller
             ->route('terminales.servicios', $terminal)
             ->with('success', 'Servicio eliminado correctamente.');
     }
-
 }

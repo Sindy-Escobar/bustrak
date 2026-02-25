@@ -28,7 +28,6 @@
                         </h5>
                         <hr class="mt-0 mb-4">
                         <div class="row g-4">
-                            {{-- Fila 1: Nombre y Código --}}
                             <div class="col-md-6">
                                 <label for="nombre" class="form-label">Nombre</label>
                                 <input type="text" id="nombre" name="nombre" value="{{ old('nombre') }}" maxlength="100" required
@@ -242,9 +241,6 @@
                                 <i class="fas fa-arrow-left me-2"></i> Volver a la lista
                             </button>
 
-
-
-
                             <div class="d-flex gap-2">
                                 <button type="button" class="btn btn-warning reset-btn">
                                     <i class="fas fa-undo me-2"></i> Limpiar formulario
@@ -260,15 +256,33 @@
         </div>
 
         <script>
+            const municipiosData = {
+                'Atlántida': ['La Ceiba', 'El Porvenir', 'Tela', 'San Francisco', 'Arizona', 'Esparta', 'Jutiapa', 'La Másica'],
+                'Colón': ['Trujillo', 'Balfate', 'Iriona', 'Limón', 'Sabá', 'Santa Rosa de Aguán', 'Sonaguera', 'Tocoa', 'Bonito Oriental', 'Fe'],
+                'Comayagua': ['Comayagua', 'Ajuterique', 'El Rosario', 'Esquías', 'Guanja', 'La Libertad', 'Lamaní', 'La Paz', 'Leyes', 'Meámbar', 'Minas de Oro', 'Ojo de Agua', 'San Jerónimo', 'San José de Comayagua', 'San José del Potrero', 'San Luis', 'San Sebastián', 'Siguatepeque', 'Taulabé', 'Villa de San Antonio', 'Las Lajas'],
+                'Copán': ['Santa Rosa de Copán', 'Cabañas', 'Concepción', 'Copán Ruinas', 'Corquín', 'Dolores', 'Dulce Nombre', 'El Paraíso', 'Florida', 'La Unión', 'Leapaera', 'Lucerna', 'Nueva Arcadia', 'San Agustín', 'San Antonio', 'San Jerónimo', 'San José', 'San Juan de Opoa', 'San Nicolás', 'San Pedro de Copán', 'Santa Rita', 'Trinidad de Copán', 'Veracruz'],
+                'Cortés': ['San Pedro Sula', 'Choloma', 'Puerto Cortés', 'La Lima', 'Omoa', 'San Antonio de Cortés', 'San Francisco de Yojoa', 'San Manuel', 'Villanueva', 'Potrerillos', 'Pimienta', 'Santa Cruz de Yojoa'],
+                'Choluteca': ['Choluteca', 'Apacilagua', 'Concepción de María', 'El Corpus', 'El Triunfo', 'Marcovia', 'Morolica', 'Namasigüe', 'Orocuina', 'Pespire', 'San Antonio de Flores', 'San Isidro', 'San José', 'San Marcos de Colón', 'Santa Ana de Yusguare', 'Ciudad Choluteca'],
+                'El Paraíso': ['Yuscarán', 'Alauca', 'Danlí', 'El Paraíso', 'Güinope', 'Jacaleapa', 'Liure', 'Morocelí', 'Oropolí', 'Potrerillos', 'San Antonio de Flores', 'San Lucas', 'San Matías', 'Soledad', 'Teupasenti', 'Vado Ancho', 'Trojes', 'Texiguat'],
+                'Francisco Morazán': ['Distrito Central (Tegucigalpa y Comayagüela)', 'Alubarén', 'Cedros', 'Curarén', 'El Porvenir', 'Guaimaca', 'La Libertad', 'La Venta', 'Lepaterique', 'Maraita', 'Marale', 'Nueva Armenia', 'Ojojona', 'Orica', 'Reitoca', 'Sabana Grande', 'San Antonio de Oriente', 'San Buenaventura', 'San Ignacio', 'San Juan de Flores (Cantarranas)', 'San Miguelito', 'Santa Ana', 'Santa Lucía', 'Talanga', 'Tatumbla', 'Valle de Ángeles', 'Villa de San Francisco', 'Vallecillo'],
+                'Gracias a Dios': ['Puerto Lempira', 'Brus Laguna', 'Ahuas', 'Juan Francisco Bulnes', 'Villeda Morales', 'Wampusirpi'],
+                'Intibucá': ['La Esperanza', 'Camasca', 'Colomoncagua', 'Concepción', 'Dolores', 'Honduritas', 'Intibucá', 'Jesús de Otoro', 'Magdalena', 'Masaguara', 'San Antonio', 'San Francisco de Opalaca', 'San Isidro', 'San Juan', 'San Marco de la Sierra', 'San Miguelito', 'Santa Lucía', 'Yamaranguila', 'Yurique'],
+                'Islas de la Bahía': ['Roatán', 'Guanaja', 'José Santos Guardiola', 'Utila'],
+                'La Paz': ['La Paz', 'Aguanqueterique', 'Cabañas', 'Cane', 'Chinacla', 'Guajiquiro', 'Laura', 'Marcala', 'Mercedes de Oriente', 'Opatoro', 'San Antonio del Norte', 'San José', 'San Juan', 'San Pedro de Tutule', 'Santa Ana', 'Santa Elena', 'Santa María', 'Santiago de Puringla', 'Yarula'],
+                'Lempira': ['Gracias', 'Belen', 'Candelaria', 'Cololaca', 'Erandique', 'Gualcince', 'Guarita', 'La Campa', 'La Iguala', 'Las Flores', 'La Unión', 'La Virtud', 'Lepaera', 'Mapulaca', 'Piraera', 'Rendero', 'San Andrés', 'San Francisco', 'San Juan de Cajacas', 'San Manuel Colohete', 'San Rafael', 'San Sebastián', 'Santa Cruz', 'Talgua', 'Tambla', 'Tomala', 'Tomala', 'Valladolid', 'Virginia', 'San Antonio'],
+                'Ocotepeque': ['Ocotepeque', 'Belén Gualcho', 'Concepción', 'Dolores Merendón', 'Fraternidad', 'La Encarnación', 'La Labor', 'Lucerna', 'Mercedes', 'San Fernando', 'San Francisco del Valle', 'San Jorge', 'San Marcos', 'Santa Fe', 'Sinuapa', 'Sensenti'],
+                'Olancho': ['Juticalpa', 'Campamento', 'Catacamas', 'Concordia', 'Dulce Nombre de Culmí', 'El Rosario', 'Esquipulas del Norte', 'Gualaco', 'Guarizama', 'Jano', 'La Unión', 'Mangulile', 'Manto', 'Salama', 'San Esteban', 'San Francisco de la Paz', 'Santa María del Real', 'Silca', 'Yocón', 'Patuca', 'Guayape'],
+                'Santa Bárbara': ['Santa Bárbara', 'Azacualpa', 'Atima', 'Ceguaca', 'Concepción del Norte', 'Concepción del Sur', 'Chinda', 'El Níspero', 'Gualala', 'Ilama', 'Las Vegas', 'Macuelizo', 'Naranjito', 'Nueva Frontera', 'Petoa', 'Protección', 'Quimistán', 'San Francisco de Ojuera', 'San Luis', 'San Marcos', 'San Nicolás', 'San Pedro Zacapa', 'Santa Rita', 'Trinidad', 'Santa Cruz de Yojoa'],
+                'Valle': ['Nacaome', 'Amapala', 'Alianza', 'Aramecina', 'Caridad', 'Goascorán', 'Langue', 'San Francisco de Coray', 'San Lorenzo'],
+                'Yoro': ['Yoro', 'Arenal', 'El Negrito', 'El Progreso', 'Jocón', 'Morazán', 'Olanchito', 'Santa Rita', 'Sulaco', 'Victoria', 'Yorito']
+            };
+
             document.addEventListener('DOMContentLoaded', function() {
-                // 🏷️ Referencias a Elementos del DOM
                 const terminalForm = document.getElementById('terminalForm');
                 const departamentoSelect = document.getElementById('departamento');
                 const municipioSelect = document.getElementById('municipio');
                 const codigoInput = document.getElementById('codigo');
                 const nombreInput = document.getElementById('nombre');
-                const telefonoInput = document.getElementById('telefono');
-                const correoInput = document.getElementById('correo');
                 const resetButton = document.querySelector('.reset-btn');
                 const direccionTextarea = document.getElementById('direccion');
                 const descripcionTextarea = document.getElementById('descripcion');
@@ -279,27 +293,6 @@
                 const horarioCierreMinutoSelect = document.getElementById('horario_cierre_minuto');
                 const horarioAperturaHidden = document.getElementById('horario_apertura_hidden');
                 const horarioCierreHidden = document.getElementById('horario_cierre_hidden');
-
-                const municipiosData = {
-                    'Atlántida': ['La Ceiba', 'El Porvenir', 'Tela', 'San Francisco', 'Arizona', 'Esparta', 'Jutiapa', 'La Másica'],
-                    'Colón': ['Trujillo', 'Balfate', 'Iriona', 'Limón', 'Sabá', 'Santa Rosa de Aguán', 'Sonaguera', 'Tocoa', 'Bonito Oriental', 'Fe'],
-                    'Comayagua': ['Comayagua', 'Ajuterique', 'El Rosario', 'Esquías', 'Guanja', 'La Libertad', 'Lamaní', 'La Paz', 'Leyes', 'Meámbar', 'Minas de Oro', 'Ojo de Agua', 'San Jerónimo', 'San José de Comayagua', 'San José del Potrero', 'San Luis', 'San Sebastián', 'Siguatepeque', 'Taulabé', 'Villa de San Antonio', 'Las Lajas'],
-                    'Copán': ['Santa Rosa de Copán', 'Cabañas', 'Concepción', 'Copán Ruinas', 'Corquín', 'Dolores', 'Dulce Nombre', 'El Paraíso', 'Florida', 'La Unión', 'Leapaera', 'Lucerna', 'Nueva Arcadia', 'San Agustín', 'San Antonio', 'San Jerónimo', 'San José', 'San Juan de Opoa', 'San Nicolás', 'San Pedro de Copán', 'Santa Rita', 'Trinidad de Copán', 'Veracruz'],
-                    'Cortés': ['San Pedro Sula', 'Choloma', 'Puerto Cortés', 'La Lima', 'Omoa', 'San Antonio de Cortés', 'San Francisco de Yojoa', 'San Manuel', 'Villanueva', 'Potrerillos', 'Pimienta', 'Santa Cruz de Yojoa'],
-                    'Choluteca': ['Choluteca', 'Apacilagua', 'Concepción de María', 'El Corpus', 'El Triunfo', 'Marcovia', 'Morolica', 'Namasigüe', 'Orocuina', 'Pespire', 'San Antonio de Flores', 'San Isidro', 'San José', 'San Marcos de Colón', 'Santa Ana de Yusguare', 'Ciudad Choluteca'],
-                    'El Paraíso': ['Yuscarán', 'Alauca', 'Danlí', 'El Paraíso', 'Güinope', 'Jacaleapa', 'Liure', 'Morocelí', 'Oropolí', 'Potrerillos', 'San Antonio de Flores', 'San Lucas', 'San Matías', 'Soledad', 'Teupasenti', 'Vado Ancho', 'Trojes', 'Texiguat'],
-                    'Francisco Morazán': ['Distrito Central (Tegucigalpa y Comayagüela)', 'Alubarén', 'Cedros', 'Curarén', 'El Porvenir', 'Guaimaca', 'La Libertad', 'La Venta', 'Lepaterique', 'Maraita', 'Marale', 'Nueva Armenia', 'Ojojona', 'Orica', 'Reitoca', 'Sabana Grande', 'San Antonio de Oriente', 'San Buenaventura', 'San Ignacio', 'San Juan de Flores (Cantarranas)', 'San Miguelito', 'Santa Ana', 'Santa Lucía', 'Talanga', 'Tatumbla', 'Valle de Ángeles', 'Villa de San Francisco', 'Vallecillo'],
-                    'Gracias a Dios': ['Puerto Lempira', 'Brus Laguna', 'Ahuas', 'Juan Francisco Bulnes', 'Villeda Morales', 'Wampusirpi'],
-                    'Intibucá': ['La Esperanza', 'Camasca', 'Colomoncagua', 'Concepción', 'Dolores', 'Honduritas', 'Intibucá', 'Jesús de Otoro', 'Magdalena', 'Masaguara', 'San Antonio', 'San Francisco de Opalaca', 'San Isidro', 'San Juan', 'San Marco de la Sierra', 'San Miguelito', 'Santa Lucía', 'Yamaranguila', 'Yurique'],
-                    'Islas de la Bahía': ['Roatán', 'Guanaja', 'José Santos Guardiola', 'Utila'],
-                    'La Paz': ['La Paz', 'Aguanqueterique', 'Cabañas', 'Cane', 'Chinacla', 'Guajiquiro', 'Laura', 'Marcala', 'Mercedes de Oriente', 'Opatoro', 'San Antonio del Norte', 'San José', 'San Juan', 'San Pedro de Tutule', 'Santa Ana', 'Santa Elena', 'Santa María', 'Santiago de Puringla', 'Yarula'],
-                    'Lempira': ['Gracias', 'Belen', 'Candelaria', 'Cololaca', 'Erandique', 'Gualcince', 'Guarita', 'La Campa', 'La Iguala', 'Las Flores', 'La Unión', 'La Virtud', 'Lepaera', 'Mapulaca', 'Piraera', 'Rendero', 'San Andrés', 'San Francisco', 'San Juan de Cajacas', 'San Manuel Colohete', 'San Rafael', 'San Sebastián', 'Santa Cruz', 'Talgua', 'Tambla', 'Tomala', 'Tomala', 'Valladolid', 'Virginia', 'San Antonio'],
-                    'Ocotepeque': ['Ocotepeque', 'Belén Gualcho', 'Concepción', 'Dolores Merendón', 'Fraternidad', 'La Encarnación', 'La Labor', 'Lucerna', 'Mercedes', 'San Fernando', 'San Francisco del Valle', 'San Jorge', 'San Marcos', 'Santa Fe', 'Sinuapa', 'Sensenti'],
-                    'Olancho': ['Juticalpa', 'Campamento', 'Catacamas', 'Concordia', 'Dulce Nombre de Culmí', 'El Rosario', 'Esquipulas del Norte', 'Gualaco', 'Guarizama', 'Jano', 'La Unión', 'Mangulile', 'Manto', 'Salama', 'San Esteban', 'San Francisco de la Paz', 'Santa María del Real', 'Silca', 'Yocón', 'Patuca', 'Guayape'],
-                    'Santa Bárbara': ['Santa Bárbara', 'Azacualpa', 'Atima', 'Ceguaca', 'Concepción del Norte', 'Concepción del Sur', 'Chinda', 'El Níspero', 'Gualala', 'Ilama', 'Las Vegas', 'Macuelizo', 'Naranjito', 'Nueva Frontera', 'Petoa', 'Protección', 'Quimistán', 'San Francisco de Ojuera', 'San Luis', 'San Marcos', 'San Nicolás', 'San Pedro Zacapa', 'Santa Rita', 'Trinidad', 'Santa Cruz de Yojoa'],
-                    'Valle': ['Nacaome', 'Amapala', 'Alianza', 'Aramecina', 'Caridad', 'Goascorán', 'Langue', 'San Francisco de Coray', 'San Lorenzo'],
-                    'Yoro': ['Yoro', 'Arenal', 'El Negrito', 'El Progreso', 'Jocón', 'Morazán', 'Olanchito', 'Santa Rita', 'Sulaco', 'Victoria', 'Yorito']
-                };
 
                 function showError(field, message) {
                     const fieldId = field.id;
@@ -314,7 +307,6 @@
                         } else if (message === '') {
                             errorElement.textContent = '';
                         }
-
                         field.classList.add('is-invalid');
                     }
                 }
@@ -352,7 +344,7 @@
                         municipioSelect.disabled = false;
                         municipioSelect.appendChild(new Option('-- Seleccione un municipio --', ''));
 
-                        const municipios = municipiosData[selectedDepto].sort();
+                        const municipios = [...municipiosData[selectedDepto]].sort();
                         const oldMunicipio = "{{ old('municipio') }}";
 
                         municipios.forEach(municipio => {
@@ -512,6 +504,10 @@
 
                         direccionTextarea.style.height = 'auto';
                         descripcionTextarea.style.height = '100px';
+
+                        // ✅ FIX #2: Limpiar también los servicios dinámicos
+                        serviciosContainer.innerHTML = '';
+                        servicioIndex = 0;
                     });
                 }
 
@@ -544,7 +540,6 @@
                                 if (!horaSelect.value || !minutoSelect.value) {
                                     message = 'Debe seleccionar tanto la **hora** como el **minuto**.';
                                     isFieldInvalid = true;
-
                                     if (!horaSelect.value) showError(horaSelect, '');
                                     if (!minutoSelect.value) showError(minutoSelect, message);
                                 }
@@ -554,12 +549,10 @@
                             message = 'Este campo es **obligatorio**.';
                             isFieldInvalid = true;
                         }
-
                         else if (fieldId === 'telefono' && !/^\d{8}$/.test(value)) {
                             message = 'El teléfono debe contener exactamente **8 dígitos** numéricos.';
                             isFieldInvalid = true;
                         }
-
                         else if (fieldId === 'correo' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
                             message = 'Ingrese un **correo electrónico válido** (ej: nombre@dominio.com).';
                             isFieldInvalid = true;
@@ -572,7 +565,6 @@
                             if (cierreValue <= aperturaValue) {
                                 message = 'El horario de cierre debe ser **posterior** al de apertura.';
                                 isFieldInvalid = true;
-
                                 showError(horarioCierreHoraSelect, '');
                                 showError(horarioCierreMinutoSelect, message);
                             }
@@ -585,7 +577,6 @@
                             } else if (fieldId.endsWith('_hora') && !horaSelect.value) {
                                 showError(field, message);
                             }
-
                             if (!firstInvalidField) {
                                 firstInvalidField = field;
                             }
@@ -609,27 +600,26 @@
                     const fila = document.createElement('div');
                     fila.className = 'row g-3 mb-3 align-items-end servicio-fila';
                     fila.innerHTML = `
-        <div class="col-md-4">
-            <label class="form-label fw-bold">Nombre del Servicio</label>
-            <input type="text" name="servicios[${servicioIndex}][nombre]" class="form-control" placeholder="Ej: Cafetería, Sanitarios..." maxlength="100">
-        </div>
-        <div class="col-md-5">
-            <label class="form-label fw-bold">Descripción</label>
-            <input type="text" name="servicios[${servicioIndex}][descripcion]" class="form-control" placeholder="Breve descripción..." maxlength="500">
-        </div>
-        <div class="col-md-2">
-            <label class="form-label fw-bold">Número de Estación</label>
-            <input type="text" name="servicios[${servicioIndex}][numero_estacion]" class="form-control bg-light" readonly>
-        </div>
-        <div class="col-md-1 d-flex align-items-end">
-            <button type="button" class="btn btn-danger btn-eliminar-servicio w-100">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>
-    `;
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Nombre del Servicio</label>
+                            <input type="text" name="servicios[${servicioIndex}][nombre]" class="form-control" placeholder="Ej: Cafetería, Sanitarios..." maxlength="100">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label fw-bold">Descripción</label>
+                            <input type="text" name="servicios[${servicioIndex}][descripcion]" class="form-control" placeholder="Breve descripción..." maxlength="500">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold">Número de Estación</label>
+                            <input type="text" name="servicios[${servicioIndex}][numero_estacion]" class="form-control bg-light" readonly>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-eliminar-servicio w-100">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
                     serviciosContainer.appendChild(fila);
 
-                    // Llenar automáticamente el número de estación con el código generado
                     fila.querySelector(`input[name="servicios[${servicioIndex}][numero_estacion]"]`).value = codigoInput.value;
 
                     servicioIndex++;

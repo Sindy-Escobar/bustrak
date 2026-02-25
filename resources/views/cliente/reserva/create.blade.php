@@ -99,9 +99,17 @@
 
             if (origen && destino && origen === destino) {
                 e.preventDefault();
-                document.getElementById('errorMessage').textContent =
-                    'La ciudad de origen y destino deben ser diferentes.';
+                document.getElementById('errorMessage').textContent = 'La ciudad de origen y destino deben ser diferentes.';
                 new bootstrap.Modal(document.getElementById('errorModal')).show();
+                return;
+            }
+
+            const tieneServicio = {{ session('tipo_servicio_seleccionado.id') ?? 'null' }};
+            if (!tieneServicio) {
+                e.preventDefault();
+                document.getElementById('errorMessage').textContent = 'Debes seleccionar un tipo de servicio antes de buscar viajes.';
+                new bootstrap.Modal(document.getElementById('errorModal')).show();
+                return;
             }
         });
 
@@ -110,13 +118,8 @@
             const hoy = new Date();
             let edad = hoy.getFullYear() - fechaNac.getFullYear();
             const mes = hoy.getMonth() - fechaNac.getMonth();
-
-            if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
-                edad--;
-            }
-
+            if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) edad--;
             const alerta = document.getElementById('alerta-menor');
-
             if (edad < 18) {
                 alerta.classList.remove('d-none');
             } else {
@@ -124,28 +127,41 @@
             }
         });
 
+        document.querySelector('a[href*="seleccionar-servicio"]').addEventListener('click', function(e) {
+            const origen = document.getElementById('ciudad_origen_id').value;
+            const destino = document.getElementById('ciudad_destino_id').value;
+            const fechaNac = document.getElementById('fecha_nacimiento').value;
 
-        // Guardar campos antes de ir a seleccionar servicio
-        document.querySelector('a[href*="seleccionar-servicio"]').addEventListener('click', function() {
-            localStorage.setItem('reserva_origen', document.getElementById('ciudad_origen_id').value);
-            localStorage.setItem('reserva_destino', document.getElementById('ciudad_destino_id').value);
-            localStorage.setItem('reserva_fecha_nac', document.getElementById('fecha_nacimiento').value);
+            if (!origen || !destino || !fechaNac) {
+                e.preventDefault();
+                document.getElementById('errorMessage').textContent = 'Debes llenar Ciudad de Origen, Destino y Fecha de Nacimiento antes de seleccionar el tipo de servicio.';
+                new bootstrap.Modal(document.getElementById('errorModal')).show();
+                return;
+            }
+
+            localStorage.setItem('reserva_origen', origen);
+            localStorage.setItem('reserva_destino', destino);
+            localStorage.setItem('reserva_fecha_nac', fechaNac);
         });
 
-        // Restaurar campos solo si viene de seleccionar servicio
-        const vieneDeServicio = document.referrer.includes('seleccionar-servicio');
-        if (vieneDeServicio) {
+        if (document.referrer.includes('seleccion-tipo-servicio')) {
             const origen = localStorage.getItem('reserva_origen');
             const destino = localStorage.getItem('reserva_destino');
             const fechaNac = localStorage.getItem('reserva_fecha_nac');
-
             if (origen) document.getElementById('ciudad_origen_id').value = origen;
             if (destino) document.getElementById('ciudad_destino_id').value = destino;
             if (fechaNac) document.getElementById('fecha_nacimiento').value = fechaNac;
-
+        } else {
             localStorage.removeItem('reserva_origen');
             localStorage.removeItem('reserva_destino');
             localStorage.removeItem('reserva_fecha_nac');
+            fetch('{{ route("cliente.tipo-servicio.limpiar") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                }
+            });
         }
     </script>
 

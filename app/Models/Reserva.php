@@ -20,6 +20,7 @@ class Reserva extends Model
         'es_menor',
         'abordado',
         'fecha_abordaje',
+        'tipo_servicio_id',
     ];
 
     protected $casts = [
@@ -55,4 +56,10 @@ class Reserva extends Model
     {
         return $this->hasMany(\App\Models\Reembolso::class, 'reserva_id');
     }
+
+    public function tipoServicio()
+    {
+        return $this->belongsTo(\App\Models\TipoServicio::class, 'tipo_servicio_id');
+    }
 }
+

@@ -23,53 +23,53 @@
                     </div>
                 @endif
 
-                {{-- Formulario para agregar servicio --}}
-                <div class="card mb-4 border-primary">
-                    <div class="card-header bg-primary bg-opacity-10">
-                        <h6 class="mb-0 text-primary"><i class="fas fa-plus me-2"></i>Agregar Nuevo Servicio</h6>
-                    </div>
-                    <div class="card-body">
-                        <form action="{{ route('terminales.servicios.store', $terminal) }}" method="POST">
-                            @csrf
-                            <div class="row g-3">
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold">Nombre del Servicio</label>
-                                    <input type="text" name="nombre"
-                                           class="form-control @error('nombre') is-invalid @enderror"
-                                           placeholder="Ej: Cafetería, Sanitarios..."
-                                           maxlength="100" required value="{{ old('nombre') }}">
-                                    @error('nombre')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                <div class="mb-3">
+                    <button class="btn btn-primary" type="button" onclick="toggleFormulario()">
+                        <i class="fas fa-plus me-2"></i>Agregar Nuevo Servicio
+                    </button>
+                </div>
+
+                    <div class="collapse mb-4" id="formAgregarServicio" style="display:none !important;">
+                    <div class="card border-primary">
+                        <div class="card-header bg-primary bg-opacity-10">
+                            <h6 class="mb-0 text-primary"><i class="fas fa-plus me-2"></i>Nuevo Servicio</h6>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ route('terminales.servicios.store', $terminal) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="icono" value="fas fa-concierge-bell">
+                                <div class="row g-3">
+                                    <div class="col-md-5">
+                                        <label class="form-label fw-bold">Nombre del Servicio</label>
+                                        <input type="text" name="nombre"
+                                               class="form-control @error('nombre') is-invalid @enderror"
+                                               placeholder="Ej: Cafetería, Sanitarios..."
+                                               maxlength="100" required value="{{ old('nombre') }}">
+                                        @error('nombre')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label fw-bold">Descripción (opcional)</label>
+                                        <input type="text" name="descripcion"
+                                               class="form-control @error('descripcion') is-invalid @enderror"
+                                               placeholder="Breve descripción del servicio..."
+                                               maxlength="500" value="{{ old('descripcion') }}">
+                                        @error('descripcion')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-2 d-flex align-items-end">
+                                        <button type="submit" class="btn btn-success w-100">
+                                            <i class="fas fa-plus me-1"></i>Agregar
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">Descripción (opcional)</label>
-                                    <input type="text" name="descripcion"
-                                           class="form-control @error('descripcion') is-invalid @enderror"
-                                           placeholder="Breve descripción del servicio..."
-                                           maxlength="500" value="{{ old('descripcion') }}">
-                                    @error('descripcion')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold">Icono (clase FontAwesome)</label>
-                                    <input type="text" name="icono"
-                                           class="form-control"
-                                           placeholder="Ej: fas fa-wifi"
-                                           maxlength="50" value="{{ old('icono', 'fas fa-concierge-bell') }}">
-                                </div>
-                                <div class="col-md-2 d-flex align-items-end">
-                                    <button type="submit" class="btn btn-success w-100">
-                                        <i class="fas fa-plus me-1"></i>Agregar
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
 
-                {{-- Tabla de servicios --}}
                 <div class="table-responsive w-100">
                     <table class="table table-hover table-bordered w-100 align-middle text-center">
                         <thead class="table-primary">
@@ -119,4 +119,26 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Forzar que el collapse esté cerrado al entrar
+            const collapseEl = document.getElementById('formAgregarServicio');
+            collapseEl.classList.remove('show');
+
+            @if($errors->any())
+            // Solo abrir si hay errores de validación
+            new bootstrap.Collapse(collapseEl, { show: true });
+            @endif
+        });
+    </script>
+    <script>
+        function toggleFormulario() {
+            const form = document.getElementById('formAgregarServicio');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('formAgregarServicio').style.display = 'none';
+        });
+    </script>
 @endsection
