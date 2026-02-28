@@ -21,7 +21,7 @@ class ReservaController extends Controller
     {
 
         // Si viene directo (no desde selección de servicio)
-        if (!str_contains(url()->previous(), 'seleccion-tipo-servicio')) {
+        if (!str_contains(request()->query('from', ''), 'servicio')) {
             session()->forget('tipo_servicio_seleccionado');
             session()->forget('paso_actual');
             session()->forget('solicitud_viaje_id');

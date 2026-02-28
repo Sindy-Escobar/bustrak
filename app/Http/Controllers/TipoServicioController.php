@@ -58,7 +58,7 @@ class TipoServicioController extends Controller
             'success' => true,
             'message' => '¡Tipo de servicio seleccionado correctamente!',
             'data' => $tipoServicio,
-            'redirect' => route('cliente.reserva.create')
+            'redirect' => route('cliente.reserva.create') . '?from=servicio'
         ]);
     }
 

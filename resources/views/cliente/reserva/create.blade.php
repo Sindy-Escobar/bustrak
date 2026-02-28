@@ -144,7 +144,8 @@
             localStorage.setItem('reserva_fecha_nac', fechaNac);
         });
 
-        if (document.referrer.includes('seleccion-tipo-servicio')) {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('from') === 'servicio') {
             const origen = localStorage.getItem('reserva_origen');
             const destino = localStorage.getItem('reserva_destino');
             const fechaNac = localStorage.getItem('reserva_fecha_nac');
@@ -157,10 +158,7 @@
             localStorage.removeItem('reserva_fecha_nac');
             fetch('{{ route("cliente.tipo-servicio.limpiar") }}', {
                 method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json'
-                }
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' }
             });
         }
     </script>

@@ -342,7 +342,7 @@
                 const result = await response.json();
                 if (result.success) {
                     mostrarAlerta('¡Tipo de servicio seleccionado correctamente!', 'success');
-                    setTimeout(() => { window.location.href = '{{ route("cliente.reserva.create") }}'; }, 1500);
+                    setTimeout(() => { window.location.href = result.redirect; }, 1500);
                 } else {
                     mostrarAlerta(result.message || 'Error al procesar la selección', 'error');
                     btn.disabled = false;
