@@ -220,10 +220,11 @@ Route::prefix('empleado')->middleware(['auth', 'user.active'])->group(function()
     Route::get('/qr', [EmpleadoController::class, 'qr'])->name('empleado.qr');
 
     // Reservas
-    Route::get('/reservas/create', [EmpleadoController::class, 'crearReserva'])->name('empleado.reservas.create');
+    /*Route::get('/reservas/create', [EmpleadoController::class, 'crearReserva'])->name('empleado.reservas.create');
     Route::get('/reservas', [EmpleadoController::class, 'consultarReservas'])->name('empleado.reservas');
     Route::get('/asientos', [EmpleadoController::class, 'asignarAsientos'])->name('empleado.asientos');
     Route::get('/boletos', [EmpleadoController::class, 'boletos'])->name('empleado.boletos');
+    */
 
     // Itinerarios
     Route::get('/itinerarios', [EmpleadoController::class, 'itinerarios'])->name('empleado.itinerarios');
@@ -264,11 +265,27 @@ Route::resource('rentas', RegistroRentaController::class);
 // ======================================================
 // Reservas
 // ======================================================
+/*Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
+    Route::get('reserva/create', [ReservaController::class, 'create'])->name('reserva.create');
+    Route::post('reserva/buscar', [ReservaController::class, 'buscar'])->name('reserva.buscar');
+    Route::get('reserva/{viaje_id}/asientos', [ReservaController::class, 'seleccionarAsiento'])->name('reserva.asientos');
+    Route::post('reserva/store', [ReservaController::class, 'store'])->name('reserva.store');
+});
+*/
+// 1️ RUTAS MÁS ESPECÍFICAS PRIMERO (Cliente)
 Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
     Route::get('reserva/create', [ReservaController::class, 'create'])->name('reserva.create');
     Route::post('reserva/buscar', [ReservaController::class, 'buscar'])->name('reserva.buscar');
     Route::get('reserva/{viaje_id}/asientos', [ReservaController::class, 'seleccionarAsiento'])->name('reserva.asientos');
     Route::post('reserva/store', [ReservaController::class, 'store'])->name('reserva.store');
+});
+
+//  RUTAS DE EMPLEADO DESPUÉS (sin prefix conflictivo)
+Route::middleware(['auth'])->prefix('empleado')->name('empleado.')->group(function () {
+    Route::get('/reservas/create', [EmpleadoController::class, 'crearReserva'])->name('reservas.create');
+    Route::get('/reservas', [EmpleadoController::class, 'consultarReservas'])->name('reservas');
+    Route::get('/asientos', [EmpleadoController::class, 'asignarAsientos'])->name('asientos');
+    Route::get('/boletos', [EmpleadoController::class, 'boletos'])->name('boletos');
 });
 
 // Admin predeterminado
