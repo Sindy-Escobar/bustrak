@@ -17,9 +17,8 @@ class TipoServicioSeeder extends Seeder
             ['nombre' => 'Turístico', 'descripcion' => 'Servicio especial para tours y recorridos turísticos con guía incluido. Incluye paradas en puntos de interés.', 'tarifa_base' => 400.00, 'icono' => 'fas fa-camera', 'color' => '#ec4899'],
             ['nombre' => 'Ejecutivo', 'descripcion' => 'Servicio premium con asientos confortables, WiFi y climatización avanzada. Ideal para viajes de negocios.', 'tarifa_base' => 320.00, 'icono' => 'fas fa-briefcase', 'color' => '#667eea'],
         ];
-
         foreach ($servicios as $servicio) {
-            DB::table('tipos_servicio')->insert(array_merge($servicio, [
+            DB::table('tipos_servicio')->insertOrIgnore(array_merge($servicio, [
                 'activo' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
