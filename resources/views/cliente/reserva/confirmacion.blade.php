@@ -62,6 +62,13 @@
                                     <span class="fw-bold">#{{ $reserva->asiento->numero_asiento }}</span>
                                 </div>
                             </div>
+                            <div class="col-12">
+                                <small class="text-muted d-block">Tipo de Servicio</small>
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-bus text-warning me-2"></i>
+                                    <span class="fw-semibold">{{ $reserva->tipoServicio->nombre ?? 'No especificado' }}</span>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- QR Code MUY GRANDE -->
