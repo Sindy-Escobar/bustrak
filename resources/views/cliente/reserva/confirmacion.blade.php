@@ -90,6 +90,7 @@
                         <small class="text-muted">
                             <i class="fas fa-camera me-1"></i>
                             Toma una captura del código QR
+
                         </small>
                     </div>
                 </div>
