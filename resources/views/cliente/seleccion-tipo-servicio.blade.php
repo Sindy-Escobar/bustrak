@@ -368,9 +368,32 @@
 
 
         document.addEventListener('DOMContentLoaded', function() {
-            const tipoGuardado = {{ session('tipo_servicio_seleccionado.id') ?? 'null' }};
-            if (tipoGuardado) {
-                seleccionarServicio(tipoGuardado);
+            const navegacion = performance.getEntriesByType('navigation')[0];
+            const vieneDeCreate = document.referrer.includes('reserva/create') || document.referrer.includes('cliente/reserva');
+
+            if (navegacion && navegacion.type === 'reload') {
+                // Actualizó → limpiar sesión y no marcar nada
+                fetch('{{ route("cliente.tipo-servicio.limpiar") }}', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' }
+                }).then(() => {
+                    // Quitar visualmente cualquier selección
+                    document.querySelectorAll('.service-card').forEach(card => card.classList.remove('selected'));
+                    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+                    document.getElementById('btnContinuar').disabled = true;
+                });
+            } else if (vieneDeCreate) {
+                // Viene del form → no restaurar nada, empezar limpio
+                fetch('{{ route("cliente.tipo-servicio.limpiar") }}', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' }
+                });
+            } else {
+                // Otra navegación → restaurar si había algo guardado
+                const tipoGuardado = {{ session('tipo_servicio_seleccionado.id') ?? 'null' }};
+                if (tipoGuardado) {
+                    seleccionarServicio(tipoGuardado);
+                }
             }
         });
 

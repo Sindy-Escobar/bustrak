@@ -1,3 +1,4 @@
+```
 @extends('layouts.layoutuser')
 
 @section('contenido')
@@ -43,14 +44,16 @@
 
     <script>
 
-            // Mostrar modal automáticamente
-            var myModal = new bootstrap.Modal(document.getElementById('qrModal'));
-            myModal.show();
+        // Mostrar modal automáticamente
+        var myModal = new bootstrap.Modal(document.getElementById('qrModal'));
+        myModal.show();
 
-            // Limpiar datos guardados
-            localStorage.removeItem('reserva_origen');
-            localStorage.removeItem('reserva_destino');
-            localStorage.removeItem('reserva_fecha_nac');
+        // Limpiar datos guardados
+        localStorage.removeItem('reserva_origen');
+        localStorage.removeItem('reserva_destino');
+        localStorage.removeItem('reserva_fecha_nac');
 
     </script>
 @endsection
+
+

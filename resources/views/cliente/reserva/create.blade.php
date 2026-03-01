@@ -8,7 +8,7 @@
         </div>
 
         <div class="card-body">
-            <form id="buscarForm" action="{{ route('cliente.reserva.buscar') }}" method="POST">
+            <form id="buscarForm" action="{{ route('cliente.reserva.buscar') }}" method="POST" autocomplete="off" novalidate>
                 @csrf
 
                 <div class="mb-3">
@@ -93,10 +93,42 @@
     </div>
 
     <script>
+        const params = new URLSearchParams(window.location.search);
+
+        if (params.get('from') === 'servicio' && sessionStorage.getItem('volviendo_de_servicio') === '1') {
+            // Vengo de hacer clic en "Seleccionar Servicio" → restaurar campos
+            sessionStorage.removeItem('volviendo_de_servicio');
+            const origen = localStorage.getItem('reserva_origen');
+            const destino = localStorage.getItem('reserva_destino');
+            const fechaNac = localStorage.getItem('reserva_fecha_nac');
+            if (origen) document.getElementById('ciudad_origen_id').value = origen;
+            if (destino) document.getElementById('ciudad_destino_id').value = destino;
+            if (fechaNac) document.getElementById('fecha_nacimiento').value = fechaNac;
+        } else {
+            // Actualicé o entré directo → limpiar todo
+            document.getElementById('ciudad_origen_id').value = '';
+            document.getElementById('ciudad_destino_id').value = '';
+            document.getElementById('fecha_nacimiento').value = '';
+            localStorage.removeItem('reserva_origen');
+            localStorage.removeItem('reserva_destino');
+            localStorage.removeItem('reserva_fecha_nac');
+            fetch('{{ route("cliente.tipo-servicio.limpiar") }}', {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' }
+            });
+        }
+
         document.getElementById('buscarForm').addEventListener('submit', function (e) {
+            e.preventDefault();
             const origen = document.getElementById('ciudad_origen_id').value;
             const destino = document.getElementById('ciudad_destino_id').value;
+            const fechaNac = document.getElementById('fecha_nacimiento').value;
 
+            if (!origen || !destino || !fechaNac) {
+                document.getElementById('errorMessage').textContent = 'Por favor completa todos los campos.';
+                new bootstrap.Modal(document.getElementById('errorModal')).show();
+                return;
+            }
             if (origen && destino && origen === destino) {
                 e.preventDefault();
                 document.getElementById('errorMessage').textContent = 'La ciudad de origen y destino deben ser diferentes.';
@@ -107,10 +139,13 @@
             const tieneServicio = {{ session('tipo_servicio_seleccionado.id') ?? 'null' }};
             if (!tieneServicio) {
                 e.preventDefault();
+                e.stopPropagation();
                 document.getElementById('errorMessage').textContent = 'Debes seleccionar un tipo de servicio antes de buscar viajes.';
                 new bootstrap.Modal(document.getElementById('errorModal')).show();
                 return;
             }
+
+            this.submit();
         });
 
         document.getElementById('fecha_nacimiento').addEventListener('change', function() {
@@ -139,28 +174,11 @@
                 return;
             }
 
+            sessionStorage.setItem('volviendo_de_servicio', '1');
             localStorage.setItem('reserva_origen', origen);
             localStorage.setItem('reserva_destino', destino);
             localStorage.setItem('reserva_fecha_nac', fechaNac);
         });
-
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('from') === 'servicio') {
-            const origen = localStorage.getItem('reserva_origen');
-            const destino = localStorage.getItem('reserva_destino');
-            const fechaNac = localStorage.getItem('reserva_fecha_nac');
-            if (origen) document.getElementById('ciudad_origen_id').value = origen;
-            if (destino) document.getElementById('ciudad_destino_id').value = destino;
-            if (fechaNac) document.getElementById('fecha_nacimiento').value = fechaNac;
-        } else {
-            localStorage.removeItem('reserva_origen');
-            localStorage.removeItem('reserva_destino');
-            localStorage.removeItem('reserva_fecha_nac');
-            fetch('{{ route("cliente.tipo-servicio.limpiar") }}', {
-                method: 'POST',
-                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' }
-            });
-        }
     </script>
 
 @endsection
