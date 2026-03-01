@@ -11,7 +11,7 @@
                 <input type="hidden" name="viaje_id" value="{{ $viaje->id }}">
 
                 {{-- CAMPO OCULTO CON FECHA DE NACIMIENTO --}}
-                <input type="hidden" name="fecha_nacimiento_pasajero" value="{{ session('fecha_nacimiento_pasajero') }}">
+                <input type="hidden" name="fecha_nacimiento_pasajero" value="{{ session('fecha_nacimiento_busqueda') }}">
 
                 <div class="mb-3">
                     <label>Seleccione Asiento</label>
@@ -38,11 +38,11 @@
                     @endif
                 @endif
 
-                <button type="submit" class="btn btn-success">
+                <button type="submit" class="btn btn-outline-primary">
                     <i class="fas fa-check-circle me-2"></i>Confirmar Reserva
                 </button>
-                <a href="{{ route('cliente.reserva.create') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>Volver
+                <a href="{{ route('cliente.reserva.create') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>
                 </a>
             </form>
         </div>

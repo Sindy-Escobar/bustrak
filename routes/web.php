@@ -275,7 +275,7 @@ Route::resource('rentas', RegistroRentaController::class);
 // 1️ RUTAS MÁS ESPECÍFICAS PRIMERO (Cliente)
 Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
     Route::get('reserva/create', [ReservaController::class, 'create'])->name('reserva.create');
-    Route::post('reserva/buscar', [ReservaController::class, 'buscar'])->name('reserva.buscar');
+    Route::get('reserva/buscar', [ReservaController::class, 'buscar'])->name('reserva.buscar');
     Route::get('reserva/{viaje_id}/asientos', [ReservaController::class, 'seleccionarAsiento'])->name('reserva.asientos');
     Route::post('reserva/store', [ReservaController::class, 'store'])->name('reserva.store');
 });
@@ -477,7 +477,50 @@ Route::middleware(['auth'])->group(function () {
 // Sprint: #1
 // ============================================
 
+// ============================================
+// RESERVAS (Debe ir PRIMERO)
+// ============================================
 Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
+    Route::get('reserva/create', [ReservaController::class, 'create'])->name('reserva.create');
+    Route::post('reserva/buscar', [ReservaController::class, 'buscar'])->name('reserva.buscar');
+    Route::get('reserva/{viaje_id}/asientos', [ReservaController::class, 'seleccionarAsiento'])->name('reserva.asientos');
+    Route::post('reserva/store', [ReservaController::class, 'store'])->name('reserva.store');
+});
+
+// ============================================
+// TIPO DE SERVICIO
+// ============================================
+Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
+    Route::get('/seleccionar-servicio', [TipoServicioController::class, 'index'])
+        ->name('seleccion-tipo-servicio');
+
+    Route::post('/tipo-servicio/seleccionar', [TipoServicioController::class, 'seleccionar'])
+        ->name('tipo-servicio.seleccionar');
+
+    Route::post('/tipo-servicio/limpiar', [TipoServicioController::class, 'limpiarSeleccion'])
+        ->name('tipo-servicio.limpiar');
+
+    Route::get('/buscar-servicios', function () {
+        if (session()->has('tipo_servicio_seleccionado')) {
+            return redirect()->route('cliente.perfil')
+                ->with('success', '¡Tipo de servicio seleccionado correctamente!');
+        }
+        return redirect()->route('cliente.seleccion-tipo-servicio');
+    })->name('buscar-servicios');
+});
+
+// ============================================
+// SERVICIOS POR ESTACIÓN
+// ============================================
+Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
+    Route::get('/servicios-por-estacion', [ServicioController::class, 'index'])
+        ->name('servicios.index');
+
+    Route::get('/servicios/terminal/{terminalId}', [ServicioController::class, 'porTerminal'])
+        ->name('servicios.por-terminal');
+});
+
+/*Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
 
     // Selección de tipo de servicio
     Route::get('/seleccionar-servicio', [TipoServicioController::class, 'index'])
@@ -515,6 +558,7 @@ Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function
         ->name('servicios.por-terminal');
 
 });
+*/
 
 // Rutas de administrador para gestionar servicios
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
