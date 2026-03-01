@@ -22,7 +22,6 @@ class ViajesSeeder extends Seeder
                 'numero_bus' => Bus::max('numero_bus') + 1 // obligatorio
             ]
         );
-
         // Traer todas las ciudades
         $ciudades = Ciudad::all();
 
@@ -30,7 +29,6 @@ class ViajesSeeder extends Seeder
             $this->command->info("Necesitas al menos 2 ciudades para crear viajes.");
             return;
         }
-
         // Crear viajes aleatorios entre ciudades
         foreach ($ciudades as $origen) {
             foreach ($ciudades as $destino) {
