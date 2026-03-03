@@ -70,11 +70,15 @@ class AutorizacionMenorController extends Controller
         // Aquí puedes enviar email al tutor con el código QR
         // Mail::to($request->tutor_email)->send(new AutorizacionMenorMail($codigoAutorizacion));
 
+        // ✅ Limpiar sesión del servicio
+        session()->forget('tipo_servicio_seleccionado');
+        session()->forget('solicitud_viaje_id');
+
         return redirect()->route('autorizacion.mostrar', $reserva_id)
             ->with('success', 'Autorización registrada exitosamente.');
     }
 
-    /**
+    /**s
      * Mostrar autorización con código QR
      */
     public function mostrar($reserva_id)

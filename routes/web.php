@@ -42,8 +42,7 @@ use App\Http\Controllers\PrincipalController;
 use App\Http\Controllers\TipoServicioController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\ReembolsoController;
-
-
+use App\Http\Controllers\ViajesAdminController;
 
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
@@ -581,8 +580,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 // Sprint: #1
 // ============================================
 
-
-
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/reembolsos', [ReembolsoController::class, 'index'])
@@ -600,4 +597,17 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/reembolsos/{id}/comprobante', [ReembolsoController::class, 'comprobante'])
         ->name('reembolsos.comprobante');
 
+});
+// ============================================
+// GESTIÓN DE VIAJES (Admin)
+// ============================================
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/viajes/gestionar', [\App\Http\Controllers\Admin\ViajesAdminController::class, 'index'])
+        ->name('viajes.gestionar');
+
+    Route::post('/viajes/generar', [\App\Http\Controllers\Admin\ViajesAdminController::class, 'generar'])
+        ->name('viajes.generar');
+
+    Route::post('/viajes/limpiar', [\App\Http\Controllers\Admin\ViajesAdminController::class, 'limpiar'])
+        ->name('viajes.limpiar');
 });
