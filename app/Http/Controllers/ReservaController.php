@@ -109,9 +109,16 @@ class ReservaController extends Controller
 
         // 6. Redirección condicional por edad
         if ($esMenor) {
+            // ✅ Limpiar sesión del servicio después de reservar
+            session()->forget('tipo_servicio_seleccionado');
+            session()->forget('solicitud_viaje_id');
             return redirect()->route('autorizacion.create', $reserva->id)
                 ->with('info', 'Pasajero menor de edad detectado. Por seguridad, debe completar la autorización.');
         }
+
+        // ✅ Limpiar sesión del servicio después de reservar
+        session()->forget('tipo_servicio_seleccionado');
+        session()->forget('solicitud_viaje_id');
 
         $qrCode = DNS2D::getBarcodeSVG($codigo, 'QRCODE');
         return view('cliente.reserva.confirmacion', compact('reserva', 'qrCode'));

@@ -217,6 +217,28 @@
                 </a>
             </div>
         </div>
+        <!-- Gestionar Viajes -->
+        <div class="nav-section">
+            <button class="btn-toggle"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#gestionarViajes"
+                    aria-expanded="{{ request()->routeIs('admin.viajes.*') ? 'true' : 'false' }}">
+        <span>
+            <i class="fas fa-file-contract"></i> Gestionar Viajes
+        </span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('admin.viajes.*') ? 'show' : '' }}"
+                 id="gestionarViajes">
+
+                <a href="{{ route('admin.viajes.gestionar') }}"
+                   class="{{ request()->routeIs('admin.viajes.gestionar') ? 'active' : '' }}">
+                    Actualizar Viajes
+                </a>
+
+            </div>
+        </div>
         <!-- Rentas -->
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#Renta">
