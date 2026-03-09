@@ -13,10 +13,19 @@ class ReembolsoController extends Controller
     // ========== LISTAR REEMBOLSOS ==========
     public function index(Request $request)
     {
-        $estado = $request->get('estado');
+        $estado  = $request->get('estado');
+        $metodo  = $request->get('metodo');
+        $fecha   = $request->get('fecha');
+        $buscar  = $request->get('buscar');
 
-        $reembolsos = Reembolso::query()
-            ->filtroEstado($estado)
+        $reembolsos = Reembolso::with('usuario')
+            ->when($estado, fn($q) => $q->where('estado', $estado))
+            ->when($metodo, fn($q) => $q->where('metodo_pago', $metodo))
+            ->when($fecha,  fn($q) => $q->whereDate('created_at', $fecha))
+            ->when($buscar, fn($q) => $q->where(function($q) use ($buscar) {
+                $q->where('codigo_reembolso', 'like', "%$buscar%")
+                    ->orWhereHas('usuario', fn($q) => $q->where('name', 'like', "%$buscar%"));
+            }))
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
@@ -28,9 +37,13 @@ class ReembolsoController extends Controller
     // ========== CREAR REEMBOLSO (FORMULARIO) ==========
     public function crear()
     {
-        // Obtener reservas canceladas sin reembolso
-        $reservas = Reserva::where('estado', 'cancelado')
-            ->whereDoesntHave('reembolsos')
+        $reservas = Reserva::where('estado', 'cancelada')
+            ->where(function($q) {
+                $q->whereDoesntHave('reembolsos')
+                    ->orWhereHas('reembolsos', function($q) {
+                        $q->where('metodo_pago', 'por_definir');
+                    });
+            })
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -100,7 +113,7 @@ class ReembolsoController extends Controller
             'user_id' => $reserva->user_id,
             'codigo_reembolso' => Reembolso::generarCodigoReembolso(), // ← GENERACIÓN AUTOMÁTICA
             'codigo_cancelacion' => $reserva->codigo_reserva,
-            'monto_original' => $reserva->precio_total,
+            'monto_original' => $reserva->viaje->precio ?? $request->monto_reembolso,
             'monto_reembolso' => $request->monto_reembolso,
             'metodo_pago' => $request->metodo_pago,
             'numero_cuenta' => $request->numero_cuenta ?? null,
@@ -126,25 +139,36 @@ class ReembolsoController extends Controller
             ->with('success', 'Reembolso creado correctamente. Código: ' . $reembolso->codigo_reembolso);
     }
 
-    // ========== MARCAR COMO ENTREGADO ==========
-    public function marcarEntregado($id)
+    // Pendiente → Procesado
+    public function aprobar($id)
     {
         $reembolso = Reembolso::findOrFail($id);
-
-        if ($reembolso->estado !== 'pendiente') {
-            return back()->with('error', 'Solo se pueden entregar reembolsos en estado pendiente');
-        }
-
         $reembolso->update([
             'estado' => 'procesado',
+            'fecha_procesamiento' => now(),
+            'procesado_por' => auth()->id(),
+        ]);
+        return back()->with('success', 'Reembolso aprobado y en proceso.');
+    }
+
+// Procesado → Completado
+    public function completar($id)
+    {
+        $reembolso = Reembolso::findOrFail($id);
+        $reembolso->update([
+            'estado' => 'completado',
             'fecha_entrega' => now(),
             'entregado_por' => auth()->id(),
         ]);
+        return back()->with('success', 'Reembolso marcado como completado.');
+    }
 
-        // ✅ NOTIFICAR ENTREGA
-        $this->notificarEntrega($reembolso);
-
-        return back()->with('success', 'Reembolso marcado como procesado');
+// Rechazar
+    public function rechazar($id)
+    {
+        $reembolso = Reembolso::findOrFail($id);
+        $reembolso->update(['estado' => 'rechazado']);
+        return back()->with('success', 'Reembolso rechazado.');
     }
 
     // ========== VER COMPROBANTE ==========

@@ -62,16 +62,39 @@ class ReservaController extends Controller
 
     public function store(Request $request)
     {
-        // 1. Intentamos obtener la fecha de la sesión si no viene en el formulario
         $fechaNacimiento = $request->fecha_nacimiento_pasajero ?? session('fecha_nacimiento_busqueda');
 
-        // 2. Validamos solo lo esencial del formulario de asientos
         $request->validate([
             'viaje_id'   => 'required|exists:viajes,id',
             'asiento_id' => 'required|exists:asientos,id',
         ]);
 
-        // Verificamos que tengamos la fecha de alguna forma
+        // ── HU14: Validar datos del tercero si aplica ──
+        $esTercero = $request->input('para_tercero') === '1';
+
+        if ($esTercero) {
+            $request->validate([
+                'tercero_nombre'    => 'required|string|max:100',
+                'tercero_apellido1' => 'required|string|max:100',
+                'tercero_apellido2' => 'nullable|string|max:100',
+                'tercero_pais'      => 'required|string|max:60',
+                'tercero_tipo_doc'  => 'required|string|max:30',
+                'tercero_num_doc'   => 'required|string|max:30',
+                'tercero_telefono'  => 'required|string|max:25',
+                'tercero_email'     => 'nullable|max:100',
+            ]);
+
+            // Verificar documento no repetido en el mismo viaje
+            $docDuplicado = Reserva::where('tercero_num_doc', $request->tercero_num_doc)
+                ->where('viaje_id', $request->viaje_id)
+                ->exists();
+
+            if ($docDuplicado) {
+                return redirect()->back()->withInput()
+                    ->with('error', 'El documento del pasajero ya está registrado en este viaje.');
+            }
+        }
+
         if (!$fechaNacimiento) {
             return redirect()->route('cliente.reserva.create')
                 ->with('error', 'La sesión ha expirado. Por favor inicie la búsqueda de nuevo.');
@@ -83,14 +106,13 @@ class ReservaController extends Controller
             return redirect()->back()->with('error', 'Lo sentimos, este asiento ya fue ocupado.');
         }
 
-        // 3. Lógica de Menores de Edad
         $edad    = \Carbon\Carbon::parse($fechaNacimiento)->age;
         $esMenor = $edad < 18;
         $codigo  = uniqid('RES_');
 
-        // 4. Creación de la Reserva (Usando las columnas de tu nueva migración)
-        $reserva = Reserva::create([
-            'user_id'                   => Auth::id(), // Asegúrate que tu modelo use 'user_id'
+        // ── Datos base de la reserva ──
+        $datosReserva = [
+            'user_id'                   => Auth::id(),
             'viaje_id'                  => $request->viaje_id,
             'asiento_id'                => $request->asiento_id,
             'codigo_reserva'            => $codigo,
@@ -99,26 +121,34 @@ class ReservaController extends Controller
             'fecha_nacimiento_pasajero' => $fechaNacimiento,
             'es_menor'                  => $esMenor,
             'tipo_servicio_id'          => session('tipo_servicio_seleccionado.id'),
-        ]);
+        ];
 
-        // 5. Bloquear el asiento
+        // ── HU14: Añadir datos del tercero si aplica ──
+        if ($esTercero) {
+            $datosReserva['para_tercero']     = true;
+            $datosReserva['tercero_nombre']   = trim($request->tercero_nombre . ' ' . $request->tercero_apellido1 . ' ' . $request->tercero_apellido2);
+            $datosReserva['tercero_pais']     = $request->tercero_pais;
+            $datosReserva['tercero_tipo_doc'] = $request->tercero_tipo_doc;
+            $datosReserva['tercero_num_doc']  = $request->tercero_num_doc;
+            $datosReserva['tercero_telefono'] = $request->tercero_telefono;
+            $datosReserva['tercero_email']    = $request->tercero_email;
+            $datosReserva['tercero_entrega']  = $request->tercero_entrega ?? 'Email del pasajero';
+        }
+
+        $reserva = Reserva::create($datosReserva);
+
         $asiento->update([
             'disponible' => false,
-            'reserva_id' => $reserva->id
+            'reserva_id' => $reserva->id,
         ]);
 
-        // 6. Redirección condicional por edad
+        session()->forget('tipo_servicio_seleccionado');
+        session()->forget('solicitud_viaje_id');
+
         if ($esMenor) {
-            // ✅ Limpiar sesión del servicio después de reservar
-            session()->forget('tipo_servicio_seleccionado');
-            session()->forget('solicitud_viaje_id');
             return redirect()->route('autorizacion.create', $reserva->id)
                 ->with('info', 'Pasajero menor de edad detectado. Por seguridad, debe completar la autorización.');
         }
-
-        // ✅ Limpiar sesión del servicio después de reservar
-        session()->forget('tipo_servicio_seleccionado');
-        session()->forget('solicitud_viaje_id');
 
         $qrCode = DNS2D::getBarcodeSVG($codigo, 'QRCODE');
         return view('cliente.reserva.confirmacion', compact('reserva', 'qrCode'));
@@ -159,5 +189,15 @@ class ReservaController extends Controller
         $viaje = Viaje::findOrFail($viaje_id);
         $asientos = $viaje->asientos()->where('disponible', true)->get();
         return view('cliente.reserva.asientos', compact('viaje', 'asientos'));
+    }
+    public function descargarBoleto(Reserva $reserva)
+    {
+        // Solo el dueño puede descargar
+        if ($reserva->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('cliente.reserva.boleto-pdf', compact('reserva'));
+        return $pdf->download('boleto-' . $reserva->codigo_reserva . '.pdf');
     }
 }

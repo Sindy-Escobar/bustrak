@@ -94,28 +94,6 @@
             font-size: 14px;
         }
 
-        .btn-nuevo {
-            padding: 10px 20px;
-            background: white;
-            color: #333;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 14px;
-            text-decoration: none;
-            float: right;
-            margin-top: -55px;
-        }
-
-        .btn-nuevo:hover {
-            background: #f5f5f5;
-            color: #333;
-        }
-
         .filtros-adicionales {
             background: #eef4ff;
             border-radius: 10px;
@@ -209,10 +187,11 @@
             font-weight: 600;
         }
 
-        .badge-pendiente { background: #fff3cd; color: #856404; }
-        .badge-procesado { background: #d1ecf1; color: #0c5460; }
-        .badge-entregado { background: #d4edda; color: #155724; }
+        .badge-pendiente  { background: #fff3cd; color: #856404; }
+        .badge-procesado  { background: #d1ecf1; color: #0c5460; }
+        .badge-entregado  { background: #d4edda; color: #155724; }
         .badge-completado { background: #cce5ff; color: #004085; }
+        .badge-rechazado  { background: #f8d7da; color: #721c24; }
 
         .btn-ver {
             padding: 6px 16px;
@@ -289,7 +268,9 @@
                 <div class="search-row">
                     <div class="search-input-wrapper">
                         <i class="fas fa-search"></i>
-                        <input type="text" name="buscar" class="search-input" placeholder="Buscar por código o cliente" value="{{ request('buscar') }}">
+                        <input type="text" name="buscar" class="search-input"
+                               placeholder="Buscar por código o cliente"
+                               value="{{ request('buscar') }}">
                     </div>
                     <button type="submit" class="btn-buscar">
                         <i class="fas fa-search"></i> Buscar
@@ -308,27 +289,13 @@
                 <div class="filtros-grid">
                     <div class="filtro-item">
                         <label><i class="fas fa-toggle-on" style="color:#28a745;"></i> Estado</label>
-                        <select name="estado">
+                        <select name="estado" onchange="this.form.submit()">
                             <option value="">Todos los estados</option>
-                            <option value="pendiente" {{ $estado === 'pendiente' ? 'selected' : '' }}>Pendiente</option>
-                            <option value="procesado" {{ $estado === 'procesado' ? 'selected' : '' }}>Procesado</option>
-                            <option value="entregado" {{ $estado === 'entregado' ? 'selected' : '' }}>Entregado</option>
-                            <option value="completado" {{ $estado === 'completado' ? 'selected' : '' }}>Completado</option>
+                            <option value="pendiente"  {{ request('estado') === 'pendiente'  ? 'selected' : '' }}>Pendiente</option>
+                            <option value="procesado"  {{ request('estado') === 'procesado'  ? 'selected' : '' }}>Procesado</option>
+                            <option value="completado" {{ request('estado') === 'completado' ? 'selected' : '' }}>Completado</option>
+                            <option value="rechazado"  {{ request('estado') === 'rechazado'  ? 'selected' : '' }}>Rechazado</option>
                         </select>
-                    </div>
-                    <div class="filtro-item">
-                        <label><i class="fas fa-wallet" style="color:#1a56db;"></i> Método de Pago</label>
-                        <select name="metodo">
-                            <option value="">Todos los métodos</option>
-                            <option value="efectivo">Efectivo</option>
-                            <option value="transferencia">Transferencia</option>
-                            <option value="credito">Crédito</option>
-                            <option value="cheque">Cheque</option>
-                        </select>
-                    </div>
-                    <div class="filtro-item">
-                        <label><i class="fas fa-calendar" style="color:#1a56db;"></i> Fecha</label>
-                        <input type="date" name="fecha" value="{{ request('fecha') }}">
                     </div>
                 </div>
             </div>
@@ -357,15 +324,55 @@
                             <td>L. {{ number_format($reembolso->monto_reembolso, 2) }}</td>
                             <td>{{ ucfirst($reembolso->metodo_pago) }}</td>
                             <td>
-                                    <span class="badge badge-{{ $reembolso->estado }}">
-                                        {{ ucfirst($reembolso->estado) }}
-                                    </span>
+                                <span class="badge badge-{{ $reembolso->estado }}">
+                                    {{ ucfirst($reembolso->estado) }}
+                                </span>
                             </td>
                             <td>{{ $reembolso->fecha_procesamiento ? $reembolso->fecha_procesamiento->format('d/m/Y H:i') : '-' }}</td>
-                            <td>
+                            <td style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+
                                 <a href="{{ route('admin.reembolsos.comprobante', $reembolso->id) }}" class="btn-ver">
                                     <i class="fas fa-eye"></i> Ver
                                 </a>
+
+                                @if($reembolso->estado === 'pendiente')
+                                    <form action="{{ route('admin.reembolsos.aprobar', $reembolso->id) }}" method="POST" style="margin:0;">
+                                        @csrf
+                                        <button type="submit"
+                                                style="padding:6px 14px;background:#16a34a;color:white;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
+                                            <i class="fas fa-check"></i> Aprobar
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('admin.reembolsos.rechazar', $reembolso->id) }}" method="POST" style="margin:0;">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit"
+                                                onclick="return confirm('¿Rechazar este reembolso?')"
+                                                style="padding:6px 14px;background:#dc2626;color:white;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
+                                            <i class="fas fa-times"></i> Rechazar
+                                        </button>
+                                    </form>
+
+                                @elseif($reembolso->estado === 'procesado')
+                                    <form action="{{ route('admin.reembolsos.completar', $reembolso->id) }}" method="POST" style="margin:0;">
+                                        @csrf
+                                        <button type="submit"
+                                                style="padding:6px 14px;background:#1a56db;color:white;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
+                                            <i class="fas fa-check-double"></i> Completar
+                                        </button>
+                                    </form>
+
+                                @elseif($reembolso->estado === 'completado')
+                                    <span style="color:#16a34a;font-weight:700;font-size:13px;">
+                                        <i class="fas fa-check-double"></i> Completado
+                                    </span>
+
+                                @elseif($reembolso->estado === 'rechazado')
+                                    <span style="color:#dc2626;font-weight:700;font-size:13px;">
+                                        <i class="fas fa-times"></i> Rechazado
+                                    </span>
+                                @endif
+
                             </td>
                         </tr>
                     @endforeach

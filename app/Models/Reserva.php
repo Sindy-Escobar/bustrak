@@ -21,6 +21,15 @@ class Reserva extends Model
         'abordado',
         'fecha_abordaje',
         'tipo_servicio_id',
+        // ── HU14: Reservar para tercero ──
+        'para_tercero',
+        'tercero_nombre',
+        'tercero_pais',
+        'tercero_tipo_doc',
+        'tercero_num_doc',
+        'tercero_telefono',
+        'tercero_email',
+        'tercero_entrega',
     ];
 
     protected $casts = [

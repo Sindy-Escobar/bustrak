@@ -55,7 +55,26 @@
                                 {!! $qrCode !!}
                             </div>
                             <p class="text-muted mt-2 mb-0"><small>Escanea en la terminal</small></p>
+
                         </div>
+                        {{-- HU14: Confirmación de datos antes de pagar --}}
+                        @if($reserva->para_tercero)
+                            <div class="alert alert-info text-start mb-3 py-2">
+                                <strong><i class="fas fa-user me-1"></i> Boleto generado para:</strong><br>
+                                <span>{{ $reserva->tercero_nombre }}</span><br>
+                                <small>{{ $reserva->tercero_tipo_doc }} — {{ $reserva->tercero_num_doc }}</small><br>
+                                <small>Tel: {{ $reserva->tercero_telefono }}</small>
+                            </div>
+                        @endif
+
+                        {{-- Botón descargar PDF --}}
+                        <div class="d-grid mb-3">
+                            <a href="{{ route('cliente.reserva.descargar', $reserva->id) }}"
+                               class="btn btn-success">
+                                <i class="fas fa-download me-1"></i> Descargar Boleto PDF
+                            </a>
+                        </div>
+
                         <div class="d-grid d-md-flex justify-content-center gap-2">
                             <a href="{{ route('cliente.historial') }}" class="btn btn-primary px-4">
                                 <i class="fas fa-history me-1"></i> Historial

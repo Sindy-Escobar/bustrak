@@ -42,7 +42,9 @@ use App\Http\Controllers\PrincipalController;
 use App\Http\Controllers\TipoServicioController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\ReembolsoController;
+use App\Http\Controllers\ClienteReembolsoController;
 use App\Http\Controllers\ViajesAdminController;
+
 
 // Toggle activar/inactivar
 Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
@@ -189,6 +191,15 @@ Route::middleware(['auth'])->group(function () {
         ->name('cliente.historial');
 });
 
+// CANCELAR BOLETO Y REEMBOLSOS CLIENTE
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cliente/reserva/{id}/cancelar', [ClienteReembolsoController::class, 'mostrarCancelar'])->name('cliente.reserva.cancelar.form');
+    Route::patch('/cliente/reserva/{id}/cancelar', [ClienteReembolsoController::class, 'procesarCancelacion'])->name('cliente.reserva.cancelar');
+    Route::get('/cliente/reembolso/{id}/solicitar', [ClienteReembolsoController::class, 'mostrarSolicitud'])->name('cliente.reembolso.solicitar');
+    Route::patch('/cliente/reembolso/{id}/guardar', [ClienteReembolsoController::class, 'guardarSolicitud'])->name('cliente.reembolso.guardar');
+    Route::get('/cliente/reembolsos', [ClienteReembolsoController::class, 'misReembolsos'])->name('cliente.reembolsos');
+});
+
 // Itinerarios
 Route::middleware('auth')->prefix('itinerario')->name('itinerario.')->controller(ItinerarioController::class)->group(function () {
     Route::get('/', 'index')->name('index');
@@ -277,6 +288,8 @@ Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function
     Route::get('reserva/buscar', [ReservaController::class, 'buscar'])->name('reserva.buscar');
     Route::get('reserva/{viaje_id}/asientos', [ReservaController::class, 'seleccionarAsiento'])->name('reserva.asientos');
     Route::post('reserva/store', [ReservaController::class, 'store'])->name('reserva.store');
+    Route::get('reserva/{reserva}/descargar-boleto', [ReservaController::class, 'descargarBoleto'])->name('reserva.descargar'); // ← AGREGA ESTA
+
 });
 
 //  RUTAS DE EMPLEADO DESPUÉS (sin prefix conflictivo)
@@ -596,6 +609,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     Route::get('/reembolsos/{id}/comprobante', [ReembolsoController::class, 'comprobante'])
         ->name('reembolsos.comprobante');
+    Route::post('/reembolsos/{id}/aprobar', [ReembolsoController::class, 'aprobar'])->name('reembolsos.aprobar');
+    Route::post('/reembolsos/{id}/completar', [ReembolsoController::class, 'completar'])->name('reembolsos.completar');
+    Route::patch('/reembolsos/{id}/rechazar', [ReembolsoController::class, 'rechazar'])->name('reembolsos.rechazar');
 
 });
 // ============================================
