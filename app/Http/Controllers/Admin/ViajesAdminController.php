@@ -19,10 +19,13 @@ class ViajesAdminController extends Controller
     /**
      * Generar viajes para los próximos días
      */
+    /**
+     * Generar viajes para los próximos días
+     */
     public function generar(Request $request)
     {
         $request->validate([
-            'dias' => 'required|integer|min:1|max:30'
+            'dias' => 'required|integer|min:1|max:2' //  Máximo 2 días
         ]);
 
         // Ejecutar el command
@@ -30,7 +33,7 @@ class ViajesAdminController extends Controller
             'dias' => $request->dias
         ]);
 
-        return redirect()->back()->with('success', "Viajes generados para los próximos {$request->dias} días");
+        return redirect()->back()->with('success', "Viajes generados para los próximos {$request->dias} días. Revisa la consola para más detalles.");
     }
 
     /**

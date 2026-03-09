@@ -21,13 +21,13 @@ class ItinerarioController extends Controller
         $reservas = Reserva::with(['viaje.origen', 'viaje.destino', 'asiento'])
             ->where('user_id', $usuario->id)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10);
 
         // Todas las ciudades para los selects de origen/destino
-        $ciudades = \App\Models\Ciudad::all();
+        $ciudades = \App\Models\Ciudad::select('id', 'nombre')->get();
 
         // Todos los asientos para los selects de edición
-        $asientos = \App\Models\Asiento::all();
+        $asientos = \App\Models\Asiento::limit(10)->get();
 
         return view('itinerario.index', compact('usuario', 'reservas', 'ciudades', 'asientos'));
     }
