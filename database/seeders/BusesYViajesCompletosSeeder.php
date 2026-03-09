@@ -118,7 +118,7 @@ class BusesYViajesCompletosSeeder extends Seeder
 
         $this->command->info(" Rutas: " . count($rutas));
         $this->command->info(" Servicios: {$servicios->count()}");
-        $this->command->info(" Total de viajes a crear: " . (count($rutas) * $servicios->count() * 3) . " (3 por día)");
+        $this->command->info(" Total de viajes a crear: " . (count($rutas) * $servicios->count() * 2) . " (2 por día)");
 
         // Obtener buses agrupados por servicio
         $busesPorServicio = [];
@@ -150,7 +150,7 @@ class BusesYViajesCompletosSeeder extends Seeder
                 $buses = $busesPorServicio[$servicio->id];
 
                 // Crear 3 viajes por día (mañana, tarde, noche)
-                for($dia = 0; $dia < 3; $dia++) {
+                for($dia = 0; $dia < 2 ; $dia++) {
 
                     // Seleccionar un bus de forma rotativa
                     $busIndex = ($rutaIndex + $servicioIndex + $dia) % $buses->count();

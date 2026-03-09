@@ -315,17 +315,38 @@
                    class="{{ request()->routeIs('cliente.facturas*') ? 'active' : '' }}">
                     Ver Facturas
                 </a>
-                {{-- Cambiamos el enlace para que vaya al historial, donde el usuario elegirá al chofer --}}
-                <a href="{{ route('cliente.historial') }}"
-                   class="{{ request()->routeIs('cliente.historial') ? 'active' : '' }}">
-                    Calificar Servicio
-                </a>
-                <a href="{{ route('cliente.servicios.index') }}"
-                   class="{{ request()->routeIs('cliente.servicios.index') ? 'active' : '' }}">
-                    Consultar Servicios Disponible de Buses
-                </a>
+                <!-- Servicio de Buses -->
+                <div class="nav-section">
+                    <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#servicioBuses"
+                            aria-expanded="{{ request()->routeIs('cliente.historial*', 'cliente.servicios*', 'incidentes*') ? 'true' : 'false' }}">
+                        <span><i class="fas fa-ticket-alt"></i> Servicio de Buses</span>
+                        <i class="fas fa-chevron-right chevron"></i>
+                    </button>
 
+                    {{--  AGREGAR ESTE DIV COLLAPSE --}}
+                    <div class="collapse {{ request()->routeIs('cliente.historial*', 'cliente.servicios*', 'incidentes*') ? 'show' : '' }}" id="servicioBuses">
+                        <a href="{{ route('cliente.historial') }}"
+                           class="{{ request()->routeIs('cliente.historial') ? 'active' : '' }}">
+                            <i class="fas fa-star me-2"></i> Calificar Servicio
+                        </a>
 
+                        <a href="{{ route('cliente.servicios.index') }}"
+                           class="{{ request()->routeIs('cliente.servicios.index') ? 'active' : '' }}">
+                            <i class="fas fa-bus me-2"></i> Consultar Servicios Disponibles de Buses
+                        </a>
+
+                        {{--  AGREGAR ENLACE A INCIDENTES --}}
+                        <a href="{{ route('incidentes.create') }}"
+                           class="{{ request()->routeIs('incidentes.create') ? 'active' : '' }}">
+                            <i class="fas fa-exclamation-triangle me-2"></i> Reportar Incidente
+                        </a>
+
+                        <a href="{{ route('incidentes.index') }}"
+                           class="{{ request()->routeIs('incidentes.index') ? 'active' : '' }}">
+                            <i class="fas fa-history me-2"></i> Mis Reportes
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -338,6 +359,12 @@
             <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.rutas*') ? 'show' : '' }}" id="rutas">
                 <a href="{{ route('consulta-paradas.index') }}" class="{{ request()->routeIs('consulta-paradas.index') ? 'active' : '' }}">
                     Consultar Rutas
+                </a>
+                <a href="{{ route('incidentes.create') }}" class="{{ request()->routeIs('incidentes.create')? 'active' : '' }}">
+                    Reportar Problema
+                </a>
+                <a href="{{ route('incidentes.index') }}" class="{{ request()->routeIs('incidentes.index')? 'active' : '' }}">
+                    Mis Reportes
                 </a>
             </div>
         </div>
@@ -412,10 +439,8 @@
         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
             @csrf
         </form>
-
-
+        </div>
     </nav>
-
     <div class="content-area">
         <!-- Barra superior -->
         <div class="d-flex justify-content-end align-items-center gap-2 mb-4 p-3 rounded shadow-sm"
@@ -493,5 +518,5 @@
         });
     });
 </script>
-</body>
+</body>s
 </html>

@@ -44,6 +44,7 @@ use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\ReembolsoController;
 use App\Http\Controllers\ClienteReembolsoController;
 use App\Http\Controllers\ViajesAdminController;
+use App\Http\Controllers\IncidenteController;
 
 
 // Toggle activar/inactivar
@@ -626,4 +627,12 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     Route::post('/viajes/limpiar', [\App\Http\Controllers\Admin\ViajesAdminController::class, 'limpiar'])
         ->name('viajes.limpiar');
+});
+// ============================================
+// INCIDENTES (Usuarios/Pasajeros) - HU5
+// ============================================
+Route::middleware(['auth'])->prefix('incidentes')->name('incidentes.')->group(function () {
+    Route::get('/reportar', [IncidenteController::class, 'create'])->name('create');
+    Route::post('/reportar', [IncidenteController::class, 'store'])->name('store');
+    Route::get('/mis-reportes', [IncidenteController::class, 'index'])->name('index');
 });

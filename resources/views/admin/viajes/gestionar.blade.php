@@ -31,16 +31,13 @@
 
                                     <div class="col-md-4">
                                         <label class="form-label fw-bold">Días a generar</label>
-                                        <select name="dias" class="form-select" style="height: 35px;" required>
-                                            <option value="7">7 días (1 semana)</option>
-                                            <option value="14">14 días (2 semanas)</option>
-                                            <option value="21">21 días (3 semanas)</option>
-                                            <option value="30">30 días (1 mes)</option>
+                                        <select name="dias" class="form-select" required>
+                                            <option value="1">1 día</option>
+                                            <option value="2" selected>2 días</option>
                                         </select>
                                     </div>
-
-                                    <div class="col-md-4">
-                                        <button type="submit" class="btn btn-primary w-100" style="height: 35px;">
+                                    <div class="col-md-auto">
+                                        <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-magic me-2"></i>Generar Viajes
                                         </button>
                                     </div>
@@ -64,9 +61,7 @@
                                 </button>
                             </form>
                         </div>
-
                         <hr>
-
                         {{-- Información --}}
                         <div class="alert alert-info">
                             <ul class="mb-0">
@@ -74,10 +69,8 @@
                                 <li><strong>Limpiar:</strong> Elimina solo viajes pasados SIN reservas para mantener la base de datos limpia.</li>
                             </ul>
                         </div>
-
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
