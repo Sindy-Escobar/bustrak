@@ -146,6 +146,7 @@
         .progreso-reembolso { display: flex; align-items: center; gap: 4px; margin-top: 8px; }
         .prog-paso { height: 4px; flex: 1; border-radius: 4px; background: #e5e7eb; }
         .prog-paso.activo { background: #059669; }
+        .prog-paso.rechazado { background: #ef4444; }
         .empty-state { text-align: center; padding: 60px 20px; color: #6b7280; }
         .empty-state i { font-size: 3rem; margin-bottom: 16px; opacity: 0.4; }
         .empty-state h5 { color: #374151; margin-bottom: 8px; }
@@ -182,7 +183,7 @@
         @endif
 
         @php
-            $pendientes = $reembolsos->where('estado', 'pendiente')->count();
+            $pendientes = $reembolsos->where('estado', 'pendiente')->where('metodo_pago', '!=', 'por_definir')->count();
             $procesados = $reembolsos->where('estado', 'procesado')->count();
             $entregados = $reembolsos->whereIn('estado', ['entregado','completado'])->count();
             $totalMonto = $reembolsos->sum('monto_reembolso');
@@ -230,9 +231,9 @@
             <div class="card-body p-0">
                 @forelse($reembolsos as $r)
                     @php
-                        $pasos = ['pendiente' => 1, 'procesado' => 2, 'entregado' => 3, 'completado' => 4];
+                        $pasos = ['pendiente' => 1, 'procesado' => 2, 'entregado' => 3, 'completado' => 4, 'rechazado' => 0];
                         $pasoActual = $pasos[$r->estado] ?? 1;
-                        $etiquetas  = ['', 'Pendiente', 'Procesando', 'Listo para entrega', 'Completado'];
+                        $etiquetas  = ['Rechazado', 'Pendiente', 'Procesando', 'Listo para entrega', 'Completado'];
                     @endphp
                     <div class="reembolso-item">
                         <div style="flex-shrink: 0; text-align: center;">
@@ -257,7 +258,7 @@
                             </div>
                             <div class="progreso-reembolso">
                                 @for($i = 1; $i <= 4; $i++)
-                                    <div class="prog-paso {{ $i <= $pasoActual ? 'activo' : '' }}"></div>
+                                    <div class="prog-paso {{ $r->estado === 'rechazado' ? 'rechazado' : ($i <= $pasoActual ? 'activo' : '') }}"></div>
                                 @endfor
                             </div>
                             <div style="font-size: 0.75rem; color: #6b7280; margin-top: 4px;">{{ $etiquetas[$pasoActual] ?? '' }}</div>
@@ -276,6 +277,9 @@
                                     @break
                                 @case('completado')
                                     <span class="badge-estado estado-completado"><i class="fas fa-check-double"></i> Completado</span>
+                                    @break
+                                @case('rechazado')
+                                    <span class="badge-estado" style="background:#fee2e2;color:#991b1b;"><i class="fas fa-times"></i> Rechazado</span>
                                     @break
                             @endswitch
                         </div>

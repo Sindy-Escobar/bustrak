@@ -37,7 +37,8 @@ class ReembolsoController extends Controller
     // ========== CREAR REEMBOLSO (FORMULARIO) ==========
     public function crear()
     {
-        $reservas = Reserva::where('estado', 'cancelada')
+        $reservas = Reserva::with(['viaje.origen', 'viaje.destino', 'user','asiento'])
+            ->where('estado', 'cancelada')
             ->where(function($q) {
                 $q->whereDoesntHave('reembolsos')
                     ->orWhereHas('reembolsos', function($q) {
