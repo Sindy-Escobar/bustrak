@@ -74,7 +74,7 @@
                                 : false;
 
                           $estaCancelada = $reserva->estado === 'cancelada';
-$estaReembolsada = $reserva->estado === 'reembolsada';
+                          $estaReembolsada = $reserva->estado === 'reembolsada';
                         @endphp
 
                         <tr class="{{ ($estaCancelada || $estaReembolsada) ? 'table-danger' : '' }}">
@@ -133,8 +133,8 @@ $estaReembolsada = $reserva->estado === 'reembolsada';
                                             </a>
                                         @else
                                             <span class="badge bg-info text-dark mb-1">
-            <i class="fas fa-check"></i> Reembolso solicitado
-        </span>
+                                            <i class="fas fa-check"></i> Reembolso solicitado
+                                            </span>
                                         @endif
                                     @endif
 

@@ -60,13 +60,13 @@ class DatabaseSeeder extends Seeder
                 'rol' => 'Empleado',
             ]
         );
-
         //  Otros seeders de datos base
         $this->call([
             CiudadesSeeder::class,
             //ViajesSeeder::class,
             TipoServicioSeeder::class,          // Primero crear los servicios
             BusesYViajesCompletosSeeder::class,  // Luego los buses y viajes
+            ServiciosAdicionalesSeeder::class,
         ]);
     }
 }
