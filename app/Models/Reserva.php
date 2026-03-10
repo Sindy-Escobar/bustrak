@@ -70,5 +70,11 @@ class Reserva extends Model
     {
         return $this->belongsTo(\App\Models\TipoServicio::class, 'tipo_servicio_id');
     }
+    public function serviciosAdicionales()
+    {
+        return $this->belongsToMany(ServicioAdicional::class, 'reserva_servicio_adicional')
+            ->withPivot('cantidad', 'precio_unitario')
+            ->withTimestamps();
+    }
 }
 

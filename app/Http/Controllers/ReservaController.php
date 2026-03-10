@@ -19,7 +19,6 @@ class ReservaController extends Controller
 
     public function create()
     {
-
         // Si viene directo (no desde selección de servicio)
         if (!str_contains(request()->query('from', ''), 'servicio')) {
             session()->forget('tipo_servicio_seleccionado');
@@ -46,7 +45,6 @@ class ReservaController extends Controller
             ->where('ciudad_destino_id', $request->ciudad_destino_id)
             ->where('fecha_hora_salida', '>', now())
             ->whereHas('bus', function($query) use ($servicio_id) {
-                // Esto buscará en la tabla 'buses' la columna que acabamos de crear
                 $query->where('tipo_servicio_id', $servicio_id);
             })
             ->withCount(['asientos' => fn($q) => $q->where('disponible', true)])
@@ -67,6 +65,9 @@ class ReservaController extends Controller
         $request->validate([
             'viaje_id'   => 'required|exists:viajes,id',
             'asiento_id' => 'required|exists:asientos,id',
+            'fecha_nacimiento_pasajero' => 'required|date',
+            'servicios' => 'nullable|array',
+            'servicios.*' => 'exists:servicios_adicionales,id',
         ]);
 
         // ── HU14: Validar datos del tercero si aplica ──
@@ -83,12 +84,10 @@ class ReservaController extends Controller
                 'tercero_telefono'  => 'required|string|max:25',
                 'tercero_email'     => 'nullable|max:100',
             ]);
-
             // Verificar documento no repetido en el mismo viaje
             $docDuplicado = Reserva::where('tercero_num_doc', $request->tercero_num_doc)
                 ->where('viaje_id', $request->viaje_id)
                 ->exists();
-
             if ($docDuplicado) {
                 return redirect()->back()->withInput()
                     ->with('error', 'El documento del pasajero ya está registrado en este viaje.');
@@ -135,7 +134,22 @@ class ReservaController extends Controller
             $datosReserva['tercero_entrega']  = $request->tercero_entrega ?? 'Email del pasajero';
         }
 
+        // ✅ CREAR LA RESERVA
         $reserva = Reserva::create($datosReserva);
+
+        // ✅ HU2: Guardar servicios adicionales seleccionados
+        if ($request->has('servicios') && is_array($request->servicios)) {
+            foreach ($request->servicios as $servicioId) {
+                $servicio = \App\Models\ServicioAdicional::find($servicioId);
+
+                if ($servicio) {
+                    $reserva->serviciosAdicionales()->attach($servicioId, [
+                        'cantidad' => 1,
+                        'precio_unitario' => $servicio->precio,
+                    ]);
+                }
+            }
+        }
 
         $asiento->update([
             'disponible' => false,
@@ -153,6 +167,7 @@ class ReservaController extends Controller
         $qrCode = DNS2D::getBarcodeSVG($codigo, 'QRCODE');
         return view('cliente.reserva.confirmacion', compact('reserva', 'qrCode'));
     }
+
     public function update(Request $request, Reserva $reserva)
     {
         $request->validate([
@@ -184,12 +199,18 @@ class ReservaController extends Controller
 
         return view('cliente.historial', compact('reservas'));
     }
+
     public function seleccionarAsiento($viaje_id)
     {
         $viaje = Viaje::findOrFail($viaje_id);
         $asientos = $viaje->asientos()->where('disponible', true)->get();
-        return view('cliente.reserva.asientos', compact('viaje', 'asientos'));
+
+        // ✅ HU2: Obtener servicios adicionales disponibles
+        $serviciosAdicionales = \App\Models\ServicioAdicional::where('disponible', true)->get();
+
+        return view('cliente.reserva.asientos', compact('viaje', 'asientos', 'serviciosAdicionales'));
     }
+
     public function descargarBoleto(Reserva $reserva)
     {
         // Solo el dueño puede descargar

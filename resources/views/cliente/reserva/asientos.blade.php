@@ -40,7 +40,6 @@
             border-radius: 8px; padding: 11px 14px;
             font-size: 0.81rem; color: #1565c0; margin-bottom: 16px;
         }
-
     </style>
 
     <div class="card shadow-sm">
@@ -109,8 +108,7 @@
                     </p>
                     <div class="info-alert-hu14">
                         <i class="fas fa-info-circle mt-1"></i>
-                        <span>El pasajero <strong>no necesita cuenta</strong> en el sistema.
-             El boleto se generará a su nombre.</span>
+                        <span>El pasajero <strong>no necesita cuenta</strong> en el sistema. El boleto se generará a su nombre.</span>
                     </div>
 
                     <div class="row g-3">
@@ -158,12 +156,56 @@
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Teléfono del Pasajero *</label>
                             <input type="tel" name="tercero_telefono" class="form-control" placeholder="+504 9999-9999">
-
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Correo Electrónico <span class="text-muted fw-normal">(Opcional)</span></label>
                             <input type="text" name="tercero_email" class="form-control" placeholder="pasajero@email.com">
+                        </div>
+                    </div>
+                </div>
 
+                {{--  HU2: SERVICIOS ADICIONALES --}}
+                <div class="card shadow-sm mb-4 mt-4">
+                    <div class="card-header" style="background-color: #1e3a8a; color: white;">
+                        <h5 class="mb-0">
+                            <i class="fas fa-plus-circle me-2"></i>Servicios Adicionales
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Selecciona los servicios que deseas agregar a tu viaje. <strong>Se pagan al momento de abordar.</strong>
+                        </p>
+
+                        <div class="row g-3">
+                            @foreach($serviciosAdicionales as $servicio)
+                                <div class="col-md-4">
+                                    <div class="card h-100 border">
+                                        <div class="card-body text-center">
+                                            <i class="{{ $servicio->icono }} fa-3x mb-3" style="color: #1e3a8a;"></i>
+                                            <h6 class="fw-bold">{{ $servicio->nombre }}</h6>
+                                            <p class="text-muted small">{{ $servicio->descripcion }}</p>
+                                            <p class="fw-bold text-success mb-3">L. {{ number_format($servicio->precio, 2) }}</p>
+
+                                            <div class="form-check">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       name="servicios[]"
+                                                       value="{{ $servicio->id }}"
+                                                       id="servicio{{ $servicio->id }}">
+                                                <label class="form-check-label" for="servicio{{ $servicio->id }}">
+                                                    Agregar
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="alert alert-warning mt-3">
+                            <i class="fas fa-wallet me-2"></i>
+                            <strong>Nota:</strong> Los servicios adicionales se pagan al momento de abordar el bus.
                         </div>
                     </div>
                 </div>
@@ -231,8 +273,6 @@
             const pais = document.getElementById('tercero_pais').value;
             document.getElementById('hint-doc').textContent = hints[pais] || '';
         }
-
-
 
         function validarForm() {
             if (document.getElementById('para_tercero').value !== '1') return true;
