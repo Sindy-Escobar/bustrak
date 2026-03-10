@@ -205,7 +205,10 @@
                                     data-monto="{{ $reserva->precio_total }}"
                                     data-fecha="{{ $reserva->created_at->format('d/m/Y') }}"
                                     data-codigo="{{ $reserva->codigo_reserva }}">
-                                {{ $reserva->codigo_reserva }} - {{ $reserva->user->name ?? 'N/A' }} (L. {{ number_format($reserva->precio_total, 2) }})
+                                {{ $reserva->user->name ?? 'N/A' }} —
+                                {{ $reserva->viaje->origen->nombre ?? '?' }} → {{ $reserva->viaje->destino->nombre ?? '?' }} —
+                                {{ \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('d/m/Y H:i') }} —
+                                Asiento #{{ $reserva->asiento->numero_asiento ?? $reserva->asiento_id }}
                             </option>
                         @endforeach
                     </select>

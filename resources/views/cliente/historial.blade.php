@@ -139,7 +139,7 @@
                                     @endif
 
                                     {{-- CALIFICAR (solo si el viaje ya pasó y no ha calificado) --}}
-                                    @if(!$estaCancelada && $reserva->viaje && $reserva->viaje->empleado_id && !$comentarioGuardado && $viajeYaPaso)
+                                    @if(!$estaCancelada && !$estaReembolsada && $reserva->viaje && $reserva->viaje->empleado_id && !$comentarioGuardado)
                                         <a href="{{ route('calificar.chofer', $reserva->viaje->empleado_id) }}"
                                            class="btn btn-warning btn-sm mb-1"
                                            title="Calificar Conductor">
