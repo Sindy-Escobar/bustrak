@@ -496,6 +496,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
     Route::get('reserva/create', [ReservaController::class, 'create'])->name('reserva.create');
     Route::post('reserva/buscar', [ReservaController::class, 'buscar'])->name('reserva.buscar');
+    Route::get('reserva/viajes', [ReservaController::class, 'repetirBusqueda'])->name('reserva.viajes');
     Route::get('reserva/{viaje_id}/asientos', [ReservaController::class, 'seleccionarAsiento'])->name('reserva.asientos');
     Route::post('reserva/store', [ReservaController::class, 'store'])->name('reserva.store');
 });

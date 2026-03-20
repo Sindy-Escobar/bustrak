@@ -11,15 +11,7 @@ class TipoServicioSeeder extends Seeder
     {
         $servicios = [
             [
-                'nombre' => 'Urbano',
-                'descripcion' => 'Servicio de transporte dentro de la ciudad con paradas frecuentes. Ideal para trayectos cortos dentro del área metropolitana.',
-                'tarifa_base' => 50.00,
-                'icono' => 'fas fa-city',
-                'color' => '#3b82f6',
-                'activo' => true,
-            ],
-            [
-                'nombre' => 'Interurbano',
+                'nombre' => 'Regular Interurbano',
                 'descripcion' => 'Servicio de transporte entre ciudades con paradas programadas. Conecta diferentes municipios y departamentos.',
                 'tarifa_base' => 150.00,
                 'icono' => 'fas fa-road',
@@ -27,7 +19,7 @@ class TipoServicioSeeder extends Seeder
                 'activo' => true,
             ],
             [
-                'nombre' => 'Express',
+                'nombre' => 'Directo o Express',
                 'descripcion' => 'Servicio rápido con pocas paradas, diseñado para llegar a tu destino en el menor tiempo posible. Sin paradas intermedias.',
                 'tarifa_base' => 250.00,
                 'icono' => 'fas fa-bolt',
@@ -59,14 +51,12 @@ class TipoServicioSeeder extends Seeder
                 'activo' => true,
             ],
         ];
-
         foreach($servicios as $servicio) {
             TipoServicio::updateOrCreate(
                 ['nombre' => $servicio['nombre']], // Busca por nombre
                 $servicio // Actualiza o crea con estos datos
             );
         }
-
         $this->command->info('' . count($servicios) . ' tipos de servicio creados/actualizados');
     }
 }

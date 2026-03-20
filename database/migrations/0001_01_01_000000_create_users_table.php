@@ -20,7 +20,7 @@ return new class extends Migration
                 $table->string('password');
                 $table->enum('role', ['Empleado', 'Administrador', 'Cliente'])->default('Empleado');
                 $table->enum('estado', ['activo', 'inactivo'])->default('activo');
-                
+
                 $table->rememberToken();
                 $table->timestamps();
             });
@@ -50,7 +50,7 @@ return new class extends Migration
                 $table->id();
                 $table->string('nombre', 100);
                 $table->string('apellido', 100);
-                $table->string('dni', 20)->unique();
+                $table->string('dni', 20)->nullable()->unique();
                 $table->string('cargo', 50);
                 $table->date('fecha_ingreso');
                 $table->string('email')->unique();

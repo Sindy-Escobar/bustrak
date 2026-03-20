@@ -2,148 +2,465 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boleto - {{ $reserva->codigo_reserva }}</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #eef2f7; padding: 30px; }
-        .page { width: 520px; margin: 0 auto; }
-        .ticket-header { background: #1346a0; border-radius: 14px 14px 0 0; padding: 24px 30px 20px; text-align: center; }
-        .brand { font-size: 28px; font-weight: 900; color: #ffffff; letter-spacing: 2px; }
-        .brand-accent { color: #5cb3ff; }
-        .subtitle { font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-top: 2px; margin-bottom: 12px; }
-        .pill { display: inline-block; background: #27ae60; color: #fff; font-size: 9px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; padding: 4px 18px; border-radius: 30px; }
-        .ruta-wrap { background: #ffffff; padding: 20px 30px 16px; border-left: 1px solid #dce6f5; border-right: 1px solid #dce6f5; }
-        .ruta-inner { background: #f0f6ff; border: 1px solid #d0e2ff; border-radius: 10px; padding: 14px 20px; }
-        .ruta-table { width: 100%; border-collapse: collapse; }
-        .ruta-ciudad { font-size: 19px; font-weight: 900; color: #1346a0; }
-        .ruta-label { font-size: 8px; text-transform: uppercase; letter-spacing: 1.5px; color: #9ab0cc; margin-top: 3px; }
-        .ruta-mid { text-align: center; padding: 0 8px; }
-        .ticket-divider { background: #eef2f7; border-left: 1px solid #dce6f5; border-right: 1px solid #dce6f5; padding: 0 20px; }
-        .divider-inner { border-top: 2px dashed #c8d8ee; }
-        .info-wrap { background: #ffffff; padding: 16px 30px; border-left: 1px solid #dce6f5; border-right: 1px solid #dce6f5; }
-        .info-table { width: 100%; border-collapse: collapse; }
-        .info-td { width: 50%; padding: 5px; vertical-align: top; }
-        .info-box { background: #f7faff; border: 1px solid #dce8f8; border-radius: 8px; padding: 10px 12px; }
-        .info-lbl { font-size: 7.5px; text-transform: uppercase; letter-spacing: 1.2px; color: #9ab0cc; font-weight: bold; margin-bottom: 4px; }
-        .info-val { font-size: 13px; font-weight: bold; color: #1a2a45; }
-        .pasajero-wrap { background: #ffffff; padding: 4px 30px 14px; border-left: 1px solid #dce6f5; border-right: 1px solid #dce6f5; }
-        .pasajero-box { border: 1.5px solid #f0c040; border-left: 5px solid #f0a500; border-radius: 8px; background: #fffdf0; padding: 12px 16px; }
-        .pasajero-tag { font-size: 7.5px; text-transform: uppercase; letter-spacing: 1.5px; color: #c08000; font-weight: bold; margin-bottom: 6px; }
-        .pasajero-nombre { font-size: 15px; font-weight: 900; color: #1a2a45; margin-bottom: 4px; }
-        .pasajero-dato { font-size: 11px; color: #667; margin-top: 2px; }
-        .comprador-wrap { background: #ffffff; padding: 0 30px 14px; border-left: 1px solid #dce6f5; border-right: 1px solid #dce6f5; }
-        .comprador-box { background: #f4f8ff; border: 1px solid #d0e2f8; border-radius: 8px; padding: 9px 14px; font-size: 10.5px; color: #556; }
-        .comprador-b { color: #1346a0; font-weight: bold; }
-        .codigo-wrap { background: #ffffff; padding: 0 30px 20px; border-left: 1px solid #dce6f5; border-right: 1px solid #dce6f5; }
-        .codigo-box { background: #1346a0; border-radius: 10px; padding: 16px 20px; text-align: center; }
-        .codigo-lbl { font-size: 8px; text-transform: uppercase; letter-spacing: 2.5px; color: rgba(255,255,255,0.55); margin-bottom: 6px; }
-        .codigo-text { font-size: 16px; font-weight: 900; color: #fff; letter-spacing: 2px; word-break: break-all; }
-        .ticket-footer { background: #f0f4fa; border: 1px solid #dce6f5; border-top: none; border-radius: 0 0 14px 14px; padding: 12px 20px; text-align: center; }
-        .footer-txt { font-size: 9.5px; color: #aab8cc; }
-        .footer-b { color: #1346a0; font-weight: bold; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @page {
+            margin: 15mm 20mm;  /* Superior/inferior: 15mm, Izquierda/derecha: 20mm */
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            color: #333;
+            line-height: 1.6;
+            padding: 0 10px;  /* Padding adicional interno */
+        }
+
+        .container {
+            width: 100%;
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .logo-section {
+            margin-bottom: 15px;
+        }
+
+        .logo-section img {
+            width: 250px;
+            height: auto;
+            display: block;
+            margin: 0 auto 10px auto;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .logo-section h1 {
+            font-size: 28px;
+            margin: 0;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .header h2 {
+            font-size: 18px;
+            margin: 10px 0 5px 0;
+            font-weight: normal;
+        }
+
+        .header p {
+            font-size: 13px;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .codigo-reserva {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .codigo-reserva .label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .codigo-reserva .codigo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #3b82f6;
+            letter-spacing: 2px;
+        }
+
+        .section {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            page-break-inside: avoid;  /* Evita que se corte entre páginas */
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #3b82f6;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3b82f6;
+            text-transform: uppercase;
+        }
+
+        .info-grid {
+            display: table;
+            width: 100%;
+        }
+
+        .info-row {
+            display: table-row;
+        }
+
+        .info-label {
+            display: table-cell;
+            font-weight: bold;
+            color: #666;
+            padding: 5px 10px 5px 0;
+            width: 40%;
+        }
+
+        .info-value {
+            display: table-cell;
+            padding: 5px 0;
+        }
+
+        .resumen-pago {
+            background: #f0fdf4;
+            border: 2px solid #10b981;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            page-break-inside: avoid;  /* Evita que se corte entre páginas */
+        }
+
+        .resumen-pago .title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+
+        .pago-row {
+            display: table;
+            width: 100%;
+            padding: 5px 0;
+        }
+
+        .pago-label {
+            display: table-cell;
+            width: 70%;
+        }
+
+        .pago-valor {
+            display: table-cell;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .total {
+            border-top: 2px solid #10b981;
+            margin-top: 10px;
+            padding-top: 10px;
+            font-size: 16px;
+        }
+
+        .total .pago-label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #10b981;
+        }
+
+        .total .pago-valor {
+            font-size: 18px;
+            color: #10b981;
+        }
+
+        .qr-section {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border: 2px dashed #3b82f6;
+            border-radius: 8px;
+            margin-top: 20px;
+            page-break-inside: avoid;  /* Evita que se corte entre páginas */
+        }
+
+        .qr-section svg {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .qr-section p {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 5px;
+            font-size: 10px;
+            margin: 2px;
+        }
+
+        .alert {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 15px 0;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            border-color: #10b981;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            border-color: #3b82f6;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 10px;
+            color: #999;
+        }
     </style>
 </head>
 <body>
-<div class="page">
-
-    <div class="ticket-header">
-        <div class="brand">Bus<span class="brand-accent">Trak</span></div>
-        <div class="subtitle">Boleto Oficial de Viaje</div>
-        <span class="pill">{{ $reserva->estado }}</span>
+<div class="container">
+    {{-- Header con Logo --}}
+    <div class="header">
+        <div class="logo-section">
+            <img src="{{ public_path('Imagenes/bustrak-logo.png') }}" alt="BusTrak Logo">
+            <h1>BUSTRAK</h1>
+        </div>
+        <h2>BOLETO DE VIAJE</h2>
+        <p>Confirmación de Reserva</p>
     </div>
 
-    <div class="ruta-wrap">
-        <div class="ruta-inner">
-            <table class="ruta-table">
-                <tr>
-                    <td style="text-align:left; width:42%;">
-                        <div class="ruta-ciudad">{{ $reserva->viaje->origen->nombre }}</div>
-                        <div class="ruta-label">Origen</div>
-                    </td>
-                    <td class="ruta-mid" style="width:16%;">
-                        <div style="font-size:16px; color:#5cb3ff; font-weight:900;">&gt;&gt;</div>
-                        <div style="font-size:8px; color:#9ab0cc; letter-spacing:1px; margin-top:4px;">VIAJE</div>
-                    </td>
-                    <td style="text-align:right; width:42%;">
-                        <div class="ruta-ciudad">{{ $reserva->viaje->destino->nombre }}</div>
-                        <div class="ruta-label">Destino</div>
-                    </td>
-                </tr>
-            </table>
+    {{-- Código de Reserva --}}
+    <div class="codigo-reserva">
+        <div class="label">Código de Reserva</div>
+        <div class="codigo">{{ $reserva->codigo_reserva }}</div>
+    </div>
+
+    {{-- Alerta de autorización si aplica --}}
+    @if($reserva->es_menor)
+        @php
+            $paisPasajero = $reserva->para_tercero
+                ? $reserva->tercero_pais
+                : ($reserva->user->pais ?? 'Honduras');
+            $esHondureno = strtolower(trim($paisPasajero)) === 'honduras';
+        @endphp
+
+        @if(!$esHondureno)
+            <div class="alert alert-success">
+                <strong>Autorización Confirmada:</strong> La autorización del tutor legal ha sido registrada correctamente.
+            </div>
+        @else
+            <div class="alert alert-info">
+                <strong>Menor hondureño:</strong> No requiere autorización adicional.
+            </div>
+        @endif
+    @endif
+
+    {{-- Información del Viaje --}}
+    <div class="section">
+        <div class="section-title">Información del Viaje</div>
+        <div class="info-grid">
+            <div class="info-row">
+                <div class="info-label">Origen:</div>
+                <div class="info-value">{{ $reserva->viaje->origen->nombre ?? 'N/A' }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Destino:</div>
+                <div class="info-value">{{ $reserva->viaje->destino->nombre ?? 'N/A' }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Fecha y Hora de Salida:</div>
+                <div class="info-value">{{ \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('d/m/Y H:i') }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Tipo de Servicio:</div>
+                <div class="info-value">{{ $reserva->tipoServicio->nombre ?? 'No especificado' }}</div>
+            </div>
         </div>
     </div>
 
-    <div class="ticket-divider"><div class="divider-inner"></div></div>
-
-    <div class="info-wrap">
-        <table class="info-table">
-            <tr>
-                <td class="info-td">
-                    <div class="info-box">
-                        <div class="info-lbl">Fecha y Hora de Salida</div>
-                        <div class="info-val">{{ \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('d/m/Y H:i') }}</div>
-                    </div>
-                </td>
-                <td class="info-td">
-                    <div class="info-box">
-                        <div class="info-lbl">Numero de Asiento</div>
-                        <div class="info-val"># {{ $reserva->asiento->numero_asiento }}</div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="info-td">
-                    <div class="info-box">
-                        <div class="info-lbl">Tipo de Servicio</div>
-                        <div class="info-val">{{ $reserva->tipoServicio->nombre ?? 'No especificado' }}</div>
-                    </div>
-                </td>
-                <td class="info-td">
-                    <div class="info-box">
-                        <div class="info-lbl">Fecha de Reserva</div>
-                        <div class="info-val">{{ \Carbon\Carbon::parse($reserva->fecha_reserva)->format('d/m/Y') }}</div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="pasajero-wrap">
-        <div class="pasajero-box">
-            <div class="pasajero-tag">{{ $reserva->para_tercero ? 'Pasajero — Reservado por otra persona' : 'Pasajero' }}</div>
-            @if($reserva->para_tercero)
-                <div class="pasajero-nombre">{{ $reserva->tercero_nombre }}</div>
-                <div class="pasajero-dato">{{ $reserva->tercero_tipo_doc }} - {{ $reserva->tercero_num_doc }}</div>
-                @if($reserva->tercero_telefono)
-                    <div class="pasajero-dato">Tel: {{ $reserva->tercero_telefono }}</div>
-                @endif
-            @else
-                <div class="pasajero-nombre">{{ $reserva->user->name }}</div>
-                <div class="pasajero-dato">{{ $reserva->user->email }}</div>
+    {{-- Información de Asientos --}}
+    <div class="section">
+        <div class="section-title">Asientos Reservados</div>
+        <div class="info-grid">
+            <div class="info-row">
+                <div class="info-label">Cantidad de asientos:</div>
+                <div class="info-value">{{ $reserva->cantidad_asientos }} {{ $reserva->cantidad_asientos == 1 ? 'asiento' : 'asientos' }}</div>
+            </div>
+            @php
+                $asientosReservados = \App\Models\Asiento::where('reserva_id', $reserva->id)
+                    ->orderBy('numero_asiento')
+                    ->pluck('numero_asiento');
+            @endphp
+            @if($asientosReservados->isNotEmpty())
+                <div class="info-row">
+                    <div class="info-label">Números de asiento:</div>
+                    <div class="info-value">#{{ $asientosReservados->implode(', #') }}</div>
+                </div>
             @endif
         </div>
     </div>
 
-    @if($reserva->para_tercero)
-        <div class="comprador-wrap">
-            <div class="comprador-box">
-                <span class="comprador-b">Comprado por:</span> {{ $reserva->user->name }} - {{ $reserva->user->email }}
+    {{-- Información de quien realizó la reserva --}}
+    <div class="section">
+        <div class="section-title">Usuario que realizó la Reserva</div>
+        <div class="info-grid">
+            <div class="info-row">
+                <div class="info-label">Nombre:</div>
+                <div class="info-value">{{ $reserva->user->nombre_completo ?? $reserva->user->name }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Email:</div>
+                <div class="info-value">{{ $reserva->user->email }}</div>
+            </div>
+            @if($reserva->user->telefono)
+                <div class="info-row">
+                    <div class="info-label">Teléfono:</div>
+                    <div class="info-value">{{ $reserva->user->telefono }}</div>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    {{-- Información del Pasajero --}}
+    <div class="section">
+        <div class="section-title">Información del Pasajero</div>
+        <div class="info-grid">
+            @if($reserva->para_tercero)
+                <div class="info-row">
+                    <div class="info-label">Tipo:</div>
+                    <div class="info-value" style="color: #f59e0b; font-weight: bold;">Reserva para Tercero</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Nombre completo:</div>
+                    <div class="info-value">{{ $reserva->tercero_nombre }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Documento:</div>
+                    <div class="info-value">{{ $reserva->tercero_tipo_doc }}: {{ $reserva->tercero_num_doc }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">País:</div>
+                    <div class="info-value">{{ $reserva->tercero_pais }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Teléfono:</div>
+                    <div class="info-value">{{ $reserva->tercero_telefono }}</div>
+                </div>
+                @if($reserva->tercero_email)
+                    <div class="info-row">
+                        <div class="info-label">Email:</div>
+                        <div class="info-value">{{ $reserva->tercero_email }}</div>
+                    </div>
+                @endif
+            @else
+                <div class="info-row">
+                    <div class="info-label">Tipo:</div>
+                    <div class="info-value" style="color: #10b981; font-weight: bold;">Viaja el Usuario Titular</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Nombre completo:</div>
+                    <div class="info-value">{{ $reserva->user->nombre_completo ?? $reserva->user->name }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Email:</div>
+                    <div class="info-value">{{ $reserva->user->email }}</div>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    {{-- Servicios Adicionales --}}
+    @if($reserva->serviciosAdicionales->isNotEmpty())
+        <div class="section">
+            <div class="section-title">Servicios Adicionales</div>
+            <div style="padding: 5px 0;">
+                @foreach($reserva->serviciosAdicionales as $servicio)
+                    <span class="badge">{{ $servicio->nombre }} (x{{ $servicio->pivot->cantidad }})</span>
+                @endforeach
             </div>
         </div>
     @endif
 
-    <div class="codigo-wrap">
-        <div class="codigo-box">
-            <div class="codigo-lbl">Codigo de Reserva</div>
-            <div class="codigo-text">{{ $reserva->codigo_reserva }}</div>
+    {{-- Resumen de Pago --}}
+    <div class="resumen-pago">
+        <div class="title">Resumen de Pago</div>
+
+        @php
+            $tarifaBase = $reserva->tipoServicio->tarifa_base ?? 0;
+            $cantidadAsientos = $reserva->cantidad_asientos ?? 1;
+            $subtotalAsientos = $tarifaBase * $cantidadAsientos;
+
+            $totalServicios = $reserva->serviciosAdicionales->sum(function($servicio) {
+                return $servicio->pivot->precio_unitario * $servicio->pivot->cantidad;
+            });
+
+            $totalGeneral = $subtotalAsientos + $totalServicios;
+        @endphp
+
+        <div class="pago-row">
+            <div class="pago-label">Asientos ({{ $cantidadAsientos }}) - L. {{ number_format($tarifaBase, 2) }} c/u</div>
+            <div class="pago-valor">L. {{ number_format($subtotalAsientos, 2) }}</div>
+        </div>
+
+        @if($totalServicios > 0)
+            <div class="pago-row">
+                <div class="pago-label">Servicios adicionales</div>
+                <div class="pago-valor">L. {{ number_format($totalServicios, 2) }}</div>
+            </div>
+        @endif
+
+        <div class="pago-row total">
+            <div class="pago-label">TOTAL A PAGAR</div>
+            <div class="pago-valor">L. {{ number_format($totalGeneral, 2) }}</div>
         </div>
     </div>
 
-    <div class="ticket-footer">
-        <div class="footer-txt">
-            Presenta este boleto en la terminal . <span class="footer-b">BusTrak</span> . Generado el {{ now()->format('d/m/Y H:i') }}
-        </div>
+    {{-- Código QR --}}
+    <div class="qr-section">
+        <p><strong>Presenta este código al abordar el bus</strong></p>
+        {!! DNS2D::getBarcodeHTML($reserva->codigo_reserva, 'QRCODE', 4, 4) !!}
+        <p style="margin-top: 10px; font-size: 10px;">Código: {{ $reserva->codigo_reserva }}</p>
     </div>
 
+    {{-- Importante --}}
+    <div class="alert" style="margin-top: 20px;">
+        <strong>IMPORTANTE:</strong> Debe presentarse 15 minutos antes de la hora de salida. Si no llega a tiempo, su boleto será cancelado automáticamente.
+    </div>
+
+    {{-- Footer --}}
+    <div class="footer">
+        <p><strong>BUSTRAK</strong> - Sistema de Reservas de Autobuses</p>
+        <p>Fecha de emisión: {{ now()->format('d/m/Y H:i:s') }}</p>
+        <p>Este documento es válido como comprobante de reserva</p>
+    </div>
 </div>
 </body>
 </html>
