@@ -1,13 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 use App\Models\Ciudad;
 use App\Models\Viaje;
 use App\Models\Asiento;
 use App\Models\Reserva;
+use App\Models\ServicioAdicional;
+use App\Models\AutorizacionMenor;
 use DNS2D;
 
 class ReservaController extends Controller
@@ -33,11 +36,15 @@ class ReservaController extends Controller
     public function buscar(Request $request)
     {
         $request->validate([
-            'ciudad_origen_id'          => 'required|exists:ciudades,id',
-            'ciudad_destino_id'         => 'required|exists:ciudades,id|different:ciudad_origen_id',
-            'fecha_nacimiento_pasajero' => 'required|date|before:today',
+            'ciudad_origen_id'  => 'required|exists:ciudades,id',
+            'ciudad_destino_id' => 'required|exists:ciudades,id|different:ciudad_origen_id',
         ]);
-        session(['fecha_nacimiento_busqueda' => $request->fecha_nacimiento_pasajero]);
+
+        // ✅ Guardar datos de búsqueda en sesión
+        session([
+            'ultima_busqueda.ciudad_origen_id' => $request->ciudad_origen_id,
+            'ultima_busqueda.ciudad_destino_id' => $request->ciudad_destino_id,
+        ]);
 
         $servicio_id = session('tipo_servicio_seleccionado.id');
 
@@ -52,39 +59,66 @@ class ReservaController extends Controller
             ->get();
 
         if ($viajes->isEmpty()) {
-            return redirect()->back()->withInput()->with('error', 'No hay viajes disponibles para este servicio en la ruta seleccionada.');
+            return redirect()->back()->withInput()
+                ->with('error', 'No hay viajes disponibles para este servicio en la ruta seleccionada.');
         }
+
+        return view('cliente.reserva.seleccionar', compact('viajes'));
+    }
+
+    /**
+     * ✅ Repetir la última búsqueda (para el botón "Volver")
+     */
+    public function repetirBusqueda()
+    {
+        $ciudad_origen_id = session('ultima_busqueda.ciudad_origen_id');
+        $ciudad_destino_id = session('ultima_busqueda.ciudad_destino_id');
+        $servicio_id = session('tipo_servicio_seleccionado.id');
+
+        if (!$ciudad_origen_id || !$ciudad_destino_id) {
+            return redirect()->route('cliente.reserva.create')
+                ->with('error', 'No hay búsqueda previa. Por favor, realiza una nueva búsqueda.');
+        }
+
+        $viajes = Viaje::where('ciudad_origen_id', $ciudad_origen_id)
+            ->where('ciudad_destino_id', $ciudad_destino_id)
+            ->where('fecha_hora_salida', '>', now())
+            ->whereHas('bus', function($query) use ($servicio_id) {
+                $query->where('tipo_servicio_id', $servicio_id);
+            })
+            ->withCount(['asientos' => fn($q) => $q->where('disponible', true)])
+            ->having('asientos_count', '>', 0)
+            ->get();
 
         return view('cliente.reserva.seleccionar', compact('viajes'));
     }
 
     public function store(Request $request)
     {
-        $fechaNacimiento = $request->fecha_nacimiento_pasajero ?? session('fecha_nacimiento_busqueda');
-
-        $request->validate([
-            'viaje_id'   => 'required|exists:viajes,id',
-            'asiento_id' => 'required|exists:asientos,id',
-            'fecha_nacimiento_pasajero' => 'required|date',
-            'servicios' => 'nullable|array',
-            'servicios.*' => 'exists:servicios_adicionales,id',
-        ]);
-
-        // ── HU14: Validar datos del tercero si aplica ──
         $esTercero = $request->input('para_tercero') === '1';
 
+        //  Validación base
+        $request->validate([
+            'viaje_id'          => 'required|exists:viajes,id',
+            'cantidad_asientos' => 'required|integer|min:1',
+            'servicios'         => 'nullable|array',
+            'servicios.*'       => 'exists:servicios_adicionales,id',
+        ]);
+
+        // Validar datos del tercero
         if ($esTercero) {
             $request->validate([
-                'tercero_nombre'    => 'required|string|max:100',
-                'tercero_apellido1' => 'required|string|max:100',
-                'tercero_apellido2' => 'nullable|string|max:100',
-                'tercero_pais'      => 'required|string|max:60',
-                'tercero_tipo_doc'  => 'required|string|max:30',
-                'tercero_num_doc'   => 'required|string|max:30',
-                'tercero_telefono'  => 'required|string|max:25',
-                'tercero_email'     => 'nullable|max:100',
+                'tercero_nombre'           => 'required|string|max:100',
+                'tercero_apellido1'        => 'required|string|max:100',
+                'tercero_apellido2'        => 'nullable|string|max:100',
+                'tercero_fecha_nacimiento' => 'required|date|before:today',
+                'tercero_pais'             => 'required|string|max:60',
+                'tercero_tipo_doc'         => 'required|string|max:30',
+                'tercero_num_doc'          => 'required|string|max:30',
+                'tercero_telefono'         => 'required|string|max:25',
+                'tercero_email'            => 'nullable|email|max:100',
             ]);
-            // Verificar documento no repetido en el mismo viaje
+
             $docDuplicado = Reserva::where('tercero_num_doc', $request->tercero_num_doc)
                 ->where('viaje_id', $request->viaje_id)
                 ->exists();
@@ -92,79 +126,117 @@ class ReservaController extends Controller
                 return redirect()->back()->withInput()
                     ->with('error', 'El documento del pasajero ya está registrado en este viaje.');
             }
+
+            $fechaNacimiento = $request->tercero_fecha_nacimiento;
+        } else {
+            $fechaNacimiento = Auth::user()->fecha_nacimiento;
         }
 
-        if (!$fechaNacimiento) {
-            return redirect()->route('cliente.reserva.create')
-                ->with('error', 'La sesión ha expirado. Por favor inicie la búsqueda de nuevo.');
+        $viaje = Viaje::findOrFail($request->viaje_id);
+
+        //  Verificar que haya suficientes asientos disponibles
+        $asientosDisponibles = $viaje->asientos()->where('disponible', true)->count();
+
+        if ($request->cantidad_asientos > $asientosDisponibles) {
+            return redirect()->back()->with('error', "Solo hay {$asientosDisponibles} asientos disponibles.");
         }
 
-        $asiento = Asiento::findOrFail($request->asiento_id);
+        //  Calcular edad y determinar país
+        $esMenor = false;
+        $esHondureno = true;
+        $necesitaAutorizacion = false;
 
-        if (!$asiento->disponible) {
-            return redirect()->back()->with('error', 'Lo sentimos, este asiento ya fue ocupado.');
+        if ($fechaNacimiento) {
+            $edad = \Carbon\Carbon::parse($fechaNacimiento)->age;
+            $esMenor = $edad < 18;
         }
 
-        $edad    = \Carbon\Carbon::parse($fechaNacimiento)->age;
-        $esMenor = $edad < 18;
-        $codigo  = uniqid('RES_');
+        // Determinar el país del pasajero
+        if ($esTercero) {
+            $paisPasajero = $request->tercero_pais;
+        } else {
+            $paisPasajero = Auth::user()->pais ?? 'Honduras';
+        }
 
-        // ── Datos base de la reserva ──
+        // Verificar si es hondureño
+        $esHondureno = strtolower($paisPasajero) === 'honduras';
+
+        // ✅ VALIDACIÓN: Solo menores extranjeros necesitan autorización
+        $necesitaAutorizacion = $esMenor && !$esHondureno;
+
+        $codigo = uniqid('RES_');
+
+        //  Crear reserva SIN asiento_id específico
         $datosReserva = [
             'user_id'                   => Auth::id(),
             'viaje_id'                  => $request->viaje_id,
-            'asiento_id'                => $request->asiento_id,
+            'asiento_id'                => null, //  NULL porque reserva múltiples asientos
+            'cantidad_asientos'         => $request->cantidad_asientos,
             'codigo_reserva'            => $codigo,
             'fecha_reserva'             => now(),
-            'estado'                    => $esMenor ? 'pendiente' : 'confirmada',
+            'estado'                    => $necesitaAutorizacion ? 'pendiente_autorizacion' : 'confirmada',
             'fecha_nacimiento_pasajero' => $fechaNacimiento,
             'es_menor'                  => $esMenor,
             'tipo_servicio_id'          => session('tipo_servicio_seleccionado.id'),
         ];
 
-        // ── HU14: Añadir datos del tercero si aplica ──
         if ($esTercero) {
             $datosReserva['para_tercero']     = true;
-            $datosReserva['tercero_nombre']   = trim($request->tercero_nombre . ' ' . $request->tercero_apellido1 . ' ' . $request->tercero_apellido2);
+            $datosReserva['tercero_nombre']   = trim($request->tercero_nombre . ' ' . $request->tercero_apellido1 . ' ' . ($request->tercero_apellido2 ?? ''));
             $datosReserva['tercero_pais']     = $request->tercero_pais;
             $datosReserva['tercero_tipo_doc'] = $request->tercero_tipo_doc;
             $datosReserva['tercero_num_doc']  = $request->tercero_num_doc;
             $datosReserva['tercero_telefono'] = $request->tercero_telefono;
             $datosReserva['tercero_email']    = $request->tercero_email;
-            $datosReserva['tercero_entrega']  = $request->tercero_entrega ?? 'Email del pasajero';
         }
 
-        // ✅ CREAR LA RESERVA
         $reserva = Reserva::create($datosReserva);
 
-        // ✅ HU2: Guardar servicios adicionales seleccionados
-        if ($request->has('servicios') && is_array($request->servicios)) {
-            foreach ($request->servicios as $servicioId) {
+        //  Marcar asientos como no disponibles (los primeros X disponibles)
+        $asientosAReservar = $viaje->asientos()
+            ->where('disponible', true)
+            ->limit($request->cantidad_asientos)
+            ->get();
+
+        foreach ($asientosAReservar as $asiento) {
+            $asiento->update([
+                'disponible' => false,
+                'reserva_id' => $reserva->id,
+            ]);
+        }
+
+        //  Guardar servicios adicionales con cantidades personalizadas
+        if ($request->has('servicios_adicionales') && is_array($request->servicios_adicionales)) {
+            foreach ($request->servicios_adicionales as $servicioId) {
                 $servicio = \App\Models\ServicioAdicional::find($servicioId);
 
                 if ($servicio) {
+                    // Obtener la cantidad específica para este servicio
+                    $cantidadServicio = $request->input("servicio_cantidad.{$servicioId}", 1);
+
                     $reserva->serviciosAdicionales()->attach($servicioId, [
-                        'cantidad' => 1,
+                        'cantidad' => $cantidadServicio, //  Cantidad personalizada por servicio
                         'precio_unitario' => $servicio->precio,
                     ]);
                 }
             }
         }
 
-        $asiento->update([
-            'disponible' => false,
-            'reserva_id' => $reserva->id,
-        ]);
-
         session()->forget('tipo_servicio_seleccionado');
         session()->forget('solicitud_viaje_id');
 
-        if ($esMenor) {
-            return redirect()->route('autorizacion.create', $reserva->id)
-                ->with('info', 'Pasajero menor de edad detectado. Por seguridad, debe completar la autorización.');
+        // Generar código QR
+        $qrCode = DNS2D::getBarcodeSVG($codigo, 'QRCODE');
+
+        // Mensaje según el caso
+        if ($necesitaAutorizacion) {
+            session()->flash('warning', 'Reserva creada con estado PENDIENTE. Como es un menor de edad extranjero, deberás completar la autorización desde tu historial de reservas antes de viajar.');
+        } else if ($esMenor && $esHondureno) {
+            session()->flash('info', 'Reserva confirmada. Menor de edad hondureño - No requiere autorización adicional.');
+        } else {
+            session()->flash('success', '¡Reserva confirmada exitosamente!');
         }
 
-        $qrCode = DNS2D::getBarcodeSVG($codigo, 'QRCODE');
         return view('cliente.reserva.confirmacion', compact('reserva', 'qrCode'));
     }
 
@@ -202,13 +274,26 @@ class ReservaController extends Controller
 
     public function seleccionarAsiento($viaje_id)
     {
-        $viaje = Viaje::findOrFail($viaje_id);
+        //  Cargar el viaje con TODAS las relaciones necesarias
+        $viaje = Viaje::with([
+            'origen',      // Relación con ciudad origen
+            'destino',     // Relación con ciudad destino
+            'bus.tipoServicio'   // Relación con bus y su tipo de servicio
+        ])->findOrFail($viaje_id);
+
+        // Obtener asientos disponibles
         $asientos = $viaje->asientos()->where('disponible', true)->get();
 
-        // ✅ HU2: Obtener servicios adicionales disponibles
+        // Contar asientos disponibles para la vista
+        $asientosDisponibles = $asientos->count();
+
+        // Obtener servicios adicionales disponibles
         $serviciosAdicionales = \App\Models\ServicioAdicional::where('disponible', true)->get();
 
-        return view('cliente.reserva.asientos', compact('viaje', 'asientos', 'serviciosAdicionales'));
+        // ✅ Obtener el tipo de servicio del bus
+        $tipoServicio = $viaje->bus->tipoServicio;
+
+        return view('cliente.reserva.asientos', compact('viaje', 'asientos', 'asientosDisponibles', 'serviciosAdicionales', 'tipoServicio'));
     }
 
     public function descargarBoleto(Reserva $reserva)

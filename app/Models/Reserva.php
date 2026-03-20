@@ -13,6 +13,7 @@ class Reserva extends Model
         'user_id',
         'viaje_id',
         'asiento_id',
+        'cantidad_asientos',
         'codigo_reserva',
         'fecha_reserva',
         'estado',
@@ -55,12 +56,6 @@ class Reserva extends Model
         return $this->belongsTo(Asiento::class);
     }
 
-    // Relación con autorización de menor
-    public function autorizacionMenor()
-    {
-        return $this->hasOne(AutorizacionMenor::class);
-    }
-
     public function reembolsos()
     {
         return $this->hasMany(\App\Models\Reembolso::class, 'reserva_id');
@@ -75,6 +70,21 @@ class Reserva extends Model
         return $this->belongsToMany(ServicioAdicional::class, 'reserva_servicio_adicional')
             ->withPivot('cantidad', 'precio_unitario')
             ->withTimestamps();
+    }
+    /**
+     * Relación con autorizaciones
+     */
+    public function autorizaciones()
+    {
+        return $this->hasMany(Autorizacion::class);
+    }
+
+    /**
+     * Obtener la autorización activa
+     */
+    public function autorizacionActiva()
+    {
+        return $this->hasOne(Autorizacion::class)->latest();
     }
 }
 

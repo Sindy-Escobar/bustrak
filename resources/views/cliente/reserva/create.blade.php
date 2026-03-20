@@ -1,109 +1,150 @@
 @extends('layouts.layoutuser')
 
 @section('contenido')
-    @section('contenido')
+    <div class="container-fluid py-4"> {{--  container-fluid para más ancho --}}
 
-        {{-- Bloque de Mensajes de Error/Éxito --}}
+        {{-- Mensajes --}}
         @if(session('error'))
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle me-2"></i> {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
         @if(session('info'))
             <div class="alert alert-info alert-dismissible fade show" role="alert">
-                <i class="fas fa-info-circle me-2"></i> {{ session('info') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <i class="fas fa-info-circle me-2"></i>{{ session('info') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0"><i class="fas fa-bus me-2"></i>Reservar Viaje</h4>
-        </div>
-
-        <div class="card-body">
-            <form id="buscarForm" action="{{ route('cliente.reserva.buscar') }}" method="POST" autocomplete="off" novalidate>
-                @csrf
-
-                <div class="row">
-                    {{-- Ciudad de Origen --}}
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Ciudad de Origen</label>
-                        <select name="ciudad_origen_id" id="ciudad_origen_id" class="form-select" required>
-                            <option value="">-- Seleccione --</option>
-                            @foreach($ciudades as $c)
-                                <option value="{{ $c->id }}" {{ old('ciudad_origen_id') == $c->id ? 'selected' : '' }}>
-                                    {{ $c->nombre }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    {{-- Ciudad de Destino --}}
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Ciudad de Destino</label>
-                        <select name="ciudad_destino_id" id="ciudad_destino_id" class="form-select" required>
-                            <option value="">-- Seleccione --</option>
-                            @foreach($ciudades as $c)
-                                <option value="{{ $c->id }}" {{ old('ciudad_destino_id') == $c->id ? 'selected' : '' }}>
-                                    {{ $c->nombre }}
-                                </option>
-                            @endforeach
-                        </select>
+        {{-- ENCABEZADO --}}
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-11">
+                <div class="alert alert-primary border-0 shadow-sm mb-0 py-3"
+                     style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="fas fa-route fa-2x text-white"></i>
+                        <div class="text-start">
+                            <h4 class="fw-bold text-white mb-1">Reserva tu Viaje</h4>
+                            <p class="text-white mb-0" style="opacity: 0.9;">
+                                Selecciona el servicio y destino que prefieras para comenzar tu aventura
+                            </p>
+                        </div>
                     </div>
                 </div>
-
-                {{-- Fecha de nacimiento --}}
-                <div class="mb-3">
-                    <label class="form-label fw-bold">
-                        Fecha de Nacimiento del Pasajero *
-                        <i class="fas fa-info-circle text-primary" data-bs-toggle="tooltip" title="Los menores de 18 años requieren autorización de un tutor"></i>
-                    </label>
-
-                    <input type="date"
-                           name="fecha_nacimiento_pasajero"
-                           id="fecha_nacimiento"
-                           class="form-control @error('fecha_nacimiento_pasajero') is-invalid @enderror"
-                           value="{{ old('fecha_nacimiento_pasajero') }}"
-                           required
-                           max="{{ date('Y-m-d') }}">
-
-                    @error('fecha_nacimiento_pasajero')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-
-                    <small class="text-muted d-block mt-1">
-                        Si el pasajero es menor de 18 años, deberá completar una autorización del tutor.
-                    </small>
-                </div>
-
-                {{-- Alerta dinámica para menores --}}
-                <div id="alerta-menor" class="alert alert-warning d-none">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <strong>Atención:</strong> El pasajero es menor de edad. Se requerirá autorización del tutor tras confirmar.
-                </div>
-
-                <hr>
-
-                <div class="d-flex justify-content-between align-items-center">
-
-
-                    <a href="{{ route('cliente.seleccion-tipo-servicio') }}" id="btn-servicio" class="btn btn-outline-primary">
-                        <i class="fas fa-concierge-bell me-2"></i>
-                        @if(session('tipo_servicio_seleccionado'))
-                            Servicio: {{ session('tipo_servicio_seleccionado.nombre') }} (Cambiar)
-                        @else
-                            Seleccionar Tipo de Servicio
-                        @endif
-                    </a>
-                    <button type="submit" class="btn btn-outline-primary">
-                        <i class="fas fa-search me-2"></i>Buscar Viajes
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
+
+        {{--  BARRA DE PROGRESO --}}
+        @include('components.progress-stepper', ['step' => 1])
+
+        <form id="buscarForm" action="{{ route('cliente.reserva.buscar') }}" method="POST" autocomplete="off" novalidate>
+            @csrf
+
+            {{-- PASO 1 --}}
+            <div class="row justify-content-center mb-2">
+                <div class="col-lg-11"> {{--  CAMBIO --}}
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header border-0 bg-white pt-4 pb-3">
+                            <h4 class="mb-1" style="color: #3b82f6;">
+                                <i class="fas fa-star me-2"></i>Selecciona tu servicio de transporte
+                            </h4>
+                            <p class="text-muted mb-0 small">Elige el tipo de experiencia que prefieras</p>
+                        </div>
+                        <div class="card-body p-4">
+                            @if(session('tipo_servicio_seleccionado'))
+                                <div class="alert alert-success d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        <strong>Servicio seleccionado:</strong> {{ session('tipo_servicio_seleccionado.nombre') }}
+                                    </div>
+                                    <a href="{{ route('cliente.seleccion-tipo-servicio') }}"
+                                       id="btn-servicio-cambiar"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit me-1"></i>Cambiar
+                                    </a>
+                                </div>
+                            @else
+                                <div class="text-center py-4">
+                                    <i class="fas fa-bus me-2"></i>
+                                    <p class="text-muted mb-3">Primero selecciona un tipo de servicio</p>
+                                    <a href="{{ route('cliente.seleccion-tipo-servicio') }}"
+                                       id="btn-servicio"
+                                       class="btn btn-lg text-white"
+                                       style="background-color: #3b82f6;">
+                                        <i class=""></i>Seleccionar
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- PASO 2 --}}
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-11"> {{-- CAMBIO --}}
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header border-0 bg-white pt-4 pb-3">
+                            <h4 class="mb-1" style="color: #3b82f6;">
+                                <i class="fas fa-map-marked-alt me-2"></i>¿A dónde viajas?
+                            </h4>
+                            <p class="text-muted mb-0 small">Selecciona tu origen y destino</p>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-map-marker-alt me-2 text-primary"></i>Desde
+                                    </label>
+                                    <select name="ciudad_origen_id"
+                                            id="ciudad_origen_id"
+                                            class="form-select form-select-small"
+                                            required>
+                                        <option value="">Ciudad de origen</option>
+                                        @foreach($ciudades as $c)
+                                            <option value="{{ $c->id }}" {{ old('ciudad_origen_id') == $c->id ? 'selected' : '' }}>
+                                                {{ $c->nombre }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-flag-checkered me-2 text-success"></i>Hasta
+                                    </label>
+                                    <select name="ciudad_destino_id"
+                                            id="ciudad_destino_id"
+                                            class="form-select form-select-small"
+                                            required>
+                                        <option value="">Ciudad de destino</option>
+                                        @foreach($ciudades as $c)
+                                            <option value="{{ $c->id }}" {{ old('ciudad_destino_id') == $c->id ? 'selected' : '' }}>
+                                                {{ $c->nombre }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Botón Buscar --}}
+            <div class="row justify-content-center">
+                <div class="col-lg-11"> {{--  CAMBIO --}}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-lg text-white py-3 shadow-lg" style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%); border: none;">
+                            <i class="fas fa-search me-3"></i>Buscar Viajes Disponibles
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
     </div>
 
     {{-- Modal de error --}}
@@ -111,8 +152,10 @@
         <div class="modal-dialog">
             <div class="modal-content border-danger">
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title"><i class="fas fa-exclamation-circle me-2"></i>Error de Validación</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-circle me-2"></i>Error de Validación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body text-center py-4">
                     <p id="errorMessage" class="fs-5 mb-0"></p>
@@ -124,71 +167,77 @@
         </div>
     </div>
 
+    <style>
+        .form-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeInDown 0.6s ease-out;
+        }
+    </style>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const params = new URLSearchParams(window.location.search);
             const form = document.getElementById('buscarForm');
             const inputOrigen = document.getElementById('ciudad_origen_id');
             const inputDestino = document.getElementById('ciudad_destino_id');
-            const inputFecha = document.getElementById('fecha_nacimiento');
             const btnServicio = document.getElementById('btn-servicio');
+            const btnServicioCambiar = document.getElementById('btn-servicio-cambiar');
 
-            // --- 1. Lógica de Persistencia (Recuperar datos al volver) ---
             if (params.get('from') === 'servicio' && sessionStorage.getItem('volviendo_de_servicio') === '1') {
                 inputOrigen.value = localStorage.getItem('reserva_origen') || '';
                 inputDestino.value = localStorage.getItem('reserva_destino') || '';
-                inputFecha.value = localStorage.getItem('reserva_fecha_nac') || '';
                 sessionStorage.removeItem('volviendo_de_servicio');
-
-                // Disparar validación de edad si ya hay fecha
-                validarEdad(inputFecha.value);
-            } else if (!params.has('page')) { // Si no es paginación o retorno, limpiar
+            } else if (!params.has('page')) {
                 localStorage.clear();
-                // Opcional: Llamada al servidor para limpiar sesión de servicio si es entrada fresca
-                if (!{{ session('tipo_servicio_seleccionado') ? 'true' : 'false' }}) {
-                    fetch('{{ route("cliente.tipo-servicio.limpiar") }}', {
-                        method: 'POST',
-                        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' }
-                    });
-                }
             }
 
-            // --- 2. Validación de Edad en tiempo real ---
-            function validarEdad(fechaValor) {
-                if(!fechaValor) return;
-                const fechaNac = new Date(fechaValor);
-                const hoy = new Date();
-                let edad = hoy.getFullYear() - fechaNac.getFullYear();
-                const mes = hoy.getMonth() - fechaNac.getMonth();
-                if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) edad--;
-
-                const alerta = document.getElementById('alerta-menor');
-                edad < 18 ? alerta.classList.remove('d-none') : alerta.classList.add('d-none');
+            if(btnServicio) {
+                btnServicio.addEventListener('click', function(e) {
+                    if (inputOrigen.value && inputDestino.value) {
+                        sessionStorage.setItem('volviendo_de_servicio', '1');
+                        localStorage.setItem('reserva_origen', inputOrigen.value);
+                        localStorage.setItem('reserva_destino', inputDestino.value);
+                    }
+                });
             }
 
-            inputFecha.addEventListener('change', (e) => validarEdad(e.target.value));
+            if(btnServicioCambiar) {
+                btnServicioCambiar.addEventListener('click', function(e) {
+                    if (inputOrigen.value && inputDestino.value) {
+                        sessionStorage.setItem('volviendo_de_servicio', '1');
+                        localStorage.setItem('reserva_origen', inputOrigen.value);
+                        localStorage.setItem('reserva_destino', inputDestino.value);
+                    }
+                });
+            }
 
-            // --- 3. Guardar datos antes de ir a seleccionar servicio ---
-            btnServicio.addEventListener('click', function(e) {
-                if (!inputOrigen.value || !inputDestino.value || !inputFecha.value) {
-                    e.preventDefault();
-                    mostrarError('Por favor, indica origen, destino y fecha antes de elegir el servicio.');
-                    return;
-                }
-                sessionStorage.setItem('volviendo_de_servicio', '1');
-                localStorage.setItem('reserva_origen', inputOrigen.value);
-                localStorage.setItem('reserva_destino', inputDestino.value);
-                localStorage.setItem('reserva_fecha_nac', inputFecha.value);
-            });
-
-            // --- 4. Procesar Envío del Formulario ---
             form.addEventListener('submit', function (e) {
-                e.preventDefault(); // Detener siempre primero para validar
+                e.preventDefault();
 
-                const tieneServicio = @json(session('tipo_servicio_seleccionado.id'));
+                const tieneServicio = {{ session('tipo_servicio_seleccionado.id') ? 'true' : 'false' }};
 
-                if (!inputOrigen.value || !inputDestino.value || !inputFecha.value) {
-                    mostrarError('Todos los campos son obligatorios.');
+                if (!inputOrigen.value || !inputDestino.value) {
+                    mostrarError('Por favor selecciona origen y destino.');
                     return;
                 }
 
@@ -202,7 +251,6 @@
                     return;
                 }
 
-                // Si pasa todo, enviamos
                 this.submit();
             });
 
