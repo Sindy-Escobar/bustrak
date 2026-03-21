@@ -45,6 +45,7 @@ use App\Http\Controllers\ReembolsoController;
 use App\Http\Controllers\ClienteReembolsoController;
 use App\Http\Controllers\ViajesAdminController;
 use App\Http\Controllers\IncidenteController;
+use App\Http\Controllers\PagoController;
 
 
 // Toggle activar/inactivar
@@ -285,12 +286,20 @@ Route::resource('rentas', RegistroRentaController::class);
 */
 // 1️ RUTAS MÁS ESPECÍFICAS PRIMERO (Cliente)
 Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
+
+    // RUTAS DE PAGO
+    Route::get('pago/{reserva}/crear', [PagoController::class, 'create'])->name('pago.create');
+    Route::post('pago/{reserva}/procesar', [PagoController::class, 'store'])->name('pago.store');
+    Route::get('pago/{pago}/confirmacion', [PagoController::class, 'confirmacion'])->name('pago.confirmacion');
+    Route::get('pagos/historial', [PagoController::class, 'historial'])->name('pago.historial');
+
+    // RUTAS DE RESERVA
     Route::get('reserva/create', [ReservaController::class, 'create'])->name('reserva.create');
-    Route::get('reserva/buscar', [ReservaController::class, 'buscar'])->name('reserva.buscar');
+    Route::post('reserva/buscar', [ReservaController::class, 'buscar'])->name('reserva.buscar'); // ✅ POST
+    Route::get('reserva/viajes', [ReservaController::class, 'repetirBusqueda'])->name('reserva.viajes'); // ✅ Agregar esta
     Route::get('reserva/{viaje_id}/asientos', [ReservaController::class, 'seleccionarAsiento'])->name('reserva.asientos');
     Route::post('reserva/store', [ReservaController::class, 'store'])->name('reserva.store');
-    Route::get('reserva/{reserva}/descargar-boleto', [ReservaController::class, 'descargarBoleto'])->name('reserva.descargar'); // ← AGREGA ESTA
-
+    Route::get('reserva/{reserva}/descargar-boleto', [ReservaController::class, 'descargarBoleto'])->name('reserva.descargar');
 });
 
 //  RUTAS DE EMPLEADO DESPUÉS (sin prefix conflictivo)
@@ -637,3 +646,6 @@ Route::middleware(['auth'])->prefix('incidentes')->name('incidentes.')->group(fu
     Route::post('/reportar', [IncidenteController::class, 'store'])->name('store');
     Route::get('/mis-reportes', [IncidenteController::class, 'index'])->name('index');
 });
+
+
+

@@ -283,7 +283,22 @@
                 </div>
             </div>
         </div>
-
+        {{-- Botón de pago --}}
+        @if(!$reserva->estaPagada())
+            <div class="alert alert-warning mt-3">
+                <strong>Pendiente de pago:</strong> Esta reserva aún no ha sido pagada.
+                <div class="mt-2">
+                    <a href="{{ route('cliente.pago.create', $reserva->id) }}" class="btn btn-success">
+                        <i class="fas fa-credit-card me-2"></i>Proceder al Pago
+                    </a>
+                </div>
+            </div>
+        @else
+            <div class="alert alert-success mt-3">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>Reserva Pagada</strong>
+            </div>
+        @endif
         {{-- Botones de acción --}}
         <div class="row justify-content-center">
             <div class="col-lg-10">

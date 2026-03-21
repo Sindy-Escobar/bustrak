@@ -41,6 +41,10 @@ class Reserva extends Model
         'fecha_abordaje' => 'datetime',
     ];
 
+    // ═══════════════════════════════════════════════════════
+    // RELACIONES EXISTENTES
+    // ═══════════════════════════════════════════════════════
+
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class, 'user_id');
@@ -65,12 +69,14 @@ class Reserva extends Model
     {
         return $this->belongsTo(\App\Models\TipoServicio::class, 'tipo_servicio_id');
     }
+
     public function serviciosAdicionales()
     {
         return $this->belongsToMany(ServicioAdicional::class, 'reserva_servicio_adicional')
             ->withPivot('cantidad', 'precio_unitario')
             ->withTimestamps();
     }
+
     /**
      * Relación con autorizaciones
      */
@@ -86,5 +92,47 @@ class Reserva extends Model
     {
         return $this->hasOne(Autorizacion::class)->latest();
     }
-}
 
+    // ═══════════════════════════════════════════════════════
+    // ✅ NUEVAS RELACIONES Y MÉTODOS PARA PAGOS
+    // ═══════════════════════════════════════════════════════
+
+    /**
+     * Relación con pagos
+     */
+    public function pagos()
+    {
+        return $this->hasMany(\App\Models\Pago::class);
+    }
+
+    /**
+     * Obtener el pago aprobado
+     */
+    public function pagoAprobado()
+    {
+        return $this->hasOne(\App\Models\Pago::class)->where('estado', 'aprobado');
+    }
+
+    /**
+     * Verificar si la reserva está pagada
+     */
+    public function estaPagada()
+    {
+        return $this->pagos()->where('estado', 'aprobado')->exists();
+    }
+
+    /**
+     * Obtener el total a pagar (accessor)
+     */
+    public function getTotalAPagarAttribute()
+    {
+        $tarifaBase = $this->tipoServicio->tarifa_base ?? 0;
+        $subtotalAsientos = $tarifaBase * ($this->cantidad_asientos ?? 1);
+
+        $totalServicios = $this->serviciosAdicionales->sum(function($servicio) {
+            return $servicio->pivot->precio_unitario * $servicio->pivot->cantidad;
+        });
+
+        return $subtotalAsientos + $totalServicios;
+    }
+}
