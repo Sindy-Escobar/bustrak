@@ -10,7 +10,7 @@ use App\Models\Viaje;
 use App\Models\Asiento;
 use App\Models\Reserva;
 use App\Models\ServicioAdicional;
-use App\Models\AutorizacionMenor;
+use App\Models\Autorizacion;
 use DNS2D;
 
 class ReservaController extends Controller
@@ -174,7 +174,7 @@ class ReservaController extends Controller
             'cantidad_asientos'         => $request->cantidad_asientos,
             'codigo_reserva'            => $codigo,
             'fecha_reserva'             => now(),
-            'estado'                    => $necesitaAutorizacion ? 'pendiente_autorizacion' : 'confirmada',
+            'estado'                    => 'confirmada', // ✅ Siempre confirmada, la autorización se maneja aparte
             'fecha_nacimiento_pasajero' => $fechaNacimiento,
             'es_menor'                  => $esMenor,
             'tipo_servicio_id'          => session('tipo_servicio_seleccionado.id'),
@@ -191,6 +191,31 @@ class ReservaController extends Controller
         }
 
         $reserva = Reserva::create($datosReserva);
+
+        // ✅ CREAR REGISTRO DE AUTORIZACIÓN si es menor extranjero
+        if ($necesitaAutorizacion) {
+            // Verificar que el checkbox esté marcado
+            $request->validate([
+                'autorizacion_menor' => 'required|accepted'
+            ], [
+                'autorizacion_menor.required' => 'Debe confirmar que cuenta con la autorización del tutor legal',
+                'autorizacion_menor.accepted' => 'Debe confirmar que cuenta con la autorización del tutor legal'
+            ]);
+
+            // Crear el registro de autorización aprobada
+            \App\Models\Autorizacion::create([
+                'reserva_id' => $reserva->id,
+                'user_id' => Auth::id(),
+                'estado' => 'aprobada',
+                'tipo_autorizacion' => 'menor_extranjero',
+                'fecha_solicitud' => now(),
+                'fecha_aprobacion' => now(),
+                'observaciones' => 'Autorización confirmada por el usuario al momento de realizar la reserva. El usuario confirma que cuenta con la autorización firmada del tutor legal.'
+            ]);
+
+            // Cambiar estado a confirmada ya que tiene autorización
+            $reserva->update(['estado' => 'confirmada']);
+        }
 
         //  Marcar asientos como no disponibles (los primeros X disponibles)
         $asientosAReservar = $viaje->asientos()
@@ -290,7 +315,7 @@ class ReservaController extends Controller
         // Obtener servicios adicionales disponibles
         $serviciosAdicionales = \App\Models\ServicioAdicional::where('disponible', true)->get();
 
-        // ✅ Obtener el tipo de servicio del bus
+        //  Obtener el tipo de servicio del bus
         $tipoServicio = $viaje->bus->tipoServicio;
 
         return view('cliente.reserva.asientos', compact('viaje', 'asientos', 'asientosDisponibles', 'serviciosAdicionales', 'tipoServicio'));

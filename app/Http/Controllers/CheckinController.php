@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Reserva;
-use App\Models\AutorizacionMenor;
+use App\Models\Autorizacion;
 use App\Models\User;
 use App\Models\Viaje;
 use App\Models\Asiento;
@@ -29,28 +29,16 @@ class CheckinController extends Controller
 
             $codigoLimpio = preg_replace('/[^a-zA-Z0-9_-]/', '', $codigo);
 
-            // ✅ VERIFICAR SI ES CÓDIGO DE AUTORIZACIÓN (empieza con AUT-)
-            if (strpos($codigoLimpio, 'AUT-') === 0 || strpos($codigoLimpio, 'AUT') === 0) {
-                $autorizacion = AutorizacionMenor::where('codigo_autorizacion', 'LIKE', '%' . $codigoLimpio . '%')
-                    ->with('reserva.user', 'reserva.viaje', 'reserva.asiento')
-                    ->first();
-
-                if (!$autorizacion) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Código de autorización no encontrado. Asegúrate de escanear el código de RESERVA para el check-in.',
-                        'tipo_alerta' => 'error'
-                    ]);
-                }
-
-                // Usar la reserva asociada a la autorización
-                $reserva = $autorizacion->reserva;
-            } else {
-                // ✅ ES CÓDIGO DE RESERVA NORMAL
-                $reserva = Reserva::with(['user', 'viaje', 'asiento', 'autorizacionMenor'])
-                    ->where('codigo_reserva', $codigoLimpio)
-                    ->first();
-            }
+            // ✅ BUSCAR RESERVA (sin autorizacionMenor)
+            $reserva = Reserva::with([
+                'user',
+                'viaje.origen',
+                'viaje.destino',
+                'tipoServicio',
+                'serviciosAdicionales'
+            ])
+                ->where('codigo_reserva', $codigoLimpio)
+                ->first();
 
             if (!$reserva) {
                 return response()->json([
@@ -60,79 +48,155 @@ class CheckinController extends Controller
                 ]);
             }
 
+            // ✅ VALIDAR SI LA RESERVA ESTÁ CANCELADA
+            if ($reserva->estado === 'cancelada') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Esta reserva ha sido cancelada y no puede abordar.',
+                    'tipo_alerta' => 'error'
+                ]);
+            }
+
             // ✅ VALIDAR SI YA ABORDÓ
-            if ($reserva->estado === 'confirmada' && $reserva->abordado) {
+            if ($reserva->abordado) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Esta reserva ya realizó el check-in anteriormente el ' .
-                        ($reserva->fecha_abordaje ? $reserva->fecha_abordaje->format('d/m/Y H:i') : 'fecha no registrada'),
+                        ($reserva->fecha_abordaje ? \Carbon\Carbon::parse($reserva->fecha_abordaje)->format('d/m/Y H:i') : 'fecha no registrada'),
                     'tipo_alerta' => 'warning'
                 ]);
             }
 
-            // ✅ VERIFICAR SI ES MENOR Y TIENE AUTORIZACIÓN
+            // ══════════════════════════════════════════════════════════
+            // OBTENER NÚMEROS DE ASIENTOS
+            // ══════════════════════════════════════════════════════════
+            $asientosReservados = Asiento::where('reserva_id', $reserva->id)
+                ->orderBy('numero_asiento')
+                ->pluck('numero_asiento')
+                ->toArray();
+
+            // ══════════════════════════════════════════════════════════
+            // VERIFICAR SI ES MENOR Y TIENE AUTORIZACIÓN
+            // ══════════════════════════════════════════════════════════
             $alertaMenor = null;
+
             if ($reserva->es_menor) {
-                $autorizacion = $reserva->autorizacionMenor;
+                // Determinar el país del pasajero
+                $paisPasajero = $reserva->para_tercero
+                    ? $reserva->tercero_pais
+                    : ($reserva->user->pais ?? 'Honduras');
 
-                if (!$autorizacion) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => '⚠️ PASAJERO MENOR DE EDAD - NO TIENE AUTORIZACIÓN REGISTRADA. Debe completar la autorización antes de abordar.',
-                        'tipo_alerta' => 'error',
+                $esHondureno = strtolower(trim($paisPasajero)) === 'honduras';
+                $necesitaAutorizacion = !$esHondureno;
+
+                // Calcular edad
+                $edad = \Carbon\Carbon::parse($reserva->fecha_nacimiento_pasajero)->age;
+
+                if ($necesitaAutorizacion) {
+                    // MENOR EXTRANJERO - Necesita autorización
+                    $autorizacion = Autorizacion::where('reserva_id', $reserva->id)
+                        ->where('estado', 'aprobada')
+                        ->first();
+
+                    if (!$autorizacion) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => '⚠️ PASAJERO MENOR EXTRANJERO - NO TIENE AUTORIZACIÓN APROBADA. Debe completar la autorización antes de abordar.',
+                            'tipo_alerta' => 'error',
+                            'es_menor' => true,
+                            'sin_autorizacion' => true
+                        ]);
+                    }
+
+                    // Autorización válida para menor extranjero
+                    $alertaMenor = [
                         'es_menor' => true,
-                        'sin_autorizacion' => true
-                    ]);
-                }
-
-                if (!$autorizacion->autorizado) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => '⚠️ PASAJERO MENOR DE EDAD - Autorización NO confirmada. Contacte al tutor.',
-                        'tipo_alerta' => 'error',
+                        'es_extranjero' => true,
+                        'menor_dni' => $reserva->para_tercero ? $reserva->tercero_num_doc : ($reserva->user->dni ?? 'N/A'),
+                        'menor_edad' => $edad,
+                        'tutor_nombre' => 'Ver documento de autorización',
+                        'tutor_dni' => 'Ver documento de autorización',
+                        'parentesco' => 'Ver documento de autorización',
+                        'codigo_autorizacion' => 'AUT-' . $autorizacion->id
+                    ];
+                } else {
+                    // MENOR HONDUREÑO - No necesita autorización
+                    $alertaMenor = [
                         'es_menor' => true,
-                        'autorizacion_pendiente' => true
-                    ]);
+                        'es_extranjero' => false,
+                        'menor_dni' => $reserva->para_tercero ? $reserva->tercero_num_doc : ($reserva->user->dni ?? 'N/A'),
+                        'menor_edad' => $edad
+                    ];
                 }
-
-                // Autorización válida
-                $alertaMenor = [
-                    'es_menor' => true,
-                    'tutor_nombre' => $autorizacion->tutor_nombre,
-                    'tutor_dni' => $autorizacion->tutor_dni,
-                    'parentesco' => $autorizacion->parentesco,
-                    'codigo_autorizacion' => $autorizacion->codigo_autorizacion,
-                    'menor_dni' => $autorizacion->menor_dni,
-                    'menor_edad' => \Carbon\Carbon::parse($autorizacion->menor_fecha_nacimiento)->age
-                ];
             }
 
-            $viaje = $reserva->viaje;
-            $ciudadOrigen = \App\Models\Ciudad::find($viaje->ciudad_origen_id);
-            $ciudadDestino = \App\Models\Ciudad::find($viaje->ciudad_destino_id);
+            // ══════════════════════════════════════════════════════════
+            // PREPARAR SERVICIOS ADICIONALES
+            // ══════════════════════════════════════════════════════════
+            $serviciosAdicionales = $reserva->serviciosAdicionales->map(function($servicio) {
+                return [
+                    'nombre' => $servicio->nombre,
+                    'cantidad' => $servicio->pivot->cantidad
+                ];
+            })->toArray();
 
+            // ══════════════════════════════════════════════════════════
+            // PREPARAR INFORMACIÓN DEL PASAJERO
+            // ══════════════════════════════════════════════════════════
+            $pasajeroInfo = [
+                'para_tercero' => $reserva->para_tercero,
+                'nombre_completo' => $reserva->user->nombre_completo ?? $reserva->user->name,
+                'dni' => $reserva->user->dni ?? 'N/A',
+                'email' => $reserva->user->email,
+                'telefono' => $reserva->user->telefono ?? 'N/A',
+            ];
+
+            if ($reserva->para_tercero) {
+                $pasajeroInfo['usuario_nombre'] = $reserva->user->nombre_completo ?? $reserva->user->name;
+                $pasajeroInfo['usuario_email'] = $reserva->user->email;
+                $pasajeroInfo['tercero_nombre'] = $reserva->tercero_nombre;
+                $pasajeroInfo['tercero_tipo_doc'] = $reserva->tercero_tipo_doc;
+                $pasajeroInfo['tercero_num_doc'] = $reserva->tercero_num_doc;
+                $pasajeroInfo['tercero_pais'] = $reserva->tercero_pais;
+                $pasajeroInfo['tercero_telefono'] = $reserva->tercero_telefono;
+                $pasajeroInfo['tercero_email'] = $reserva->tercero_email;
+            }
+
+            // ══════════════════════════════════════════════════════════
+            // PREPARAR INFORMACIÓN DEL VIAJE
+            // ══════════════════════════════════════════════════════════
+            $viaje = $reserva->viaje;
+
+            $viajeInfo = [
+                'ruta' => $viaje->origen->nombre . ' - ' . $viaje->destino->nombre,
+                'origen' => $viaje->origen->nombre,
+                'destino' => $viaje->destino->nombre,
+                'fecha_salida' => \Carbon\Carbon::parse($viaje->fecha_hora_salida)->format('d/m/Y H:i'),
+                'tipo_servicio' => $reserva->tipoServicio->nombre ?? 'N/A',
+                'asientos' => $asientosReservados,
+                'asiento' => $asientosReservados[0] ?? 'N/A'
+            ];
+
+            // ══════════════════════════════════════════════════════════
+            // PREPARAR RESPUESTA
+            // ══════════════════════════════════════════════════════════
             $datos = [
                 'reserva_id' => $reserva->id,
                 'codigo_qr' => $reserva->codigo_reserva,
-                'pasajero' => [
-                    'nombre_completo' => $reserva->user->name ?? 'N/A',
-                    'dni' => $reserva->user->dni ?? 'N/A',
-                    'email' => $reserva->user->email ?? 'N/A',
-                    'telefono' => $reserva->user->telefono ?? 'N/A'
-                ],
-                'viaje' => [
-                    'ruta' => ($ciudadOrigen ? $ciudadOrigen->nombre : 'N/A') . ' - ' . ($ciudadDestino ? $ciudadDestino->nombre : 'N/A'),
-                    'origen' => $ciudadOrigen ? $ciudadOrigen->nombre : 'N/A',
-                    'destino' => $ciudadDestino ? $ciudadDestino->nombre : 'N/A',
-                    'fecha_salida' => $viaje->fecha_hora_salida ?? 'N/A',
-                    'asiento' => $reserva->asiento->numero_asiento ?? 'N/A'
-                ],
-                'autorizacion_menor' => $alertaMenor // ✅ DATOS DEL MENOR
+                'pasajero' => $pasajeroInfo,
+                'viaje' => $viajeInfo,
+                'servicios_adicionales' => $serviciosAdicionales,
+                'autorizacion_menor' => $alertaMenor
             ];
 
-            $mensaje = $alertaMenor
-                ? '✅ PASAJERO MENOR DE EDAD - Autorización VÁLIDA. Verificar DNI del tutor presente.'
-                : 'Datos de reserva verificados correctamente';
+            $mensaje = 'Datos de reserva verificados correctamente';
+            if ($alertaMenor) {
+                if ($alertaMenor['es_extranjero']) {
+                    $mensaje = '✅ PASAJERO MENOR EXTRANJERO - Autorización VÁLIDA. Verificar DNI del tutor presente.';
+                } else {
+                    $mensaje = '✅ PASAJERO MENOR HONDUREÑO - No requiere autorización adicional.';
+                }
+            }
 
             return response()->json([
                 'success' => true,
@@ -157,8 +221,9 @@ class CheckinController extends Controller
     {
         try {
             $reservaId = $request->input('reserva_id');
+            $observaciones = $request->input('observaciones');
 
-            $reserva = Reserva::with('autorizacionMenor')->find($reservaId);
+            $reserva = Reserva::find($reservaId);
 
             if (!$reserva) {
                 return response()->json([
@@ -168,28 +233,70 @@ class CheckinController extends Controller
                 ]);
             }
 
-            // Verificar nuevamente si es menor
+            if ($reserva->estado === 'cancelada') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se puede confirmar abordaje. La reserva está cancelada.',
+                    'tipo_alerta' => 'error'
+                ]);
+            }
+
+            if ($reserva->abordado) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Esta reserva ya confirmó su abordaje anteriormente.',
+                    'tipo_alerta' => 'warning'
+                ]);
+            }
+
+            // Verificar menor extranjero
             if ($reserva->es_menor) {
-                $autorizacion = $reserva->autorizacionMenor;
-                if (!$autorizacion || !$autorizacion->autorizado) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'No se puede confirmar abordaje. El menor no tiene autorización válida.',
-                        'tipo_alerta' => 'error'
-                    ]);
+                $paisPasajero = $reserva->para_tercero
+                    ? $reserva->tercero_pais
+                    : ($reserva->user->pais ?? 'Honduras');
+
+                $esHondureno = strtolower(trim($paisPasajero)) === 'honduras';
+
+                if (!$esHondureno) {
+                    $autorizacion = Autorizacion::where('reserva_id', $reserva->id)
+                        ->where('estado', 'aprobada')
+                        ->first();
+
+                    if (!$autorizacion) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'No se puede confirmar abordaje. El menor extranjero no tiene autorización aprobada.',
+                            'tipo_alerta' => 'error'
+                        ]);
+                    }
                 }
             }
 
-            // Confirmar abordaje
             $reserva->estado = 'confirmada';
             $reserva->abordado = true;
             $reserva->fecha_abordaje = now();
+
+            if ($observaciones) {
+                $reserva->observaciones_abordaje = $observaciones;
+            }
+
             $reserva->save();
+
+            $mensajeExtra = '';
+            if ($reserva->es_menor) {
+                $paisPasajero = $reserva->para_tercero
+                    ? $reserva->tercero_pais
+                    : ($reserva->user->pais ?? 'Honduras');
+                $esHondureno = strtolower(trim($paisPasajero)) === 'honduras';
+
+                $mensajeExtra = $esHondureno
+                    ? ' (Menor hondureño)'
+                    : ' (Menor extranjero con autorización válida)';
+            }
 
             return response()->json([
                 'success' => true,
-                'message' => '¡Abordaje confirmado exitosamente!' .
-                    ($reserva->es_menor ? ' (Menor de edad con autorización válida)' : ''),
+                'message' => '¡Abordaje confirmado exitosamente!' . $mensajeExtra,
                 'tipo_alerta' => 'success'
             ]);
 
@@ -207,10 +314,10 @@ class CheckinController extends Controller
      */
     public function historial()
     {
-        $reservas = Reserva::with(['user', 'viaje', 'autorizacionMenor'])
+        $reservas = Reserva::with(['user', 'viaje.origen', 'viaje.destino', 'tipoServicio'])
             ->where('abordado', true)
             ->orderBy('fecha_abordaje', 'desc')
-            ->get();
+            ->paginate(20);
 
         return view('abordajes.historial', compact('reservas'));
     }

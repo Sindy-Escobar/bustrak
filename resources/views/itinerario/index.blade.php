@@ -17,6 +17,13 @@
                 <h5 class="mb-4"><i class="fas fa-user me-2"></i>Pasajero: {{ $usuario->name }}</h5>
 
                 @forelse($reservas as $reserva)
+                    @php
+                        // Obtener los números de asientos reservados
+                        $asientosReservados = \App\Models\Asiento::where('reserva_id', $reserva->id)
+                            ->orderBy('numero_asiento')
+                            ->pluck('numero_asiento');
+                    @endphp
+
                     {{-- Bloque de detalle de cada Reserva --}}
                     <div class="border-start border-4 border-primary p-3 mb-4 rounded shadow-sm">
 
@@ -26,9 +33,9 @@
                                 <i class="fas fa-bus me-2 text-primary"></i>
                                 {{ $reserva->viaje->origen->nombre ?? 'Origen' }} a {{ $reserva->viaje->destino->nombre ?? 'Destino' }}
                             </h5>
-                            <span class="badge {{ $reserva->estado == 'confirmado' ? 'bg-success' : ($reserva->estado == 'pendiente' ? 'bg-warning text-dark' : 'bg-danger') }}">
-                        {{ strtoupper($reserva->estado) }}
-                    </span>
+                            <span class="badge {{ $reserva->estado == 'confirmada' ? 'bg-success' : ($reserva->estado == 'pendiente' ? 'bg-warning text-dark' : 'bg-danger') }}">
+                                {{ strtoupper($reserva->estado) }}
+                            </span>
                         </div>
                         <hr class="mt-1 mb-3">
 
@@ -37,7 +44,86 @@
                         <p class="mb-2"><i class="fas fa-flag-checkered me-2 text-primary"></i><strong>Destino:</strong> {{ $reserva->viaje->destino->nombre ?? 'N/A' }}</p>
                         <p class="mb-2"><i class="fas fa-calendar-alt me-2 text-primary"></i><strong>Fecha:</strong> {{ $reserva->viaje->fecha_hora_salida ? \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('d/m/Y') : 'N/A' }}</p>
                         <p class="mb-2"><i class="fas fa-clock me-2 text-primary"></i><strong>Hora:</strong> {{ $reserva->viaje->fecha_hora_salida ? \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('H:i') : 'N/A' }}</p>
-                        <p class="mb-2"><i class="fas fa-chair me-2 text-primary"></i><strong>Asiento:</strong> {{ $reserva->asiento->numero_asiento ?? 'N/A' }}</p>
+
+                        {{-- TIPO DE SERVICIO --}}
+                        <p class="mb-2">
+                            <i class="fas fa-bus-alt me-2 text-primary"></i>
+                            <strong>Tipo de Servicio:</strong>
+                            <span class="badge bg-info text-dark">{{ $reserva->tipoServicio->nombre ?? 'No especificado' }}</span>
+                        </p>
+
+                        {{-- ASIENTOS ACTUALIZADOS --}}
+                        <p class="mb-2">
+                            <i class="fas fa-chair me-2 text-primary"></i>
+                            <strong>Asientos:</strong>
+                            @if($asientosReservados->isNotEmpty())
+                                <span class="badge bg-primary">{{ $reserva->cantidad_asientos }} {{ $reserva->cantidad_asientos == 1 ? 'asiento' : 'asientos' }}</span>
+                                <span class="text-muted ms-2">#{{ $asientosReservados->implode(', #') }}</span>
+                            @else
+                                <span class="text-muted">N/A</span>
+                            @endif
+                        </p>
+
+                        {{-- SERVICIOS ADICIONALES --}}
+                        @if($reserva->serviciosAdicionales->isNotEmpty())
+                            <div class="mb-2">
+                                <p class="mb-1"><i class="fas fa-plus-circle me-2 text-primary"></i><strong>Servicios Adicionales:</strong></p>
+                                <div class="ms-4">
+                                    @foreach($reserva->serviciosAdicionales as $servicio)
+                                        <span class="badge bg-success me-1 mb-1">
+                                            {{ $servicio->nombre }} (x{{ $servicio->pivot->cantidad }})
+                                        </span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- AUTORIZACIÓN DE MENOR EXTRANJERO --}}
+                        @if($reserva->es_menor)
+                            @php
+                                $paisPasajero = $reserva->para_tercero
+                                    ? $reserva->tercero_pais
+                                    : ($reserva->user->pais ?? 'Honduras');
+                                $esHondureno = strtolower(trim($paisPasajero)) === 'honduras';
+                                $necesitaAutorizacion = !$esHondureno;
+                            @endphp
+
+                            <div class="mb-2">
+                                @if($necesitaAutorizacion)
+                                    <div class="alert alert-success border-0 shadow-sm mb-0">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-check-circle fa-2x me-3 text-success"></i>
+                                            <div>
+                                                <strong class="text-success">Autorización de Menor Confirmada</strong>
+                                                <br>
+                                                <small>El menor extranjero cuenta con autorización del tutor legal para viajar.</small>
+                                                @php
+                                                    $autorizacion = \App\Models\Autorizacion::where('reserva_id', $reserva->id)
+                                                        ->where('estado', 'aprobada')
+                                                        ->first();
+                                                @endphp
+                                                @if($autorizacion)
+                                                    <br>
+                                                    <small class="text-muted">Fecha de aprobación: {{ $autorizacion->fecha_aprobacion ? \Carbon\Carbon::parse($autorizacion->fecha_aprobacion)->format('d/m/Y H:i') : 'N/A' }}</small>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="alert alert-info border-0 shadow-sm mb-0">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-info-circle fa-2x me-3"></i>
+                                            <div>
+                                                <strong>Menor de Edad Hondureño</strong>
+                                                <br>
+                                                <small>No requiere autorización adicional para viajar.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
+
                         <p class="mb-2"><i class="fas fa-ticket-alt me-2 text-primary"></i><strong>Código de Reserva:</strong> <span class="badge bg-info text-dark">{{ $reserva->codigo_reserva ?? 'N/A' }}</span></p>
 
                         {{-- Botones --}}
@@ -55,6 +141,7 @@
                             <button type="button" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditar{{ $reserva->id }}">
                                 <i class="fas fa-edit me-1"></i>Editar
                             </button>
+
                             {{-- NUEVO: Actualizar Estado (HU10) --}}
                             <button type="button"
                                     class="btn btn-outline-info btn-sm"
@@ -64,7 +151,7 @@
                             </button>
                         </div>
 
-                        {{--  NUEVO: Modal de Estado (HU10) --}}
+                        {{-- NUEVO: Modal de Estado (HU10) --}}
                         <div class="modal fade" id="modalEstado{{ $reserva->id }}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
@@ -96,12 +183,12 @@
                                             <p class="mb-2">
                                                 <strong>Estado actual:</strong>
                                                 <span class="badge {{
-                            $reserva->estado == 'confirmada' ? 'bg-success' :
-                            ($reserva->estado == 'en_ruta' ? 'bg-info' :
-                            ($reserva->estado == 'finalizado' ? 'bg-secondary' : 'bg-warning text-dark'))
-                        }}">
-                            {{ strtoupper($reserva->estado ?? 'PENDIENTE') }}
-                        </span>
+                                                    $reserva->estado == 'confirmada' ? 'bg-success' :
+                                                    ($reserva->estado == 'en_ruta' ? 'bg-info' :
+                                                    ($reserva->estado == 'finalizado' ? 'bg-secondary' : 'bg-warning text-dark'))
+                                                }}">
+                                                    {{ strtoupper($reserva->estado ?? 'PENDIENTE') }}
+                                                </span>
                                             </p>
 
                                             {{-- Nuevo estado --}}
@@ -169,14 +256,13 @@
                                 </div>
                             </div>
                         </div>
-                        </div>
                     </div>
 
                     {{-- MODAL DE EDICIÓN (COLOR AZUL Y BOTÓN GUARDAR CENTRADO) --}}
                     <div class="modal fade" id="modalEditar{{ $reserva->id }}" tabindex="-1" aria-labelledby="modalEditarLabel{{ $reserva->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header bg-primary text-white"> {{-- CAMBIO AQUÍ: bg-primary text-white --}}
+                                <div class="modal-header bg-primary text-white">
                                     <h5 class="modal-title" id="modalEditarLabel{{ $reserva->id }}">
                                         <i class="fas fa-edit me-2"></i>Editar Detalles de la Reserva
                                     </h5>
@@ -239,23 +325,25 @@
                                             </div>
                                         </div>
 
-                                        {{-- Asiento --}}
+                                        {{-- ASIENTOS - ACTUALIZADO PARA MOSTRAR TODOS --}}
                                         <div class="mb-3">
-                                            <label for="asiento_id{{ $reserva->id }}" class="form-label">
-                                                <i class="fas fa-chair me-2 text-primary"></i>Asiento
+                                            <label class="form-label">
+                                                <i class="fas fa-chair me-2 text-primary"></i>Asientos Reservados
                                             </label>
-                                            <select name="asiento_id" id="asiento_id{{ $reserva->id }}" class="form-select">
-                                                @foreach($asientos as $asiento)
-                                                    <option value="{{ $asiento->id }}" {{ $reserva->asiento_id == $asiento->id ? 'selected' : '' }}>
-                                                        {{ $asiento->numero_asiento }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                            <div class="alert alert-info">
+                                                @if($asientosReservados->isNotEmpty())
+                                                    <strong>{{ $reserva->cantidad_asientos }} {{ $reserva->cantidad_asientos == 1 ? 'asiento' : 'asientos' }}:</strong>
+                                                    #{{ $asientosReservados->implode(', #') }}
+                                                @else
+                                                    <span class="text-muted">Sin asientos asignados</span>
+                                                @endif
+                                            </div>
+                                            <small class="text-muted">Para cambiar asientos, contacta con soporte.</small>
                                         </div>
                                     </div>
 
                                     {{-- Botón Guardar Cambios Centrado --}}
-                                    <div class="modal-footer d-flex justify-content-center"> {{-- CAMBIO AQUÍ: justify-content-center --}}
+                                    <div class="modal-footer d-flex justify-content-center">
                                         <button type="submit" class="btn btn-success">
                                             <i class="fas fa-save me-1"></i>Guardar Cambios
                                         </button>
