@@ -46,7 +46,7 @@
                         <th>Origen</th>
                         <th>Destino</th>
                         <th class="text-center">Salida</th>
-                        <th class="text-center">Asiento</th>
+                        <th class="text-center">Asientos</th>
                         <th class="text-center">Estado</th>
                         <th class="text-center">Mi Opinión</th>
                         <th class="text-center">Acciones</th>
@@ -66,15 +66,20 @@
                             }
 
                             $reembolsoExistente = $reserva->reembolsos()
-    ->whereNotIn('estado', ['completado', 'rechazado'])
-    ->first();
+                                ->whereNotIn('estado', ['completado', 'rechazado'])
+                                ->first();
 
                             $viajeYaPaso = $reserva->viaje
                                 ? \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->isPast()
                                 : false;
 
-                          $estaCancelada = $reserva->estado === 'cancelada';
-                          $estaReembolsada = $reserva->estado === 'reembolsada';
+                            $estaCancelada = $reserva->estado === 'cancelada';
+                            $estaReembolsada = $reserva->estado === 'reembolsada';
+
+                            // Obtener los números de asientos reservados
+                            $asientosReservados = \App\Models\Asiento::where('reserva_id', $reserva->id)
+                                ->orderBy('numero_asiento')
+                                ->pluck('numero_asiento');
                         @endphp
 
                         <tr class="{{ ($estaCancelada || $estaReembolsada) ? 'table-danger' : '' }}">
@@ -82,7 +87,22 @@
                             <td>{{ $reserva->viaje->origen->nombre ?? '-' }}</td>
                             <td>{{ $reserva->viaje->destino->nombre ?? '-' }}</td>
                             <td class="text-center">{{ \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('d/m/Y H:i') }}</td>
-                            <td class="text-center">#{{ $reserva->asiento->numero_asiento ?? 'S/N' }}</td>
+
+                            {{-- COLUMNA DE ASIENTOS ACTUALIZADA --}}
+                            <td class="text-center">
+                                @if($asientosReservados->isNotEmpty())
+                                    <div class="d-flex flex-column align-items-center">
+                                        <span class="badge bg-primary mb-1">
+                                            {{ $reserva->cantidad_asientos }} {{ $reserva->cantidad_asientos == 1 ? 'asiento' : 'asientos' }}
+                                        </span>
+                                        <small class="text-muted">
+                                            #{{ $asientosReservados->implode(', #') }}
+                                        </small>
+                                    </div>
+                                @else
+                                    <span class="text-muted">S/N</span>
+                                @endif
+                            </td>
 
                             <td class="text-center">
                                 @if($reserva->estado === 'cancelada')
@@ -133,7 +153,7 @@
                                             </a>
                                         @else
                                             <span class="badge bg-info text-dark mb-1">
-                                            <i class="fas fa-check"></i> Reembolso solicitado
+                                                <i class="fas fa-check"></i> Reembolso solicitado
                                             </span>
                                         @endif
                                     @endif
