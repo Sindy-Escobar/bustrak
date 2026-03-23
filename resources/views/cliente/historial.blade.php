@@ -10,6 +10,9 @@
                 <a href="{{ route('cliente.reembolsos') }}" class="btn btn-outline-light btn-sm">
                     <i class="fas fa-hand-holding-usd me-1"></i> Mis Reembolsos
                 </a>
+                <a href="{{ route('cliente.historial.exportar-pdf') }}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-file-pdf me-1"></i> Exportar PDF
+                </a>
                 <a href="{{ route('cliente.reserva.create') }}" class="btn btn-light btn-sm">
                     <i class="fas fa-plus me-1"></i> Nueva Reserva
                 </a>
@@ -46,7 +49,7 @@
                         <th>Origen</th>
                         <th>Destino</th>
                         <th class="text-center">Salida</th>
-                        <th class="text-center">Asiento</th>
+                        <th class="text-center">Cant.Asientos</th>
                         <th class="text-center">Estado</th>
                         <th class="text-center">Mi Opinión</th>
                         <th class="text-center">Acciones</th>
@@ -81,12 +84,9 @@
                             <td>{{ $reserva->viaje->origen->nombre ?? '-' }}</td>
                             <td>{{ $reserva->viaje->destino->nombre ?? '-' }}</td>
                             <td class="text-center">{{ \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('d/m/Y H:i') }}</td>
+
                             <td class="text-center">
-                                @if($reserva->asiento_id)
-                                    #{{ $reserva->asiento->numero_asiento }}
-                                @else
-                                    {{ $reserva->cantidad_asientos ?? 1 }} {{ ($reserva->cantidad_asientos ?? 1) == 1 ? 'asiento' : 'asientos' }}
-                                @endif
+                                {{ $reserva->cantidad_asientos ?? 1 }}
                             </td>
 
                             <td class="text-center">

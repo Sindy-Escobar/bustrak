@@ -191,6 +191,8 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/cliente/historial', [HistorialReservasController::class, 'index'])
         ->name('cliente.historial');
+    Route::get('/cliente/historial/exportar-pdf', [HistorialReservasController::class, 'exportarPDF'])
+        ->name('cliente.historial.exportar-pdf');
 });
 
 // CANCELAR BOLETO Y REEMBOLSOS CLIENTE
