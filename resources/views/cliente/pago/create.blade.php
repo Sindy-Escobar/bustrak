@@ -122,7 +122,7 @@
                                         <div class="row g-3">
                                             <div class="col-12">
                                                 <label class="form-label">Número de Tarjeta</label>
-                                                <input type="text" class="form-control" name="numero_tarjeta" placeholder="1234 5678 9012 3456" maxlength="16">
+                                                <input type="text" class="form-control" name="numero_tarjeta" placeholder="1234 5678 9012 3456" maxlength="19">
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="form-label">Fecha de Expiración</label>

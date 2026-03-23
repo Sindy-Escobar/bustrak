@@ -76,7 +76,7 @@ class PagoController extends Controller
 
         if (in_array($metodoPago, ['tarjeta_credito', 'tarjeta_debito'])) {
             $request->validate([
-                'numero_tarjeta' => 'required|digits:16',
+                'numero_tarjeta' => 'required|string|min:16|max:19',
                 'cvv' => 'required|digits:3',
                 'fecha_expiracion' => 'required|date_format:m/y|after:today',
             ]);
