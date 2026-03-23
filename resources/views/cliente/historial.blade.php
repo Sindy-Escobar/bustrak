@@ -65,10 +65,9 @@
                                     ->first();
                             }
 
-                            $reembolsoExistente = $reserva->reembolsos()
-    ->whereNotIn('estado', ['completado', 'rechazado'])
-    ->first();
-
+                           $reembolsoExistente = $reserva->reembolsos()
+                             ->whereNotIn('estado', ['rechazado'])
+                                ->first();
                             $viajeYaPaso = $reserva->viaje
                                 ? \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->isPast()
                                 : false;
@@ -82,7 +81,13 @@
                             <td>{{ $reserva->viaje->origen->nombre ?? '-' }}</td>
                             <td>{{ $reserva->viaje->destino->nombre ?? '-' }}</td>
                             <td class="text-center">{{ \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('d/m/Y H:i') }}</td>
-                            <td class="text-center">#{{ $reserva->asiento->numero_asiento ?? 'S/N' }}</td>
+                            <td class="text-center">
+                                @if($reserva->asiento_id)
+                                    #{{ $reserva->asiento->numero_asiento }}
+                                @else
+                                    {{ $reserva->cantidad_asientos ?? 1 }} {{ ($reserva->cantidad_asientos ?? 1) == 1 ? 'asiento' : 'asientos' }}
+                                @endif
+                            </td>
 
                             <td class="text-center">
                                 @if($reserva->estado === 'cancelada')
@@ -119,8 +124,8 @@
                                         </a>
                                     @endif
 
-                                    {{-- SOLICITAR REEMBOLSO (solo si está cancelada y aún no completó el método) --}}
-                                    @if($estaCancelada && !$estaReembolsada)
+                                    {{-- SOLICITAR REEMBOLSO (solo si está cancelada y aún no completó el método y el viaje no ha pasado) --}}
+                                    @if($estaCancelada && !$estaReembolsada && !$viajeYaPaso)
                                         @if(!$reembolsoExistente)
                                             <a href="{{ route('cliente.reembolso.solicitar', $reserva->id) }}"
                                                class="btn btn-success btn-sm mb-1">

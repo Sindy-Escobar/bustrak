@@ -202,13 +202,16 @@
                         @foreach($reservas as $reserva)
                             <option value="{{ $reserva->id }}"
                                     data-cliente="{{ $reserva->user->name ?? 'N/A' }}"
-                                    data-monto="{{ $reserva->precio_total }}"
+                                    data-monto="{{ $reserva->total_a_pagar }}"
                                     data-fecha="{{ $reserva->created_at->format('d/m/Y') }}"
-                                    data-codigo="{{ $reserva->codigo_reserva }}">
+                                    data-codigo="{{ $reserva->codigo_reserva }}"
+                                    data-banco="{{ $reserva->reembolsos->first()->banco ?? '' }}"
+                                    data-cuenta="{{ $reserva->reembolsos->first()->numero_cuenta ?? '' }}"
+                                    data-titular="{{ $reserva->reembolsos->first()->titular_cuenta ?? '' }}">
                                 {{ $reserva->user->name ?? 'N/A' }} —
                                 {{ $reserva->viaje->origen->nombre ?? '?' }} → {{ $reserva->viaje->destino->nombre ?? '?' }} —
                                 {{ \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('d/m/Y H:i') }} —
-                                Asiento #{{ $reserva->asiento->numero_asiento ?? $reserva->asiento_id }}
+                                {{ $reserva->cantidad_asientos ?? 1 }} {{ ($reserva->cantidad_asientos ?? 1) == 1 ? 'asiento' : 'asientos' }}
                             </option>
                         @endforeach
                     </select>
@@ -324,6 +327,17 @@
                 document.getElementById('monto').textContent = parseFloat(opcion.dataset.monto).toFixed(2);
                 document.getElementById('fecha').textContent = opcion.dataset.fecha;
                 document.getElementById('monto_reembolso').value = opcion.dataset.monto;
+
+                // ✅ Precargar datos bancarios si existen
+                if (opcion.dataset.banco) {
+                    document.querySelector('[name="banco"]').value = opcion.dataset.banco;
+                }
+                if (opcion.dataset.cuenta) {
+                    document.querySelector('[name="numero_cuenta"]').value = opcion.dataset.cuenta;
+                }
+                if (opcion.dataset.titular) {
+                    document.querySelector('[name="titular_cuenta"]').value = opcion.dataset.titular;
+                }
             } else {
                 document.getElementById('info-precargada').style.display = 'none';
             }
