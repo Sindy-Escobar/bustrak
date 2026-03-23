@@ -28,9 +28,9 @@
         .tabla-datos th { background: #f5f5f5; padding: 10px 14px; text-align: left; font-size: 13px; font-weight: 600; border-bottom: 2px solid #e0e0e0; }
         .tabla-datos td { padding: 10px 14px; border-bottom: 1px solid #e0e0e0; font-size: 14px; }
         .notas-box { background: #f9f9f9; border-left: 4px solid #ccc; padding: 14px; border-radius: 8px; font-size: 13px; color: #666; margin-bottom: 25px; }
-        .firmas { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; }
+        .firmas { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-top: 50px; padding-top: 30px; border-top: 1px solid #e0e0e0; }
         .firma-item { text-align: center; }
-        .linea-firma { border-top: 1px solid #333; margin-bottom: 8px; height: 50px; }
+        .linea-firma { border-top: 1px solid #333; margin-bottom: 12px; height: 120px; }
         .firma-nombre { font-size: 12px; color: #333; font-weight: 700; }
         .pie { margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; color: #999; font-size: 12px; }
         .button-group { display: flex; gap: 10px; justify-content: flex-end; margin-top: 25px; padding: 20px 30px; border-top: 1px solid #e0e0e0; background: #fafafa; }

@@ -66,7 +66,7 @@
                             }
 
                             $reembolsoExistente = $reserva->reembolsos()
-                                ->whereNotIn('estado', ['completado', 'rechazado'])
+                                ->whereNotIn('estado', ['rechazado'])
                                 ->first();
 
                             $viajeYaPaso = $reserva->viaje
@@ -139,8 +139,8 @@
                                         </a>
                                     @endif
 
-                                    {{-- SOLICITAR REEMBOLSO (solo si está cancelada y aún no completó el método) --}}
-                                    @if($estaCancelada && !$estaReembolsada)
+                                    {{-- SOLICITAR REEMBOLSO (solo si está cancelada y aún no completó el método y el viaje no ha pasado) --}}
+                                    @if($estaCancelada && !$estaReembolsada && !$viajeYaPaso)
                                         @if(!$reembolsoExistente)
                                             <a href="{{ route('cliente.reembolso.solicitar', $reserva->id) }}"
                                                class="btn btn-success btn-sm mb-1">

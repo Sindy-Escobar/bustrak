@@ -37,13 +37,10 @@ class ReembolsoController extends Controller
     // ========== CREAR REEMBOLSO (FORMULARIO) ==========
     public function crear()
     {
-        $reservas = Reserva::with(['viaje.origen', 'viaje.destino', 'user','asiento'])
+        $reservas = Reserva::with(['viaje.origen', 'viaje.destino', 'user', 'asiento', 'reembolsos'])
             ->where('estado', 'cancelada')
-            ->where(function($q) {
-                $q->whereDoesntHave('reembolsos')
-                    ->orWhereHas('reembolsos', function($q) {
-                        $q->where('metodo_pago', 'por_definir');
-                    });
+            ->whereDoesntHave('reembolsos', function($q) {
+                $q->whereIn('estado', ['pendiente', 'procesado', 'entregado', 'completado', 'rechazado']);
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -114,7 +111,7 @@ class ReembolsoController extends Controller
             'user_id' => $reserva->user_id,
             'codigo_reembolso' => Reembolso::generarCodigoReembolso(), // ← GENERACIÓN AUTOMÁTICA
             'codigo_cancelacion' => $reserva->codigo_reserva,
-            'monto_original' => $reserva->viaje->precio ?? $request->monto_reembolso,
+            'monto_original' => $reserva->total_a_pagar,
             'monto_reembolso' => $request->monto_reembolso,
             'metodo_pago' => $request->metodo_pago,
             'numero_cuenta' => $request->numero_cuenta ?? null,

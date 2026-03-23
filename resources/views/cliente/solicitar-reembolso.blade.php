@@ -278,7 +278,21 @@
                         <label>Monto a reembolsar</label>
                         <div class="monto-valor">L. {{ number_format($reembolso->monto_reembolso, 2) }}</div>
                         <div class="monto-nota">
-                            Monto original: L. {{ number_format($reembolso->monto_original, 2) }}
+                            @php
+                                $reserva          = $reembolso->reserva;
+                                $tarifaBase       = $reserva->tipoServicio->tarifa_base ?? 0;
+                                $cantidadAsientos = $reserva->cantidad_asientos ?? 1;
+                                $subtotalAsientos = $tarifaBase * $cantidadAsientos;
+                                $totalServicios   = $reserva->serviciosAdicionales->sum(function ($s) {
+                                    return $s->pivot->precio_unitario * $s->pivot->cantidad;
+                                });
+                            @endphp
+                            Boleto: L. {{ number_format($subtotalAsientos, 2) }}
+                            ({{ $cantidadAsientos }} {{ $cantidadAsientos == 1 ? 'asiento' : 'asientos' }} × L. {{ number_format($tarifaBase, 2) }})
+                            @if($totalServicios > 0)
+                                + Servicios: L. {{ number_format($totalServicios, 2) }}
+                            @endif
+                            = Total original: L. {{ number_format($reembolso->monto_original, 2) }}
                             &nbsp;·&nbsp; Código: <strong>{{ $reembolso->codigo_reembolso }}</strong>
                         </div>
                     </div>

@@ -21,6 +21,11 @@ class ClienteReembolsoController extends Controller
             return redirect()->route('cliente.historial')
                 ->with('error', 'Esta reserva ya fue cancelada.');
         }
+        // ✅ No se puede cancelar si el viaje ya pasó
+        if (Carbon::now()->isAfter(Carbon::parse($reserva->viaje->fecha_hora_salida))) {
+            return redirect()->route('cliente.historial')
+                ->with('error', 'No puedes cancelar una reserva cuyo viaje ya se realizó.');
+        }
 
         return view('cliente.cancelar-boleto', compact('reserva'));
     }
@@ -44,25 +49,28 @@ class ClienteReembolsoController extends Controller
                 ->with('error', 'Esta reserva ya fue cancelada.');
         }
 
+        // ✅ No se puede cancelar si el viaje ya se realizó
+        if (Carbon::now()->isAfter(Carbon::parse($reserva->viaje->fecha_hora_salida))) {
+            return redirect()->route('cliente.historial')
+                ->with('error', 'No puedes cancelar una reserva cuyo viaje ya se realizó.');
+        }
+
         // Calcular porcentaje según política HU7
         $salida = Carbon::parse($reserva->viaje->fecha_hora_salida);
         $horasRestantes = Carbon::now()->diffInHours($salida, false);
-        $precioViaje = $reserva->viaje->precio ?? 0;
+
+        $precioReal = $reserva->total_a_pagar;
 
         if ($horasRestantes > 24) {
-            $porcentaje     = 90;
-            $montoReembolso = $precioViaje * 0.90;
+            $porcentaje     = 100;
+            $montoReembolso = $precioReal;
         } elseif ($horasRestantes >= 12) {
             $porcentaje     = 50;
-            $montoReembolso = $precioViaje * 0.5;
-        } elseif ($horasRestantes >= 2) {
-            $porcentaje     = 25;
-            $montoReembolso = $precioViaje * 0.25;
+            $montoReembolso = $precioReal * 0.5;
         } else {
             $porcentaje     = 0;
             $montoReembolso = 0;
         }
-
         $reserva->update([
             'estado' => 'cancelada',
             'motivo_cancelacion' => $request->motivo_cancelacion,
@@ -87,22 +95,26 @@ class ClienteReembolsoController extends Controller
 
         // Si no existe, crear uno nuevo
         if (!$reembolso) {
-            $reserva = Reserva::with(['viaje'])
+            $reserva = Reserva::with(['viaje', 'tipoServicio', 'serviciosAdicionales'])
                 ->where('user_id', auth()->id())
                 ->where('id', $id)
                 ->where('estado', 'cancelada')
                 ->firstOrFail();
 
+// ✅ Verificar que el viaje no haya pasado
+            if (Carbon::now()->isAfter(Carbon::parse($reserva->viaje->fecha_hora_salida))) {
+                return redirect()->route('cliente.historial')
+                    ->with('error', 'No puedes solicitar reembolso porque la fecha del viaje ya pasó.');
+            }
+
             $salida = Carbon::parse($reserva->viaje->fecha_hora_salida);
             $horasRestantes = Carbon::now()->diffInHours($salida, false);
-            $precioViaje = $reserva->viaje->precio ?? 0;
+            $precioReal = $reserva->total_a_pagar;
 
             if ($horasRestantes > 24) {
-                $montoReembolso = $precioViaje * 0.90;
+                $montoReembolso = $precioReal;
             } elseif ($horasRestantes >= 12) {
-                $montoReembolso = $precioViaje * 0.5;
-            } elseif ($horasRestantes >= 2) {
-                $montoReembolso = $precioViaje * 0.25;
+                $montoReembolso = $precioReal * 0.5;
             } else {
                 $montoReembolso = 0;
             }
@@ -112,7 +124,7 @@ class ClienteReembolsoController extends Controller
                 'user_id'            => auth()->id(),
                 'codigo_reembolso'   => Reembolso::generarCodigoReembolso(),
                 'codigo_cancelacion' => 'CAN' . date('ymd') . strtoupper(\Illuminate\Support\Str::random(4)),
-                'monto_original'     => $precioViaje,
+                'monto_original'     => $precioReal,
                 'monto_reembolso'    => $montoReembolso,
                 'metodo_pago'        => 'por_definir',
                 'estado'             => 'pendiente',

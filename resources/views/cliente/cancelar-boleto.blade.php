@@ -245,8 +245,8 @@
                             <span>{{ \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('d/m/Y H:i') }}</span>
                         </div>
                         <div class="detalle-item">
-                            <label>Asiento</label>
-                            <span>#{{ $reserva->asiento->numero_asiento ?? 'S/N' }}</span>
+                            <label>Asientos</label>
+                            <span>{{ $reserva->cantidad_asientos ?? 1 }} {{ ($reserva->cantidad_asientos ?? 1) == 1 ? 'asiento' : 'asientos' }}</span>
                         </div>
                         <div class="detalle-item">
                             <label>Fecha Reserva</label>
@@ -276,18 +276,26 @@
                 </div>
 
                 @php
-                    $precioViaje = $reserva->viaje->precio ?? 0;
-                    $ahora = \Carbon\Carbon::now();
-                    $salida = \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida);
+                    $tarifaBase       = $reserva->tipoServicio->tarifa_base ?? 0;
+                    $cantidadAsientos = $reserva->cantidad_asientos ?? 1;
+                    $subtotalAsientos = $tarifaBase * $cantidadAsientos;
+                    $totalServicios   = $reserva->serviciosAdicionales->sum(function ($s) {
+                        return $s->pivot->precio_unitario * $s->pivot->cantidad;
+                    });
+                    $precioReal = $subtotalAsientos + $totalServicios;
+
+                    $ahora          = \Carbon\Carbon::now();
+                    $salida         = \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida);
                     $horasRestantes = $ahora->diffInHours($salida, false);
+
                     if ($horasRestantes > 24) {
-                        $porcentaje = 100;
-                        $montoReembolso = $precioViaje;
+                        $porcentaje     = 100;
+                        $montoReembolso = $precioReal;
                     } elseif ($horasRestantes >= 12) {
-                        $porcentaje = 50;
-                        $montoReembolso = $precioViaje * 0.5;
+                        $porcentaje     = 50;
+                        $montoReembolso = $precioReal * 0.5;
                     } else {
-                        $porcentaje = 0;
+                        $porcentaje     = 0;
                         $montoReembolso = 0;
                     }
                 @endphp
@@ -299,7 +307,14 @@
                     <div class="monto-info">
                         <label>Reembolso estimado ({{ $porcentaje }}%)</label>
                         <div class="monto-valor">L. {{ number_format($montoReembolso, 2) }}</div>
-                        <div class="monto-nota">Precio original: L. {{ number_format($precioViaje, 2) }}</div>
+                        <div class="monto-nota">
+                            Boleto: L. {{ number_format($subtotalAsientos, 2) }}
+                            ({{ $cantidadAsientos }} {{ $cantidadAsientos == 1 ? 'asiento' : 'asientos' }} × L. {{ number_format($tarifaBase, 2) }})
+                            @if($totalServicios > 0)
+                                + Servicios: L. {{ number_format($totalServicios, 2) }}
+                            @endif
+                            = Total: L. {{ number_format($precioReal, 2) }}
+                        </div>
                     </div>
                 </div>
 
