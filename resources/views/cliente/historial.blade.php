@@ -10,6 +10,9 @@
                 <a href="{{ route('cliente.reembolsos') }}" class="btn btn-outline-light btn-sm">
                     <i class="fas fa-hand-holding-usd me-1"></i> Mis Reembolsos
                 </a>
+                <a href="{{ route('cliente.historial.exportar-pdf') }}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-file-pdf me-1"></i> Exportar PDF
+                </a>
                 <a href="{{ route('cliente.reserva.create') }}" class="btn btn-light btn-sm">
                     <i class="fas fa-plus me-1"></i> Nueva Reserva
                 </a>
@@ -46,7 +49,7 @@
                         <th>Origen</th>
                         <th>Destino</th>
                         <th class="text-center">Salida</th>
-                        <th class="text-center">Asientos</th>
+                        <th class="text-center">Cant.Asientos</th>
                         <th class="text-center">Estado</th>
                         <th class="text-center">Mi Opinión</th>
                         <th class="text-center">Acciones</th>
@@ -75,11 +78,6 @@
 
                             $estaCancelada = $reserva->estado === 'cancelada';
                             $estaReembolsada = $reserva->estado === 'reembolsada';
-
-                            // Obtener los números de asientos reservados
-                            $asientosReservados = \App\Models\Asiento::where('reserva_id', $reserva->id)
-                                ->orderBy('numero_asiento')
-                                ->pluck('numero_asiento');
                         @endphp
 
                         <tr class="{{ ($estaCancelada || $estaReembolsada) ? 'table-danger' : '' }}">
@@ -88,20 +86,8 @@
                             <td>{{ $reserva->viaje->destino->nombre ?? '-' }}</td>
                             <td class="text-center">{{ \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('d/m/Y H:i') }}</td>
 
-                            {{-- COLUMNA DE ASIENTOS ACTUALIZADA --}}
                             <td class="text-center">
-                                @if($asientosReservados->isNotEmpty())
-                                    <div class="d-flex flex-column align-items-center">
-                                        <span class="badge bg-primary mb-1">
-                                            {{ $reserva->cantidad_asientos }} {{ $reserva->cantidad_asientos == 1 ? 'asiento' : 'asientos' }}
-                                        </span>
-                                        <small class="text-muted">
-                                            #{{ $asientosReservados->implode(', #') }}
-                                        </small>
-                                    </div>
-                                @else
-                                    <span class="text-muted">S/N</span>
-                                @endif
+                                {{ $reserva->cantidad_asientos ?? 1 }}
                             </td>
 
                             <td class="text-center">
@@ -130,7 +116,7 @@
                             <td class="text-center">
                                 <div class="btn-group-vertical" role="group">
 
-                                    {{-- CANCELAR BOLETO (solo si no está cancelada y el viaje no ha pasado) --}}
+                                    {{-- CANCELAR BOLETO --}}
                                     @if(!$estaCancelada && !$estaReembolsada && !$viajeYaPaso)
                                         <a href="{{ route('cliente.reserva.cancelar.form', $reserva->id) }}"
                                            class="btn btn-danger btn-sm mb-1"
@@ -139,7 +125,7 @@
                                         </a>
                                     @endif
 
-                                    {{-- SOLICITAR REEMBOLSO (solo si está cancelada y aún no completó el método y el viaje no ha pasado) --}}
+                                    {{-- SOLICITAR REEMBOLSO --}}
                                     @if($estaCancelada && !$estaReembolsada && !$viajeYaPaso)
                                         @if(!$reembolsoExistente)
                                             <a href="{{ route('cliente.reembolso.solicitar', $reserva->id) }}"
@@ -158,7 +144,7 @@
                                         @endif
                                     @endif
 
-                                    {{-- CALIFICAR (solo si el viaje ya pasó y no ha calificado) --}}
+                                    {{-- CALIFICAR --}}
                                     @if(!$estaCancelada && !$estaReembolsada && $reserva->viaje && $reserva->viaje->empleado_id && !$comentarioGuardado)
                                         <a href="{{ route('calificar.chofer', $reserva->viaje->empleado_id) }}"
                                            class="btn btn-warning btn-sm mb-1"
