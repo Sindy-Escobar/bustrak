@@ -378,6 +378,14 @@ Route::get('/viaje/{reserva}/registrar-puntos', [RegistroPuntosController::class
 
 Route::post('/viaje/{reserva}/registrar-puntos', [RegistroPuntosController::class, 'store'])
     ->name('puntos.store');
+
+Route::get('/puntos/historial-canjes', [RegistroPuntosController::class, 'historialCanjes'])
+    ->name('puntos.historial-canjes');
+
+// HU13: Exportar historial a PDF
+Route::get('/puntos/exportar-pdf', [RegistroPuntosController::class, 'exportarHistorialPDF'])
+    ->name('puntos.exportar-pdf');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DocumentoBusController::class, 'dashboard'])->name('dashboard');
 
