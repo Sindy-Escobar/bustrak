@@ -38,46 +38,137 @@ class RegistroPuntosController extends Controller
         RegistrarPuntos::create([
             'reserva_id' => $reserva_id,
             'usuario_id' => Auth::id(),
-            'puntos' => $request->puntos,
+            'puntos'     => $request->puntos,
         ]);
 
         return redirect()->route('cliente.historial')
             ->with('success', 'Puntos registrados correctamente.');
     }
 
-    // NUEVO MÉTODO: Mostrar puntos y beneficios
+    // Mostrar puntos y beneficios disponibles
     public function index()
     {
-        $puntosTotales = RegistrarPuntos::where('usuario_id', Auth::id())->sum('puntos');
+        $puntosTotales  = RegistrarPuntos::where('usuario_id', Auth::id())->sum('puntos');
+        $puntosCanjeados = CanjeRealizado::where('usuario_id', Auth::id())->sum('puntos_usados');
+        $saldoActual    = $puntosTotales - $puntosCanjeados;
+
         $beneficios = CanjeBeneficio::where('activo', true)->get();
-        $puntosRegistros = RegistrarPuntos::with('reserva.viaje')
+
+        $puntosRegistros = RegistrarPuntos::with('reserva.viaje.origen', 'reserva.viaje.destino')
             ->where('usuario_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('puntos.index', compact('puntosTotales', 'beneficios', 'puntosRegistros'));
+        return view('puntos.index', compact('puntosTotales', 'saldoActual', 'beneficios', 'puntosRegistros'));
     }
 
-    // NUEVO MÉTODO: Procesar canje de puntos
+    // Procesar canje de puntos
     public function canjear(Request $request, $beneficio_id)
     {
-        $beneficio = CanjeBeneficio::findOrFail($beneficio_id);
-        $puntosTotales = RegistrarPuntos::where('usuario_id', Auth::id())->sum('puntos');
+        $beneficio      = CanjeBeneficio::findOrFail($beneficio_id);
+        $puntosTotales  = RegistrarPuntos::where('usuario_id', Auth::id())->sum('puntos');
+        $puntosCanjeados = CanjeRealizado::where('usuario_id', Auth::id())->sum('puntos_usados');
+        $saldoActual    = $puntosTotales - $puntosCanjeados;
 
-        // VALIDAR PUNTOS SUFICIENTES
-        if ($puntosTotales < $beneficio->puntos_requeridos) {
+        if ($saldoActual < $beneficio->puntos_requeridos) {
             return redirect()->route('puntos.index')
-                ->with('error', 'No tienes puntos suficientes para canjear este beneficio. Necesitas ' . $beneficio->puntos_requeridos . ' puntos.');
+                ->with('error', 'No tienes puntos suficientes. Necesitas ' . $beneficio->puntos_requeridos . ' puntos.');
         }
 
-        // REGISTRAR EL CANJE
+        $saldoTrasCanje = $saldoActual - $beneficio->puntos_requeridos;
+
         CanjeRealizado::create([
-            'usuario_id' => Auth::id(),
-            'beneficio_id' => $beneficio->id,
-            'puntos_usados' => $beneficio->puntos_requeridos,
+            'usuario_id'      => Auth::id(),
+            'beneficio_id'    => $beneficio->id,
+            'puntos_usados'   => $beneficio->puntos_requeridos,
+            'estado'          => 'completado',
+            'saldo_tras_canje' => $saldoTrasCanje,
+            'reserva_id'      => null,
         ]);
 
         return redirect()->route('puntos.index')
-            ->with('success', '¡Beneficio canjeado exitosamente! Se descontaron ' . $beneficio->puntos_requeridos . ' puntos de tu saldo.');
+            ->with('success', '¡Beneficio canjeado! Se descontaron ' . $beneficio->puntos_requeridos . ' puntos.');
+    }
+
+    // ─── HU13: Historial de canjes realizados ───────────────────────────────
+
+    public function historialCanjes(Request $request)
+    {
+        $query = CanjeRealizado::with(['beneficio', 'reserva.viaje.origen', 'reserva.viaje.destino'])
+            ->where('usuario_id', Auth::id());
+
+        // Filtro por rango de fecha
+        if ($request->filled('fecha_desde')) {
+            $query->whereDate('created_at', '>=', $request->fecha_desde);
+        }
+        if ($request->filled('fecha_hasta')) {
+            $query->whereDate('created_at', '<=', $request->fecha_hasta);
+        }
+
+        // Filtro por tipo (descuento / premio) — basado en nombre del beneficio
+        if ($request->filled('tipo')) {
+            $query->whereHas('beneficio', function ($q) use ($request) {
+                $q->where('nombre', 'like', '%' . $request->tipo . '%');
+            });
+        }
+
+        // Filtro por estado
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        // Orden descendente por fecha (por defecto, HU13)
+        $canjes = $query->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
+
+        // Totales para el resumen
+        $totalPuntosCanjeados = CanjeRealizado::where('usuario_id', Auth::id())->sum('puntos_usados');
+        $totalCanjes          = CanjeRealizado::where('usuario_id', Auth::id())->count();
+        $puntosTotales        = RegistrarPuntos::where('usuario_id', Auth::id())->sum('puntos');
+        $saldoActual          = $puntosTotales - $totalPuntosCanjeados;
+
+        return view('puntos.historial-canjes', compact(
+            'canjes',
+            'totalPuntosCanjeados',
+            'totalCanjes',
+            'saldoActual'
+        ));
+    }
+
+    // ─── HU13: Exportar historial a PDF ─────────────────────────────────────
+
+    public function exportarHistorialPDF(Request $request)
+    {
+        $query = CanjeRealizado::with(['beneficio', 'reserva.viaje.origen', 'reserva.viaje.destino'])
+            ->where('usuario_id', Auth::id());
+
+        if ($request->filled('fecha_desde')) {
+            $query->whereDate('created_at', '>=', $request->fecha_desde);
+        }
+        if ($request->filled('fecha_hasta')) {
+            $query->whereDate('created_at', '<=', $request->fecha_hasta);
+        }
+        if ($request->filled('tipo')) {
+            $query->whereHas('beneficio', function ($q) use ($request) {
+                $q->where('nombre', 'like', '%' . $request->tipo . '%');
+            });
+        }
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        $canjes               = $query->orderBy('created_at', 'desc')->get();
+        $totalPuntosCanjeados = CanjeRealizado::where('usuario_id', Auth::id())->sum('puntos_usados');
+        $puntosTotales        = RegistrarPuntos::where('usuario_id', Auth::id())->sum('puntos');
+        $saldoActual          = $puntosTotales - $totalPuntosCanjeados;
+        $usuario              = Auth::user();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('puntos.historial-canjes-pdf', compact(
+            'canjes',
+            'totalPuntosCanjeados',
+            'saldoActual',
+            'usuario'
+        ));
+
+        return $pdf->download('historial-canjes-' . now()->format('Y-m-d') . '.pdf');
     }
 }

@@ -251,7 +251,7 @@
                                                     <input type="tel" class="form-control" name="tercero_telefono" id="tercero_telefono">
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <label class="form-label">Email (Opcional)</label>
+                                                    <label class="form-label">Email</label>
                                                     <input type="email" class="form-control" name="tercero_email" id="tercero_email" placeholder="correo@ejemplo.com">
                                                 </div>
                                             </div>

@@ -13,7 +13,6 @@
             </div>
 
             <div class="card-body">
-                <!-- Área de escaneo -->
                 <div class="row">
                     <div class="col-md-6 mb-4">
                         <div class="card border-primary">
@@ -23,19 +22,13 @@
                             <div class="card-body text-center">
                                 <div id="reader" style="width: 100%;"></div>
 
-                                <!-- Opción manual -->
                                 <div class="mt-3">
                                     <p class="text-muted">O ingresa el código manualmente:</p>
                                     <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-keyboard"></i>
-                                    </span>
-                                        <input
-                                            type="text"
-                                            id="codigoManual"
-                                            class="form-control"
-                                            placeholder="Ingrese código QR"
-                                        >
+                                        <span class="input-group-text">
+                                            <i class="fas fa-keyboard"></i>
+                                        </span>
+                                        <input type="text" id="codigoManual" class="form-control" placeholder="Ingrese código QR">
                                         <button class="btn btn-primary" onclick="validarCodigoManual()">
                                             <i class="fas fa-check me-1"></i>Validar
                                         </button>
@@ -45,7 +38,6 @@
                         </div>
                     </div>
 
-                    <!-- Área de información del pasajero -->
                     <div class="col-md-6">
                         <div id="areaDatos" style="display:none;">
                             <div class="card border-success">
@@ -55,19 +47,11 @@
                                 <div class="card-body">
                                     <div id="datosPasajero"></div>
 
-                                    <!-- Observaciones -->
                                     <div class="mt-3">
                                         <label class="form-label fw-bold">Observaciones (Opcional)</label>
-                                        <textarea
-                                            id="observaciones"
-                                            class="form-control"
-                                            rows="3"
-                                            placeholder="Agregar observaciones..."
-                                            maxlength="500"
-                                        ></textarea>
+                                        <textarea id="observaciones" class="form-control" rows="3" placeholder="Agregar observaciones..." maxlength="500"></textarea>
                                     </div>
 
-                                    <!-- Botones de acción -->
                                     <div class="d-grid gap-2 mt-4">
                                         <button class="btn btn-success btn-lg" onclick="confirmarAbordaje()">
                                             <i class="fas fa-check-circle me-2"></i>Confirmar Abordaje
@@ -80,12 +64,10 @@
                             </div>
                         </div>
 
-                        <!-- Área de alertas -->
                         <div id="areaAlertas"></div>
                     </div>
                 </div>
 
-                <!-- Historial reciente -->
                 <div class="mt-4">
                     <a href="{{ route('abordajes.historial') }}" class="btn btn-outline-primary">
                         <i class="fas fa-history me-2"></i>Ver Historial de Abordajes
@@ -95,54 +77,47 @@
         </div>
     </div>
 
-    <!-- Librería Html5-QRCode -->
     <script src="https://unpkg.com/html5-qrcode"></script>
 
     <script>
         let reservaActual = null;
         let html5QrCode = null;
+        let isScanning = false;
 
-        // Inicializar escáner QR
         document.addEventListener('DOMContentLoaded', function() {
             html5QrCode = new Html5Qrcode("reader");
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
-            const config = {
-                fps: 10,
-                qrbox: { width: 250, height: 250 }
-            };
-
-            html5QrCode.start(
-                { facingMode: "environment" },
-                config,
-                onScanSuccess,
-                onScanError
-            ).catch(err => {
-                console.error("Error al iniciar la cámara:", err);
-                mostrarAlerta('No se pudo acceder a la cámara. Use el ingreso manual.', 'warning');
-            });
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanError)
+                .then(() => { isScanning = true; })
+                .catch(err => {
+                    console.error("Error:", err);
+                    mostrarAlerta('No se pudo acceder a la cámara. Use el ingreso manual.', 'warning');
+                });
         });
 
-        // Cuando se escanea exitosamente
-        function onScanSuccess(decodedText, decodedResult) {
-            html5QrCode.pause();
+        function onScanSuccess(decodedText) {
+            if (!isScanning) return;
+            isScanning = false;
+            html5QrCode.pause(true);
             validarCodigo(decodedText);
         }
 
-        function onScanError(errorMessage) {
-            // Ignorar errores continuos de escaneo
-        }
+        function onScanError(error) {}
 
-        // Validar código manual
         function validarCodigoManual() {
             const codigo = document.getElementById('codigoManual').value.trim();
             if (!codigo) {
                 mostrarAlerta('Por favor ingrese un código QR', 'warning');
                 return;
             }
+            if (isScanning && html5QrCode) {
+                html5QrCode.pause(true);
+                isScanning = false;
+            }
             validarCodigo(codigo);
         }
 
-        // Validar código QR con el servidor
         function validarCodigo(codigoQR) {
             mostrarAlerta('Validando código...', 'info');
 
@@ -162,88 +137,93 @@
                         mostrarAlerta(data.message, data.tipo_alerta);
                     } else {
                         mostrarAlerta(data.message, data.tipo_alerta);
-                        if (html5QrCode) {
-                            setTimeout(() => html5QrCode.resume(), 2000);
-                        }
+                        reanudarEscaner();
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     mostrarAlerta('Error al validar el código QR', 'error');
-                    if (html5QrCode) {
-                        setTimeout(() => html5QrCode.resume(), 2000);
-                    }
+                    reanudarEscaner();
                 });
         }
-        // Mostrar datos del pasajero
-        function mostrarDatosPasajero(datos) {
-            let htmlAutorizacion = '';
 
-            // SI ES MENOR, MOSTRAR ALERTA
-            if (datos.autorizacion_menor) {
-                const menor = datos.autorizacion_menor;
-                htmlAutorizacion = `
-            <div class="alert alert-warning border-warning mb-3">
-                <h6 class="alert-heading">
-                    <i class="fas fa-child me-2"></i>
-                     PASAJERO MENOR DE EDAD
-                </h6>
-                <hr>
-                <p class="mb-2"><strong>DNI Menor:</strong> ${menor.menor_dni}</p>
-                <p class="mb-2"><strong>Edad:</strong> ${menor.menor_edad} años</p>
-                <hr>
-                <h6 class="text-success"><i class="fas fa-check-circle me-2"></i>Autorización Válida</h6>
-                <p class="mb-1"><strong>Tutor:</strong> ${menor.tutor_nombre}</p>
-                <p class="mb-1"><strong>DNI Tutor:</strong> ${menor.tutor_dni}</p>
-                <p class="mb-1"><strong>Parentesco:</strong> ${menor.parentesco}</p>
-                <p class="mb-1"><strong>Código Autorización:</strong>
-                    <span class="badge bg-success">${menor.codigo_autorizacion}</span>
-                </p>
-                <hr>
-                <p class="mb-0 text-danger">
-                    <i class="fas fa-exclamation-triangle me-1"></i>
-                    <strong>VERIFICAR:</strong> El tutor debe estar presente y mostrar su DNI original.
-                </p>
-            </div>
-        `;
+        function reanudarEscaner() {
+            if (html5QrCode && !isScanning) {
+                setTimeout(() => {
+                    html5QrCode.resume();
+                    isScanning = true;
+                }, 2000);
             }
-            const html = `
-        ${htmlAutorizacion}
-        <div class="mb-3">
-            <h6 class="text-primary"><i class="fas fa-user me-2"></i>Información del Pasajero</h6>
-            <p class="mb-1"><strong>Nombre:</strong> ${datos.pasajero.nombre_completo}</p>
-            <p class="mb-1"><strong>DNI:</strong> ${datos.pasajero.dni}</p>
-            <p class="mb-1"><strong>Email:</strong> ${datos.pasajero.email}</p>
-            <p class="mb-1"><strong>Teléfono:</strong> ${datos.pasajero.telefono}</p>
-        </div>
-        <hr>
-        <div class="mb-3">
-            <h6 class="text-primary"><i class="fas fa-bus me-2"></i>Información del Viaje</h6>
-            <p class="mb-1"><strong>Ruta:</strong> ${datos.viaje.ruta}</p>
-            <p class="mb-1"><strong>Origen:</strong> ${datos.viaje.origen}</p>
-            <p class="mb-1"><strong>Destino:</strong> ${datos.viaje.destino}</p>
-            <p class="mb-1"><strong>Fecha/Hora:</strong> ${datos.viaje.fecha_salida}</p>
-            <p class="mb-1"><strong>Asiento:</strong> ${datos.viaje.asiento}</p>
-        </div>
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i>
-            <strong>Código QR:</strong> ${datos.codigo_qr}
-        </div>
-    `;
+        }
+
+        function mostrarDatosPasajero(datos) {
+            let html = '';
+
+            if (datos.autorizacion_menor) {
+                const m = datos.autorizacion_menor;
+                html += '<div class="alert alert-warning mb-3">';
+                html += '<h6><i class="fas fa-child me-2"></i>MENOR ' + (m.es_extranjero ? 'EXTRANJERO' : 'HONDUREÑO') + '</h6><hr>';
+                html += '<p class="mb-1"><strong>DNI:</strong> ' + (m.menor_dni || 'N/A') + '</p>';
+                html += '<p class="mb-1"><strong>Edad:</strong> ' + m.menor_edad + ' años</p>';
+                if (m.es_extranjero) {
+                    html += '<hr><h6 class="text-success"><i class="fas fa-check-circle me-2"></i>Autorización Válida</h6>';
+                    html += '<p class="mb-1"><strong>Tutor:</strong> ' + m.tutor_nombre + '</p>';
+                    html += '<p class="mb-1"><strong>Código:</strong> <span class="badge bg-success">' + m.codigo_autorizacion + '</span></p>';
+                    html += '<hr><p class="text-danger mb-0"><i class="fas fa-exclamation-triangle me-1"></i><strong>VERIFICAR DNI del tutor</strong></p>';
+                } else {
+                    html += '<hr><p class="text-info mb-0"><i class="fas fa-info-circle me-1"></i>No requiere autorización</p>';
+                }
+                html += '</div>';
+            }
+
+            if (datos.pasajero.para_tercero) {
+                html += '<div class="mb-3"><div class="alert alert-info mb-2"><strong><i class="fas fa-user-friends me-2"></i>Reserva para Tercero</strong></div>';
+                html += '<h6 class="text-primary">Usuario que Reservó</h6>';
+                html += '<p class="mb-1"><strong>Nombre:</strong> ' + datos.pasajero.usuario_nombre + '</p>';
+                html += '<hr><h6 class="text-primary">Pasajero que Viaja</h6>';
+                html += '<p class="mb-1"><strong>Nombre:</strong> ' + datos.pasajero.tercero_nombre + '</p>';
+                html += '<p class="mb-1"><strong>Doc:</strong> ' + datos.pasajero.tercero_tipo_doc + ': ' + datos.pasajero.tercero_num_doc + '</p>';
+                html += '<p class="mb-1"><strong>País:</strong> ' + datos.pasajero.tercero_pais + '</p></div>';
+            } else {
+                html += '<div class="mb-3"><h6 class="text-primary"><i class="fas fa-user me-2"></i>Pasajero</h6>';
+                html += '<p class="mb-1"><strong>Nombre:</strong> ' + datos.pasajero.nombre_completo + '</p>';
+                html += '<p class="mb-1"><strong>DNI:</strong> ' + (datos.pasajero.dni || 'N/A') + '</p>';
+                html += '<p class="mb-1"><strong>Email:</strong> ' + datos.pasajero.email + '</p></div>';
+            }
+
+            html += '<hr><div class="mb-3"><h6 class="text-primary"><i class="fas fa-bus me-2"></i>Viaje</h6>';
+            html += '<p class="mb-1"><strong>Ruta:</strong> ' + datos.viaje.ruta + '</p>';
+            html += '<p class="mb-1"><strong>Fecha:</strong> ' + datos.viaje.fecha_salida + '</p>';
+            html += '<p class="mb-1"><strong>Servicio:</strong> <span class="badge bg-info text-dark">' + (datos.viaje.tipo_servicio || 'N/A') + '</span></p>';
+
+            if (datos.viaje.asientos && datos.viaje.asientos.length > 0) {
+                const nums = datos.viaje.asientos.join(', #');
+                html += '<p class="mb-1"><strong>Asientos:</strong> <span class="badge bg-primary">' + datos.viaje.asientos.length + '</span> #' + nums + '</p>';
+            }
+            html += '</div>';
+
+            if (datos.servicios_adicionales && datos.servicios_adicionales.length > 0) {
+                html += '<hr><div class="mb-3"><h6 class="text-primary">Servicios Adicionales</h6>';
+                datos.servicios_adicionales.forEach(s => {
+                    html += '<span class="badge bg-success me-1">' + s.nombre + ' (x' + s.cantidad + ')</span>';
+                });
+                html += '</div>';
+            }
+
+            html += '<div class="alert alert-info mt-3"><i class="fas fa-info-circle me-2"></i><strong>Código:</strong> ' + datos.codigo_qr + '</div>';
 
             document.getElementById('datosPasajero').innerHTML = html;
             document.getElementById('areaDatos').style.display = 'block';
         }
-        // Confirmar abordajes
+
         function confirmarAbordaje() {
             if (!reservaActual) {
-                mostrarAlerta('No hay datos de reserva para confirmar', 'error');
+                mostrarAlerta('No hay datos de reserva', 'error');
                 return;
             }
 
-            const observaciones = document.getElementById('observaciones').value;
-
-            mostrarAlerta('Confirmando abordajes...', 'info');
+            const obs = document.getElementById('observaciones').value;
+            mostrarAlerta('Confirmando...', 'info');
 
             fetch('{{ route("abordajes.confirmar") }}', {
                 method: 'POST',
@@ -254,70 +234,45 @@
                 body: JSON.stringify({
                     reserva_id: reservaActual.reserva_id,
                     codigo_qr: reservaActual.codigo_qr,
-                    observaciones: observaciones
+                    observaciones: obs
                 })
             })
                 .then(response => response.json())
                 .then(data => {
+                    mostrarAlerta(data.message, data.tipo_alerta);
                     if (data.success) {
-                        mostrarAlerta(data.message, data.tipo_alerta);
                         setTimeout(() => {
                             cancelarValidacion();
-                            if (html5QrCode) {
-                                html5QrCode.resume();
-                            }
+                            reanudarEscaner();
                         }, 3000);
-                    } else {
-                        mostrarAlerta(data.message, data.tipo_alerta);
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    mostrarAlerta('Error al confirmar el abordajes', 'error');
+                    mostrarAlerta('Error al confirmar', 'error');
                 });
         }
 
-        // Cancelar validación
         function cancelarValidacion() {
             reservaActual = null;
             document.getElementById('areaDatos').style.display = 'none';
             document.getElementById('codigoManual').value = '';
             document.getElementById('observaciones').value = '';
             document.getElementById('areaAlertas').innerHTML = '';
-            if (html5QrCode) {
-                html5QrCode.resume();
-            }
+            reanudarEscaner();
         }
 
-        // Mostrar alertas
         function mostrarAlerta(mensaje, tipo) {
-            const iconos = {
-                'success': 'check-circle',
-                'error': 'exclamation-circle',
-                'warning': 'exclamation-triangle',
-                'info': 'info-circle'
-            };
+            const iconos = { 'success': 'check-circle', 'error': 'exclamation-circle', 'warning': 'exclamation-triangle', 'info': 'info-circle' };
+            const colores = { 'success': 'success', 'error': 'danger', 'warning': 'warning', 'info': 'info' };
 
-            const colores = {
-                'success': 'success',
-                'error': 'danger',
-                'warning': 'warning',
-                'info': 'info'
-            };
-
-            const html = `
-        <div class="alert alert-${colores[tipo]} alert-dismissible fade show" role="alert">
-            <i class="fas fa-${iconos[tipo]} me-2"></i>${mensaje}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    `;
+            const html = '<div class="alert alert-' + colores[tipo] + ' alert-dismissible fade show"><i class="fas fa-' + iconos[tipo] + ' me-2"></i>' + mensaje + '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>';
 
             document.getElementById('areaAlertas').innerHTML = html;
         }
 
-        // Limpiar al salir
         window.addEventListener('beforeunload', function() {
-            if (html5QrCode) {
+            if (html5QrCode && isScanning) {
                 html5QrCode.stop();
             }
         });

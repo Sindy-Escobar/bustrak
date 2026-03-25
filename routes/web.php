@@ -170,12 +170,12 @@ Route::get('/principal', [PrincipalController::class, 'index'])
 // AGREGA esta ruta nueva para la API:
 Route::get('/api/departamento/{id}', [PrincipalController::class, 'getDepartamento']);
 
-// Abordajes
-Route::middleware('auth')->prefix('abordajes')->name('abordajes.')->controller(AbordajeController::class)->group(function () {
-    Route::get('escanear', 'mostrarEscaner')->name('escanear');
-    Route::post('validar', 'validarCodigoQR')->name('validar');
-    Route::post('confirmar', 'confirmarAbordaje')->name('confirmar');
-    Route::get('historial', 'historial')->name('historial');
+
+Route::middleware('auth')->prefix('admin/viajes')->name('admin.viajes.')->group(function () {
+    Route::get('/', [ViajesAdminController::class, 'index'])->name('index');
+    Route::post('/', [ViajesAdminController::class, 'store'])->name('store');
+    Route::put('{id}', [ViajesAdminController::class, 'update'])->name('update');
+    Route::delete('{id}', [ViajesAdminController::class, 'destroy'])->name('destroy');
 });
 
 // ======================================================
@@ -378,6 +378,14 @@ Route::get('/viaje/{reserva}/registrar-puntos', [RegistroPuntosController::class
 
 Route::post('/viaje/{reserva}/registrar-puntos', [RegistroPuntosController::class, 'store'])
     ->name('puntos.store');
+
+Route::get('/puntos/historial-canjes', [RegistroPuntosController::class, 'historialCanjes'])
+    ->name('puntos.historial-canjes');
+
+// HU13: Exportar historial a PDF
+Route::get('/puntos/exportar-pdf', [RegistroPuntosController::class, 'exportarHistorialPDF'])
+    ->name('puntos.exportar-pdf');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DocumentoBusController::class, 'dashboard'])->name('dashboard');
 
