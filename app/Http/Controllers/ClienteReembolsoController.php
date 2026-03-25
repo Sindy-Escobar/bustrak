@@ -136,30 +136,35 @@ class ClienteReembolsoController extends Controller
     public function guardarSolicitud(Request $request, $reembolsoId)
     {
         $request->validate([
-            'metodo_pago'    => 'required|in:efectivo,transferencia,credito,cheque',
-            'banco'          => 'required_if:metodo_pago,transferencia',
-            'numero_cuenta'  => 'required_if:metodo_pago,transferencia',
-            'titular_cuenta' => 'required_if:metodo_pago,transferencia,cheque',
+            'metodo_pago'           => 'required|in:efectivo,transferencia,credito,cheque',
+            'banco'                 => 'required_if:metodo_pago,transferencia',
+            'numero_cuenta'         => 'required_if:metodo_pago,transferencia|nullable|digits:14',
+            'titular_transferencia' => 'required_if:metodo_pago,transferencia',
+            'titular_cheque'        => 'required_if:metodo_pago,cheque',
         ], [
-            'metodo_pago.required'       => 'Debes seleccionar un método de reembolso.',
-            'banco.required_if'          => 'El banco es obligatorio para transferencias.',
-            'numero_cuenta.required_if'  => 'El número de cuenta es obligatorio para transferencias.',
-            'titular_cuenta.required_if' => 'El nombre del titular es obligatorio.',
+            'metodo_pago.required'                  => 'Debes seleccionar un método de reembolso.',
+            'banco.required_if'                     => 'El banco es obligatorio para transferencias.',
+            'numero_cuenta.required_if'             => 'El número de cuenta es obligatorio para transferencias.',
+            'numero_cuenta.digits'                  => 'El número de cuenta debe tener exactamente 14 dígitos.',
+            'titular_transferencia.required_if'     => 'El nombre del titular es obligatorio.',
+            'titular_cheque.required_if'            => 'El nombre para el cheque es obligatorio.',
         ]);
 
         $reembolso = Reembolso::where('user_id', auth()->id())
             ->where('id', $reembolsoId)
             ->firstOrFail();
 
+        // Unificar titular según método
+        $titular = $request->titular_transferencia ?? $request->titular_cheque ?? null;
+
         $reembolso->update([
             'metodo_pago'    => $request->metodo_pago,
             'banco'          => $request->banco,
             'numero_cuenta'  => $request->numero_cuenta,
-            'titular_cuenta' => $request->titular_cuenta,
+            'titular_cuenta' => $titular,
             'notas'          => $request->notas,
         ]);
 
-        // Limpiar sesión
         session()->forget('reembolso_pendiente');
 
         return redirect()->route('cliente.reembolsos')

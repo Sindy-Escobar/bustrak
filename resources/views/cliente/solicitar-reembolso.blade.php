@@ -365,17 +365,21 @@
                                     <option>Banpais</option>
                                     <option>BAC Honduras</option>
                                     <option>Ficohsa</option>
-                                    <option>HSBC Honduras</option>
-                                    <option>Otro</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Número de Cuenta <span class="text-danger">*</span></label>
-                                <input type="text" name="numero_cuenta" class="form-control" placeholder="Ej: 1234-5678-9012">
+                                <input type="text" name="numero_cuenta" class="form-control"
+                                       placeholder="Ej: 12345678901234"
+                                       maxlength="14"
+                                       inputmode="numeric"
+                                       pattern="\d{14}"
+                                       oninput="this.value=this.value.replace(/\D/g,'').slice(0,14)"
+                                       title="Ingresa exactamente 14 dígitos numéricos">
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Nombre del Titular <span class="text-danger">*</span></label>
-                                <input type="text" name="titular_cuenta" class="form-control" placeholder="Nombre completo del titular de la cuenta">
+                                <input type="text" name="titular_transferencia" class="form-control" placeholder="Nombre completo del titular de la cuenta">
                             </div>
                         </div>
                     </div>
@@ -391,7 +395,7 @@
                         <div class="row g-3">
                             <div class="col-12">
                                 <label class="form-label">Nombre para el Cheque <span class="text-danger">*</span></label>
-                                <input type="text" name="titular_cuenta" class="form-control" placeholder="Nombre completo tal como aparecerá en el cheque">
+                                <input type="text" name="titular_cheque" class="form-control" placeholder="Nombre completo tal como aparecerá en el cheque">
                             </div>
                             <div class="col-12">
                                 <div class="alert alert-secondary border-0 rounded-3 mb-0">
