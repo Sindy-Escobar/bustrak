@@ -47,95 +47,40 @@ class PagoController extends Controller
     {
         $reserva = Reserva::findOrFail($reserva_id);
 
-        // Verificar propiedad
         if ($reserva->user_id !== Auth::id()) {
             abort(403);
         }
 
-        // Verificar que no esté pagada
         if ($reserva->estaPagada()) {
             return redirect()->route('cliente.historial')
                 ->with('info', 'Esta reserva ya está pagada.');
         }
 
         $request->validate([
-            'metodo_pago' => 'required|in:efectivo,tarjeta_credito,tarjeta_debito,transferencia,terminal',
+            'metodo_pago' => 'required|in:efectivo,tarjeta_credito,transferencia',
         ]);
 
         $metodoPago = $request->metodo_pago;
         $total = $reserva->total_a_pagar;
 
-        // Validaciones específicas por método
-        if ($metodoPago === 'transferencia') {
-            $request->validate([
-                'referencia_bancaria' => 'required|string|max:50',
-                'banco' => 'required|string|max:100',
-                'comprobante' => 'required|image|mimes:jpeg,png,jpg,pdf|max:2048',
-            ]);
-        }
-
-        if (in_array($metodoPago, ['tarjeta_credito', 'tarjeta_debito'])) {
-            $request->validate([
-                'numero_tarjeta' => 'required|string|min:16|max:19',
-                'cvv' => 'required|digits:3',
-                'fecha_expiracion' => 'required|date_format:m/y|after:today',
-            ]);
-        }
-
-        // Crear el pago
-        $datosPago = [
+        //  TODOS LOS MÉTODOS SON PENDIENTES
+        $pago = Pago::create([
             'reserva_id' => $reserva->id,
             'user_id' => Auth::id(),
             'monto' => $total,
             'metodo_pago' => $metodoPago,
+            'estado' => 'pendiente',
             'codigo_transaccion' => Pago::generarCodigoTransaccion(),
             'fecha_pago' => now(),
-        ];
-
-        // Dependiendo del método, el estado inicial cambia
-        if ($metodoPago === 'efectivo' || $metodoPago === 'terminal') {
-            // Pago en efectivo o terminal queda pendiente hasta que el empleado confirme
-            $datosPago['estado'] = 'pendiente';
-            $datosPago['observaciones'] = 'Pago ' . ($metodoPago === 'efectivo' ? 'en efectivo' : 'en terminal') . ' - Pendiente de confirmación';
-        } elseif ($metodoPago === 'transferencia') {
-            // Transferencia queda pendiente hasta que admin apruebe
-            $datosPago['estado'] = 'pendiente';
-            $datosPago['referencia_bancaria'] = $request->referencia_bancaria;
-            $datosPago['banco'] = $request->banco;
-
-            // Guardar comprobante
-            if ($request->hasFile('comprobante')) {
-                $path = $request->file('comprobante')->store('comprobantes', 'public');
-                $datosPago['comprobante_path'] = $path;
+            'observaciones' => match($metodoPago) {
+                'efectivo' => 'Pago en efectivo al abordar',
+                'tarjeta_credito' => 'Pago con tarjeta al abordar (presentar comprobante)',
+                'transferencia' => 'Pago por transferencia (presentar comprobante al abordar)',
             }
-        } else {
-            // Tarjeta: procesamos inmediatamente (simulado o con Stripe)
-            $resultadoPago = $this->procesarPagoTarjeta($request, $total);
+        ]);
 
-            if ($resultadoPago['exito']) {
-                $datosPago['estado'] = 'aprobado';
-                $datosPago['fecha_aprobacion'] = now();
-                $datosPago['numero_tarjeta_ultimos4'] = substr($request->numero_tarjeta, -4);
-
-                // Actualizar reserva a confirmada
-                $reserva->update(['estado' => 'confirmada']);
-            } else {
-                $datosPago['estado'] = 'rechazado';
-                $datosPago['fecha_rechazo'] = now();
-                $datosPago['observaciones'] = $resultadoPago['mensaje'];
-            }
-        }
-
-        $pago = Pago::create($datosPago);
-
-        // Redireccionar con mensaje apropiado
-        if ($pago->estado === 'aprobado') {
-            return redirect()->route('cliente.pago.confirmacion', $pago->id)
-                ->with('success', '¡Pago procesado exitosamente!');
-        } else {
-            return redirect()->route('cliente.pago.confirmacion', $pago->id)
-                ->with('info', 'Pago registrado. Está pendiente de confirmación.');
-        }
+        return redirect()->route('cliente.pago.confirmacion', $pago->id)
+            ->with('success', 'Método de pago registrado correctamente.');
     }
 
     /**
