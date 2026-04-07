@@ -12,8 +12,8 @@
                             <i class="fas fa-credit-card"></i>
                         </div>
                         <div>
-                            <h2 class="header-title">Procesar Pago</h2>
-                            <p class="header-subtitle">Selecciona tu método de pago preferido</p>
+                            <h2 class="header-title">Confirmar Método de Pago</h2>
+                            <p class="header-subtitle">Selecciona cómo deseas pagar tu reserva</p>
                         </div>
                     </div>
                     <div class="header-decoration"></div>
@@ -30,10 +30,10 @@
                         <div class="card shadow-sm border-0">
                             <div class="card-body p-4">
                                 <h5 class="text-primary mb-4">
-                                    <i class="fas fa-wallet me-2"></i>Selecciona Método de Pago
+                                    <i class="fas fa-wallet me-2"></i>Selecciona tu Método de Pago
                                 </h5>
 
-                                <form action="{{ route('cliente.pago.store', $reserva->id) }}" method="POST" enctype="multipart/form-data" id="pagoForm">
+                                <form action="{{ route('cliente.pago.store', $reserva->id) }}" method="POST" id="pagoForm">
                                     @csrf
 
                                     @php
@@ -42,146 +42,114 @@
                                                                 str_contains($tipoServicioNombre, 'interurbano');
                                     @endphp
 
-                                    {{-- Métodos de pago --}}
+                                    {{-- Métodos de pago simplificados --}}
                                     <div class="payment-methods mb-4">
 
                                         @if($esRegularOInterurbano)
                                             {{-- Solo Efectivo para Regular/Interurbano --}}
-                                            <div class="alert alert-info mb-3">
+                                            <div class="alert alert-info mb-4">
                                                 <i class="fas fa-info-circle me-2"></i>
                                                 <strong>Servicio {{ $reserva->tipoServicio->nombre }}:</strong>
                                                 Solo se acepta pago en efectivo al abordar el bus.
                                             </div>
 
-                                            <div class="payment-option">
+                                            <div class="payment-option-simple">
                                                 <input type="radio" name="metodo_pago" value="efectivo" id="efectivo" checked required>
                                                 <label for="efectivo">
-                                                    <i class="fas fa-money-bill-wave"></i>
-                                                    <span>Efectivo</span>
-                                                    <small>Pagar al abordar</small>
+                                                    <div class="payment-icon">
+                                                        <i class="fas fa-money-bill-wave"></i>
+                                                    </div>
+                                                    <div class="payment-info">
+                                                        <span class="payment-title">Efectivo</span>
+                                                        <small class="payment-desc">Pagar al abordar el bus</small>
+                                                    </div>
+                                                    <div class="payment-check">
+                                                        <i class="fas fa-check-circle"></i>
+                                                    </div>
                                                 </label>
                                             </div>
                                         @else
-                                            {{-- Todos los métodos para otros tipos de servicio --}}
+                                            {{-- Tres métodos principales --}}
 
-                                            {{-- Tarjeta de Crédito --}}
-                                            <div class="payment-option">
-                                                <input type="radio" name="metodo_pago" value="tarjeta_credito" id="tarjeta_credito" required>
-                                                <label for="tarjeta_credito">
-                                                    <i class="fas fa-credit-card"></i>
-                                                    <span>Tarjeta de Crédito</span>
-                                                    <small>Pago inmediato</small>
-                                                </label>
-                                            </div>
-
-                                            {{-- Tarjeta de Débito --}}
-                                            <div class="payment-option">
-                                                <input type="radio" name="metodo_pago" value="tarjeta_debito" id="tarjeta_debito">
-                                                <label for="tarjeta_debito">
-                                                    <i class="fas fa-credit-card"></i>
-                                                    <span>Tarjeta de Débito</span>
-                                                    <small>Pago inmediato</small>
+                                            {{-- Tarjeta (Visa/Mastercard) --}}
+                                            <div class="payment-option-simple">
+                                                <input type="radio" name="metodo_pago" value="tarjeta_credito" id="tarjeta" required>
+                                                <label for="tarjeta">
+                                                    <div class="payment-icon">
+                                                        <i class="fas fa-credit-card"></i>
+                                                    </div>
+                                                    <div class="payment-info">
+                                                        <span class="payment-title">Tarjeta de Crédito/Débito</span>
+                                                        <small class="payment-desc">Visa, Mastercard - Aprobación inmediata</small>
+                                                    </div>
+                                                    <div class="payment-check">
+                                                        <i class="fas fa-check-circle"></i>
+                                                    </div>
                                                 </label>
                                             </div>
 
                                             {{-- Transferencia Bancaria --}}
-                                            <div class="payment-option">
+                                            <div class="payment-option-simple">
                                                 <input type="radio" name="metodo_pago" value="transferencia" id="transferencia">
                                                 <label for="transferencia">
-                                                    <i class="fas fa-university"></i>
-                                                    <span>Transferencia Bancaria</span>
-                                                    <small>Requiere aprobación</small>
-                                                </label>
-                                            </div>
-
-                                            {{-- Pago en Terminal --}}
-                                            <div class="payment-option">
-                                                <input type="radio" name="metodo_pago" value="terminal" id="terminal">
-                                                <label for="terminal">
-                                                    <i class="fas fa-cash-register"></i>
-                                                    <span>Pago en Terminal</span>
-                                                    <small>Pagar en la terminal</small>
+                                                    <div class="payment-icon">
+                                                        <i class="fas fa-university"></i>
+                                                    </div>
+                                                    <div class="payment-info">
+                                                        <span class="payment-title">Transferencia Bancaria</span>
+                                                        <small class="payment-desc">Requiere confirmación del banco</small>
+                                                    </div>
+                                                    <div class="payment-check">
+                                                        <i class="fas fa-check-circle"></i>
+                                                    </div>
                                                 </label>
                                             </div>
 
                                             {{-- Efectivo --}}
-                                            <div class="payment-option">
+                                            <div class="payment-option-simple">
                                                 <input type="radio" name="metodo_pago" value="efectivo" id="efectivo">
                                                 <label for="efectivo">
-                                                    <i class="fas fa-money-bill-wave"></i>
-                                                    <span>Efectivo</span>
-                                                    <small>Pagar al abordar</small>
+                                                    <div class="payment-icon">
+                                                        <i class="fas fa-money-bill-wave"></i>
+                                                    </div>
+                                                    <div class="payment-info">
+                                                        <span class="payment-title">Efectivo</span>
+                                                        <small class="payment-desc">Pagar al abordar el bus</small>
+                                                    </div>
+                                                    <div class="payment-check">
+                                                        <i class="fas fa-check-circle"></i>
+                                                    </div>
                                                 </label>
                                             </div>
                                         @endif
                                     </div>
 
-                                    {{-- Formulario de Tarjeta --}}
-                                    <div id="form-tarjeta" class="payment-form" style="display: none;">
-                                        <h6 class="text-primary mb-3">Datos de la Tarjeta</h6>
-                                        <div class="row g-3">
-                                            <div class="col-12">
-                                                <label class="form-label">Número de Tarjeta</label>
-                                                <input type="text" class="form-control" name="numero_tarjeta" placeholder="1234 5678 9012 3456" maxlength="19">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label">Fecha de Expiración</label>
-                                                <input type="text" class="form-control" name="fecha_expiracion" placeholder="MM/AA">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label">CVV</label>
-                                                <input type="text" class="form-control" name="cvv" placeholder="123" maxlength="3">
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {{-- Información adicional según método seleccionado --}}
+                                    <div id="info-metodo" class="alert" style="display: none;"></div>
 
-                                    {{-- Formulario de Transferencia --}}
-                                    <div id="form-transferencia" class="payment-form" style="display: none;">
-                                        <h6 class="text-primary mb-3">Datos de la Transferencia</h6>
-                                        <div class="alert alert-info">
-                                            <strong>Datos Bancarios:</strong><br>
-                                            Banco: Banco Atlántida<br>
-                                            Cuenta: 123456789<br>
-                                            Titular: BusTrak S.A.
-                                        </div>
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <label class="form-label">Referencia Bancaria</label>
-                                                <input type="text" class="form-control" name="referencia_bancaria" placeholder="Ej: 123456">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label">Banco</label>
-                                                <input type="text" class="form-control" name="banco" placeholder="Nombre del banco">
-                                            </div>
-                                            <div class="col-12">
-                                                <label class="form-label">Comprobante de Pago</label>
-                                                <input type="file" class="form-control" name="comprobante" accept="image/*,application/pdf">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {{-- Información de Terminal/Efectivo --}}
-                                    <div id="info-terminal" class="payment-form alert alert-info" style="display: none;">
-                                        <strong>Pago en Terminal:</strong><br>
-                                        Dirígete a nuestra terminal en Tegucigalpa y presenta tu código de reserva: <strong>{{ $reserva->codigo_reserva }}</strong>
-                                    </div>
-
-                                    <div id="info-efectivo" class="payment-form alert alert-warning" style="display: none;">
-                                        <strong>Pago en Efectivo:</strong><br>
-                                        Deberás pagar el monto total al abordar el bus. Asegúrate de llevar el monto exacto.
-                                    </div>
-
-                                    {{-- Botón de pago --}}
+                                    {{-- Botones de acción --}}
                                     <div class="d-grid gap-2 mt-4">
                                         <button type="submit" class="btn btn-primary btn-lg">
                                             <i class="fas fa-check-circle me-2"></i>
                                             Confirmar Pago
                                         </button>
                                         <a href="{{ route('cliente.historial') }}" class="btn btn-outline-secondary">
-                                            Cancelar
+                                            <i class="fas fa-times me-2"></i>Cancelar
                                         </a>
                                     </div>
                                 </form>
+                            </div>
+                        </div>
+
+                        {{-- Información de seguridad --}}
+                        <div class="card border-0 shadow-sm mt-3" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fas fa-shield-alt text-primary" style="font-size: 1.5rem;"></i>
+                                    <div>
+                                        <small class="text-muted d-block fw-bold">Pago 100% Seguro</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -191,22 +159,45 @@
                         <div class="card shadow-sm border-0 sticky-top" style="top: 20px;">
                             <div class="card-body p-4">
                                 <h5 class="text-primary mb-3">
-                                    <i class="fas fa-receipt me-2"></i>Resumen
+                                    <i class="fas fa-receipt me-2"></i>Resumen de Reserva
                                 </h5>
 
                                 <div class="mb-3">
                                     <small class="text-muted">Código de Reserva</small>
-                                    <h6 class="text-primary">{{ $reserva->codigo_reserva }}</h6>
+                                    <h6 class="text-primary fw-bold">{{ $reserva->codigo_reserva }}</h6>
                                 </div>
 
                                 <div class="mb-3">
                                     <small class="text-muted">Ruta</small>
-                                    <p class="mb-0">{{ $reserva->viaje->origen->nombre }} → {{ $reserva->viaje->destino->nombre }}</p>
+                                    <p class="mb-0 fw-semibold">
+                                        <i class="fas fa-map-marker-alt text-success me-1"></i>
+                                        {{ $reserva->viaje->origen->nombre }}
+                                        <br>
+                                        <i class="fas fa-arrow-down text-muted mx-2" style="font-size: 0.8rem;"></i>
+                                        <br>
+                                        <i class="fas fa-flag-checkered text-danger me-1"></i>
+                                        {{ $reserva->viaje->destino->nombre }}
+                                    </p>
+                                </div>
+
+                                <div class="mb-3">
+                                    <small class="text-muted">Fecha y Hora</small>
+                                    <p class="mb-0">
+                                        <i class="fas fa-calendar-alt text-primary me-1"></i>
+                                        {{ \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('d/m/Y') }}
+                                        <br>
+                                        <i class="fas fa-clock text-primary me-1"></i>
+                                        {{ \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('H:i') }}
+                                    </p>
                                 </div>
 
                                 <div class="mb-3">
                                     <small class="text-muted">Asientos</small>
-                                    <p class="mb-0">{{ $reserva->cantidad_asientos }} {{ $reserva->cantidad_asientos == 1 ? 'asiento' : 'asientos' }}</p>
+                                    <p class="mb-0">
+                                        <span class="badge bg-primary">
+                                            {{ $reserva->cantidad_asientos }} {{ $reserva->cantidad_asientos == 1 ? 'asiento' : 'asientos' }}
+                                        </span>
+                                    </p>
                                 </div>
 
                                 <hr>
@@ -217,25 +208,26 @@
                                     $servicios = $reserva->serviciosAdicionales->sum(function($s) {
                                         return $s->pivot->precio_unitario * $s->pivot->cantidad;
                                     });
+                                    $total = $subtotal + $servicios;
                                 @endphp
 
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span>Subtotal:</span>
+                                    <span class="text-muted">Subtotal asientos:</span>
                                     <strong>L. {{ number_format($subtotal, 2) }}</strong>
                                 </div>
 
                                 @if($servicios > 0)
                                     <div class="d-flex justify-content-between mb-2">
-                                        <span>Servicios:</span>
+                                        <span class="text-muted">Servicios adicionales:</span>
                                         <strong>L. {{ number_format($servicios, 2) }}</strong>
                                     </div>
                                 @endif
 
                                 <hr>
 
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0">Total:</h5>
-                                    <h4 class="mb-0 text-success">L. {{ number_format($total, 2) }}</h4>
+                                <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);">
+                                    <h5 class="mb-0 fw-bold" style="color: #1e40af;">Total a Pagar:</h5>
+                                    <h3 class="mb-0 fw-bold" style="color: #1e40af;">L. {{ number_format($total, 2) }}</h3>
                                 </div>
                             </div>
                         </div>
@@ -249,39 +241,54 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const metodosPago = document.querySelectorAll('input[name="metodo_pago"]');
-            const formTarjeta = document.getElementById('form-tarjeta');
-            const formTransferencia = document.getElementById('form-transferencia');
-            const infoTerminal = document.getElementById('info-terminal');
-            const infoEfectivo = document.getElementById('info-efectivo');
+            const infoMetodo = document.getElementById('info-metodo');
 
-            // Verificar si hay métodos de pago para escuchar
             if (metodosPago.length === 0) return;
+
+            // Información para cada método - TODOS EN AZUL (alert-info)
+            const mensajes = {
+                'tarjeta_credito': {
+                    clase: 'alert-info',
+                    icono: 'fa-credit-card',
+                    texto: '<strong>Tarjeta de Crédito/Débito:</strong> Tu pago será procesado de forma segura. Aceptamos Visa y Mastercard. La aprobación es inmediata.'
+                },
+                'transferencia': {
+                    clase: 'alert-info',
+                    icono: 'fa-university',
+                    texto: '<strong>Transferencia Bancaria:</strong> Realiza tu transferencia a nuestra cuenta. Tu reserva será confirmada una vez verifiquemos el pago (1-2 horas hábiles).'
+                },
+                'efectivo': {
+                    clase: 'alert-info',
+                    icono: 'fa-money-bill-wave',
+                    texto: '<strong>Pago en Efectivo:</strong> Pagarás el monto total al abordar el bus. Por favor, lleva el monto exacto para agilizar tu ingreso.'
+                }
+            };
+
+            function mostrarInfo(metodo) {
+                if (mensajes[metodo]) {
+                    infoMetodo.className = 'alert ' + mensajes[metodo].clase;
+                    infoMetodo.innerHTML = '<i class="fas ' + mensajes[metodo].icono + ' me-2"></i>' + mensajes[metodo].texto;
+                    infoMetodo.style.display = 'block';
+                } else {
+                    infoMetodo.style.display = 'none';
+                }
+            }
 
             metodosPago.forEach(metodo => {
                 metodo.addEventListener('change', function() {
-                    // Ocultar todos
-                    if (formTarjeta) formTarjeta.style.display = 'none';
-                    if (formTransferencia) formTransferencia.style.display = 'none';
-                    if (infoTerminal) infoTerminal.style.display = 'none';
-                    if (infoEfectivo) infoEfectivo.style.display = 'none';
-
-                    // Mostrar el correspondiente
-                    if (this.value === 'tarjeta_credito' || this.value === 'tarjeta_debito') {
-                        if (formTarjeta) formTarjeta.style.display = 'block';
-                    } else if (this.value === 'transferencia') {
-                        if (formTransferencia) formTransferencia.style.display = 'block';
-                    } else if (this.value === 'terminal') {
-                        if (infoTerminal) infoTerminal.style.display = 'block';
-                    } else if (this.value === 'efectivo') {
-                        if (infoEfectivo) infoEfectivo.style.display = 'block';
-                    }
+                    mostrarInfo(this.value);
                 });
             });
 
-            // Si solo hay efectivo, mostrarlo automáticamente
-            const soloEfectivo = metodosPago.length === 1 && metodosPago[0].value === 'efectivo';
-            if (soloEfectivo && infoEfectivo) {
-                infoEfectivo.style.display = 'block';
+            // Mostrar info del método pre-seleccionado automáticamente
+            const seleccionado = document.querySelector('input[name="metodo_pago"]:checked');
+            if (seleccionado) {
+                mostrarInfo(seleccionado.value);
+            }
+
+            // Si hay solo un método (efectivo), mostrarlo también
+            if (metodosPago.length === 1) {
+                mostrarInfo(metodosPago[0].value);
             }
         });
     </script>
@@ -338,54 +345,118 @@
             border-radius: 50%;
         }
 
-        .payment-option {
+        /* Opciones de pago simplificadas */
+        .payment-option-simple {
             margin-bottom: 15px;
         }
 
-        .payment-option input[type="radio"] {
+        .payment-option-simple input[type="radio"] {
             display: none;
         }
 
-        .payment-option label {
+        .payment-option-simple label {
             display: flex;
             align-items: center;
-            padding: 20px;
+            gap: 15px;
+            padding: 20px 25px;
             border: 2px solid #e5e7eb;
-            border-radius: 10px;
+            border-radius: 15px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            background: white;
         }
 
-        .payment-option label:hover {
+        .payment-option-simple label:hover {
             border-color: #3b82f6;
             background: #eff6ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
         }
 
-        .payment-option input[type="radio"]:checked + label {
+        .payment-option-simple input[type="radio"]:checked + label {
             border-color: #3b82f6;
-            background: #eff6ff;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
         }
 
-        .payment-option label i {
+        .payment-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .payment-icon i {
             font-size: 24px;
-            color: #3b82f6;
-            margin-right: 15px;
+            color: white;
         }
 
-        .payment-option label span {
+        .payment-info {
             flex: 1;
+        }
+
+        .payment-title {
+            display: block;
             font-weight: 600;
+            font-size: 1.1rem;
+            color: #1e293b;
+            margin-bottom: 2px;
         }
 
-        .payment-option label small {
-            color: #6b7280;
+        .payment-desc {
+            display: block;
+            color: #64748b;
+            font-size: 0.875rem;
         }
 
-        .payment-form {
-            background: #f9fafb;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
+        .payment-check {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #e5e7eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .payment-check i {
+            font-size: 16px;
+            color: #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .payment-option-simple input[type="radio"]:checked + label .payment-check {
+            border-color: #3b82f6;
+            background: #3b82f6;
+        }
+
+        .payment-option-simple input[type="radio"]:checked + label .payment-check i {
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .payment-option-simple label {
+                padding: 15px 20px;
+            }
+
+            .payment-icon {
+                width: 45px;
+                height: 45px;
+            }
+
+            .payment-icon i {
+                font-size: 20px;
+            }
+
+            .payment-title {
+                font-size: 1rem;
+            }
         }
     </style>
 @endsection
