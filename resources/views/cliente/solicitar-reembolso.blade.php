@@ -325,26 +325,6 @@
                                 </div>
                             </label>
                         </div>
-                        <div class="metodo-option">
-                            <input type="radio" name="metodo_pago" id="credito" value="credito" onchange="mostrarCampos('credito')">
-                            <label class="metodo-label" for="credito">
-                                <div class="metodo-icono ic-credito"><i class="fas fa-wallet"></i></div>
-                                <div class="metodo-texto">
-                                    <strong>Crédito</strong>
-                                    <small>Saldo para próximos viajes</small>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="metodo-option">
-                            <input type="radio" name="metodo_pago" id="cheque" value="cheque" onchange="mostrarCampos('cheque')">
-                            <label class="metodo-label" for="cheque">
-                                <div class="metodo-icono ic-cheque"><i class="fas fa-file-invoice-dollar"></i></div>
-                                <div class="metodo-texto">
-                                    <strong>Cheque</strong>
-                                    <small>Cheque a tu nombre</small>
-                                </div>
-                            </label>
-                        </div>
                     </div>
 
                     <div class="campos-metodo" id="campos-efectivo">
@@ -384,27 +364,9 @@
                         </div>
                     </div>
 
-                    <div class="campos-metodo" id="campos-credito">
-                        <div class="alert border-0 rounded-3 mb-0" style="background: #faf5ff; color: #6d28d9;">
-                            <i class="fas fa-check-circle me-2"></i>
-                            El saldo de <strong>L. {{ number_format($reembolso->monto_reembolso, 2) }}</strong> se acreditará automáticamente a tu cuenta. <strong>¡Sin esperas!</strong>
-                        </div>
-                    </div>
 
-                    <div class="campos-metodo" id="campos-cheque">
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <label class="form-label">Nombre para el Cheque <span class="text-danger">*</span></label>
-                                <input type="text" name="titular_cheque" class="form-control" placeholder="Nombre completo tal como aparecerá en el cheque">
-                            </div>
-                            <div class="col-12">
-                                <div class="alert alert-secondary border-0 rounded-3 mb-0">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    El cheque estará disponible en nuestras oficinas en 3-5 días hábiles.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
+
 
                     <div class="mb-4 mt-3">
                         <label class="form-label">Observaciones adicionales <span class="text-muted">(opcional)</span></label>

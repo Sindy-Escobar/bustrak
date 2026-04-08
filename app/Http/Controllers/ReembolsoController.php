@@ -93,7 +93,7 @@ class ReembolsoController extends Controller
         if ($request->metodo_pago === 'transferencia') {
             // Validar cuenta (20 dígitos)
             $request->validate([
-                'numero_cuenta' => 'required|digits:20',
+                'numero_cuenta' => 'required|digits:14',
                 'banco' => 'required|string|max:100',
                 'titular_cuenta' => 'required|string|max:150',
             ]);

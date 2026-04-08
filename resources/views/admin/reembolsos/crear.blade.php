@@ -251,18 +251,8 @@
                                 <i class="fas fa-university" style="color: #1a56db;"></i> Transferencia
                             </label>
                         </div>
-                        <div class="metodo-item">
-                            <label class="metodo-label">
-                                <input type="radio" name="metodo_pago" value="credito" onchange="mostrarCampos('credito')">
-                                <i class="fas fa-credit-card" style="color: #6f42c1;"></i> Crédito
-                            </label>
-                        </div>
-                        <div class="metodo-item">
-                            <label class="metodo-label">
-                                <input type="radio" name="metodo_pago" value="cheque" onchange="mostrarCampos('cheque')">
-                                <i class="fas fa-file-invoice" style="color: #fd7e14;"></i> Cheque
-                            </label>
-                        </div>
+
+
                     </div>
                 </div>
 
@@ -279,8 +269,8 @@
 
                 <div id="campos-transferencia" class="campos-dinamicos">
                     <div class="form-group">
-                        <label><i class="fas fa-hashtag"></i> Número de Cuenta (20 dígitos)</label>
-                        <input type="text" name="numero_cuenta" placeholder="20 dígitos" maxlength="20">
+                        <label><i class="fas fa-hashtag"></i> Número de Cuenta (14 dígitos)</label>
+                        <input type="text" name="numero_cuenta" placeholder="14 dígitos" maxlength="20">
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-university"></i> Banco</label>
@@ -292,12 +282,7 @@
                     </div>
                 </div>
 
-                <div id="campos-cheque" class="campos-dinamicos">
-                    <div class="form-group">
-                        <label><i class="fas fa-file-invoice"></i> Número de Cheque</label>
-                        <input type="text" name="numero_cheque" placeholder="Número del cheque">
-                    </div>
-                </div>
+
 
                 <div class="form-group" style="margin-top: 10px;">
                     <label><i class="fas fa-sticky-note"></i> Notas Adicionales</label>
