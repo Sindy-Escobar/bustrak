@@ -1,16 +1,13 @@
 @php use Illuminate\Support\Facades\Auth; @endphp
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'Bustrak - Panel de Usuario')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ======== CONFIGURACIÓN GLOBAL ======== */
         html {
             height: 100%;
             overflow-y: scroll;
@@ -26,7 +23,6 @@
             min-height: 100vh;
             overflow: hidden;
         }
-        /* ===== SIDEBAR ===== */
         .sidebar {
             width: 230px;
             background-color: #101827;
@@ -52,8 +48,6 @@
             background-color: #5cb3ff;
             border-radius: 4px;
         }
-
-        /* ===== BOTÓN TOGGLE INTERNO ===== */
         .toggle-sidebar-btn {
             position: absolute;
             top: 20px;
@@ -73,23 +67,18 @@
             z-index: 1000;
             font-size: 18px;
         }
-
         .toggle-sidebar-btn:hover {
             background: #1565c0;
             transform: scale(1.15);
         }
-
         .toggle-sidebar-btn i {
             transition: transform 0.3s ease;
         }
-
-        /* ===== LOGO Y USUARIO ===== */
         .brand-logo {
             text-align: center;
             margin-bottom: 0.5rem;
             padding: 0.5rem;
         }
-
         .brand-logo h2 {
             font-size: 1.8rem;
             font-weight: 800;
@@ -98,19 +87,16 @@
             text-transform: uppercase;
             letter-spacing: 2px;
         }
-
         .brand-logo small {
             display: block;
             color: #5cb3ff;
             font-size: 0.85rem;
             margin-top: 0.3rem;
         }
-
         .user-info {
             text-align: center;
             margin-bottom: 2rem;
         }
-
         .user-info h3 {
             font-size: 1.1rem;
             font-weight: 600;
@@ -121,12 +107,9 @@
             color: #9ca3af;
             font-size: 0.85rem;
         }
-
-        /* ===== NAVEGACIÓN ===== */
         .nav-section {
             margin-bottom: 1rem;
         }
-
         .btn-toggle {
             display: flex;
             align-items: center;
@@ -142,30 +125,24 @@
             border-radius: 0.4rem;
             transition: all 0.25s ease;
         }
-
         .btn-toggle i {
             margin-right: 0.7rem;
             color: #5cb3ff;
         }
-
         .btn-toggle:hover,
         .btn-toggle:focus {
             color: #fff;
             border-left: 4px solid #00b7ff;
         }
-
         .btn-toggle[aria-expanded="true"] {
             border-left: 4px solid #00b7ff;
         }
-
         .btn-toggle .chevron {
             transition: transform 0.3s ease;
         }
-
         .btn-toggle[aria-expanded="true"] .chevron {
             transform: rotate(90deg);
         }
-
         .btn-toggle-nav a {
             display: block;
             padding: 0.45rem 0 0.45rem 2.8rem;
@@ -174,17 +151,13 @@
             text-decoration: none;
             transition: all 0.25s ease;
         }
-
         .btn-toggle-nav a:hover {
             color: #fff;
         }
-
         .btn-toggle-nav a.active {
             color: #00b7ff;
             font-weight: 600;
         }
-
-        /* ===== CONTENIDO ===== */
         .content-area {
             flex-grow: 1;
             margin-left: 260px;
@@ -193,8 +166,6 @@
             min-height: 100vh;
             transition: all 0.3s ease;
         }
-
-        /* ===== RESPONSIVE ===== */
         @media (max-width:768px){
             .sidebar {
                 position: relative;
@@ -208,13 +179,10 @@
                 display: none;
             }
         }
-
-        /* ===== Toggle Sidebar ===== */
         .sidebar.collapsed {
             width: 80px;
             overflow: visible;
         }
-
         .sidebar.collapsed .brand-logo h2,
         .sidebar.collapsed .user-info,
         .sidebar.collapsed .btn-toggle span,
@@ -222,21 +190,17 @@
         .sidebar.collapsed .btn-toggle-nav {
             display: none;
         }
-
         .sidebar.collapsed .btn-toggle {
             justify-content: center;
             padding: 0.7rem;
         }
-
         .sidebar.collapsed .btn-toggle i {
             margin-right: 0;
             font-size: 1.2rem;
         }
-
         .sidebar.collapsed .toggle-sidebar-btn i {
             transform: rotate(180deg);
         }
-
         .content-area.expanded {
             margin-left: 80px;
         }
@@ -245,12 +209,10 @@
 <body>
 <main>
     <nav class="sidebar">
-        <!-- Botón Toggle Interno -->
         <button class="toggle-sidebar-btn" id="toggleSidebar">
             <i class="fas fa-chevron-left"></i>
         </button>
 
-        <!-- Logo de la Aplicación -->
         <div class="brand-logo">
             <h2>
                 <img src="{{ asset('Imagenes/bustrak-logo.png') }}"
@@ -259,7 +221,6 @@
             </h2>
         </div>
 
-        <!-- Información del Usuario -->
         <div class="user-info" style="text-align: center; margin-top: 10px;">
             <small style="color: #fff;">
                 <i class="fas fa-envelope me-1"></i>{{ Auth::user()->email ?? 'usuario@bustrak.com' }}
@@ -279,11 +240,9 @@
                 <a href="{{ route('cliente.perfil') }}" class="{{ request()->routeIs('cliente.perfil') ? 'active' : '' }}">
                     Ver Perfil
                 </a>
-
                 <a href="{{ route('puntos.index') }}" class="{{ request()->routeIs('puntos.index') ? 'active' : '' }}">
                     Ver Puntos
                 </a>
-
             </div>
         </div>
 
@@ -294,15 +253,12 @@
                 <span><i class="fas fa-ticket-alt"></i> Mis Reservas</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
-
             <div class="collapse btn-toggle-nav {{ request()->routeIs('cliente.reserva.create') || request()->routeIs('cliente.historial') ? 'show' : '' }}"
                  id="reservas">
-
                 <a href="{{ route('cliente.reserva.create') }}"
                    class="{{ request()->routeIs('cliente.reserva.create') ? 'active' : '' }}">
                     Registrar nueva reserva
                 </a>
-
                 <a href="{{ route('cliente.historial') }}"
                    class="{{ request()->routeIs('cliente.historial') ? 'active' : '' }}">
                     Historial de viajes
@@ -311,14 +267,9 @@
                    class="{{ request()->routeIs('itinerario.index') ? 'active' : '' }}">
                     Itinerario de reservas
                 </a>
-                <a href="{{ route('cliente.facturas') }}"
-                   class="{{ request()->routeIs('cliente.facturas*') ? 'active' : '' }}">
-                    Ver Facturas
-                </a>
             </div>
         </div>
 
-        <!-- Servicio de Buses -->
         <!-- Servicio de Buses -->
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#servicioBuses"
@@ -346,11 +297,10 @@
             </div>
         </div>
 
-
-
         <!-- Rutas y Horarios -->
         <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#rutas" aria-expanded="{{ request()->routeIs('usuario.rutas*') ? 'true' : 'false' }}">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#rutas"
+                    aria-expanded="{{ request()->routeIs('usuario.rutas*') ? 'true' : 'false' }}">
                 <span><i class="fas fa-route"></i> Rutas y Horarios</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
@@ -358,16 +308,8 @@
                 <a href="{{ route('consulta-paradas.index') }}" class="{{ request()->routeIs('consulta-paradas.index') ? 'active' : '' }}">
                     Consultar Rutas
                 </a>
-                <a href="{{ route('incidentes.create') }}" class="{{ request()->routeIs('incidentes.create')? 'active' : '' }}">
-                    Reportar Problema
-                </a>
-                <a href="{{ route('incidentes.index') }}" class="{{ request()->routeIs('incidentes.index')? 'active' : '' }}">
-                    Mis Reportes
-                </a>
             </div>
         </div>
-
-
 
         <!-- Empresa -->
         <div class="nav-section">
@@ -381,26 +323,17 @@
             </div>
         </div>
 
-
         <!-- Soporte -->
         <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#soporte" aria-expanded="{{ request()->routeIs('usuario.soporte*') ? 'true' : 'false' }}">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#soporte"
+                    aria-expanded="{{ request()->routeIs('usuario.soporte*') ? 'true' : 'false' }}">
                 <span><i class="fas fa-headset"></i> Ayuda y Soporte</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
             <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.soporte*') ? 'show' : '' }}" id="soporte">
-                <a href="/ayuda-soporte" class="active">Enviar consulta</a>
-
-                <a href="{{ route('consulta.mis') }}" class="active">Mis consultas</a>
-
-                <a href="{{ route('usuario.change-password') }}">
-                    Cambiar Contraseña
-                </a>
-
-
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                    @csrf
-                </form>
+                <a href="/ayuda-soporte">Enviar consulta</a>
+                <a href="{{ route('consulta.mis') }}">Mis consultas</a>
+                <a href="{{ route('usuario.change-password') }}">Cambiar Contraseña</a>
             </div>
         </div>
 
@@ -437,10 +370,9 @@
         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
             @csrf
         </form>
-        </div>
     </nav>
+
     <div class="content-area">
-        <!-- Barra superior -->
         <div class="d-flex justify-content-end align-items-center gap-2 mb-4 p-3 rounded shadow-sm"
              style="background-color: #0d1f3f; border-left: 5px solid #0dcaf0;">
 
@@ -459,7 +391,6 @@
                class="btn btn-outline-light btn-sm position-relative rounded-circle shadow-sm"
                style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
                 <i class="fas fa-bell"></i>
-
                 @if($adminNotiCount > 0)
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         {{ $adminNotiCount }}
@@ -474,7 +405,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Script para mantener grupos abiertos -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         let openGroups = JSON.parse(localStorage.getItem('sidebarUserOpenGroups') || '[]');
@@ -503,7 +433,6 @@
     });
 </script>
 
-<!-- Script para ocultar/mostrar sidebar -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const sidebar = document.querySelector('.sidebar');
