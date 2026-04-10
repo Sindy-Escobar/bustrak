@@ -311,18 +311,6 @@
             </div>
         </div>
 
-        <!-- Empresa -->
-        <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#empresa"
-                    aria-expanded="{{ request()->routeIs('usuario.empresa.form') ? 'true' : 'false' }}">
-                <span><i class="fas fa-building"></i>Mi Empresa</span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-            <div class="collapse btn-toggle-nav {{ request()->routeIs('usuario.empresa.form') ? 'show' : '' }}" id="empresa">
-                <a href="{{ route('usuario.empresa.form') }}">Registrar empresa</a>
-            </div>
-        </div>
-
         <!-- Soporte -->
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#soporte"
