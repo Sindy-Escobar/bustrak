@@ -10,16 +10,18 @@ class SolicitudController extends Controller
 {
     public function index(Request $request)
     {
-        // Admin ve TODAS las solicitudes
         $solicitudes = Solicitud::with('user')
             ->when($request->nombre, function ($q, $nombre) {
-                // Búsqueda exacta e insensible a mayúsculas/minúsculas
                 return $q->whereRaw('LOWER(nombre) like ?', ['%' . strtolower($nombre) . '%']);
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return view('solicitudes.index', compact('solicitudes'));
+        $solicitudesEmpleo = \App\Models\SolicitudEmpleo::with('user')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('solicitudes.index', compact('solicitudes', 'solicitudesEmpleo'));
     }
 
     public function create()

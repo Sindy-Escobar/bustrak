@@ -24,6 +24,7 @@ class Empleado extends Model
         'password_initial',    // incluido para guardar contraseña temporal
         'motivo_baja',         // para desactivaciones
         'fecha_desactivacion', // para registrar fecha de baja
+        'pin',
     ];
 
     protected $casts = [

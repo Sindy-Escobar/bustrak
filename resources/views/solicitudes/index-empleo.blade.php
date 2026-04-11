@@ -65,7 +65,7 @@
                                         <td>{{ $solicitud->created_at->format('d/m/Y H:i') }}</td>
                                         <td>
                                             @if($solicitud->cv)
-                                                <a href="{{ asset('storage/' . $solicitud->cv) }}" target="_blank" class="btn btn-sm btn-info">
+                                                <a href="{{ route('solicitud.empleo.cv', $solicitud->id) }}" target="_blank" class="btn btn-sm btn-info">
                                                     <i class="fas fa-download"></i> Ver CV
                                                 </a>
                                             @else
