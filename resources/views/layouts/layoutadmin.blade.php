@@ -168,22 +168,6 @@
             </div>
         </div>
 
-        <!-- Empresa -->
-        <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#empresa">
-                <span><i class="fas fa-building"></i> Empresa</span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-            <div class="collapse btn-toggle-nav" id="empresa">
-                <a href="{{ route('empresas.index') }}" class="{{ request()->routeIs('empresas.index') ? 'active' : '' }}">
-                    Lista de empresas
-                </a>
-                <a href="{{ route('empresa.form') }}" class="{{ request()->routeIs('empresa.form') ? 'active' : '' }}">
-                    Registrar empresa
-                </a>
-            </div>
-        </div>
-
         <!-- Empleados -->
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#empleados"
@@ -204,6 +188,21 @@
                 </a>
             </div>
         </div>
+
+        <!-- Usuarios (PARTE DE MAIN) -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#usuarios">
+                <span><i class="fas fa-users"></i> Usuarios</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav" id="usuarios">
+                <a href="{{ route('usuarios.consultar') }}"
+                   class="{{ request()->routeIs('usuarios.consultar') ? 'active' : '' }}">
+                    Consultar usuarios
+                </a>
+            </div>
+        </div>
+
         <!-- Documentacion de buses -->
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#documentacionBuses">
@@ -239,21 +238,6 @@
 
             </div>
         </div>
-        <!-- Rentas -->
-        <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#Renta">
-                <span><i class="fas fa-map-marker-alt"></i> Registro Renta</span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-            <div class="collapse btn-toggle-nav" id="Renta">
-                <a href="{{ route('rentas.index') }}" class="{{ request()->routeIs('rentas.index') ? 'active' : '' }}">
-                    Ver Registro
-                </a>
-                <a href="{{ route('rentas.create') }}" class="{{ request()->routeIs('rentas.create') ? 'active' : '' }}">
-                    Agregar Renta
-                </a>
-            </div>
-        </div>
 
         <!-- Terminales -->
         <div class="nav-section">
@@ -267,22 +251,6 @@
                 </a>
                 <a href="{{ route('terminales.create') }}" class="{{ request()->routeIs('terminales.create') ? 'active' : '' }}">
                     Agregar terminal
-                </a>
-            </div>
-        </div>
-
-
-
-        <!-- Usuarios (PARTE DE MAIN) -->
-        <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#usuarios">
-                <span><i class="fas fa-users"></i> Usuarios</span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-            <div class="collapse btn-toggle-nav" id="usuarios">
-                <a href="{{ route('usuarios.consultar') }}"
-                   class="{{ request()->routeIs('usuarios.consultar') ? 'active' : '' }}">
-                    Consultar usuarios
                 </a>
             </div>
         </div>

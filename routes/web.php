@@ -327,6 +327,7 @@ Route::get('/abordajes/historial', [CheckinController::class, 'historial'])->nam
 
 // Ruta pública para check-in sin login
 Route::get('/checkin', [CheckinController::class, 'vistaPublica'])->name('checkin.publico');
+Route::post('/checkin/pin', [CheckinController::class, 'verificarPin'])->name('checkin.verificar.pin');
 Route::post('/checkin/validar', [CheckinController::class, 'validarCodigo'])->name('checkin.validar.publico');
 Route::post('/checkin/confirmar', [CheckinController::class, 'confirmarAbordaje'])->name('checkin.confirmar.publico');
 

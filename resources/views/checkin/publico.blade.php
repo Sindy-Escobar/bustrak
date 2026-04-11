@@ -13,40 +13,104 @@
         <h2 style="color:#1e63b8; font-weight:700;">
             <i class="fas fa-qrcode me-2"></i>Check-in Bustrak
         </h2>
-        <p class="text-muted">Ingresa el código de tu reserva para validar el abordaje</p>
+        <p class="text-muted">Ingresa tus credenciales para acceder</p>
     </div>
 
     <div class="card shadow-sm mx-auto" style="max-width:500px;">
         <div class="card-body p-4">
             <div id="alertContainer"></div>
 
-            <div class="input-group mb-3">
-                <span class="input-group-text"><i class="fas fa-ticket-alt"></i></span>
-                <input type="text" id="codigoInput" class="form-control form-control-lg"
-                       placeholder="Ej: RES_69d9848d05ada">
-                <button class="btn btn-primary" onclick="validarCodigo()">
-                    <i class="fas fa-search me-1"></i>Validar
-                </button>
+            {{-- PASO 1: Login con DNI y PIN --}}
+            <div id="loginForm">
+                <h5 class="mb-3"><i class="fas fa-lock me-2"></i>Acceso Conductor</h5>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">DNI</label>
+                    <input type="text" id="dniInput" class="form-control" placeholder="Ingresa tu DNI">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">PIN</label>
+                    <input type="password" id="pinInput" class="form-control" placeholder="Ingresa tu PIN">
+                </div>
+                <div class="d-grid">
+                    <button class="btn btn-primary btn-lg" onclick="verificarPin()">
+                        <i class="fas fa-sign-in-alt me-2"></i>Ingresar
+                    </button>
+                </div>
             </div>
 
-            <div id="datosPasajero" style="display:none;"></div>
+            {{-- PASO 2: Validar QR (oculto hasta verificar PIN) --}}
+            <div id="checkinForm" style="display:none;">
+                <div class="alert alert-success mb-3">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Bienvenido, <strong id="nombreEmpleado"></strong>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-ticket-alt"></i></span>
+                    <input type="text" id="codigoInput" class="form-control form-control-lg"
+                           placeholder="Ej: RES_69d9848d05ada">
+                    <button class="btn btn-primary" onclick="validarCodigo()">
+                        <i class="fas fa-search me-1"></i>Validar
+                    </button>
+                </div>
+
+                <div id="datosPasajero"></div>
+
+                <div class="mt-3">
+                    <button class="btn btn-outline-danger btn-sm" onclick="cerrarSesion()">
+                        <i class="fas fa-sign-out-alt me-1"></i>Cerrar sesión
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Si viene con ?codigo= en la URL, validar automáticamente
-    document.addEventListener('DOMContentLoaded', function() {
-        const params = new URLSearchParams(window.location.search);
-        const codigo = params.get('codigo');
-        if (codigo) {
-            document.getElementById('codigoInput').value = codigo;
-            validarCodigo();
-        }
-    });
-
     let reservaActual = null;
+    let empleadoActual = null;
+
+    // Si viene con ?codigo= en la URL, guardar para después del login
+    const params = new URLSearchParams(window.location.search);
+    const codigoUrl = params.get('codigo');
+
+    function verificarPin() {
+        const dni = document.getElementById('dniInput').value.trim();
+        const pin = document.getElementById('pinInput').value.trim();
+
+        if (!dni || !pin) {
+            mostrarAlerta('Por favor ingresa tu DNI y PIN', 'warning');
+            return;
+        }
+
+        fetch('{{ route("checkin.verificar.pin") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ dni, pin })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    empleadoActual = data.empleado;
+                    document.getElementById('loginForm').style.display = 'none';
+                    document.getElementById('checkinForm').style.display = 'block';
+                    document.getElementById('nombreEmpleado').textContent = data.empleado.nombre;
+
+                    // Si vino con código en la URL, validar automáticamente
+                    if (codigoUrl) {
+                        document.getElementById('codigoInput').value = codigoUrl;
+                        validarCodigo();
+                    }
+                } else {
+                    mostrarAlerta(data.message, 'danger');
+                }
+            })
+            .catch(() => mostrarAlerta('Error de conexión', 'danger'));
+    }
 
     function validarCodigo() {
         const codigo = document.getElementById('codigoInput').value.trim();
@@ -87,18 +151,32 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            body: JSON.stringify({ reserva_id: reservaActual.reserva_id, codigo_qr: reservaActual.codigo_qr })
+            body: JSON.stringify({
+                reserva_id: reservaActual.reserva_id,
+                codigo_qr: reservaActual.codigo_qr
+            })
         })
             .then(res => res.json())
             .then(data => {
                 mostrarAlerta(data.message, data.tipo_alerta);
                 if (data.success) {
-                    document.getElementById('datosPasajero').style.display = 'none';
+                    document.getElementById('datosPasajero').innerHTML = '';
                     document.getElementById('codigoInput').value = '';
                     reservaActual = null;
                 }
             })
             .catch(() => mostrarAlerta('Error al confirmar', 'danger'));
+    }
+
+    function cerrarSesion() {
+        empleadoActual = null;
+        reservaActual = null;
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('checkinForm').style.display = 'none';
+        document.getElementById('dniInput').value = '';
+        document.getElementById('pinInput').value = '';
+        document.getElementById('datosPasajero').innerHTML = '';
+        document.getElementById('alertContainer').innerHTML = '';
     }
 
     function mostrarDatos(datos) {
@@ -123,9 +201,7 @@
             </div>
         `;
 
-        const div = document.getElementById('datosPasajero');
-        div.innerHTML = html;
-        div.style.display = 'block';
+        document.getElementById('datosPasajero').innerHTML = html;
     }
 
     function mostrarAlerta(mensaje, tipo) {
