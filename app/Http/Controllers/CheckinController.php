@@ -15,6 +15,31 @@ class CheckinController extends Controller
     {
         return view('checkin.publico');
     }
+    public function verificarPin(Request $request)
+    {
+        $dni = $request->input('dni');
+        $pin = $request->input('pin');
+
+        $empleado = \App\Models\Empleado::where('dni', $dni)
+            ->where('pin', $pin)
+            ->where('estado', 'Activo')
+            ->first();
+
+        if (!$empleado) {
+            return response()->json([
+                'success' => false,
+                'message' => 'DNI o PIN incorrecto'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'empleado' => [
+                'nombre' => $empleado->nombre . ' ' . $empleado->apellido,
+                'cargo' => $empleado->cargo
+            ]
+        ]);
+    }
     /**
      * Validar código QR y verificar autorización de menores
      */

@@ -67,7 +67,7 @@ class ReservaController extends Controller
     }
 
     /**
-     * ✅ Repetir la última búsqueda (para el botón "Volver")
+     *  Repetir la última búsqueda (para el botón "Volver")
      */
     public function repetirBusqueda()
     {
