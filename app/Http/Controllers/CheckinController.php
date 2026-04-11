@@ -11,6 +11,10 @@ use App\Models\Asiento;
 
 class CheckinController extends Controller
 {
+    public function vistaPublica()
+    {
+        return view('checkin.publico');
+    }
     /**
      * Validar código QR y verificar autorización de menores
      */
