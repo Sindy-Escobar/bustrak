@@ -325,6 +325,11 @@ Route::post('/abordajes/validar', [CheckinController::class, 'validarCodigo'])->
 Route::post('/abordajes/confirmar', [CheckinController::class, 'confirmarAbordaje'])->name('abordajes.confirmar');
 Route::get('/abordajes/historial', [CheckinController::class, 'historial'])->name('abordajes.historial');
 
+// Ruta pública para check-in sin login
+Route::get('/checkin', [CheckinController::class, 'vistaPublica'])->name('checkin.publico');
+Route::post('/checkin/validar', [CheckinController::class, 'validarCodigo'])->name('checkin.validar.publico');
+Route::post('/checkin/confirmar', [CheckinController::class, 'confirmarAbordaje'])->name('checkin.confirmar.publico');
+
 // Consultas usuario
 Route::get('/mis-solicitudes', [ConsultaController::class, 'misConsultas'])->name('consulta.mis');
 

@@ -251,7 +251,8 @@ class ReservaController extends Controller
         session()->forget('solicitud_viaje_id');
 
         // Generar código QR
-        $qrCode = DNS2D::getBarcodeSVG($codigo, 'QRCODE');
+        $urlVerificacion = url('/checkin') . '?codigo=' . $codigo;
+        $qrCode = DNS2D::getBarcodeSVG($urlVerificacion, 'QRCODE');
 
         // Mensaje según el caso
         if ($necesitaAutorizacion) {
