@@ -30,27 +30,45 @@ class SolicitudEmpleoController extends Controller
             'cv.mimes' => 'El CV debe ser PDF, DOC o DOCX.',
         ]);
 
-        $cvPath = null;
+        $cvUrl = null;
         if ($request->hasFile('cv')) {
-            $cvPath = $request->file('cv')->store('solicitudes-empleo', 'public');
+            $uploadedFile = cloudinary()->uploadFile(
+                $request->file('cv')->getRealPath(),
+                [
+                    'folder' => 'solicitudes-empleo',
+                    'resource_type' => 'raw',
+                    'public_id' => 'cv_' . auth()->id() . '_' . time(),
+                ]
+            );
+            $cvUrl = $uploadedFile->getSecurePath();
         }
 
-        $solicitud = SolicitudEmpleo::create([
+        SolicitudEmpleo::create([
             'user_id' => auth()->id(),
             'nombre_completo' => $request->nombre_completo,
             'contacto' => $request->contacto,
             'puesto_deseado' => $request->puesto_deseado,
             'experiencia_laboral' => $request->experiencia_laboral,
-            'cv' => $cvPath,
+            'cv' => $cvUrl,
         ]);
 
         return redirect()->route('solicitud.empleo.mis-solicitudes')
-            ->with('success', '✅ ¡Solicitud de empleo enviada correctamente! Pronto nos pondremos en contacto contigo.');
+            ->with('success', '¡Solicitud de empleo enviada correctamente! Pronto nos pondremos en contacto contigo.');
     }
 
     public function misSolicitudes()
     {
         $solicitudes = SolicitudEmpleo::where('user_id', auth()->id())->latest()->get();
         return view('solicitudes.index-empleo', compact('solicitudes'));
+    }
+    public function descargarCV($id)
+    {
+        $solicitud = SolicitudEmpleo::findOrFail($id);
+
+        if (!$solicitud->cv) {
+            abort(404, 'Archivo no encontrado');
+        }
+
+        return redirect($solicitud->cv);
     }
 }

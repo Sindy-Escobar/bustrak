@@ -1,6 +1,6 @@
 @extends('layouts.layoutadmin')
 
-@section('title', 'Gestión de Solicitudes de Constancias')
+@section('title', 'Gestión de Solicitudes de Constancias y Consultas ')
 
 @section('content')
     <div class="d-flex justify-content-center">
@@ -9,7 +9,7 @@
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <h4 class="mb-0">
                         <i class="fas fa-list me-2"></i>
-                        Gestión de Solicitudes de Constancias
+                        Gestión de Constancias y Consultas
                     </h4>
                     <a href="{{ route('solicitudes.create') }}" class="btn btn-light btn-sm">
                         <i class="fas fa-plus me-1"></i> Nueva Solicitud
