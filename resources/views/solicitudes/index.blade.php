@@ -9,7 +9,7 @@
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <h4 class="mb-0">
                         <i class="fas fa-list me-2"></i>
-                        Gestión de Constancias y Consultas
+                        Gestión de Constancias, Consultas y Solicitudes
                     </h4>
                     <a href="{{ route('solicitudes.create') }}" class="btn btn-light btn-sm">
                         <i class="fas fa-plus me-1"></i> Nueva Solicitud
@@ -25,7 +25,6 @@
                         </div>
                     @endif
 
-                    <!-- Buscador con búsqueda en tiempo real -->
                     <form class="mb-4" id="searchForm">
                         <div class="row g-3 align-items-end">
                             <div class="col-md-4">
@@ -41,7 +40,6 @@
                         </div>
                     </form>
 
-                    <!-- Tabla sin scroll -->
                     <div>
                         <table class="table table-hover table-striped align-middle">
                             <thead class="table-dark">
@@ -76,18 +74,18 @@
                                         @switch($solicitud->estado)
                                             @case('pendiente')
                                                 <span class="badge bg-warning text-dark">
-                                                        <i class="fas fa-clock"></i> Pendiente
-                                                    </span>
+                                                    <i class="fas fa-clock"></i> Pendiente
+                                                </span>
                                                 @break
                                             @case('procesada')
                                                 <span class="badge bg-success">
-                                                        <i class="fas fa-check"></i> Procesada
-                                                    </span>
+                                                    <i class="fas fa-check"></i> Procesada
+                                                </span>
                                                 @break
                                             @case('rechazada')
                                                 <span class="badge bg-danger">
-                                                        <i class="fas fa-times"></i> Rechazada
-                                                    </span>
+                                                    <i class="fas fa-times"></i> Rechazada
+                                                </span>
                                                 @break
                                         @endswitch
                                     </td>
@@ -139,12 +137,109 @@
                         </table>
                     </div>
 
-                    <!-- Paginación -->
                     <div class="d-flex justify-content-center mt-4">
                         {{ $solicitudes->appends(request()->query())->links() }}
                     </div>
                 </div>
             </div>
+
+            {{-- SOLICITUDES DE EMPLEO --}}
+            <div class="card shadow-lg border-0 mt-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-briefcase me-2"></i>
+                        Solicitudes de Empleo
+                    </h4>
+                </div>
+                <div class="card-body">
+                    @if($solicitudesEmpleo->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped align-middle">
+                                <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nombre</th>
+                                    <th>Puesto Deseado</th>
+                                    <th>Contacto</th>
+                                    <th>Estado</th>
+                                    <th>Fecha Envío</th>
+                                    <th>CV</th>
+                                    <th>Acciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($solicitudesEmpleo as $key => $solicitud)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $solicitud->nombre_completo }}</td>
+                                        <td>{{ $solicitud->puesto_deseado }}</td>
+                                        <td>{{ $solicitud->contacto }}</td>
+                                        <td>
+                                            @switch($solicitud->estado)
+                                                @case('Pendiente')
+                                                    <span class="badge bg-warning text-dark">Pendiente</span>
+                                                    @break
+                                                @case('Revisada')
+                                                    <span class="badge bg-info">Revisada</span>
+                                                    @break
+                                                @case('Aceptada')
+                                                    <span class="badge bg-success">Aceptada</span>
+                                                    @break
+                                                @case('Rechazada')
+                                                    <span class="badge bg-danger">Rechazada</span>
+                                                    @break
+                                                @default
+                                                    <span class="badge bg-warning text-dark">Pendiente</span>
+                                            @endswitch
+                                        </td>
+                                        <td>{{ $solicitud->created_at->format('d/m/Y H:i') }}</td>
+                                        <td>
+                                            @if($solicitud->cv)
+                                                <a href="{{ $solicitud->cv }}" target="_blank" class="btn btn-sm btn-info">
+                                                    <i class="fas fa-download"></i> Ver CV
+                                                </a>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($solicitud->estado === 'Pendiente' || $solicitud->estado === null)
+                                                <div class="btn-group">
+                                                    <form action="{{ route('solicitud.empleo.aceptar', $solicitud->id) }}" method="POST" style="display:inline;">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="btn btn-success btn-sm"
+                                                                onclick="return confirm('¿Aceptar esta solicitud?')">
+                                                            <i class="fas fa-check"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form action="{{ route('solicitud.empleo.rechazar', $solicitud->id) }}" method="POST" style="display:inline;">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                                onclick="return confirm('¿Rechazar esta solicitud?')">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="alert alert-info text-center py-4">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>
+                            <p class="text-muted">No hay solicitudes de empleo registradas</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -153,16 +248,13 @@
             font-size: 0.9rem;
             margin-bottom: 0;
         }
-
         .table-hover tbody tr:hover {
             background-color: rgba(0, 123, 255, 0.05);
         }
-
         .btn-sm {
             padding: 0.35rem 0.65rem;
             font-size: 0.85rem;
         }
-
         .btn-group {
             display: flex;
             gap: 0.25rem;
@@ -170,7 +262,6 @@
     </style>
 
     <script>
-        // Función para remover tildes
         function removeTildes(text) {
             return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
         }
@@ -180,21 +271,14 @@
             const searchBtn = document.getElementById('searchBtn');
             const tableRows = document.querySelectorAll('tbody tr');
 
-            // Función de filtrado
             function filterTable(searchTerm) {
                 const cleanSearchTerm = removeTildes(searchTerm).toLowerCase().trim();
-
                 if (cleanSearchTerm === '') {
-                    // Si está vacío, mostrar todos
-                    tableRows.forEach(row => {
-                        row.style.display = '';
-                    });
+                    tableRows.forEach(row => { row.style.display = ''; });
                 } else {
-                    // Filtrar
                     tableRows.forEach(row => {
                         const nombreCell = row.cells[1] ? row.cells[1].textContent : '';
                         const cleanNombre = removeTildes(nombreCell).toLowerCase();
-
                         if (cleanNombre.includes(cleanSearchTerm)) {
                             row.style.display = '';
                         } else {
@@ -204,12 +288,10 @@
                 }
             }
 
-            // Al escribir, filtrar en tiempo real
             searchInput.addEventListener('input', function() {
                 filterTable(this.value);
             });
 
-            // Al hacer clic en "Buscar", mantener el filtrado (sin recargar)
             searchBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 filterTable(searchInput.value);
