@@ -666,5 +666,5 @@ Route::middleware(['auth'])->prefix('incidentes')->name('incidentes.')->group(fu
     Route::get('/mis-reportes', [IncidenteController::class, 'index'])->name('index');
 });
 
-
+// limpie la cache
 
