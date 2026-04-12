@@ -66,7 +66,7 @@ class SolicitudEmpleoController extends Controller
         ]);
 
         return redirect()->route('solicitud.empleo.mis-solicitudes')
-            ->with('success', '✅ ¡Solicitud de empleo enviada correctamente! Pronto nos pondremos en contacto contigo.');
+            ->with('success', ' ¡Solicitud de empleo enviada correctamente! Pronto nos pondremos en contacto contigo.');
     }
 
     public function misSolicitudes()
@@ -99,6 +99,16 @@ class SolicitudEmpleoController extends Controller
     {
         $solicitud = SolicitudEmpleo::findOrFail($id);
         $solicitud->update(['estado' => 'Aceptada']);
+
+        //  Notificación al usuario
+        \App\Models\Notificacion::create([
+            'usuario_id' => $solicitud->user_id,
+            'titulo' => ' Solicitud de Empleo Aceptada',
+            'mensaje' => 'Tu solicitud de empleo para el puesto de ' . $solicitud->puesto_deseado . ' ha sido aceptada.',
+            'tipo' => 'empleo',
+            'leida' => false,
+        ]);
+
         return redirect()->route('solicitudes.index')
             ->with('success', 'Solicitud de empleo aceptada.');
     }
@@ -107,6 +117,16 @@ class SolicitudEmpleoController extends Controller
     {
         $solicitud = SolicitudEmpleo::findOrFail($id);
         $solicitud->update(['estado' => 'Rechazada']);
+
+        //  Notificación al usuario
+        \App\Models\Notificacion::create([
+            'usuario_id' => $solicitud->user_id,
+            'titulo' => ' Solicitud de Empleo Rechazada',
+            'mensaje' => 'Tu solicitud de empleo para el puesto de ' . $solicitud->puesto_deseado . ' ha sido rechazada.',
+            'tipo' => 'empleo',
+            'leida' => false,
+        ]);
+
         return redirect()->route('solicitudes.index')
             ->with('success', 'Solicitud de empleo rechazada.');
     }
