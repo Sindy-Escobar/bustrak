@@ -29,7 +29,7 @@ class NotificacionController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('Notificaciones.indexAdmin', compact('notificaciones'));
+        return view('notificaciones.indexAdmin', compact('notificaciones'));
     }
 
     /**

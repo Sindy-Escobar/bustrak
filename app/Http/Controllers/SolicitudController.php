@@ -21,7 +21,9 @@ class SolicitudController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('solicitudes.index', compact('solicitudes', 'solicitudesEmpleo'));
+        $consultas = \App\Models\Consulta::orderBy('created_at', 'desc')->get();
+
+        return view('solicitudes.index', compact('solicitudes', 'solicitudesEmpleo', 'consultas'));
     }
 
     public function create()
