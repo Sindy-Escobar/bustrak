@@ -42,6 +42,17 @@ class ConsultaController extends Controller
                 'asunto' => $request->asunto,
                 'mensaje' => $request->mensaje
             ]);
+            //  Notificar al admin
+            $admin = \App\Models\User::where('role', 'Administrador')->first();
+            if ($admin) {
+                \App\Models\Notificacion::create([
+                    'usuario_id' => $admin->id,
+                    'titulo' => ' Nueva Consulta de Usuario',
+                    'mensaje' => 'El usuario ' . $request->nombre . ' envió una consulta: ' . $request->asunto,
+                    'tipo' => 'consulta',
+                    'leida' => false,
+                ]);
+            }
 
             return redirect()->back()->with('success', ' ¡Consulta enviada exitosamente! Te responderemos pronto.');
         } catch (\Exception $e) {

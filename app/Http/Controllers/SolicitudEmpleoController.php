@@ -64,7 +64,17 @@ class SolicitudEmpleoController extends Controller
             'experiencia_laboral' => $request->experiencia_laboral,
             'cv' => $cvUrl,
         ]);
-
+        //  Notificar al admin
+        $admin = \App\Models\User::where('role', 'Administrador')->first();
+        if ($admin) {
+            \App\Models\Notificacion::create([
+                'usuario_id' => $admin->id,
+                'titulo' => ' Nueva Solicitud de Empleo',
+                'mensaje' => $request->nombre_completo . ' aplicó para el puesto de ' . $request->puesto_deseado,
+                'tipo' => 'empleo',
+                'leida' => false,
+            ]);
+        }
         return redirect()->route('solicitud.empleo.mis-solicitudes')
             ->with('success', ' ¡Solicitud de empleo enviada correctamente! Pronto nos pondremos en contacto contigo.');
     }
