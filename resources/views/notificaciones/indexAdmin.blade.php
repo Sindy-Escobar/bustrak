@@ -1,6 +1,6 @@
 @extends('layouts.layoutadmin') {{-- Plantilla de administrador --}}
 
-@section('title', 'Notificaciones')
+@section('title', 'notificaciones')
 
 @section('content')
     <div class="container mt-4">

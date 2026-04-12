@@ -1,6 +1,6 @@
 @extends('layouts.layoutuser')
 
-@section('title', 'Mis Notificaciones')
+@section('title', 'Mis notificaciones')
 
 @section('contenido')
     <div class="container mt-4">
