@@ -239,9 +239,8 @@
                     @endif
                 </div>
             </div>
-        </div>
-        {{-- CONSULTAS --}}
-        <div class="card shadow-lg border-0 mt-4">
+            {{-- CONSULTAS --}}
+            <div class="card shadow-lg border-0 mt-4">
             <div class="card-header bg-info text-white">
                 <h4 class="mb-0">
                     <i class="fas fa-headset me-2"></i>
@@ -287,7 +286,6 @@
             </div>
         </div>
     </div>
-
     <style>
         .table {
             font-size: 0.9rem;
