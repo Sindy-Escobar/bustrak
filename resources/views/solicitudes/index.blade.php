@@ -207,6 +207,7 @@
                                                 <div class="btn-group">
                                                     <form action="{{ route('solicitud.empleo.aceptar', $solicitud->id) }}" method="POST" style="display:inline;">
                                                         @csrf
+                                                        @method('PATCH')
                                                         <button type="submit" class="btn btn-success btn-sm"
                                                                 onclick="return confirm('¿Aceptar esta solicitud?')">
                                                             <i class="fas fa-check"></i>
@@ -214,6 +215,7 @@
                                                     </form>
                                                     <form action="{{ route('solicitud.empleo.rechazar', $solicitud->id) }}" method="POST" style="display:inline;">
                                                         @csrf
+                                                        @method('PATCH')
                                                         <button type="submit" class="btn btn-danger btn-sm"
                                                                 onclick="return confirm('¿Rechazar esta solicitud?')">
                                                             <i class="fas fa-times"></i>
