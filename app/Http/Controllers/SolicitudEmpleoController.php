@@ -69,6 +69,17 @@ class SolicitudEmpleoController extends Controller
             abort(404, 'Archivo no encontrado');
         }
 
-        return redirect($solicitud->cv);
+        // Si es URL de Cloudinary, redirigir directo
+        if (str_starts_with($solicitud->cv, 'http')) {
+            return redirect($solicitud->cv);
+        }
+
+        // Si es ruta local (solicitudes antiguas), intentar desde storage
+        $path = storage_path('app/public/' . $solicitud->cv);
+        if (!file_exists($path)) {
+            return redirect()->back()->with('error', 'El archivo no está disponible. Por favor sube una nueva solicitud.');
+        }
+
+        return response()->download($path);
     }
 }
