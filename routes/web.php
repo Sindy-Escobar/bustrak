@@ -369,17 +369,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('solicitudes/create', [SolicitudController::class, 'create'])->name('solicitudes.create');
     Route::post('solicitudes', [SolicitudController::class, 'store'])->name('solicitudes.store');
     Route::patch('solicitudes/{solicitud}/procesar', [SolicitudController::class, 'procesar'])->name('solicitudes.procesar');
+});
 
-    // 👇 Agrega estas
+// Solicitud de empleo
+Route::middleware(['auth'])->group(function () {
+    Route::get('/solicitud/empleo', [App\Http\Controllers\SolicitudEmpleoController::class, 'misSolicitudes'])->name('solicitud.empleo.mis-solicitudes');
+    Route::get('/crear-solicitud-empleo', [App\Http\Controllers\SolicitudEmpleoController::class, 'create'])->name('solicitud.empleo.create');
+    Route::post('/solicitud/empleo/enviar', [App\Http\Controllers\SolicitudEmpleoController::class, 'store'])->name('solicitud.empleo.store');
     Route::get('/solicitud/empleo/{id}/cv', [App\Http\Controllers\SolicitudEmpleoController::class, 'descargarCV'])->name('solicitud.empleo.cv');
     Route::patch('/solicitud/empleo/{id}/aceptar', [App\Http\Controllers\SolicitudEmpleoController::class, 'aceptar'])->name('solicitud.empleo.aceptar');
     Route::patch('/solicitud/empleo/{id}/rechazar', [App\Http\Controllers\SolicitudEmpleoController::class, 'rechazar'])->name('solicitud.empleo.rechazar');
 });
-
-// Solicitud de empleo
-Route::get('/solicitud/empleo', [App\Http\Controllers\SolicitudEmpleoController::class, 'misSolicitudes'])->name('solicitud.empleo.mis-solicitudes');
-Route::get('/crear-solicitud-empleo', [App\Http\Controllers\SolicitudEmpleoController::class, 'create'])->name('solicitud.empleo.create');
-Route::post('/solicitud/empleo/enviar', [App\Http\Controllers\SolicitudEmpleoController::class, 'store'])->name('solicitud.empleo.store');
 
 // Registro de puntos
 Route::get('/viaje/{reserva}/registrar-puntos', [RegistroPuntosController::class, 'create'])
