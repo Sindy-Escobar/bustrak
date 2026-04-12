@@ -252,12 +252,10 @@ Route::prefix('usuario')->middleware(['auth', 'user.active'])->group(function() 
     Route::get('/dashboard', function () {
         return view('usuarios.dashboard');
     })->name('usuario.dashboard');
-
     Route::get('/viajes', [EmpleadoController::class, 'viajes'])->name('usuario.viajes');
     Route::get('/pasajeros', [EmpleadoController::class, 'pasajeros'])->name('usuario.pasajeros');
     Route::get('/confirmar', [EmpleadoController::class, 'confirmar'])->name('usuario.confirmar');
     Route::get('/qr', [EmpleadoController::class, 'qr'])->name('usuario.qr');
-
     Route::get('/perfil', [EmpleadoController::class, 'perfil'])->name('usuario.perfil');
 });
 
@@ -371,6 +369,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('solicitudes/create', [SolicitudController::class, 'create'])->name('solicitudes.create');
     Route::post('solicitudes', [SolicitudController::class, 'store'])->name('solicitudes.store');
     Route::patch('solicitudes/{solicitud}/procesar', [SolicitudController::class, 'procesar'])->name('solicitudes.procesar');
+
+    // 👇 Agrega estas
+    Route::get('/solicitud/empleo/{id}/cv', [App\Http\Controllers\SolicitudEmpleoController::class, 'descargarCV'])->name('solicitud.empleo.cv');
+    Route::patch('/solicitud/empleo/{id}/aceptar', [App\Http\Controllers\SolicitudEmpleoController::class, 'aceptar'])->name('solicitud.empleo.aceptar');
+    Route::patch('/solicitud/empleo/{id}/rechazar', [App\Http\Controllers\SolicitudEmpleoController::class, 'rechazar'])->name('solicitud.empleo.rechazar');
 });
 
 // Solicitud de empleo
