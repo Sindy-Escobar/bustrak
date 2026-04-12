@@ -101,7 +101,6 @@
                                             <div class="btn-group" role="group">
                                                 <form action="{{ route('solicitudes.procesar', $solicitud) }}" method="POST" style="display:inline;">
                                                     @csrf
-                                                    @method('PATCH')
                                                     <input type="hidden" name="estado" value="procesada">
                                                     <button type="submit" class="btn btn-success btn-sm"
                                                             title="Aprobar"
@@ -111,7 +110,6 @@
                                                 </form>
                                                 <form action="{{ route('solicitudes.procesar', $solicitud) }}" method="POST" style="display:inline;">
                                                     @csrf
-                                                    @method('PATCH')
                                                     <input type="hidden" name="estado" value="rechazada">
                                                     <button type="submit" class="btn btn-danger btn-sm"
                                                             title="Rechazar"
