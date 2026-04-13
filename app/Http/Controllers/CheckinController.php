@@ -95,7 +95,6 @@ class CheckinController extends Controller
                     'tipo_alerta' => 'warning'
                 ]);
             }
-
             // ══════════════════════════════════════════════════════════
             // OBTENER NÚMEROS DE ASIENTOS
             // ══════════════════════════════════════════════════════════
@@ -341,6 +340,11 @@ class CheckinController extends Controller
     /**
      * Historial de abordajes
      */
+    public function index()
+    {
+        return view('abordajes.checkin');
+    }
+
     public function historial()
     {
         $reservas = Reserva::with(['user', 'viaje.origen', 'viaje.destino', 'tipoServicio'])
@@ -348,6 +352,6 @@ class CheckinController extends Controller
             ->orderBy('fecha_abordaje', 'desc')
             ->paginate(20);
 
-        return view('abordajes.historialabordajes', compact('reservas'));
+        return view('abordajes.historial', compact('reservas'));
     }
 }
