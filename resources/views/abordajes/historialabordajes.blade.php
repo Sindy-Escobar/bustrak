@@ -67,9 +67,6 @@
                 @endif
 
                 <div class="mt-4">
-                    <a href="{{ route('abordajes.historial') }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-1"></i> Volver
-                    </a>
                 </div>
             </div>
         </div>
