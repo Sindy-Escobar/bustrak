@@ -292,6 +292,7 @@ class ReservaController extends Controller
         $userId  = Auth::id();
         $reservas = Reserva::with(['viaje.origen', 'viaje.destino', 'asiento', 'viaje.empleado'])
             ->where('user_id', $userId)
+            ->where('estado', '!=', 'eliminado')
             ->latest()
             ->paginate(10);
 
@@ -331,5 +332,29 @@ class ReservaController extends Controller
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('cliente.reserva.boleto-pdf', compact('reserva'));
         return $pdf->download('boleto-' . $reserva->codigo_reserva . '.pdf');
+    }
+    public function eliminar($id)
+    {
+        $reserva = Reserva::find($id);
+
+        if (!$reserva) {
+            return redirect()->back()->with('error', 'Reserva no encontrada');
+        }
+
+        //  Seguridad: solo el usuario dueño puede eliminar
+        if ($reserva->user_id !== Auth::id()) {
+            return redirect()->back()->with('error', 'No tienes permiso para eliminar esta reserva');
+        }
+
+        //  SOLO permitir eliminar si está cancelada o reembolsada
+        if (!in_array($reserva->estado, ['cancelada', 'reembolsada'])) {
+            return redirect()->back()->with('error', 'Solo puedes eliminar reservas canceladas o reembolsadas');
+        }
+
+        //  Eliminación lógica (NO borrar base de datos)
+        $reserva->estado = 'eliminado';
+        $reserva->save();
+
+        return redirect()->back()->with('success', 'Reserva eliminada del historial correctamente');
     }
 }
