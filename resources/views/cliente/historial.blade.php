@@ -6,13 +6,16 @@
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h4 class="mb-0"><i class="fas fa-history me-2"></i>Historial de Viajes</h4>
+
             <div class="d-flex gap-2">
                 <a href="{{ route('cliente.reembolsos') }}" class="btn btn-outline-light btn-sm">
                     <i class="fas fa-hand-holding-usd me-1"></i> Mis Reembolsos
                 </a>
+
                 <a href="{{ route('cliente.historial.exportar-pdf') }}" class="btn btn-outline-light btn-sm">
                     <i class="fas fa-file-pdf me-1"></i> Exportar PDF
                 </a>
+
                 <a href="{{ route('cliente.reserva.create') }}" class="btn btn-light btn-sm">
                     <i class="fas fa-plus me-1"></i> Nueva Reserva
                 </a>
@@ -21,23 +24,16 @@
 
         <div class="card-body p-0">
 
+            {{-- MENSAJES --}}
             @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 m-3" role="alert">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-check-circle me-3 fa-2x"></i>
-                        <div><strong class="d-block">¡Excelente!</strong>{{ session('success') }}</div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <div class="alert alert-success m-3">
+                    {{ session('success') }}
                 </div>
             @endif
 
             @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 m-3" role="alert">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-exclamation-circle me-3 fa-2x"></i>
-                        <div>{{ session('error') }}</div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <div class="alert alert-danger m-3">
+                    {{ session('error') }}
                 </div>
             @endif
 
@@ -55,13 +51,16 @@
                         <th class="text-center">Acciones</th>
                     </tr>
                     </thead>
+
                     <tbody>
                     @forelse($reservas as $reserva)
+
                         @php
                             $user = auth()->user();
                             $usuario = \App\Models\Usuario::where('email', $user->email)->first();
 
                             $comentarioGuardado = null;
+
                             if ($usuario && $reserva->viaje && $reserva->viaje->empleado_id) {
                                 $comentarioGuardado = \App\Models\ComentarioConductor::where('empleado_id', $reserva->viaje->empleado_id)
                                     ->where('usuario_id', $usuario->id)
@@ -81,10 +80,17 @@
                         @endphp
 
                         <tr class="{{ ($estaCancelada || $estaReembolsada) ? 'table-danger' : '' }}">
-                            <td class="text-center">{{ \Carbon\Carbon::parse($reserva->fecha_reserva)->format('d/m/Y H:i') }}</td>
+
+                            <td class="text-center">
+                                {{ \Carbon\Carbon::parse($reserva->fecha_reserva)->format('d/m/Y H:i') }}
+                            </td>
+
                             <td>{{ $reserva->viaje->origen->nombre ?? '-' }}</td>
                             <td>{{ $reserva->viaje->destino->nombre ?? '-' }}</td>
-                            <td class="text-center">{{ \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('d/m/Y H:i') }}</td>
+
+                            <td class="text-center">
+                                {{ \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('d/m/Y H:i') }}
+                            </td>
 
                             <td class="text-center">
                                 {{ $reserva->cantidad_asientos ?? 1 }}
@@ -94,7 +100,7 @@
                                 @if($reserva->estado === 'cancelada')
                                     <span class="badge bg-danger">Cancelada</span>
                                 @elseif($reserva->estado === 'reembolsada')
-                                    <span class="badge" style="background:#1a56db;color:white;">Reembolsada</span>
+                                    <span class="badge bg-primary">Reembolsada</span>
                                 @else
                                     <span class="badge bg-success">Confirmada</span>
                                 @endif
@@ -102,12 +108,12 @@
 
                             <td class="text-center">
                                 @if($comentarioGuardado)
-                                    <div class="text-warning small mb-1">
+                                    <div class="text-warning small">
                                         @for($i = 1; $i <= $comentarioGuardado->calificacion; $i++) ★ @endfor
                                     </div>
-                                    <p class="small mb-0 text-muted" style="font-style: italic; line-height: 1.2;">
+                                    <small class="text-muted">
                                         "{{ $comentarioGuardado->comentario }}"
-                                    </p>
+                                    </small>
                                 @else
                                     <span class="text-muted small">Sin comentario</span>
                                 @endif
@@ -116,97 +122,79 @@
                             <td class="text-center">
                                 <div class="btn-group-vertical" role="group">
 
-                                    {{-- CANCELAR BOLETO --}}
+                                    {{-- CANCELAR --}}
                                     @if(!$estaCancelada && !$estaReembolsada && !$viajeYaPaso)
                                         <a href="{{ route('cliente.reserva.cancelar.form', $reserva->id) }}"
-                                           class="btn btn-danger btn-sm mb-1"
-                                           title="Cancelar este boleto">
-                                            <i class="fas fa-times-circle"></i> Cancelar Boleto
+                                           class="btn btn-danger btn-sm mb-1">
+                                            Cancelar
                                         </a>
                                     @endif
 
-                                    {{-- SOLICITAR REEMBOLSO --}}
+                                    {{-- REEMBOLSO --}}
                                     @if($estaCancelada && !$estaReembolsada && !$viajeYaPaso)
-                                        @if(!$reembolsoExistente)
-                                            <a href="{{ route('cliente.reembolso.solicitar', $reserva->id) }}"
-                                               class="btn btn-success btn-sm mb-1">
-                                                <i class="fas fa-hand-holding-usd"></i> Solicitar Reembolso
-                                            </a>
-                                        @elseif($reembolsoExistente && $reembolsoExistente->metodo_pago === 'por_definir')
-                                            <a href="{{ route('cliente.reembolso.solicitar', $reembolsoExistente->id) }}"
-                                               class="btn btn-success btn-sm mb-1">
-                                                <i class="fas fa-hand-holding-usd"></i> Solicitar Reembolso
-                                            </a>
-                                        @else
-                                            <span class="badge bg-info text-dark mb-1">
-                                                <i class="fas fa-check"></i> Reembolso solicitado
-                                            </span>
-                                        @endif
+                                        <a href="{{ route('cliente.reembolso.solicitar', $reserva->id) }}"
+                                           class="btn btn-success btn-sm mb-1">
+                                            Reembolso
+                                        </a>
                                     @endif
 
                                     {{-- CALIFICAR --}}
                                     @if(!$estaCancelada && !$estaReembolsada && $reserva->viaje && $reserva->viaje->empleado_id && !$comentarioGuardado)
                                         <a href="{{ route('calificar.chofer', $reserva->viaje->empleado_id) }}"
-                                           class="btn btn-warning btn-sm mb-1"
-                                           title="Calificar Conductor">
-                                            <i class="fas fa-star"></i> Calificar
+                                           class="btn btn-warning btn-sm mb-1">
+                                            Calificar
                                         </a>
                                     @elseif($comentarioGuardado)
-                                        <span class="badge bg-success mb-1">
-                                            <i class="fas fa-check"></i> Calificado
-                                        </span>
+                                        <span class="badge bg-success mb-1">✔</span>
                                     @endif
 
-                                    {{-- VER COMENTARIOS --}}
+                                    {{-- COMENTARIOS --}}
                                     @if($reserva->viaje && $reserva->viaje->empleado_id)
                                         <a href="{{ route('comentarios.conductor', $reserva->viaje->empleado_id) }}"
-                                           class="btn btn-info btn-sm mb-1"
-                                           title="Ver comentarios">
-                                            <i class="fas fa-comments"></i> Comentarios
+                                           class="btn btn-info btn-sm mb-1">
+                                            Comentarios
                                         </a>
                                     @endif
 
                                     {{-- PUNTOS --}}
                                     @if(!$estaCancelada && !$estaReembolsada)
                                         <a href="{{ route('puntos.create', $reserva->id) }}"
-                                           class="btn btn-success btn-sm"
-                                           title="Registrar puntos">
-                                            <i class="fas fa-coins"></i> Puntos
+                                           class="btn btn-success btn-sm mb-1">
+                                            Puntos
                                         </a>
+                                    @endif
+
+                                    {{-- 🧨 ELIMINAR (NUEVO) --}}
+                                    @if($estaCancelada || $estaReembolsada)
+                                        <form action="{{ route('cliente.reserva.eliminar', $reserva->id) }}"
+                                              method="POST"
+                                              onsubmit="return confirm('¿Eliminar esta reserva del historial?')">
+
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button class="btn btn-dark btn-sm">
+                                                Eliminar
+                                            </button>
+                                        </form>
                                     @endif
 
                                 </div>
                             </td>
+
                         </tr>
+
                     @empty
                         <tr>
                             <td colspan="8" class="text-center py-4 text-muted">
-                                <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
                                 No hay reservas registradas
                             </td>
                         </tr>
                     @endforelse
                     </tbody>
+
                 </table>
             </div>
         </div>
-
-        @if($reservas->hasPages())
-            <div class="card-footer bg-light">
-                <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted">
-                        Mostrando {{ $reservas->firstItem() }} - {{ $reservas->lastItem() }} de {{ $reservas->total() }}
-                    </small>
-                    {{ $reservas->links() }}
-                </div>
-            </div>
-        @endif
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            tooltipTriggerList.map(function (el) { return new bootstrap.Tooltip(el) })
-        });
-    </script>
 @endsection
