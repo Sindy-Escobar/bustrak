@@ -164,7 +164,7 @@
                                         </a>
                                     @endif
 
-                                    {{-- 🧨 ELIMINAR (NUEVO) --}}
+                                    {{--  ELIMINAR (NUEVO) --}}
                                     @if($estaCancelada || $estaReembolsada)
                                         <form action="{{ route('cliente.reserva.eliminar', $reserva->id) }}"
                                               method="POST"
