@@ -675,3 +675,4 @@ Route::middleware(['auth'])->prefix('incidentes')->name('incidentes.')->group(fu
 //Eliminar tramites
 Route::delete('/solicitud/empleo/{id}/eliminar', [App\Http\Controllers\SolicitudEmpleoController::class, 'eliminar'])->name('solicitud.empleo.eliminar');
 Route::delete('/consulta/{id}/eliminar', [App\Http\Controllers\ConsultaController::class, 'eliminar'])->name('consulta.eliminar');
+// corregi la ruta de eliminar
