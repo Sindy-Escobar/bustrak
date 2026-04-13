@@ -183,7 +183,7 @@
                 <a href="{{ route('empleados.create') }}" class="{{ request()->routeIs('empleados.create') ? 'active' : '' }}">
                     Registrar empleado
                 </a>
-                <a href="{{ route('abordajes.historial') }}" class="{{ request()->routeIs('abordajes.historial') ? 'active' : '' }}">
+                <a href="{{ route('abordajes.checkin') }}" class="{{ request()->routeIs('abordajes.checkin') ? 'active' : '' }}">
                     Check-in
                 </a>
             </div>
