@@ -348,6 +348,6 @@ class CheckinController extends Controller
             ->orderBy('fecha_abordaje', 'desc')
             ->paginate(20);
 
-        return view('abordajes.historial', compact('reservas'));
+        return view('abordajes.historialabordajes', compact('reservas')); //  cambiar aquí
     }
 }

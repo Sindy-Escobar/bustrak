@@ -69,7 +69,7 @@
                 </div>
 
                 <div class="mt-4">
-                    <a href="{{ route('abordajes.historial') }}" class="btn btn-outline-primary">
+                    <a href="{{ route('abordajes.historial.list') }}" class="btn btn-outline-primary">
                         <i class="fas fa-history me-2"></i>Ver Historial de Abordajes
                     </a>
                 </div>
