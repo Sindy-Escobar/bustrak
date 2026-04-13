@@ -318,11 +318,14 @@ Route::get('/admin/dashboard', function () {
     abort(403, 'Acceso denegado');
 })->middleware('auth')->name('admin.dashboard');
 
-// Check-in
-Route::post('/abordajes/validar', [CheckinController::class, 'validarCodigo'])->name('abordajes.validar');
-Route::post('/abordajes/confirmar', [CheckinController::class, 'confirmarAbordaje'])->name('abordajes.confirmar');
-Route::get('/abordajes/historial', [CheckinController::class, 'historial'])->middleware('auth')->name('abordajes.historial');
-Route::get('/abordajes/historialabordajes', [CheckinController::class, 'historial'])->middleware('auth')->name('abordajes.historialabordajes');
+
+Route::prefix('abordajes')->middleware('auth')->group(function () {
+
+    Route::get('/checkin', [CheckinController::class, 'index'])->name('abordajes.checkin');
+    Route::get('/historial', [CheckinController::class, 'historial'])->name('abordajes.historial');
+    Route::post('/validar', [CheckinController::class, 'validarCodigo'])->name('abordajes.validar');
+    Route::post('/confirmar', [CheckinController::class, 'confirmarAbordaje'])->name('abordajes.confirmar');
+});
 
 // Ruta pública para check-in sin login
 Route::get('/checkin', [CheckinController::class, 'vistaPublica'])->name('checkin.publico');
