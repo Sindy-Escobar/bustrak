@@ -24,7 +24,7 @@ class BusesYViajesCompletosSeeder extends Seeder
         $servicios = TipoServicio::all();
 
         if($servicios->isEmpty()) {
-            $this->command->error('❌ No hay tipos de servicio registrados. Ejecuta primero TiposServicioSeeder');
+            $this->command->error(' No hay tipos de servicio registrados. Ejecuta primero TiposServicioSeeder');
             return;
         }
 
@@ -85,7 +85,7 @@ class BusesYViajesCompletosSeeder extends Seeder
         //  DEFINIR SOLO CIUDADES IMPORTANTES (8 ciudades)
         $ciudadesImportantes = [
             'Francisco Morazan',  // Tegucigalpa
-            'Cortez',             // San Pedro Sula
+            'Cortes',             // San Pedro Sula
             'Colon',              // Trujillo / La Ceiba
             'Copan',              // Santa Rosa de Copán
             'Choluteca',          // Choluteca
