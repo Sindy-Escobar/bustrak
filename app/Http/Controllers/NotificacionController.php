@@ -76,3 +76,4 @@ class NotificacionController extends Controller
         return redirect()->back()->with('error', 'No tienes permiso para eliminar esta notificación.');
     }
 }
+// fix notificaciones usuario

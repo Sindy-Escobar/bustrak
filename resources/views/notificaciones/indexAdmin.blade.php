@@ -4,9 +4,6 @@
 
 @section('content')
     <div class="container mt-4">
-        {{-- DEBUG TEMPORAL --}}
-        <p>Auth ID: {{ auth()->id() }}</p>
-        <p>Total notificaciones: {{ $notificaciones->count() }}</p>
         <h2 class="mb-3" style="color:#1e63b8;">
             <i class="fas fa-bell me-2"></i>Notificaciones
         </h2>
