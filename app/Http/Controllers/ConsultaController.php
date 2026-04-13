@@ -77,4 +77,10 @@ class ConsultaController extends Controller
 
         return view('ayuda.indexh44', compact('consultas'));
     }
+    public function eliminar($id)
+    {
+        $consulta = \App\Models\Consulta::findOrFail($id);
+        $consulta->delete();
+        return redirect()->back()->with('success', 'Consulta eliminada correctamente.');
+    }
 }

@@ -140,4 +140,10 @@ class SolicitudEmpleoController extends Controller
         return redirect()->route('solicitudes.index')
             ->with('success', 'Solicitud de empleo rechazada.');
     }
+    public function eliminar($id)
+    {
+        $solicitud = SolicitudEmpleo::findOrFail($id);
+        $solicitud->delete();
+        return redirect()->back()->with('success', 'Solicitud eliminada correctamente.');
+    }
 }

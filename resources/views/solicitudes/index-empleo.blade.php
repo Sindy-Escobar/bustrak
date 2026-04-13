@@ -71,6 +71,14 @@
                                             @else
                                                 <span class="text-muted">-</span>
                                             @endif
+                                            <form action="{{ route('solicitud.empleo.eliminar', $solicitud->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger"
+                                                        onclick="return confirm('¿Eliminar esta solicitud?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach

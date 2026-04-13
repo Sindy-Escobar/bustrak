@@ -203,8 +203,8 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if($solicitud->estado === 'Pendiente' || $solicitud->estado === null)
-                                                <div class="btn-group">
+                                            <div class="btn-group">
+                                                @if($solicitud->estado === 'Pendiente' || $solicitud->estado === null)
                                                     <form action="{{ route('solicitud.empleo.aceptar', $solicitud->id) }}" method="POST" style="display:inline;">
                                                         @csrf
                                                         @method('PATCH')
@@ -221,10 +221,16 @@
                                                             <i class="fas fa-times"></i>
                                                         </button>
                                                     </form>
-                                                </div>
-                                            @else
-                                                <span class="text-muted">-</span>
-                                            @endif
+                                                @endif
+                                                <form action="{{ route('solicitud.empleo.eliminar', $solicitud->id) }}" method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-warning btn-sm"
+                                                            onclick="return confirm('¿Eliminar esta solicitud?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -239,53 +245,68 @@
                     @endif
                 </div>
             </div>
+
             {{-- CONSULTAS --}}
             <div class="card shadow-lg border-0 mt-4">
-            <div class="card-header bg-info text-white">
-                <h4 class="mb-0">
-                    <i class="fas fa-headset me-2"></i>
-                    Consultas de Usuarios
-                </h4>
-            </div>
-            <div class="card-body">
-                @if($consultas->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table table-hover table-striped align-middle">
-                            <thead class="table-dark">
-                            <tr>
-                                <th>#</th>
-                                <th>Nombre</th>
-                                <th>Correo</th>
-                                <th>Asunto</th>
-                                <th>Mensaje</th>
-                                <th>Fecha Envío</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($consultas as $key => $consulta)
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-headset me-2"></i>
+                        Consultas de Usuarios
+                    </h4>
+                </div>
+                <div class="card-body">
+                    @if($consultas->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped align-middle">
+                                <thead class="table-dark">
                                 <tr>
-                                    <td>{{ $key + 1 }}</td>
-                                    <td>{{ $consulta->nombre_completo }}</td>
-                                    <td>{{ $consulta->correo }}</td>
-                                    <td>{{ $consulta->asunto }}</td>
-                                    <td>
-                                        <small>{{ \Illuminate\Support\Str::limit($consulta->mensaje, 50) }}</small>
-                                    </td>
-                                    <td>{{ $consulta->created_at->format('d/m/Y') }}</td>
+                                    <th>#</th>
+                                    <th>Nombre</th>
+                                    <th>Correo</th>
+                                    <th>Asunto</th>
+                                    <th>Mensaje</th>
+                                    <th>Fecha Envío</th>
+                                    <th>Acciones</th>
                                 </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <div class="alert alert-info text-center py-4">
-                        <i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>
-                        <p class="text-muted">No hay consultas registradas</p>
-                    </div>
-                @endif
+                                </thead>
+                                <tbody>
+                                @foreach($consultas as $key => $consulta)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $consulta->nombre_completo }}</td>
+                                        <td>{{ $consulta->correo }}</td>
+                                        <td>{{ $consulta->asunto }}</td>
+                                        <td>
+                                            <small>{{ \Illuminate\Support\Str::limit($consulta->mensaje, 50) }}</small>
+                                        </td>
+                                        <td>{{ $consulta->created_at->format('d/m/Y') }}</td>
+                                        <td>
+                                            <form action="{{ route('consulta.eliminar', $consulta->id) }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                        onclick="return confirm('¿Eliminar esta consulta?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="alert alert-info text-center py-4">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>
+                            <p class="text-muted">No hay consultas registradas</p>
+                        </div>
+                    @endif
+                </div>
             </div>
+
         </div>
     </div>
+
     <style>
         .table {
             font-size: 0.9rem;
