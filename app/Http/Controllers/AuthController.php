@@ -36,7 +36,7 @@ class AuthController extends Controller
         // Validación: usuario no encontrado
         if (!$user) {
             return back()->withErrors([
-                'email' => 'Las credenciales no coinciden con nuestros registros.',
+                'email' => 'Las credenciales no coinciden.',
             ])->onlyInput('email');
         }
 
@@ -74,7 +74,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Las credenciales no coinciden con nuestros registros.',
+            'email' => 'Credenciales inválidas. Por favor, inténtelo otra vez.',
         ])->onlyInput('email');
     }
 
@@ -134,20 +134,8 @@ class AuthController extends Controller
         // Buscar en tabla users
         $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
-            return back()
-                ->withInput()
-                ->with('error', 'El correo ingresado no está registrado en el sistema.');
-        }
-
-        // Devolver con datos para modal
-        return back()->with([
-            'user_data' => [
-                'name' => $user->nombre_completo ?? $user->name,
-                'email' => $user->email,
-                'password' => $user->plain_password ?? 'No disponible',
-            ],
-        ]);
+        // Respuesta genérica unificada para evitar enumeración y filtración de contraseñas
+        return back()->with('status', 'Si tu correo electrónico está registrado en el sistema, recibirás un enlace de recuperación en breve.');
     }
 
     /**

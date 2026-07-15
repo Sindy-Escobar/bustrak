@@ -82,7 +82,7 @@
                             @error('experiencia_laboral')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
-                            <small class="text-muted">Mínimo 10 caracteres</small>
+                            <small class="text-muted">Mínimo 255 caracteres</small>
                         </div>
 
                         <div class="mb-4">

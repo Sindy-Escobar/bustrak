@@ -58,7 +58,7 @@
                             <tbody>
                             @forelse($solicitudes->reverse() as $solicitud)
                                 <tr>
-                                    <td class="fw-bold">{{ $solicitud->id }}</td>
+                                    <td class="fw-bold">{{ $loop->iteration }}</td>
                                     <td>{{ $solicitud->nombre }}</td>
                                     <td>
                                         <small class="text-muted">{{ $solicitud->user->email ?? '-' }}</small>
