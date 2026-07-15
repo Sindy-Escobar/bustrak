@@ -419,7 +419,7 @@
                         placeholder="Ingresa tu nombre completo"
                         pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+"
                         minlength="3"
-                        maxlength="100"
+                        maxlength="60"
                         required
                     >
                 </div>
@@ -551,6 +551,7 @@
                             required
                         >
                     </div>
+                    <div class="invalid-feedback" id="password-confirm-feedback" style="display: none; color: #dc3545; font-size: 13px; margin-top: 5px;">Las contraseñas no coinciden.</div>
                 </div>
             </div>
 
@@ -609,14 +610,31 @@
     });
 
     // Validar que las contraseñas coincidan
-    document.getElementById('registroForm').addEventListener('submit', function(e) {
-        const password = document.getElementById('password').value;
-        const passwordConfirm = document.getElementById('password_confirmation').value;
+    const passwordInput = document.getElementById('password');
+    const passwordConfirmInput = document.getElementById('password_confirmation');
+    const passwordFeedback = document.getElementById('password-confirm-feedback');
 
-        if(password !== passwordConfirm) {
+    function checkPasswords() {
+        if (passwordInput.value !== passwordConfirmInput.value) {
+            passwordConfirmInput.setCustomValidity("Las contraseñas no coinciden");
+            passwordConfirmInput.classList.add('is-invalid');
+            passwordFeedback.style.display = 'block';
+            return false;
+        } else {
+            passwordConfirmInput.setCustomValidity("");
+            passwordConfirmInput.classList.remove('is-invalid');
+            passwordFeedback.style.display = 'none';
+            return true;
+        }
+    }
+
+    passwordInput.addEventListener('input', checkPasswords);
+    passwordConfirmInput.addEventListener('input', checkPasswords);
+
+    document.getElementById('registroForm').addEventListener('submit', function(e) {
+        if (!checkPasswords()) {
             e.preventDefault();
             e.stopPropagation();
-            alert('Las contraseñas no coinciden');
         }
     });
 </script>

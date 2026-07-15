@@ -213,6 +213,13 @@
         <p>Ingresa tu correo electrónico para recuperar tu contraseña.</p>
     </div>
 
+    @if (session('status'))
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            {{ session('status') }}
+        </div>
+    @endif
+
     @if (session('error'))
         <div class="alert alert-error">
             <i class="fas fa-exclamation-circle"></i>
@@ -220,7 +227,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('password.email') }}">
+    <form method="POST" action="{{ route('password.email') }}" novalidate id="recoveryForm">
         @csrf
 
         <div class="form-group">
@@ -234,6 +241,7 @@
                 autofocus
                 placeholder="tu@email.com"
             >
+            <div id="email-error" style="display: none; color: #dc3545; font-size: 13px; margin-top: 5px;"></div>
             @error('email')
             <small style="color: #dc3545;">{{ $message }}</small>
             @enderror
@@ -249,45 +257,38 @@
     </div>
 </div>
 
-<!-- MODAL -->
-@if (session('user_data'))
-    <div class="modal-overlay active" id="modalOverlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <h2>Contraseña Recuperada</h2>
-                <p>Aquí están tus datos de acceso</p>
-            </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('recoveryForm');
+        const emailInput = document.getElementById('email');
+        const emailError = document.getElementById('email-error');
 
-            <div class="info-box">
-                <div class="info-row">
-                    <span class="info-label">Usuario:</span>
-                    <span class="info-value">{{ session('user_data')['name'] }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Correo:</span>
-                    <span class="info-value">{{ session('user_data')['email'] }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Contraseña:</span>
-                    <span class="info-value">
-                        @if(session('user_data')['password'] && session('user_data')['password'] !== 'No disponible')
-                            {{ session('user_data')['password'] }}
-                        @else
-                            <span style="color: #d32f2f;">No disponible</span>
-                        @endif
-                    </span>
-                </div>
-            </div>
+        form.addEventListener('submit', function(e) {
+            const emailVal = emailInput.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-            <a href="{{ route('login') }}" class="modal-btn">
-                <i class="fas fa-sign-in-alt"></i> Regresar al Login
-            </a>
-        </div>
-    </div>
-@endif
+            if (emailVal === "") {
+                e.preventDefault();
+                emailError.textContent = "El correo electrónico es obligatorio.";
+                emailError.style.display = "block";
+                emailInput.style.borderColor = "#dc3545";
+            } else if (!emailRegex.test(emailVal)) {
+                e.preventDefault();
+                emailError.textContent = "Debe ingresar un correo electrónico válido.";
+                emailError.style.display = "block";
+                emailInput.style.borderColor = "#dc3545";
+            } else {
+                emailError.style.display = "none";
+                emailInput.style.borderColor = "#e0e0e0";
+            }
+        });
+
+        emailInput.addEventListener('input', function() {
+            emailError.style.display = "none";
+            this.style.borderColor = "#e0e0e0";
+        });
+    });
+</script>
 
 </body>
 </html>

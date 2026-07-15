@@ -37,13 +37,30 @@ class RegistroUsuarioController extends Controller
     {
         $request->validate([
             //  Solo letras (incluye acentos, ñ) y espacios
-            'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
-            //  DNI: 8 dígitos numéricos, único
+            'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:60',
+            //  DNI: 13 dígitos numéricos, único
             'dni' => 'required|numeric|digits:13|unique:usuarios,dni',
             'email' => 'required|email|unique:usuarios,email|unique:users,email',
             //  Teléfono: 8 dígitos numéricos
             'telefono' => 'required|numeric|digits:8',
             'password' => 'required|string|min:8|confirmed',
+        ], [
+            'nombre_completo.required' => 'El nombre completo es obligatorio.',
+            'nombre_completo.regex' => 'El nombre completo solo puede contener letras y espacios.',
+            'nombre_completo.max' => 'El nombre completo no puede exceder los 60 caracteres.',
+            'dni.required' => 'El DNI es obligatorio.',
+            'dni.numeric' => 'El DNI debe contener solo números.',
+            'dni.digits' => 'El DNI debe contener exactamente 13 dígitos.',
+            'dni.unique' => 'El DNI ya está registrado.',
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'El correo electrónico debe ser válido.',
+            'email.unique' => 'El correo electrónico ya está registrado.',
+            'telefono.required' => 'El teléfono es obligatorio.',
+            'telefono.numeric' => 'El teléfono debe contener solo números.',
+            'telefono.digits' => 'El teléfono debe contener exactamente 8 dígitos.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.confirmed' => 'La confirmación de la contraseña no coincide.',
         ]);
 
         // Guardar en tabla usuarios
