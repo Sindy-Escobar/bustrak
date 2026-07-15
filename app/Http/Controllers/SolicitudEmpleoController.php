@@ -19,7 +19,12 @@ class SolicitudEmpleoController extends Controller
             'nombre_completo' => 'required|string|min:3|max:255',
             'contacto' => 'required|email',
             'puesto_deseado' => 'required|string|max:255',
-            'experiencia_laboral' => 'required|string|min:10',
+            'experiencia_laboral' => [
+            'required',
+            'string',
+            'min:255',
+            'regex:/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s]+$/'
+        ],
             'cv' => 'required|mimes:pdf,doc,docx|max:2048',
         ], [
             'nombre_completo.required' => 'El nombre completo es obligatorio.',

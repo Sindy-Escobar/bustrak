@@ -23,16 +23,28 @@ class ConsultaController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'correo' => 'required|email|max:255',
-            'asunto' => 'required|string|max:255',
-            'mensaje' => 'required|string|max:1000'
-        ], [
-            'nombre.required' => 'El nombre es obligatorio',
-            'correo.required' => 'El correo es obligatorio',
-            'correo.email' => 'El correo debe ser válido',
-            'asunto.required' => 'El asunto es obligatorio',
-            'mensaje.required' => 'El mensaje es obligatorio',
-            'mensaje.max' => 'El mensaje no puede exceder 1000 caracteres'
-        ]);
+            'asunto' => [
+            'required',
+            'string',
+            'max:255',
+            'regex:/^[A-Za-z0-9\s]+$/'
+        ],
+        'mensaje' => [
+            'required',
+            'string',
+            'max:1000',
+            'regex:/^[A-Za-z0-9\s]+$/'
+        ]
+    ], [
+        'nombre.required' => 'El nombre es obligatorio',
+        'correo.required' => 'El correo es obligatorio',
+        'correo.email' => 'El correo debe ser válido',
+        'asunto.required' => 'El asunto es obligatorio',
+        'asunto.regex' => 'El asunto solo puede contener letras, números y espacios',
+        'mensaje.required' => 'El mensaje es obligatorio',
+        'mensaje.max' => 'El mensaje no puede exceder 1000 caracteres',
+        'mensaje.regex' => 'El mensaje solo puede contener letras, números y espacios'
+    ]);
 
         try {
             Consulta::create([

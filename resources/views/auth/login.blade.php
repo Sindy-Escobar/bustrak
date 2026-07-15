@@ -340,7 +340,7 @@
                     id="email"
                     name="email"
                     value="{{ old('email') }}"
-                    placeholder="tu@email.com"
+                    placeholder="nombre@email.com"
                     required
                     autofocus
                 >

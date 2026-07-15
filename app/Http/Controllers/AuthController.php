@@ -36,7 +36,7 @@ class AuthController extends Controller
         // Validación: usuario no encontrado
         if (!$user) {
             return back()->withErrors([
-                'email' => 'Las credenciales no coinciden con nuestros registros.',
+                'email' => 'Las credenciales no coinciden.',
             ])->onlyInput('email');
         }
 
@@ -74,7 +74,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Las credenciales no coinciden con nuestros registros.',
+            'email' => 'Credenciales inválidas. Por favor, inténtelo otra vez.',
         ])->onlyInput('email');
     }
 
