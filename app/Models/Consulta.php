@@ -16,7 +16,14 @@ class Consulta extends Model
         'nombre_completo',
         'correo',
         'asunto',
-        'mensaje'
+        'mensaje',
+        'respuesta',
+        'respondida_en',
+        'respondida_por',
+    ];
+
+    protected $casts = [
+        'respondida_en' => 'datetime',
     ];
 
     public function user()

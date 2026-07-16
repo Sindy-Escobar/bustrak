@@ -225,6 +225,8 @@ Route::get('/ayuda-soporte', [ConsultaController::class, 'index'])->name('consul
 Route::post('/ayuda-soporte', [ConsultaController::class, 'store'])->name('soporte.enviar');
 Route::middleware(['auth', 'user.active'])->get('/admin/consultas',
     [ConsultaController::class, 'listar'])->name('consulta.listar');
+Route::middleware(['auth', 'user.active'])->post('/admin/consultas/{id}/responder',
+    [ConsultaController::class, 'responder'])->name('consulta.responder');
 
 // Interfaz empleados
 Route::prefix('empleado')->middleware(['auth', 'user.active'])->group(function() {
