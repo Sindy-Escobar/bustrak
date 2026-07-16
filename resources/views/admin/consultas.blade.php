@@ -28,6 +28,7 @@
                             <th><i class="fas fa-tag me-2"></i>Asunto</th>
                             <th><i class="fas fa-comment me-2"></i>Mensaje</th>
                             <th><i class="fas fa-calendar me-2"></i>Fecha de Envío</th>
+                            <th><i class="fas fa-check-double me-2"></i>Estado</th>
                             <th class="text-center"><i class="fas fa-cog me-2"></i>Acciones</th>
                         </tr>
                         </thead>
@@ -39,19 +40,79 @@
                                 <td>{{ $consulta->asunto }}</td>
                                 <td>{{ $consulta->mensaje }}</td>
                                 <td>{{ $consulta->created_at->format('d/m/Y') }}</td>
+                                <td>
+                                    @if($consulta->respuesta)
+                                        <span class="badge bg-success">Respondida</span>
+                                    @else
+                                        <span class="badge bg-warning text-dark">Pendiente</span>
+                                    @endif
+                                </td>
                                 <td class="text-center">
-                                    <form action="{{ route('consulta.eliminar', $consulta->id) }}" method="POST" onsubmit="return confirm('¿Eliminar esta consulta?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash me-1"></i>Eliminar
+                                    <div class="d-flex gap-1 justify-content-center">
+                                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#responderModal{{ $consulta->id }}">
+                                            <i class="fas fa-reply me-1"></i>{{ $consulta->respuesta ? 'Ver / Editar' : 'Responder' }}
                                         </button>
-                                    </form>
+                                        <form action="{{ route('consulta.eliminar', $consulta->id) }}" method="POST" onsubmit="return confirm('¿Eliminar esta consulta?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash me-1"></i>Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
+
+                            <!-- Modal Responder -->
+                            <div class="modal fade" id="responderModal{{ $consulta->id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="background-color:#1e63b8; color:white;">
+                                            <h5 class="modal-title">
+                                                <i class="fas fa-reply me-2"></i>Responder consulta de {{ $consulta->nombre_completo }}
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                        </div>
+                                        <form action="{{ route('consulta.responder', $consulta->id) }}" method="POST">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <p><strong>Asunto:</strong> {{ $consulta->asunto }}</p>
+                                                <p><strong>Mensaje del usuario:</strong><br>{{ $consulta->mensaje }}</p>
+
+                                                @if($consulta->respuesta)
+                                                    <div class="alert alert-light border">
+                                                        <strong>Última respuesta enviada</strong>
+                                                        ({{ $consulta->respondida_en?->format('d/m/Y H:i') }}):<br>
+                                                        {{ $consulta->respuesta }}
+                                                    </div>
+                                                @endif
+
+                                                <div class="mb-3">
+                                                    <label for="respuesta{{ $consulta->id }}" class="form-label fw-bold">
+                                                        {{ $consulta->respuesta ? 'Actualizar respuesta' : 'Escribir respuesta' }}
+                                                    </label>
+                                                    <textarea name="respuesta" id="respuesta{{ $consulta->id }}" rows="4"
+                                                              class="form-control @error('respuesta') is-invalid @enderror"
+                                                              maxlength="2000" required>{{ old('respuesta') }}</textarea>
+                                                    @error('respuesta')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                    <small class="text-muted">El usuario verá esta respuesta como notificación dentro del sistema.</small>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-paper-plane me-1"></i>Enviar respuesta
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
+                                <td colspan="7" class="text-center text-muted py-4">
                                     <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
                                     No hay consultas registradas
                                 </td>

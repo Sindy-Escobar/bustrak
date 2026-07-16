@@ -95,4 +95,39 @@ class ConsultaController extends Controller
         $consulta->delete();
         return redirect()->back()->with('success', 'Consulta eliminada correctamente.');
     }
+
+    /**
+     * Guarda la respuesta del administrador a una consulta
+     * y notifica al usuario que la envió.
+     */
+    public function responder(Request $request, $id)
+    {
+        $request->validate([
+            'respuesta' => 'required|string|max:2000',
+        ], [
+            'respuesta.required' => 'La respuesta no puede estar vacía',
+            'respuesta.max' => 'La respuesta no puede exceder 2000 caracteres',
+        ]);
+
+        $consulta = Consulta::findOrFail($id);
+
+        $consulta->update([
+            'respuesta' => $request->respuesta,
+            'respondida_en' => now(),
+            'respondida_por' => auth()->id(),
+        ]);
+
+        // Notificar al usuario que envió la consulta (si tiene cuenta registrada)
+        if ($consulta->user_id) {
+            \App\Models\Notificacion::create([
+                'usuario_id' => $consulta->user_id,
+                'titulo' => 'Respondieron tu consulta',
+                'mensaje' => 'Soporte respondió tu consulta "' . $consulta->asunto . '": ' . $request->respuesta,
+                'tipo' => 'sistema',
+                'leida' => false,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Respuesta enviada correctamente.');
+    }
 }

@@ -19,6 +19,7 @@
                             <th>Asunto</th>
                             <th>Mensaje</th>
                             <th>Fecha de Envío</th>
+                            <th>Respuesta de Soporte</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -27,6 +28,14 @@
                                 <td>{{ $consulta->asunto }}</td>
                                 <td>{{ $consulta->mensaje }}</td>
                                 <td>{{ $consulta->created_at->format('d/m/Y') }}</td>
+                                <td>
+                                    @if($consulta->respuesta)
+                                        <span class="badge bg-success mb-1">Respondida</span><br>
+                                        {{ $consulta->respuesta }}
+                                    @else
+                                        <span class="badge bg-warning text-dark">Pendiente</span>
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
