@@ -203,6 +203,21 @@
             </div>
         </div>
 
+        <!-- Consultas y Soporte -->
+        <div class="nav-section">
+            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#consultas"
+                    aria-expanded="{{ request()->routeIs('consulta.listar') ? 'true' : 'false' }}">
+                <span><i class="fas fa-headset"></i> Consultas</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </button>
+            <div class="collapse btn-toggle-nav {{ request()->routeIs('consulta.listar') ? 'show' : '' }}" id="consultas">
+                <a href="{{ route('consulta.listar') }}"
+                   class="{{ request()->routeIs('consulta.listar') ? 'active' : '' }}">
+                    Ver consultas
+                </a>
+            </div>
+        </div>
+
         <!-- Documentacion de buses -->
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#documentacionBuses">
