@@ -223,7 +223,8 @@ Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.in
 // Consulta/soporte
 Route::get('/ayuda-soporte', [ConsultaController::class, 'index'])->name('consulta.formulario');
 Route::post('/ayuda-soporte', [ConsultaController::class, 'store'])->name('soporte.enviar');
-Route::middleware(['auth', 'admin'])->get('/admin/consultas', [ConsultaController::class, 'listar'])->name('consulta.listar');
+Route::middleware(['auth', 'user.active'])->get('/admin/consultas',
+    [ConsultaController::class, 'listar'])->name('consulta.listar');
 
 // Interfaz empleados
 Route::prefix('empleado')->middleware(['auth', 'user.active'])->group(function() {
