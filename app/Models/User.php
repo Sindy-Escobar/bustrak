@@ -17,7 +17,6 @@ class User extends Authenticatable
         'telefono',
         'email',
         'password',
-        'plain_password',
         'role',
         'estado',
     ];

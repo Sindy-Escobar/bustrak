@@ -51,12 +51,6 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
-            //  Guardar plain_password si no existe
-            if (!$user->plain_password) {
-                $user->plain_password = $request->password;
-                $user->save();
-            }
-
             // Normalizamos el rol
             $rol = strtolower($user->role);
 
@@ -101,7 +95,6 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'plain_password' => $validated['password'],
             'role' => 'Cliente', // Importante: con mayúscula según tu migración
             'estado' => 'activo',
         ]);
@@ -165,7 +158,6 @@ class AuthController extends Controller
             function ($user, $password) {
                 $user->forceFill([
                     'password' => Hash::make($password),
-                    'plain_password' => $password
                 ])->setRememberToken(Str::random(60));
 
                 $user->save();
@@ -218,7 +210,6 @@ class AuthController extends Controller
         }
 
         $user->password = Hash::make($request->password);
-        $user->plain_password = $request->password;
         $user->save();
 
         return back()->with('success', 'Contraseña actualizada correctamente');
@@ -245,7 +236,6 @@ class AuthController extends Controller
         }
 
         $user->password = Hash::make($request->password_nuevo);
-        $user->plain_password = $request->password_nuevo;
         $user->save();
 
         return back()->with('success', 'Contraseña cambiada correctamente.');
