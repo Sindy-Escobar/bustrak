@@ -330,7 +330,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login') }}" id="loginForm" novalidate>
             @csrf
 
             <div class="form-group">
@@ -344,6 +344,7 @@
                     required
                     @if ($errors->isEmpty()) autofocus @endif
                 >
+                <div class="invalid-feedback" id="email-feedback" style="display: none; color: #dc3545; font-size: 13px; margin-top: 5px;"></div>
             </div>
 
             <div class="form-group">
@@ -356,6 +357,7 @@
                     required
                     @if ($errors->any()) autofocus @endif
                 >
+                <div class="invalid-feedback" id="password-feedback" style="display: none; color: #dc3545; font-size: 13px; margin-top: 5px;"></div>
             </div>
 
             <div class="checkbox-group">
@@ -374,5 +376,44 @@
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const emailFeedback = document.getElementById('email-feedback');
+        const passwordFeedback = document.getElementById('password-feedback');
+
+        function validateField(input, feedback, mensajeVacio) {
+            if (input.value.trim() === '') {
+                feedback.textContent = mensajeVacio;
+                feedback.style.display = 'block';
+                input.classList.add('is-invalid');
+                return false;
+            }
+            if (input.type === 'email' && !input.checkValidity()) {
+                feedback.textContent = 'Ingresa un correo electrónico válido.';
+                feedback.style.display = 'block';
+                input.classList.add('is-invalid');
+                return false;
+            }
+            feedback.style.display = 'none';
+            input.classList.remove('is-invalid');
+            return true;
+        }
+
+        emailInput.addEventListener('input', () => validateField(emailInput, emailFeedback, 'El correo electrónico es obligatorio.'));
+        passwordInput.addEventListener('input', () => validateField(passwordInput, passwordFeedback, 'La contraseña es obligatoria.'));
+
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            const emailOk = validateField(emailInput, emailFeedback, 'El correo electrónico es obligatorio.');
+            const passwordOk = validateField(passwordInput, passwordFeedback, 'La contraseña es obligatoria.');
+            if (!emailOk || !passwordOk) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+    })();
+</script>
 </body>
 </html>
