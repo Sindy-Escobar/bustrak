@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'user.active' => \App\Http\Middleware\CheckUserActive::class,
+            'admin' => \App\Http\Middleware\EnsureIsAdmin::class,
         ]);
 
         // Evita que páginas privadas queden en caché del navegador
