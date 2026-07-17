@@ -151,7 +151,7 @@ class RegistroUsuarioController extends Controller
         $originalEmail = $usuario->email;
 
         $request->validate([
-            'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
+            'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:100',
             'dni' => ['required', 'numeric', 'digits:13', Rule::unique('usuarios', 'dni')->ignore($usuario->id)],
             'email' => ['required', 'email', Rule::unique('usuarios', 'email')->ignore($usuario->id)],
             'telefono' => 'required|numeric|digits:8',
@@ -161,7 +161,7 @@ class RegistroUsuarioController extends Controller
             // Mensajes personalizados
             'nombre_completo.required' => 'El campo nombre completo es obligatorio.',
             'nombre_completo.regex' => 'El campo nombre completo solo puede contener letras y espacios.',
-            'nombre_completo.max' => 'El nombre completo no puede tener más de 255 caracteres.',
+            'nombre_completo.max' => 'El nombre completo no puede tener más de 100 caracteres.',
 
             'dni.required' => 'El campo DNI es obligatorio.',
             'dni.numeric' => 'El campo DNI debe ser numérico.',

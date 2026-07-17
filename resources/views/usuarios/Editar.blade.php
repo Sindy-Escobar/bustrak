@@ -24,6 +24,7 @@
                                 id="nombre_completo"
                                 value="{{ old('nombre_completo', $usuario->nombre_completo) }}"
                                 class="form-control @error('nombre_completo') is-invalid @enderror"
+                                maxlength="100"
                                 required
                             >
                             @error('nombre_completo')

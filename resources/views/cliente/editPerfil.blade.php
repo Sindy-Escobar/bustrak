@@ -22,6 +22,7 @@
                                    id="name"
                                    name="name"
                                    value="{{ old('name', $usuario->name) }}"
+                                   maxlength="100"
                                    required
                                    style="border-radius: 8px; padding: 10px 15px;">
                             @error('name')

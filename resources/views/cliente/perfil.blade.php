@@ -117,7 +117,7 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Nombre Completo</label>
                             <input type="text" name="name" id="name"
-                                   class="form-control" value="{{ old('name', $usuario->name) }}">
+                                   class="form-control" value="{{ old('name', $usuario->name) }}" maxlength="100">
                             @error('name')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
