@@ -40,8 +40,17 @@ class CalificacionController extends Controller
 
         $request->validate([
             'estrellas' => 'required|integer|min:1|max:5',
-            'comentario' => 'nullable|string|required_if:estrellas,1,2',
+            'comentario' => 'nullable|string|max:500|required_if:estrellas,1,2',
+        ], [
+            'comentario.max' => 'El comentario no puede exceder los 500 caracteres.',
+            'comentario.required_if' => 'Por favor, cuéntanos qué pasó para poder mejorar.',
         ]);
+
+        // Sanitización básica: quitar etiquetas HTML y espacios repetidos,
+        // ya que es texto libre y no debe contener marcado alguno.
+        $comentarioSanitizado = $request->comentario
+            ? trim(preg_replace('/\s+/', ' ', strip_tags($request->comentario)))
+            : null;
 
 
         $existingCalificacion = Calificacion::where('reserva_id', $reserva_id)
@@ -61,7 +70,7 @@ class CalificacionController extends Controller
             'reserva_id' => $reserva_id,
             'usuario_id' => null,
             'estrellas' => $request->estrellas,
-            'comentario' => $request->comentario,
+            'comentario' => $comentarioSanitizado,
         ]);
 
 

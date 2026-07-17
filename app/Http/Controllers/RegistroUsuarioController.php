@@ -80,7 +80,7 @@ class RegistroUsuarioController extends Controller
             'password' => Hash::make($request->password),
             'dni' => $usuario->dni,
             'telefono' => $usuario->telefono,
-            'role' => 'cliente', // Asegúrate de que coincida con tu enum en la migración
+            'role' => 'Cliente', // Debe coincidir exactamente con el enum de la migración (Empleado|Administrador|Cliente)
             'estado' => 'activo',
         ]);
 

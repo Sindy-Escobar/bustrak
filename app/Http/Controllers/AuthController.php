@@ -28,8 +28,8 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'email' => ['required', 'email', 'max:100'],
+            'password' => ['required', 'max:64'],
         ]);
 
         // --- Bloqueo por fuerza bruta ---

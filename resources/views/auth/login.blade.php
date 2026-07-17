@@ -342,6 +342,7 @@
                     value="{{ old('email') }}"
                     placeholder="nombre@email.com"
                     required
+                    maxlength="100"
                     @if ($errors->isEmpty()) autofocus @endif
                 >
                 <div class="invalid-feedback" id="email-feedback" style="display: none; color: #dc3545; font-size: 13px; margin-top: 5px;"></div>
@@ -355,6 +356,7 @@
                     name="password"
                     placeholder="••••••••"
                     required
+                    maxlength="64"
                     @if ($errors->any()) autofocus @endif
                 >
                 <div class="invalid-feedback" id="password-feedback" style="display: none; color: #dc3545; font-size: 13px; margin-top: 5px;"></div>
