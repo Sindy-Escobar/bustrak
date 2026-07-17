@@ -28,5 +28,14 @@ return Application::configure(basePath: dirname(__DIR__))
     })
 
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // Reemplaza la pantalla técnica "419 Page Expired" por un mensaje
+        // propio del sistema, en español, y regresa al usuario al formulario
+        // (ej. login) que estaba llenando en vez de una página de error aislada.
+        $exceptions->render(function (\Illuminate\Session\TokenMismatchException $e, $request) {
+            return redirect()->back()
+                ->withInput($request->except('password', 'password_confirmation'))
+                ->withErrors([
+                    'email' => 'Tu sesión expiró por inactividad. Por favor, inténtalo de nuevo.',
+                ]);
+        });
     })->create();
