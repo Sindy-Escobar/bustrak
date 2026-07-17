@@ -271,18 +271,15 @@ class ReservaController extends Controller
         $request->validate([
             'ciudad_origen_id'  => 'required|exists:ciudades,id',
             'ciudad_destino_id' => 'required|exists:ciudades,id',
-            'fecha_salida'      => 'required|date',
-            'hora_salida'       => 'required',
-            'asiento_id'        => 'required|exists:asientos,id',
+            // Fecha/Hora y Asiento ya no son editables desde este formulario
+            // (ver vista itinerario/index.blade.php), por lo que no se envían
+            // y no deben exigirse aquí para no bloquear el resto de cambios.
         ]);
 
         $reserva->viaje->update([
             'ciudad_origen_id'  => $request->ciudad_origen_id,
             'ciudad_destino_id' => $request->ciudad_destino_id,
-            'fecha_hora_salida' => $request->fecha_salida . ' ' . $request->hora_salida,
         ]);
-
-        $reserva->update(['asiento_id' => $request->asiento_id]);
 
         return redirect()->back()->with('success', '¡Reserva actualizada correctamente!');
     }
