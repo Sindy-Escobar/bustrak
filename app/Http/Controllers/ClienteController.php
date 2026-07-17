@@ -43,7 +43,7 @@ class ClienteController extends Controller
             'name' => [
                 'required',
                 'string',
-                'max:255',
+                'max:100',
                 'regex:/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/'
             ],
             'email' => [
@@ -53,12 +53,14 @@ class ClienteController extends Controller
                 'max:255',
                 Rule::unique('users')->ignore($usuario->id),
             ],
-            'password' => 'nullable|string|min:8|confirmed',
+            'password' => 'nullable|string|min:8|max:64|confirmed',
         ];
 
         $validatedData = $request->validate($rules, [
+            'name.max' => 'El nombre no puede exceder los 100 caracteres.',
             'name.regex' => 'El nombre solo puede contener letras y espacios, sin caracteres especiales.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.max' => 'La contraseña no puede exceder los 64 caracteres.',
         ]);
 
         $usuario->name = $validatedData['name'];
