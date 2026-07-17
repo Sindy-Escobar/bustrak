@@ -22,7 +22,7 @@
                         <h5 class="mb-0"><i class="fas fa-file-alt"></i> Información del Documento</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('documentos-buses.store') }}" method="POST" enctype="multipart/form-data" id="formDocumento">
+                        <form action="{{ route('documentos-buses.store') }}" method="POST" enctype="multipart/form-data" id="formDocumento" novalidate>
                             @csrf
 
                             <div class="row">
@@ -42,6 +42,7 @@
                                     @error('bus_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+                                    <div class="invalid-feedback" id="bus_id-feedback" style="display: none;">Debe seleccionar un bus de la lista.</div>
                                 </div>
 
                                 <!-- Tipo de Documento -->
@@ -72,10 +73,14 @@
                                     <input type="text" name="numero_documento" id="numero_documento"
                                            class="form-control @error('numero_documento') is-invalid @enderror"
                                            value="{{ old('numero_documento') }}"
+                                           pattern="[A-Za-z0-9\-]+"
+                                           maxlength="30"
+                                           title="Solo letras, números y guiones (ej. ABC-12345-2024)"
                                            placeholder="Ej: ABC-12345-2024" required>
                                     @error('numero_documento')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+                                    <div class="invalid-feedback" id="numero_documento-feedback" style="display: none;">Use solo letras, números y guiones (ej. ABC-12345-2024).</div>
                                 </div>
 
                                 <!-- Archivo -->
@@ -131,7 +136,9 @@
                                 </label>
                                 <textarea name="observaciones" id="observaciones" rows="3"
                                           class="form-control @error('observaciones') is-invalid @enderror"
+                                          maxlength="500"
                                           placeholder="Notas adicionales sobre el documento...">{{ old('observaciones') }}</textarea>
+                                <small class="text-muted">Máximo 500 caracteres.</small>
                                 @error('observaciones')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -262,6 +269,40 @@
                     return false;
                 }
             });
+        });
+    </script>
+
+    <script>
+        document.getElementById('formDocumento').addEventListener('submit', function (e) {
+            const busSelect = document.getElementById('bus_id');
+            const busFeedback = document.getElementById('bus_id-feedback');
+            const numeroDocumento = document.getElementById('numero_documento');
+            const numeroFeedback = document.getElementById('numero_documento-feedback');
+            let valido = true;
+
+            if (!busSelect.value) {
+                busFeedback.style.display = 'block';
+                busSelect.classList.add('is-invalid');
+                valido = false;
+            } else {
+                busFeedback.style.display = 'none';
+                busSelect.classList.remove('is-invalid');
+            }
+
+            const patronDocumento = /^[A-Za-z0-9\-]+$/;
+            if (!patronDocumento.test(numeroDocumento.value)) {
+                numeroFeedback.style.display = 'block';
+                numeroDocumento.classList.add('is-invalid');
+                valido = false;
+            } else {
+                numeroFeedback.style.display = 'none';
+                numeroDocumento.classList.remove('is-invalid');
+            }
+
+            if (!valido) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
         });
     </script>
 

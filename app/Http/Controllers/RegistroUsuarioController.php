@@ -155,7 +155,7 @@ class RegistroUsuarioController extends Controller
             'dni' => ['required', 'numeric', 'digits:13', Rule::unique('usuarios', 'dni')->ignore($usuario->id)],
             'email' => ['required', 'email', Rule::unique('usuarios', 'email')->ignore($usuario->id)],
             'telefono' => 'required|numeric|digits:8',
-            'password' => 'nullable|string|min:8|confirmed',
+            'password' => 'nullable|string|min:8|max:64|confirmed',
             'estado' => 'required|in:activo,inactivo',
         ], [
             // Mensajes personalizados
@@ -177,6 +177,7 @@ class RegistroUsuarioController extends Controller
             'telefono.digits' => 'El teléfono debe tener :digits dígitos.',
 
             'password.min' => 'La contraseña debe tener al menos :min caracteres.',
+            'password.max' => 'La contraseña no puede exceder los 64 caracteres.',
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
 
             'estado.required' => 'El estado es obligatorio.',
@@ -189,7 +190,7 @@ class RegistroUsuarioController extends Controller
         $usuario->telefono = $request->telefono;
 
         if ($request->filled('password')) {
-            $usuario->password = $request->password; // el modelo lo encripta
+            $usuario->password = \Illuminate\Support\Facades\Hash::make($request->password); // corregido: antes se guardaba en texto plano
         }
 
         $usuario->save();
