@@ -43,7 +43,7 @@ class RegistroUsuarioController extends Controller
             'email' => 'required|email|unique:usuarios,email|unique:users,email',
             //  Teléfono: 8 dígitos numéricos
             'telefono' => 'required|numeric|digits:8',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|max:64|confirmed',
         ], [
             'nombre_completo.required' => 'El nombre completo es obligatorio.',
             'nombre_completo.regex' => 'El nombre completo solo puede contener letras y espacios.',
@@ -60,6 +60,7 @@ class RegistroUsuarioController extends Controller
             'telefono.digits' => 'El teléfono debe contener exactamente 8 dígitos.',
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.max' => 'La contraseña no puede exceder los 64 caracteres.',
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
         ]);
 
