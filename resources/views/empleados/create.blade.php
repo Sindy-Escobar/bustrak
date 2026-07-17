@@ -26,11 +26,11 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" name="nombre" id="nombre" class="form-control" required>
+                            <input type="text" name="nombre" id="nombre" class="form-control" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" maxlength="100" required>
                         </div>
                         <div class="col-md-6">
                             <label for="apellido" class="form-label">Apellido</label>
-                            <input type="text" name="apellido" id="apellido" class="form-control" required>
+                            <input type="text" name="apellido" id="apellido" class="form-control" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" maxlength="100" required>
                         </div>
                         <div class="col-md-6">
                             <label for="dni" class="form-label">DNI</label>
@@ -38,7 +38,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="cargo" class="form-label">Cargo</label>
-                            <input type="text" name="cargo" id="cargo" class="form-control" required>
+                            <input type="text" name="cargo" id="cargo" class="form-control" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" maxlength="50" required>
                         </div>
                         <div class="col-md-6">
                             <label for="fecha_ingreso" class="form-label">Fecha de ingreso</label>

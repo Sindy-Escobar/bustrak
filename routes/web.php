@@ -369,8 +369,8 @@ Route::middleware(['auth', 'admin'])->get('admin/cambiar-password', [AuthControl
 Route::middleware(['auth', 'admin'])->post('admin/update-password', [AuthController::class, 'updateAdminPassword'])->name('admin.update-password');
 
 // Usuario
-Route::get('usuario/cambiar-password', [AuthController::class, 'showUserChangePasswordForm'])->name('usuario.change-password');
-Route::post('usuario/update-password', [AuthController::class, 'updateUserPassword'])->name('usuario.update-password');
+Route::middleware(['auth'])->get('usuario/cambiar-password', [AuthController::class, 'showUserChangePasswordForm'])->name('usuario.change-password');
+Route::middleware(['auth'])->post('usuario/update-password', [AuthController::class, 'updateUserPassword'])->name('usuario.update-password');
 
 // Solicitudes de constancia
 Route::middleware(['auth'])->group(function () {

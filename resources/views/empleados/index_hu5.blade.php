@@ -155,11 +155,11 @@
                                                 <div class="row g-3">
                                                     <div class="col-md-6">
                                                         <label class="form-label">Nombre</label>
-                                                        <input type="text" name="nombre" value="{{ old('nombre', $empleado->nombre) }}" class="form-control" required>
+                                                        <input type="text" name="nombre" value="{{ old('nombre', $empleado->nombre) }}" class="form-control" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" maxlength="100" required>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label class="form-label">Apellido</label>
-                                                        <input type="text" name="apellido" value="{{ old('apellido', $empleado->apellido) }}" class="form-control" required>
+                                                        <input type="text" name="apellido" value="{{ old('apellido', $empleado->apellido) }}" class="form-control" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" maxlength="100" required>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label class="form-label">DNI</label>
@@ -167,7 +167,7 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label class="form-label">Cargo</label>
-                                                        <input type="text" name="cargo" value="{{ old('cargo', $empleado->cargo) }}" class="form-control" required>
+                                                        <input type="text" name="cargo" value="{{ old('cargo', $empleado->cargo) }}" class="form-control" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" maxlength="50" required>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label class="form-label">Fecha Ingreso</label>

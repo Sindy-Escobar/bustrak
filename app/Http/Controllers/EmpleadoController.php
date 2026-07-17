@@ -72,13 +72,34 @@ class EmpleadoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:100',
-            'apellido' => 'required|string|max:100',
+            'nombre' => 'required|string|max:100|regex:/^[\pL\s]+$/u',
+            'apellido' => 'required|string|max:100|regex:/^[\pL\s]+$/u',
             'dni' => 'required|digits:13|unique:empleados,dni',
-            'cargo' => 'required|string|max:50',
+            'cargo' => 'required|string|max:50|regex:/^[\pL\s]+$/u',
             'fecha_ingreso' => 'required|date',
             'rol' => 'required|in:Empleado,Administrador',
             'foto' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.max' => 'El nombre no puede exceder los 100 caracteres.',
+            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+            'apellido.required' => 'El apellido es obligatorio.',
+            'apellido.max' => 'El apellido no puede exceder los 100 caracteres.',
+            'apellido.regex' => 'El apellido solo puede contener letras y espacios.',
+            'dni.required' => 'El DNI es obligatorio.',
+            'dni.digits' => 'El DNI debe tener exactamente 13 dígitos.',
+            'dni.unique' => 'Este DNI ya está registrado con otro empleado.',
+            'cargo.required' => 'El cargo es obligatorio.',
+            'cargo.max' => 'El cargo no puede exceder los 50 caracteres.',
+            'cargo.regex' => 'El cargo solo puede contener letras y espacios.',
+            'fecha_ingreso.required' => 'La fecha de ingreso es obligatoria.',
+            'fecha_ingreso.date' => 'La fecha de ingreso debe ser una fecha válida.',
+            'rol.required' => 'El rol es obligatorio.',
+            'rol.in' => 'El rol seleccionado no es válido.',
+            'foto.required' => 'La foto es obligatoria.',
+            'foto.image' => 'El archivo debe ser una imagen.',
+            'foto.mimes' => 'La imagen debe ser de tipo jpg, jpeg o png.',
+            'foto.max' => 'La imagen no puede exceder los 2MB.',
         ]);
 
         // Guardar foto
@@ -132,14 +153,36 @@ class EmpleadoController extends Controller
         $empleado = Empleado::findOrFail($id);
 
         $request->validate([
-            'nombre' => 'required|string|max:100',
-            'apellido' => 'required|string|max:100',
+            'nombre' => 'required|string|max:100|regex:/^[\pL\s]+$/u',
+            'apellido' => 'required|string|max:100|regex:/^[\pL\s]+$/u',
             'dni' => "required|digits:13|unique:empleados,dni,{$id}",
-            'cargo' => 'required|string|max:50',
+            'cargo' => 'required|string|max:50|regex:/^[\pL\s]+$/u',
             'fecha_ingreso' => 'required|date',
             'rol' => 'required|in:Empleado,Administrador',
             'estado' => 'required|in:Activo,Inactivo',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.max' => 'El nombre no puede exceder los 100 caracteres.',
+            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+            'apellido.required' => 'El apellido es obligatorio.',
+            'apellido.max' => 'El apellido no puede exceder los 100 caracteres.',
+            'apellido.regex' => 'El apellido solo puede contener letras y espacios.',
+            'dni.required' => 'El DNI es obligatorio.',
+            'dni.digits' => 'El DNI debe tener exactamente 13 dígitos.',
+            'dni.unique' => 'Este DNI ya está registrado con otro empleado.',
+            'cargo.required' => 'El cargo es obligatorio.',
+            'cargo.max' => 'El cargo no puede exceder los 50 caracteres.',
+            'cargo.regex' => 'El cargo solo puede contener letras y espacios.',
+            'fecha_ingreso.required' => 'La fecha de ingreso es obligatoria.',
+            'fecha_ingreso.date' => 'La fecha de ingreso debe ser una fecha válida.',
+            'rol.required' => 'El rol es obligatorio.',
+            'rol.in' => 'El rol seleccionado no es válido.',
+            'estado.required' => 'El estado es obligatorio.',
+            'estado.in' => 'El estado seleccionado no es válido.',
+            'foto.image' => 'El archivo debe ser una imagen.',
+            'foto.mimes' => 'La imagen debe ser de tipo jpg, jpeg o png.',
+            'foto.max' => 'La imagen no puede exceder los 2MB.',
         ]);
 
         $data = $request->only(['nombre', 'apellido', 'dni', 'cargo', 'fecha_ingreso', 'rol', 'estado']);
