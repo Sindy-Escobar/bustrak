@@ -31,6 +31,8 @@
                         <form action="{{ route('incidentes.store') }}" method="POST" id="formIncidente">
                             @csrf
 
+                            <div class="alert alert-danger" id="incidente-js-error" style="display: none;"></div>
+
                             {{-- Seleccionar viaje --}}
                             <div class="mb-4">
                                 <label class="form-label fw-bold">
@@ -166,25 +168,33 @@
         document.getElementById('formIncidente').addEventListener('submit', function(e) {
             const tipo = document.querySelector('input[name="tipo_incidente"]:checked');
             const descripcion = document.querySelector('[name="descripcion"]').value;
+            const errorBox = document.getElementById('incidente-js-error');
+
+            function mostrarError(mensaje) {
+                errorBox.textContent = mensaje;
+                errorBox.style.display = 'block';
+                errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
 
             if (!tipo) {
                 e.preventDefault();
-                alert('Por favor selecciona el tipo de incidente');
+                mostrarError('Por favor selecciona el tipo de incidente.');
                 return false;
             }
 
             if (descripcion.length < 20) {
                 e.preventDefault();
-                alert('Por favor describe con más detalle lo ocurrido (mínimo 20 caracteres)');
+                mostrarError('Por favor describe con más detalle lo ocurrido (mínimo 20 caracteres).');
                 return false;
             }
 
             if (descripcion.length > 1000) {
                 e.preventDefault();
-                alert('La descripción es demasiado larga (máximo 1000 caracteres)');
+                mostrarError('La descripción es demasiado larga (máximo 1000 caracteres).');
                 return false;
             }
 
+            errorBox.style.display = 'none';
             return true;
         });
     </script>

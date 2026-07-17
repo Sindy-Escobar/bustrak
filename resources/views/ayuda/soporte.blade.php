@@ -43,7 +43,7 @@
                         </div>
                     @endif
 
-                    <form id="soporteForm" method="POST" action="{{ route('soporte.enviar') }}" autocomplete="off">
+                    <form id="soporteForm" method="POST" action="{{ route('soporte.enviar') }}" autocomplete="off" novalidate>
                         @csrf
 
                         <div class="mb-4">
