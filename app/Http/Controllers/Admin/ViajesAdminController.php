@@ -25,7 +25,7 @@ class ViajesAdminController extends Controller
     public function generar(Request $request)
     {
         $request->validate([
-            'dias' => 'required|integer|min:1|max:2' //  Máximo 2 días
+            'dias' => 'required|integer|min:1|max:2' // Máximo 2 días
         ]);
 
         // Ejecutar el command
@@ -33,7 +33,30 @@ class ViajesAdminController extends Controller
             'dias' => $request->dias
         ]);
 
-        return redirect()->back()->with('success', "Viajes generados para los próximos {$request->dias} días. Revisa la consola para más detalles.");
+        // Extraer el resumen real de la salida del comando para mostrarlo
+        // directamente en la interfaz, en vez de pedirle al admin que
+        // revise la consola del servidor (a la que no tiene acceso).
+        $salida = Artisan::output();
+        $creados = null;
+        $existentes = null;
+
+        if (preg_match('/Viajes nuevos creados:\s*(\d+)/', $salida, $m)) {
+            $creados = (int) $m[1];
+        }
+        if (preg_match('/Viajes existentes:\s*(\d+)/', $salida, $m)) {
+            $existentes = (int) $m[1];
+        }
+
+        if ($creados !== null) {
+            $mensaje = "Se generaron {$creados} viajes nuevos para los próximos {$request->dias} día(s).";
+            if ($existentes) {
+                $mensaje .= " ({$existentes} ya existían y no se duplicaron.)";
+            }
+        } else {
+            $mensaje = "Proceso de generación de viajes para los próximos {$request->dias} día(s) completado.";
+        }
+
+        return redirect()->back()->with('success', $mensaje);
     }
 
     /**
