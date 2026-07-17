@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\PreventBackHistoryCache;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,6 +17,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'user.active' => \App\Http\Middleware\CheckUserActive::class,
+        ]);
+
+        // Evita que páginas privadas queden en caché del navegador
+        // (soluciona: perfil visible con el botón "Atrás" tras logout)
+        $middleware->web(append: [
+            PreventBackHistoryCache::class,
         ]);
     })
 
