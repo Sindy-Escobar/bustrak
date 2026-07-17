@@ -40,7 +40,12 @@ class ClienteController extends Controller
         $usuario = Auth::user();
 
         $rules = [
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/'
+            ],
             'email' => [
                 'required',
                 'string',
@@ -51,7 +56,10 @@ class ClienteController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
         ];
 
-        $validatedData = $request->validate($rules);
+        $validatedData = $request->validate($rules, [
+            'name.regex' => 'El nombre solo puede contener letras y espacios, sin caracteres especiales.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+        ]);
 
         $usuario->name = $validatedData['name'];
         $usuario->email = $validatedData['email'];
