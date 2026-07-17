@@ -53,7 +53,7 @@ class SolicitudController extends Controller
             'user_id' => auth()->id(),
             'nombre' => $request->nombre,
             'dni' => $request->dni,
-            'motivo' => $request->motivo,
+            'motivo' => trim(preg_replace('/\s+/', ' ', strip_tags($request->motivo))),
             'fecha_entrega' => $request->fecha_entrega,
             'estado' => 'pendiente',
         ]);

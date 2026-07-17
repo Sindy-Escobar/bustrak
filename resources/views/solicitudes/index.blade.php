@@ -105,7 +105,7 @@
                                                     <input type="hidden" name="estado" value="procesada">
                                                     <button type="submit" class="btn btn-success btn-sm"
                                                             title="Aprobar"
-                                                            onclick="return confirm('¿Aprobar esta solicitud? Se enviará notificación al empleado.')">
+                                                            onclick="return confirmarAccionModal(this, '¿Aprobar esta solicitud? Se enviará notificación al empleado.')">
                                                         <i class="fas fa-check"></i>
                                                     </button>
                                                 </form>
@@ -115,7 +115,7 @@
                                                     <input type="hidden" name="estado" value="rechazada">
                                                     <button type="submit" class="btn btn-danger btn-sm"
                                                             title="Rechazar"
-                                                            onclick="return confirm('¿Rechazar esta solicitud?')">
+                                                            onclick="return confirmarAccionModal(this, '¿Rechazar esta solicitud?')">
                                                         <i class="fas fa-times"></i>
                                                     </button>
                                                 </form>
@@ -209,7 +209,7 @@
                                                         @csrf
                                                         @method('PATCH')
                                                         <button type="submit" class="btn btn-success btn-sm"
-                                                                onclick="return confirm('¿Aceptar esta solicitud?')">
+                                                                onclick="return confirmarAccionModal(this, '¿Aceptar esta solicitud?')">
                                                             <i class="fas fa-check"></i>
                                                         </button>
                                                     </form>
@@ -217,7 +217,7 @@
                                                         @csrf
                                                         @method('PATCH')
                                                         <button type="submit" class="btn btn-danger btn-sm"
-                                                                onclick="return confirm('¿Rechazar esta solicitud?')">
+                                                                onclick="return confirmarAccionModal(this, '¿Rechazar esta solicitud?')">
                                                             <i class="fas fa-times"></i>
                                                         </button>
                                                     </form>
@@ -226,7 +226,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-warning btn-sm"
-                                                            onclick="return confirm('¿Eliminar esta solicitud?')">
+                                                            onclick="return confirmarAccionModal(this, '¿Eliminar esta solicitud?')">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
@@ -285,7 +285,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('¿Eliminar esta consulta?')">
+                                                        onclick="return confirmarAccionModal(this, '¿Eliminar esta consulta?')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -359,6 +359,54 @@
             searchBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 filterTable(searchInput.value);
+            });
+        });
+    </script>
+
+    {{-- Modal genérico de confirmación (reemplaza confirm() nativo del navegador) --}}
+    <div class="modal fade" id="modalConfirmacionGenerica" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Confirmar acción</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalConfirmacionMensaje" class="mb-0"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="modalConfirmacionBtnAceptar">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let _confirmacionCallback = null;
+
+        function confirmarAccionModal(elemento, mensaje) {
+            document.getElementById('modalConfirmacionMensaje').textContent = mensaje;
+            const modalEl = document.getElementById('modalConfirmacionGenerica');
+            const modal = new bootstrap.Modal(modalEl);
+
+            _confirmacionCallback = function () {
+                const form = elemento.closest('form');
+                if (form) {
+                    form.submit();
+                } else if (elemento.tagName === 'A') {
+                    window.location.href = elemento.href;
+                }
+            };
+
+            modal.show();
+            return false;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('modalConfirmacionBtnAceptar').addEventListener('click', function () {
+                bootstrap.Modal.getInstance(document.getElementById('modalConfirmacionGenerica')).hide();
+                if (_confirmacionCallback) _confirmacionCallback();
             });
         });
     </script>

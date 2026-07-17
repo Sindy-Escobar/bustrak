@@ -75,7 +75,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-danger"
-                                                        onclick="return confirm('¿Eliminar esta solicitud?')">
+                                                        onclick="return confirmarAccionModal(this, '¿Eliminar esta solicitud?')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -98,4 +98,52 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal genérico de confirmación (reemplaza confirm() nativo del navegador) --}}
+    <div class="modal fade" id="modalConfirmacionGenerica" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Confirmar acción</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalConfirmacionMensaje" class="mb-0"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="modalConfirmacionBtnAceptar">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let _confirmacionCallback = null;
+
+        function confirmarAccionModal(elemento, mensaje) {
+            document.getElementById('modalConfirmacionMensaje').textContent = mensaje;
+            const modalEl = document.getElementById('modalConfirmacionGenerica');
+            const modal = new bootstrap.Modal(modalEl);
+
+            _confirmacionCallback = function () {
+                const form = elemento.closest('form');
+                if (form) {
+                    form.submit();
+                } else if (elemento.tagName === 'A') {
+                    window.location.href = elemento.href;
+                }
+            };
+
+            modal.show();
+            return false;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('modalConfirmacionBtnAceptar').addEventListener('click', function () {
+                bootstrap.Modal.getInstance(document.getElementById('modalConfirmacionGenerica')).hide();
+                if (_confirmacionCallback) _confirmacionCallback();
+            });
+        });
+    </script>
 @endsection
