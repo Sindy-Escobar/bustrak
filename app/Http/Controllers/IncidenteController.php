@@ -68,7 +68,7 @@ class IncidenteController extends Controller
             'viaje_id' => $viaje_id,
             'numero_bus' => $numero_bus,
             'ruta' => $ruta,
-            'descripcion' => $request->descripcion,
+            'descripcion' => trim(preg_replace('/\s+/', ' ', strip_tags($request->descripcion))),
             'tipo_incidente' => $request->tipo_incidente,
             'fecha_hora_incidente' => now(),
         ]);

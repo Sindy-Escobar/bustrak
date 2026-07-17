@@ -242,6 +242,12 @@
 
     <!-- Resultados -->
     <div class="search-section">
+        @if(!request('search'))
+            <div class="alert alert-info py-2 mb-3">
+                <i class="fas fa-info-circle me-2"></i>
+                No especificaste un término de búsqueda — mostrando todas las terminales disponibles.
+            </div>
+        @endif
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="section-title mb-0">
                 <i class="fas fa-list me-2"></i>Lista de Terminales
@@ -249,6 +255,8 @@
             <span class="text-muted">
                 @if($terminales->count() > 0)
                     Mostrando {{ $terminales->firstItem() }} - {{ $terminales->lastItem() }} de {{ $terminales->total() }} terminales
+                @else
+                    No se encontraron terminales que coincidan con tu búsqueda.
                 @endif
             </span>
         </div>
