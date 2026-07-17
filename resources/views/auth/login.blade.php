@@ -342,7 +342,7 @@
                     value="{{ old('email') }}"
                     placeholder="nombre@email.com"
                     required
-                    autofocus
+                    @if ($errors->isEmpty()) autofocus @endif
                 >
             </div>
 
@@ -354,6 +354,7 @@
                     name="password"
                     placeholder="••••••••"
                     required
+                    @if ($errors->any()) autofocus @endif
                 >
             </div>
 
