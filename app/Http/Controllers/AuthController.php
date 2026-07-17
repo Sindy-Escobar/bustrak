@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
 
@@ -31,10 +32,21 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        // --- Bloqueo por fuerza bruta ---
+        $throttleKey = strtolower($credentials['email']) . '|' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 4)) {
+            $segundos = RateLimiter::availableIn($throttleKey);
+            return back()->withErrors([
+                'email' => "Demasiados intentos fallidos. Por seguridad, tu cuenta quedó bloqueada temporalmente. Intenta de nuevo en {$segundos} segundos.",
+            ])->onlyInput('email');
+        }
+
         $user = User::where('email', $credentials['email'])->first();
 
         // Validación: usuario no encontrado
         if (!$user) {
+            RateLimiter::hit($throttleKey, 60);
             return back()->withErrors([
                 'email' => 'Las credenciales no coinciden.',
             ])->onlyInput('email');
@@ -49,6 +61,7 @@ class AuthController extends Controller
 
         // Intento de autenticación
         if (Auth::attempt($credentials, $request->filled('remember'))) {
+            RateLimiter::clear($throttleKey);
             $request->session()->regenerate();
 
             //  Guardar plain_password si no existe
@@ -72,6 +85,8 @@ class AuthController extends Controller
                     return redirect()->route('cliente.perfil');
             }
         }
+
+        RateLimiter::hit($throttleKey, 60);
 
         return back()->withErrors([
             'email' => 'Credenciales inválidas. Por favor, inténtelo otra vez.',
