@@ -524,10 +524,11 @@
                             class="@error('password') is-invalid @enderror"
                             placeholder="••••••••"
                             minlength="8"
+                            maxlength="64"
                             required
                         >
                     </div>
-                    <span class="hint-text">Mínimo 8 caracteres</span>
+                    <span class="hint-text">Entre 8 y 64 caracteres</span>
                     <div class="invalid-feedback" id="password-length-feedback" style="display: none; color: #dc3545; font-size: 13px; margin-top: 5px;">La contraseña debe tener al menos 8 caracteres.</div>
                     @error('password')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -549,6 +550,7 @@
                             id="password_confirmation"
                             placeholder="••••••••"
                             minlength="8"
+                            maxlength="64"
                             required
                         >
                     </div>
