@@ -17,8 +17,8 @@
                     <div style="width: 110px; height: 110px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 50px; font-weight: bold; border: 4px solid rgba(255,255,255,0.4); flex-shrink: 0;">
                         {{ strtoupper(substr($usuario->name, 0, 1)) }}
                     </div>
-                    <div style="flex-grow: 1;">
-                        <h2 style="margin: 0; font-size: 28px; font-weight: 700; text-transform: capitalize;">{{ $usuario->name }}</h2>
+                    <div style="flex-grow: 1; min-width: 0;">
+                        <h2 title="{{ $usuario->name }}" style="margin: 0; font-size: 28px; font-weight: 700; text-transform: capitalize; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $usuario->name }}</h2>
                         <p style="margin: 12px 0 0 0; font-size: 14px; opacity: 0.95;">
                             <i class="fas fa-check-circle me-2"></i> Cliente Verificado
                         </p>
@@ -30,12 +30,12 @@
                     <div class="card-body p-4">
 
                         <!-- Nombre Completo -->
-                        <div style="padding: 20px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
-                            <div>
+                        <div style="padding: 20px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+                            <div style="min-width: 0;">
                                 <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700;">Nombre Completo</p>
-                                <p style="margin: 8px 0 0 0; font-size: 16px; color: #333; font-weight: 600;">{{ $usuario->name }}</p>
+                                <p title="{{ $usuario->name }}" style="margin: 8px 0 0 0; font-size: 16px; color: #333; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $usuario->name }}</p>
                             </div>
-                            <i class="fas fa-user" style="color: #5cb3ff; font-size: 24px;"></i>
+                            <i class="fas fa-user" style="color: #5cb3ff; font-size: 24px; flex-shrink: 0;"></i>
                         </div>
 
                         <!-- Correo Electrónico -->
