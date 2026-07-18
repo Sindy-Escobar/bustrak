@@ -91,11 +91,18 @@ class ReembolsoController extends Controller
         }
 
         if ($request->metodo_pago === 'transferencia') {
-            // Validar cuenta (20 dígitos)
+            // Validar cuenta (14 dígitos exactos)
             $request->validate([
                 'numero_cuenta' => 'required|digits:14',
-                'banco' => 'required|string|max:100',
-                'titular_cuenta' => 'required|string|max:150',
+                'banco' => 'required|string|max:100|regex:/^[\pL\s\.\-&]+$/u',
+                'titular_cuenta' => 'required|string|max:150|regex:/^[\pL\s]+$/u',
+            ], [
+                'numero_cuenta.required' => 'El número de cuenta es obligatorio.',
+                'numero_cuenta.digits' => 'El número de cuenta debe tener exactamente 14 dígitos.',
+                'banco.required' => 'El banco es obligatorio.',
+                'banco.regex' => 'El nombre del banco solo puede contener letras y espacios.',
+                'titular_cuenta.required' => 'El titular de la cuenta es obligatorio.',
+                'titular_cuenta.regex' => 'El titular solo puede contener letras y espacios.',
             ]);
         }
 
@@ -104,6 +111,16 @@ class ReembolsoController extends Controller
                 'numero_cheque' => 'required|string|max:50',
             ]);
         }
+
+        $request->validate([
+            'notas' => 'nullable|string|max:500',
+        ], [
+            'notas.max' => 'Las notas no pueden exceder los 500 caracteres.',
+        ]);
+
+        $notasSanitizadas = $request->filled('notas')
+            ? trim(preg_replace('/\s+/', ' ', strip_tags($request->notas)))
+            : null;
 
         // ✅ CREAR REEMBOLSO
         $reembolso = Reembolso::create([
@@ -118,7 +135,7 @@ class ReembolsoController extends Controller
             'banco' => $request->banco ?? null,
             'titular_cuenta' => $request->titular_cuenta ?? null,
             'numero_cheque' => $request->numero_cheque ?? null,
-            'notas' => $request->notas ?? null,
+            'notas' => $notasSanitizadas,
             'estado' => 'pendiente',
             'fecha_procesamiento' => now(),
             'procesado_por' => auth()->id(),

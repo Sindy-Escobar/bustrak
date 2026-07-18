@@ -53,18 +53,27 @@ class ClienteController extends Controller
                 'max:255',
                 Rule::unique('users')->ignore($usuario->id),
             ],
+            'telefono' => ['nullable', 'numeric', 'digits:8'],
+            'dni' => ['nullable', 'numeric', 'digits:13', Rule::unique('users')->ignore($usuario->id)],
             'password' => 'nullable|string|min:8|max:64|confirmed',
         ];
 
         $validatedData = $request->validate($rules, [
             'name.max' => 'El nombre no puede exceder los 100 caracteres.',
             'name.regex' => 'El nombre solo puede contener letras y espacios, sin caracteres especiales.',
+            'telefono.numeric' => 'El teléfono debe contener solo números.',
+            'telefono.digits' => 'El teléfono debe tener exactamente 8 dígitos.',
+            'dni.numeric' => 'El DNI debe contener solo números.',
+            'dni.digits' => 'El DNI debe tener exactamente 13 dígitos.',
+            'dni.unique' => 'Este DNI ya está registrado con otra cuenta.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'password.max' => 'La contraseña no puede exceder los 64 caracteres.',
         ]);
 
         $usuario->name = $validatedData['name'];
         $usuario->email = $validatedData['email'];
+        $usuario->telefono = $validatedData['telefono'] ?? $usuario->telefono;
+        $usuario->dni = $validatedData['dni'] ?? $usuario->dni;
 
         if (!empty($validatedData['password'])) {
             $usuario->password = Hash::make($validatedData['password']);

@@ -134,24 +134,24 @@
 
                         <div class="col-md-6">
                             <label for="telefono" class="form-label">Teléfono</label>
-                            <input type="text" name="telefono" id="telefono"
+                            <input type="text" name="telefono" id="telefono" inputmode="numeric" maxlength="8" pattern="[0-9]{8}" title="8 dígitos numéricos"
                                    class="form-control" value="{{ old('telefono', $usuario->telefono) }}">
                         </div>
                         <div class="col-md-6">
                             <label for="dni" class="form-label">DNI</label>
-                            <input type="text" name="dni" id="dni"
+                            <input type="text" name="dni" id="dni" inputmode="numeric" maxlength="13" pattern="[0-9]{13}" title="13 dígitos numéricos"
                                    class="form-control" value="{{ old('dni', $usuario->dni) }}">
                         </div>
                         <div class="col-md-6">
                             <label for="password" class="form-label">Nueva Contraseña (Opcional)</label>
-                            <input type="password" name="password" id="password" class="form-control">
+                            <input type="password" name="password" id="password" class="form-control" autocomplete="new-password" maxlength="64">
                          @error('password')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="password_confirmation" class="form-label">Confirmar Nueva Contraseña</label>
-                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control">
+                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" autocomplete="new-password" maxlength="64">
                         @error('password_confirmation')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror

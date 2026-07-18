@@ -278,15 +278,15 @@
                 <div id="campos-transferencia" class="campos-dinamicos">
                     <div class="form-group">
                         <label><i class="fas fa-hashtag"></i> Número de Cuenta (14 dígitos)</label>
-                        <input type="text" name="numero_cuenta" placeholder="14 dígitos" maxlength="20">
+                        <input type="text" name="numero_cuenta" placeholder="14 dígitos" maxlength="14" pattern="[0-9]{14}" title="Debe contener exactamente 14 dígitos numéricos" inputmode="numeric">
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-university"></i> Banco</label>
-                        <input type="text" name="banco" placeholder="Nombre del banco">
+                        <input type="text" name="banco" placeholder="Nombre del banco" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\.\-&]+" maxlength="100" title="Solo letras y espacios">
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-user"></i> Titular de Cuenta</label>
-                        <input type="text" name="titular_cuenta" placeholder="Nombre del titular">
+                        <input type="text" name="titular_cuenta" placeholder="Nombre del titular" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" maxlength="150" title="Solo letras y espacios">
                     </div>
                 </div>
 
@@ -294,7 +294,8 @@
 
                 <div class="form-group" style="margin-top: 10px;">
                     <label><i class="fas fa-sticky-note"></i> Notas Adicionales</label>
-                    <textarea name="notas" placeholder="Observaciones..." rows="3"></textarea>
+                    <textarea name="notas" placeholder="Observaciones..." rows="3" maxlength="500"></textarea>
+                    <small class="text-muted">Máximo 500 caracteres.</small>
                 </div>
 
                 <div class="button-group">

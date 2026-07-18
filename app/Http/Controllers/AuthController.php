@@ -223,7 +223,13 @@ class AuthController extends Controller
     {
         $request->validate([
             'current_password' => 'required',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|max:64|confirmed',
+        ], [
+            'current_password.required' => 'La contraseña actual es obligatoria.',
+            'password.required' => 'La nueva contraseña es obligatoria.',
+            'password.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
+            'password.max' => 'La nueva contraseña no puede exceder los 64 caracteres.',
+            'password.confirmed' => 'La confirmación de la nueva contraseña no coincide.',
         ]);
 
         $user = Auth::user();
