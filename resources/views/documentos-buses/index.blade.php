@@ -172,6 +172,12 @@
                     <h5 class="font-weight-bold text-dark m-0">
                         <i class="fas fa-list"></i> Listado de Documentos
                     </h5>
+<a href="{{ route('documentos-buses.exportar-pdf') }}" 
+   class="btn btn-danger" 
+   target="_blank">
+    <i class="fas fa-file-pdf"></i> Exportar PDF
+</a>
+
                 </div>
 
                 <div class="table-responsive">

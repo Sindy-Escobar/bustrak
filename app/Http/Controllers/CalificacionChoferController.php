@@ -34,6 +34,17 @@ class CalificacionChoferController extends Controller
             return back()->withErrors(['error' => 'No se encontró tu perfil de usuario.']);
         }
         // Guardamos en la base de datos
+ $viajeConEsteChofer = \App\Models\Reserva::where('user_id', $user->id)
+            ->where('abordado', true)
+            ->whereHas('viaje', function ($query) use ($empleadoId) {
+                $query->where('empleado_id', $empleadoId);
+            })
+            ->exists();
+
+        if (!$viajeConEsteChofer) {
+            return redirect('/cliente/historial')
+                ->with('error', 'No puedes calificar a este conductor porque no tienes un viaje completado con él.');
+        }
         \App\Models\ComentarioConductor::create([
             'usuario_id'     => $usuario->id,
             'empleado_id'    => $empleadoId,
