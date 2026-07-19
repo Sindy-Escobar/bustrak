@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\RegistroRentaController;
-use App\Http\Controllers\RegistroTeminalController;
+use App\Http\Controllers\RegistroTerminalController;
 use App\Http\Controllers\ReservaController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -47,7 +47,6 @@ use App\Http\Controllers\ViajesAdminController;
 use App\Http\Controllers\IncidenteController;
 use App\Http\Controllers\PagoController;
 
-
 // Toggle activar/inactivar
 Route::middleware(['auth', 'admin'])->patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
 
@@ -61,7 +60,7 @@ Route::middleware(['auth', 'admin'])->patch('/admin/usuarios/{id}/validar', [Adm
 // ->name('empresas.validar');
 
 // Visualización de terminales
-Route::get('/ver_terminales', [RegistroTeminalController::class, 'ver_terminales'])->name('terminales.ver_terminales');
+Route::get('/ver_terminales', [RegistroTerminalController::class, 'ver_terminales'])->name('terminales.ver_terminales');
 
 // Validación empleados
 Route::get('/validacion-empleados', function () {
@@ -81,6 +80,8 @@ Route::get('empresas', [EmpresaController::class, 'index'])->name('empresas.inde
 
 // Recurso empleados
 Route::resource('empleados', EmpleadoController::class);
+
+
 
 // Activar/desactivar empleados
 Route::get('/empleados/{id}/desactivar', [EmpleadoController::class, 'formDesactivar'])->name('empleados.formDesactivar');
@@ -147,15 +148,15 @@ Route::put('/empresa-hu11/{id}', [EmpresaHU11Controller::class, 'update'])->name
 // ======================================================
 // TERMINALES
 // ======================================================
-Route::resource('terminales', RegistroTeminalController::class)->parameters([
+Route::resource('terminales', RegistroTerminalController::class)->parameters([
     'terminales' => 'terminal',
 ]);
 
-Route::get('terminales/{terminal}/servicios', [RegistroTeminalController::class, 'servicios'])
+Route::get('terminales/{terminal}/servicios', [RegistroTerminalController::class, 'servicios'])
     ->name('terminales.servicios');
-Route::post('terminales/{terminal}/servicios', [RegistroTeminalController::class, 'storeServicio'])
+Route::post('terminales/{terminal}/servicios', [RegistroTerminalController::class, 'storeServicio'])
     ->name('terminales.servicios.store');
-Route::delete('terminales/{terminal}/servicios/{servicio}', [RegistroTeminalController::class, 'destroyServicio'])
+Route::delete('terminales/{terminal}/servicios/{servicio}', [RegistroTerminalController::class, 'destroyServicio'])
     ->name('terminales.servicios.destroy');
 
 // HU10 - empresas buses
@@ -403,6 +404,12 @@ Route::get('/puntos/historial-canjes', [RegistroPuntosController::class, 'histor
 // HU13: Exportar historial a PDF
 Route::get('/puntos/exportar-pdf', [RegistroPuntosController::class, 'exportarHistorialPDF'])
     ->name('puntos.exportar-pdf');
+
+
+Route::get('/terminales/exportar/pdf', [RegistroTerminalController::class, 'exportarPDF'])
+    ->name('terminales.exportarPDF');
+
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DocumentoBusController::class, 'dashboard'])->name('dashboard');

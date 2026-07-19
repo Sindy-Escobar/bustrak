@@ -2,6 +2,16 @@
 
 @section('content')
     <div class="container-fluid mt-4">
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="text-primary font-weight-bold">
+        <i class="fas fa-map-marker-alt"></i> Listado de Terminales
+    </h3>
+
+    <a href="{{ route('terminales.exportarPDF') }}" class="btn btn-danger" target="_blank">
+        <i class="fas fa-file-pdf"></i> Exportar PDF
+    </a>
+</div>
         <div class="card shadow-lg border-0 rounded-0 w-100">
             {{-- Encabezado --}}
             <div class="card-header d-flex justify-content-between align-items-center" style="background-color:#ffffff;">
@@ -80,7 +90,7 @@
                             <th><i class="fas fa-bus me-1"></i>Nombre</th>
                             <th><i class="fas fa-map-marker-alt me-1"></i>Ubicación</th>
                             <th><i class="fas fa-phone-alt me-1"></i>Contacto</th>
-                            <th><i class="fas fa-clock me-1"></i>Horario</th>
+                            <th><i class="fas fa-clock me-1"></i>Horario</th><th><i class="fas fa-calendar-check me-1"></i>Última Actualización</th>
                             <th class="text-center"><i class="fas fa-cog me-1"></i>Acciones</th>
                         </tr>
                         </thead>
@@ -103,6 +113,9 @@
                                     @endif
                                 </td>
                                 <td>
+<small>{{ $terminal->updated_at->format('d/m/Y g:i A') }}</small>
+                                </td>
+                                <td>
                                     <a href="{{ route('terminales.edit', $terminal) }}" class="btn btn-primary btn-sm">Editar</a>
 
                                     <a href="{{ route('terminales.servicios', $terminal) }}" class="btn btn-primary btn-sm mt-1">
@@ -112,7 +125,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
+                                <td colspan="7" class="text-center text-muted py-4">
                                     <i class="fas fa-search fa-2x mb-2 d-block"></i>
                                     No se encontraron terminales con los filtros aplicados
                                 </td>
