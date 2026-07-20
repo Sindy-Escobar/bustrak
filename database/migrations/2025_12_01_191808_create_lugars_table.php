@@ -8,13 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('lugars', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('departamento_id')->constrained('departamentos')->onDelete('cascade');
-            $table->string('nombre');
-            $table->string('imagen');
-            $table->timestamps();
-        });
+        // NOTA: Esta migración crea la tabla 'lugars' con nombre incorrecto.
+        // Se mantiene solo por compatibilidad, pero la tabla correcta es 'lugares'.
+        if (!Schema::hasTable('lugars')) {
+            Schema::create('lugars', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('departamento_id')->constrained('departamentos')->onDelete('cascade');
+                $table->string('nombre');
+                $table->string('imagen');
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void
