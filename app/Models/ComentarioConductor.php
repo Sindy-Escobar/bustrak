@@ -15,6 +15,7 @@ class ComentarioConductor extends Model
     // ACTUALIZADO: Agregamos todos los campos del formulario
     protected $fillable = [
         'usuario_id',
+        'reserva_id',
         'empleado_id',
         'calificacion',
         'comentario',
@@ -38,7 +39,7 @@ class ComentarioConductor extends Model
     public function usuario(): BelongsTo
     {
         // Si tu modelo de autenticación de Laravel es User, cámbialo aquí
-        return $this->belongsTo(User::class, 'usuario_id');
+        return $this->belongsTo(Usuario::class, 'usuario_id');
     }
 
     /**
@@ -47,6 +48,11 @@ class ComentarioConductor extends Model
     public function empleado(): BelongsTo
     {
         return $this->belongsTo(Empleado::class, 'empleado_id');
+    }
+
+    public function reserva(): BelongsTo
+    {
+        return $this->belongsTo(Reserva::class);
     }
 
     /**

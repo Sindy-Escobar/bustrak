@@ -9,6 +9,12 @@ class Reserva extends Model
 {
     use HasFactory;
 
+    public const ESTADOS_EXCLUIDOS_DE_TOTALES = [
+        'cancelada',
+        'reembolsada',
+        'eliminado',
+    ];
+
     protected $fillable = [
         'user_id',
         'viaje_id',
@@ -68,6 +74,26 @@ class Reserva extends Model
     public function tipoServicio()
     {
         return $this->belongsTo(\App\Models\TipoServicio::class, 'tipo_servicio_id');
+    }
+
+    public function calificacion()
+    {
+        return $this->hasOne(Calificacion::class);
+    }
+
+    public function comentarioConductor()
+    {
+        return $this->hasOne(ComentarioConductor::class);
+    }
+
+    public function scopeActivasParaTotales($query)
+    {
+        return $query->whereNotIn('estado', self::ESTADOS_EXCLUIDOS_DE_TOTALES);
+    }
+
+    public function scopeExcluidasDeTotales($query)
+    {
+        return $query->whereIn('estado', self::ESTADOS_EXCLUIDOS_DE_TOTALES);
     }
 
     public function serviciosAdicionales()

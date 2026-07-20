@@ -1,5 +1,7 @@
 @extends('layouts.layoutadmin')
 
+@section('title', 'Gestión de Viajes')
+
 @section('content')
     <div class="container py-4">
         <div class="row">
@@ -92,6 +94,212 @@
                                 <li><strong>Limpiar:</strong> Elimina solo viajes pasados SIN reservas para mantener la base de datos limpia.</li>
                             </ul>
                         </div>
+                    </div>
+                </div>
+
+                {{-- Listado de viajes generados --}}
+                <div class="card shadow-sm mt-4">
+                    <div class="card-header bg-primary text-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <h4 class="mb-0">
+                            <i class="fas fa-list me-2"></i>Viajes generados
+                        </h4>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-light text-primary fs-6">
+                                {{ $viajes->total() }} resultado(s)
+                            </span>
+                            <a
+                                href="{{ route('admin.viajes.exportar-pdf', request()->only(['estado', 'fecha', 'buscar'])) }}"
+                                class="btn btn-danger btn-sm"
+                                title="Exportar los resultados actuales"
+                            >
+                                <i class="fas fa-file-pdf me-1"></i>Exportar PDF
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row g-3 mb-4">
+                            <div class="col-md">
+                                <div class="border rounded p-3 h-100 bg-light">
+                                    <div class="text-muted small">Total registrados</div>
+                                    <div class="fs-3 fw-bold">{{ $resumen['total'] }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md">
+                                <div class="border rounded p-3 h-100 bg-light">
+                                    <div class="text-muted small">Próximos</div>
+                                    <div class="fs-3 fw-bold text-success">{{ $resumen['proximos'] }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md">
+                                <div class="border rounded p-3 h-100 bg-light">
+                                    <div class="text-muted small">Pasados</div>
+                                    <div class="fs-3 fw-bold text-secondary">{{ $resumen['pasados'] }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md">
+                                <div class="border rounded p-3 h-100 bg-light">
+                                    <div class="text-muted small">Activos</div>
+                                    <div class="fs-3 fw-bold text-success">{{ $resumen['activos'] }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md">
+                                <div class="border rounded p-3 h-100 bg-light">
+                                    <div class="text-muted small">Inactivos</div>
+                                    <div class="fs-3 fw-bold text-warning">{{ $resumen['inactivos'] }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md">
+                                <div class="border rounded p-3 h-100 bg-light">
+                                    <div class="text-muted small">Asientos reservados</div>
+                                    <div class="fs-3 fw-bold text-primary">{{ $resumen['asientos_reservados'] }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md">
+                                <div class="border rounded p-3 h-100 bg-light">
+                                    <div class="text-muted small">Cancelados excluidos</div>
+                                    <div class="fs-3 fw-bold text-danger">{{ $resumen['asientos_cancelados_excluidos'] }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form method="GET" action="{{ route('admin.viajes.gestionar') }}" class="row g-3 align-items-end mb-4">
+                            <div class="col-lg-3 col-md-6">
+                                <label for="estado" class="form-label fw-semibold">Estado</label>
+                                <select id="estado" name="estado" class="form-select">
+                                    <option value="proximos" @selected($estado === 'proximos')>Próximos</option>
+                                    <option value="pasados" @selected($estado === 'pasados')>Pasados</option>
+                                    <option value="todos" @selected($estado === 'todos')>Todos</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <label for="fecha" class="form-label fw-semibold">Fecha de salida</label>
+                                <input id="fecha" type="date" name="fecha" class="form-control" value="{{ request('fecha') }}">
+                            </div>
+                            <div class="col-lg-4 col-md-8">
+                                <label for="buscar" class="form-label fw-semibold">Ruta, número de bus o placa</label>
+                                <input
+                                    id="buscar"
+                                    type="search"
+                                    name="buscar"
+                                    class="form-control"
+                                    value="{{ $buscar }}"
+                                    placeholder="Ej. Tegucigalpa, BUS-01..."
+                                >
+                            </div>
+                            <div class="col-lg-2 col-md-4 d-flex gap-2">
+                                <button type="submit" class="btn btn-primary flex-grow-1">
+                                    <i class="fas fa-search me-1"></i>Filtrar
+                                </button>
+                                <a href="{{ route('admin.viajes.gestionar') }}" class="btn btn-outline-secondary" title="Limpiar filtros">
+                                    <i class="fas fa-eraser"></i>
+                                </a>
+                            </div>
+                        </form>
+
+                        @if($viajes->isEmpty())
+                            <div class="text-center py-5 border rounded bg-light">
+                                <i class="fas fa-route fa-3x text-muted mb-3"></i>
+                                <h5>No se encontraron viajes</h5>
+                                <p class="text-muted mb-0">
+                                    @if(request()->filled('fecha') || request()->filled('buscar') || $estado !== 'proximos')
+                                        Cambia o limpia los filtros para ampliar la búsqueda.
+                                    @else
+                                        Genera viajes con el formulario superior para visualizarlos aquí.
+                                    @endif
+                                </p>
+                            </div>
+                        @else
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Ruta</th>
+                                            <th>Salida</th>
+                                            <th>Bus / Servicio</th>
+                                            <th>Conductor</th>
+                                            <th>Ocupación</th>
+                                            <th>Estado</th>
+                                            <th>Disponibilidad</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($viajes as $viaje)
+                                            @php
+                                                $esProximo = $viaje->fecha_hora_salida->isFuture();
+                                                $capacidad = max((int) $viaje->asientos_totales, 0);
+                                                $reservados = (int) ($viaje->asientos_reservados ?? 0);
+                                                $canceladosExcluidos = (int) ($viaje->asientos_cancelados_excluidos ?? 0);
+                                            @endphp
+                                            <tr>
+                                                <td class="fw-semibold">#{{ $viaje->id }}</td>
+                                                <td>
+                                                    <div class="fw-semibold">
+                                                        {{ $viaje->origen?->nombre ?? 'Origen no disponible' }}
+                                                        <i class="fas fa-arrow-right mx-1 text-muted"></i>
+                                                        {{ $viaje->destino?->nombre ?? 'Destino no disponible' }}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>{{ $viaje->fecha_hora_salida->format('d/m/Y') }}</div>
+                                                    <small class="text-muted">{{ $viaje->fecha_hora_salida->format('h:i A') }}</small>
+                                                </td>
+                                                <td>
+                                                    <div class="fw-semibold">{{ $viaje->bus?->numero_bus ?? 'Sin bus' }}</div>
+                                                    <small class="text-muted">
+                                                        {{ $viaje->bus?->placa ?? 'Sin placa' }}
+                                                        @if($viaje->bus?->tipoServicio)
+                                                            · {{ $viaje->bus->tipoServicio->nombre }}
+                                                        @endif
+                                                    </small>
+                                                </td>
+                                                <td>
+                                                    {{ $viaje->empleado
+                                                        ? trim($viaje->empleado->nombre.' '.$viaje->empleado->apellido)
+                                                        : 'Sin asignar' }}
+                                                </td>
+                                                <td>
+                                                    <span class="fw-semibold">{{ $reservados }}</span>
+                                                    <span class="text-muted">/ {{ $capacidad }}</span>
+                                                    @if($canceladosExcluidos > 0)
+                                                        <small class="d-block text-danger">
+                                                            {{ $canceladosExcluidos }} cancelado(s) excluido(s)
+                                                        </small>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <span class="badge {{ $esProximo ? 'bg-success' : 'bg-secondary' }}">
+                                                        {{ $esProximo ? 'Próximo' : 'Finalizado' }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge {{ $viaje->activo ? 'bg-success' : 'bg-danger' }}">
+                                                        {{ $viaje->activo ? 'Activo' : 'Inactivo' }}
+                                                    </span>
+                                                    <form action="{{ route('admin.viajes.cambiar-estado', $viaje) }}" method="POST" class="mt-2">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <input type="hidden" name="activo" value="{{ $viaje->activo ? 0 : 1 }}">
+                                                        <button type="submit" class="btn btn-sm {{ $viaje->activo ? 'btn-outline-danger' : 'btn-outline-success' }}">
+                                                            {{ $viaje->activo ? 'Desactivar' : 'Activar' }}
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
+                                <small class="text-muted">
+                                    Mostrando {{ $viajes->firstItem() }}–{{ $viajes->lastItem() }}
+                                    de {{ $viajes->total() }} viajes
+                                </small>
+                                {{ $viajes->links() }}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

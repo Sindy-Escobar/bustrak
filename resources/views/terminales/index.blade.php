@@ -8,8 +8,9 @@
         <i class="fas fa-map-marker-alt"></i> Listado de Terminales
     </h3>
 
-    <a href="{{ route('terminales.exportarPDF') }}" class="btn btn-danger" target="_blank">
-        <i class="fas fa-file-pdf"></i> Exportar PDF
+    <a href="{{ route('terminales.exportarPDF') }}" class="btn btn-danger" target="_blank"
+       title="Generar reporte completo de terminales en formato PDF">
+        <i class="fas fa-file-pdf me-1"></i> Generar reporte PDF
     </a>
 </div>
         <div class="card shadow-lg border-0 rounded-0 w-100">
@@ -89,6 +90,8 @@
                             <th><i class="fas fa-barcode me-1"></i>Código</th>
                             <th><i class="fas fa-bus me-1"></i>Nombre</th>
                             <th><i class="fas fa-map-marker-alt me-1"></i>Ubicación</th>
+                            <th><i class="fas fa-bus-alt me-1"></i>Buses asignados</th>
+                            <th><i class="fas fa-users me-1"></i>Capacidad</th>
                             <th><i class="fas fa-phone-alt me-1"></i>Contacto</th>
                             <th><i class="fas fa-clock me-1"></i>Horario</th><th><i class="fas fa-calendar-check me-1"></i>Última Actualización</th>
                             <th class="text-center"><i class="fas fa-cog me-1"></i>Acciones</th>
@@ -100,6 +103,31 @@
                                 <td>{{ $terminal->codigo }}</td>
                                 <td>{{ $terminal->nombre }}</td>
                                 <td><strong>{{ $terminal->departamento }}</strong></td>
+                                <td class="text-start">
+                                    @forelse($terminal->buses->take(3) as $bus)
+                                        <span class="badge bg-primary mb-1" title="Placa: {{ $bus->placa }}">
+                                            {{ $bus->numero_bus }}
+                                        </span>
+                                    @empty
+                                        <span class="text-muted">Sin buses asignados</span>
+                                    @endforelse
+
+                                    @if($terminal->buses_count > 3)
+                                        <span class="badge bg-secondary mb-1">
+                                            +{{ $terminal->buses_count - 3 }}
+                                        </span>
+                                    @endif
+
+                                    @if($terminal->buses_count > 0)
+                                        <small class="d-block text-muted mt-1">
+                                            {{ $terminal->buses_count }} bus(es)
+                                        </small>
+                                    @endif
+                                </td>
+                                <td>
+                                    <span class="fw-bold">{{ number_format((int) $terminal->capacidad_total) }}</span>
+                                    <small class="d-block text-muted">pasajeros</small>
+                                </td>
                                 <td>
                                     <i class="fas fa-phone-alt text-success me-1"></i>{{ $terminal->telefono }}<br>
                                     <small><i class="fas fa-envelope text-secondary me-1"></i>{{ $terminal->correo }}</small>
@@ -125,7 +153,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-4">
+                                <td colspan="9" class="text-center text-muted py-4">
                                     <i class="fas fa-search fa-2x mb-2 d-block"></i>
                                     No se encontraron terminales con los filtros aplicados
                                 </td>

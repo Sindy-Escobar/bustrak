@@ -155,13 +155,16 @@ Route::put('/empresa-hu11/{id}', [EmpresaHU11Controller::class, 'update'])->name
 // ======================================================
 Route::resource('terminales', RegistroTerminalController::class)->parameters([
     'terminales' => 'terminal',
-]);
+])->middleware(['auth', 'admin']);
 
 Route::get('terminales/{terminal}/servicios', [RegistroTerminalController::class, 'servicios'])
+    ->middleware(['auth', 'admin'])
     ->name('terminales.servicios');
 Route::post('terminales/{terminal}/servicios', [RegistroTerminalController::class, 'storeServicio'])
+    ->middleware(['auth', 'admin'])
     ->name('terminales.servicios.store');
 Route::delete('terminales/{terminal}/servicios/{servicio}', [RegistroTerminalController::class, 'destroyServicio'])
+    ->middleware(['auth', 'admin'])
     ->name('terminales.servicios.destroy');
 
 // HU10 - empresas buses
@@ -348,8 +351,12 @@ Route::post('/checkin/confirmar', [CheckinController::class, 'confirmarAbordaje'
 Route::get('/mis-solicitudes', [ConsultaController::class, 'misConsultas'])->name('consulta.mis');
 
 // Calificación de viajes
-Route::get('/viaje/{reserva}/calificar', [CalificacionController::class, 'create'])->name('calificacion.create');
-Route::post('/viaje/{reserva}/calificar', [CalificacionController::class, 'store'])->name('calificacion.store');
+Route::get('/viaje/{reserva}/calificar', [CalificacionController::class, 'create'])
+    ->middleware('auth')
+    ->name('calificacion.create');
+Route::post('/viaje/{reserva}/calificar', [CalificacionController::class, 'store'])
+    ->middleware('auth')
+    ->name('calificacion.store');
 
 // ======================================================
 // RUTAS ADMINS - NOTIFICACIONES
@@ -412,16 +419,17 @@ Route::get('/puntos/exportar-pdf', [RegistroPuntosController::class, 'exportarHi
 
 
 Route::get('/terminales/exportar/pdf', [RegistroTerminalController::class, 'exportarPDF'])
+    ->middleware(['auth', 'admin'])
     ->name('terminales.exportarPDF');
 
 
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DocumentoBusController::class, 'dashboard'])->name('dashboard');
 
 });
 //Documentos-buses Sindy
-Route::middleware(['auth'])->prefix('documentos-buses')->name('documentos-buses.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('documentos-buses')->name('documentos-buses.')->group(function () {
 
     // documentos-buses.dashboard, si se requiere en el menú específico de esa sección.
     Route::get('/dashboard', [DocumentoBusController::class, 'dashboard'])->name('dashboard');
@@ -507,10 +515,14 @@ Route::get('/facturas/verificar/{numeroFactura}', [\App\Http\Controllers\Cliente
 
 
 // Cambiamos 'create' por 'formulario' para que sea más descriptivo
-Route::get('/calificar-chofer/{empleadoId}', [CalificacionChoferController::class, 'formulario'])->name('calificar.chofer');
+Route::get('/calificar-chofer/{empleadoId}', [CalificacionChoferController::class, 'formulario'])
+    ->middleware('auth')
+    ->name('calificar.chofer');
 
 // Esta se queda igual
-Route::post('/calificar-chofer/guardar/{empleadoId}', [CalificacionChoferController::class, 'guardar'])->name('calificar.chofer.guardar');
+Route::post('/calificar-chofer/guardar/{empleadoId}', [CalificacionChoferController::class, 'guardar'])
+    ->middleware('auth')
+    ->name('calificar.chofer.guardar');
 
 // Esta también está bien
 Route::get('/comentarios/conductor/{empleadoId}', [ComentarioConductorController::class, 'mostrarComentarios'])->name('comentarios.conductor');
@@ -669,6 +681,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 // GESTIÓN DE VIAJES (Admin)
 // ============================================
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/viajes/exportar/pdf', [\App\Http\Controllers\Admin\ViajesAdminController::class, 'exportarPDF'])
+        ->name('viajes.exportar-pdf');
+
     Route::get('/viajes/gestionar', [\App\Http\Controllers\Admin\ViajesAdminController::class, 'index'])
         ->name('viajes.gestionar');
 
@@ -677,6 +692,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::post('/viajes/limpiar', [\App\Http\Controllers\Admin\ViajesAdminController::class, 'limpiar'])
         ->name('viajes.limpiar');
+
+    Route::patch('/viajes/{viaje}/estado', [\App\Http\Controllers\Admin\ViajesAdminController::class, 'cambiarEstado'])
+        ->name('viajes.cambiar-estado');
 });
 // ============================================
 // INCIDENTES (Usuarios/Pasajeros) - HU5

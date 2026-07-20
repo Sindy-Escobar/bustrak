@@ -17,7 +17,19 @@ class Viaje extends Model
         'fecha_hora_salida',
         'asientos_totales',
         'empleado_id',
+        'activo',
     ];
+
+    protected $casts = [
+        'fecha_hora_salida' => 'datetime',
+        'asientos_totales' => 'integer',
+        'activo' => 'boolean',
+    ];
+
+    public function scopeActivos($query)
+    {
+        return $query->where('activo', true);
+    }
 
     public function origen()
     {

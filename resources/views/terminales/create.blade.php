@@ -226,7 +226,32 @@
 
                         {{-- 4️⃣ SERVICIOS --}}
                         <h5 class="mb-3 mt-5" style="color:#1e63b8; font-weight:600; font-size:1.5rem;">
-                            <i class="fas fa-concierge-bell me-2"></i>4. Servicios de la Terminal
+                            <i class="fas fa-bus me-2"></i>4. Buses asignados
+                        </h5>
+                        <hr class="mt-0 mb-4">
+
+                        <div class="mb-4">
+                            <label for="bus_ids" class="form-label">Selecciona los buses que operarán desde esta terminal</label>
+                            <select id="bus_ids" name="bus_ids[]" class="form-select @error('bus_ids.*') is-invalid @enderror" multiple size="6">
+                                @foreach($buses as $bus)
+                                    <option value="{{ $bus->id }}" @selected(in_array($bus->id, old('bus_ids', [])))>
+                                        {{ $bus->numero_bus }} · {{ $bus->placa }} · {{ $bus->capacidad_asientos }} pasajeros
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="form-text">
+                                Usa Ctrl (Windows) para seleccionar varios buses. La capacidad se calculará automáticamente.
+                            </div>
+                            @error('bus_ids.*')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            @if($buses->isEmpty())
+                                <div class="alert alert-warning mt-2 mb-0">No hay buses disponibles para asignar.</div>
+                            @endif
+                        </div>
+
+                        <h5 class="mb-3 mt-5" style="color:#1e63b8; font-weight:600; font-size:1.5rem;">
+                            <i class="fas fa-concierge-bell me-2"></i>5. Servicios de la Terminal
                         </h5>
                         <hr class="mt-0 mb-4">
 

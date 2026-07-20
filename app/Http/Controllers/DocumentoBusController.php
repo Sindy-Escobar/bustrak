@@ -21,7 +21,12 @@ class DocumentoBusController extends Controller
 
         // Filtros
         if ($request->filled('estado')) {
-            $query->where('estado', $request->estado);
+            match ($request->estado) {
+                'vigente' => $query->vigentes(),
+                'por_vencer' => $query->porVencer(),
+                'vencido' => $query->vencidos(),
+                default => null,
+            };
         }
 
         if ($request->filled('tipo_documento')) {
@@ -198,7 +203,6 @@ class DocumentoBusController extends Controller
         }
 
         $documento->actualizarEstado();
-        $documento->save();
 
         // Prueba #4 – Registrar actualización en historial de auditoría
         HistorialDocumentoBus::create([
@@ -282,9 +286,9 @@ class DocumentoBusController extends Controller
 
         // Buses con documentos pendientes
         $busesAlerta = Bus::whereHas('documentos', function($query) {
-            $query->where('estado', '!=', 'vigente');
+            $query->noVigentes();
         })->with(['documentos' => function($query) {
-            $query->where('estado', '!=', 'vigente');
+            $query->noVigentes();
         }])->get();
 
         return view('documentos-buses.dashboard', compact(
@@ -304,10 +308,14 @@ class DocumentoBusController extends Controller
         $actualizados = 0;
 
         foreach ($documentos as $documento) {
-            $estadoAnterior = $documento->estado;
+            $estadoAnterior = $documento->getRawOriginal('estado');
+            $diasAnteriores = (int) $documento->getRawOriginal('dias_hasta_vencimiento');
             $documento->actualizarEstado();
 
-            if ($estadoAnterior !== $documento->estado) {
+            if (
+                $estadoAnterior !== $documento->estado
+                || $diasAnteriores !== $documento->dias_hasta_vencimiento
+            ) {
                 $actualizados++;
             }
         }
@@ -334,7 +342,6 @@ class DocumentoBusController extends Controller
     public function exportarPDF()
     {
         $documentos = DocumentoBus::with(['bus', 'registradoPor'])
-            ->orderBy('estado', 'desc')
             ->orderBy('fecha_vencimiento', 'asc')
             ->get();
 
@@ -380,5 +387,3 @@ class DocumentoBusController extends Controller
         return view('documentos-buses.edit-content', compact('documento', 'buses', 'tiposDocumento'));
     }
 }
-
-

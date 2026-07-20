@@ -17,7 +17,8 @@ class Bus extends Model
         'modelo',
         'capacidad_asientos',
         'estado',
-        'tipo_servicio_id'
+        'tipo_servicio_id',
+        'terminal_id',
     ];
     public function tipoServicio()
     {
@@ -27,6 +28,11 @@ class Bus extends Model
     public function viajes()
     {
         return $this->hasMany(Viaje::class, 'bus_id');
+    }
+
+    public function terminal()
+    {
+        return $this->belongsTo(RegistroTerminal::class, 'terminal_id');
     }
     // Accessor para usar 'capacidad' en lugar de 'capacidad_asientos'
     public function getCapacidadAttribute()

@@ -59,6 +59,8 @@
             <th>Código</th>
             <th>Nombre</th>
             <th>Ubicación</th>
+            <th>Buses asignados</th>
+            <th>Capacidad</th>
             <th>Contacto</th>
             <th>Horario</th>
             <th>Última actualización</th>
@@ -77,6 +79,16 @@
                 <strong>Municipio:</strong> {{ $t->municipio }} <br>
                 <strong>Dirección:</strong> {{ $t->direccion }}
             </td>
+
+            <td>
+                @forelse($t->buses as $bus)
+                    {{ $bus->numero_bus }} ({{ $bus->placa }})@if(!$loop->last), @endif
+                @empty
+                    Sin buses asignados
+                @endforelse
+            </td>
+
+            <td>{{ number_format((int) $t->capacidad_total) }} pasajeros</td>
 
             <td>
                 <strong>Tel:</strong> {{ $t->telefono }} <br>

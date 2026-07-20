@@ -75,6 +75,24 @@ class DocumentoBus extends Model
         return $badges[$this->estado] ?? '<span class="badge bg-secondary">Desconocido</span>';
     }
 
+    /**
+     * Los días restantes siempre se calculan desde hoy, no desde la fecha
+     * en que el documento fue creado.
+     */
+    public function getDiasHastaVencimientoAttribute($value): int
+    {
+        return $this->calcularDiasRestantes();
+    }
+
+    /**
+     * El estado visible se deriva de la fecha de vencimiento para evitar
+     * que un valor persistido quede obsoleto con el paso de los días.
+     */
+    public function getEstadoAttribute($value): string
+    {
+        return $this->calcularEstado();
+    }
+
     public function getTipoDocumentoNombreAttribute()
     {
         $tipos = [
@@ -96,23 +114,46 @@ class DocumentoBus extends Model
      */
     public function actualizarEstado()
     {
-        $hoy = Carbon::now();
-        $vencimiento = Carbon::parse($this->fecha_vencimiento);
-        $diasRestantes = $hoy->diffInDays($vencimiento, false);
-
-        $this->dias_hasta_vencimiento = $diasRestantes;
-
-        if ($diasRestantes < 0) {
-            $this->estado = 'vencido';
-        } elseif ($diasRestantes <= 30) {
-            $this->estado = 'por_vencer';
-        } else {
-            $this->estado = 'vigente';
-        }
+        $this->aplicarCalculoActual();
 
         $this->save();
 
         return $this->estado;
+    }
+
+    public function calcularDiasRestantes(): int
+    {
+        if (! $this->fecha_vencimiento) {
+            return 0;
+        }
+
+        return (int) Carbon::today()->diffInDays(
+            Carbon::parse($this->fecha_vencimiento)->startOfDay(),
+            false
+        );
+    }
+
+    public function calcularEstado(): string
+    {
+        $diasRestantes = $this->calcularDiasRestantes();
+
+        if ($diasRestantes < 0) {
+            return 'vencido';
+        }
+
+        if ($diasRestantes <= 30) {
+            return 'por_vencer';
+        }
+
+        return 'vigente';
+    }
+
+    public function aplicarCalculoActual(): void
+    {
+        $diasRestantes = $this->calcularDiasRestantes();
+
+        $this->setAttribute('dias_hasta_vencimiento', $diasRestantes);
+        $this->setAttribute('estado', $this->calcularEstado());
     }
 
     /**
@@ -173,17 +214,25 @@ class DocumentoBus extends Model
 
     public function scopeVigentes($query)
     {
-        return $query->where('estado', 'vigente');
+        return $query->whereDate('fecha_vencimiento', '>', Carbon::today()->addDays(30));
     }
 
     public function scopePorVencer($query)
     {
-        return $query->where('estado', 'por_vencer');
+        return $query->whereBetween('fecha_vencimiento', [
+            Carbon::today()->toDateString(),
+            Carbon::today()->addDays(30)->toDateString(),
+        ]);
     }
 
     public function scopeVencidos($query)
     {
-        return $query->where('estado', 'vencido');
+        return $query->whereDate('fecha_vencimiento', '<', Carbon::today());
+    }
+
+    public function scopeNoVigentes($query)
+    {
+        return $query->whereDate('fecha_vencimiento', '<=', Carbon::today()->addDays(30));
     }
 
     public function scopePorTipo($query, $tipo)
@@ -207,20 +256,11 @@ class DocumentoBus extends Model
             // Registrar usuario que creó el documento
             $documento->registrado_por = auth()->id();
 
-            // Calcular estado SIN guardar el modelo (para evitar bucle infinito)
-            $hoy = Carbon::now();
-            $vencimiento = Carbon::parse($documento->fecha_vencimiento);
-            $diasRestantes = $hoy->diffInDays($vencimiento, false);
+            $documento->aplicarCalculoActual();
+        });
 
-            $documento->dias_hasta_vencimiento = $diasRestantes;
-
-            if ($diasRestantes < 0) {
-                $documento->estado = 'vencido';
-            } elseif ($diasRestantes <= 30) {
-                $documento->estado = 'por_vencer';
-            } else {
-                $documento->estado = 'vigente';
-            }
+        static::saving(function ($documento) {
+            $documento->aplicarCalculoActual();
         });
 
         static::created(function ($documento) {

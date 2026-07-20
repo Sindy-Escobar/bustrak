@@ -62,7 +62,7 @@
                             $comentarioGuardado = null;
 
                             if ($usuario && $reserva->viaje && $reserva->viaje->empleado_id) {
-                                $comentarioGuardado = \App\Models\ComentarioConductor::where('empleado_id', $reserva->viaje->empleado_id)
+                                $comentarioGuardado = \App\Models\ComentarioConductor::where('reserva_id', $reserva->id)
                                     ->where('usuario_id', $usuario->id)
                                     ->first();
                             }
@@ -139,7 +139,7 @@
                                     @endif
 
                                     {{-- CALIFICAR --}}
-                                    @if(!$estaCancelada && !$estaReembolsada && $reserva->viaje && $reserva->viaje->empleado_id && !$comentarioGuardado)
+                                    @if(!$estaCancelada && !$estaReembolsada && $viajeYaPaso && $reserva->abordado && $reserva->viaje && $reserva->viaje->empleado_id && !$comentarioGuardado)
                                         <a href="{{ route('calificar.chofer', $reserva->viaje->empleado_id) }}"
                                            class="btn btn-warning btn-sm mb-1">
                                             Calificar

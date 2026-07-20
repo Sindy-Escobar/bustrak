@@ -248,7 +248,7 @@
 
                 <a href="{{ route('admin.viajes.gestionar') }}"
                    class="{{ request()->routeIs('admin.viajes.gestionar') ? 'active' : '' }}">
-                    Actualizar Viajes
+                    Ver y gestionar viajes
                 </a>
 
             </div>

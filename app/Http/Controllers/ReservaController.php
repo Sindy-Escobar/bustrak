@@ -48,11 +48,13 @@ class ReservaController extends Controller
 
         $servicio_id = session('tipo_servicio_seleccionado.id');
 
-        $viajes = Viaje::where('ciudad_origen_id', $request->ciudad_origen_id)
+        $viajes = Viaje::activos()
+            ->where('ciudad_origen_id', $request->ciudad_origen_id)
             ->where('ciudad_destino_id', $request->ciudad_destino_id)
             ->where('fecha_hora_salida', '>', now())
             ->whereHas('bus', function($query) use ($servicio_id) {
-                $query->where('tipo_servicio_id', $servicio_id);
+                $query->where('tipo_servicio_id', $servicio_id)
+                    ->where('estado', 'activo');
             })
             ->withCount(['asientos' => fn($q) => $q->where('disponible', true)])
             ->having('asientos_count', '>', 0)
@@ -80,11 +82,13 @@ class ReservaController extends Controller
                 ->with('error', 'No hay búsqueda previa. Por favor, realiza una nueva búsqueda.');
         }
 
-        $viajes = Viaje::where('ciudad_origen_id', $ciudad_origen_id)
+        $viajes = Viaje::activos()
+            ->where('ciudad_origen_id', $ciudad_origen_id)
             ->where('ciudad_destino_id', $ciudad_destino_id)
             ->where('fecha_hora_salida', '>', now())
             ->whereHas('bus', function($query) use ($servicio_id) {
-                $query->where('tipo_servicio_id', $servicio_id);
+                $query->where('tipo_servicio_id', $servicio_id)
+                    ->where('estado', 'activo');
             })
             ->withCount(['asientos' => fn($q) => $q->where('disponible', true)])
             ->having('asientos_count', '>', 0)
@@ -132,7 +136,9 @@ class ReservaController extends Controller
             $fechaNacimiento = Auth::user()->fecha_nacimiento;
         }
 
-        $viaje = Viaje::findOrFail($request->viaje_id);
+        $viaje = Viaje::activos()
+            ->whereHas('bus', fn ($q) => $q->where('estado', 'activo'))
+            ->findOrFail($request->viaje_id);
 
         //  Verificar que haya suficientes asientos disponibles
         $asientosDisponibles = $viaje->asientos()->where('disponible', true)->count();
@@ -299,11 +305,13 @@ class ReservaController extends Controller
     public function seleccionarAsiento($viaje_id)
     {
         //  Cargar el viaje con TODAS las relaciones necesarias
-        $viaje = Viaje::with([
+        $viaje = Viaje::activos()
+            ->whereHas('bus', fn ($q) => $q->where('estado', 'activo'))
+            ->with([
             'origen',      // Relación con ciudad origen
             'destino',     // Relación con ciudad destino
             'bus.tipoServicio'   // Relación con bus y su tipo de servicio
-        ])->findOrFail($viaje_id);
+            ])->findOrFail($viaje_id);
 
         // Obtener asientos disponibles
         $asientos = $viaje->asientos()->where('disponible', true)->get();

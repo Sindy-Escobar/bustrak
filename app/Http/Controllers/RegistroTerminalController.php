@@ -7,6 +7,7 @@ use App\Models\RegistroTerminal;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Models\Servicio;
+use App\Models\Bus;
 
 class RegistroTerminalController extends Controller
 {
@@ -25,7 +26,10 @@ class RegistroTerminalController extends Controller
 
     public function index(Request $request)
     {
-        $query = RegistroTerminal::query();
+        $query = RegistroTerminal::query()
+            ->with(['buses' => fn ($q) => $q->orderBy('numero_bus')])
+            ->withCount('buses')
+            ->withSum('buses as capacidad_total', 'capacidad_asientos');
 
         if ($request->filled('nombre')) {
             $query->where('nombre', 'like', '%' . $request->nombre . '%');
@@ -46,7 +50,7 @@ class RegistroTerminalController extends Controller
             });
         }
 
-        $terminales = $query->paginate(5);
+        $terminales = $query->paginate(5)->withQueryString();
 
         return view('terminales.index', compact('terminales'))
             ->with('nombre', $request->nombre)
@@ -58,7 +62,9 @@ class RegistroTerminalController extends Controller
     {
         $departamentos = $this->departamentosHonduras;
         $municipiosHonduras = $this->municipiosHonduras;
-        return view('terminales.create', compact('departamentos', 'municipiosHonduras'));
+        $buses = Bus::whereNull('terminal_id')->orderBy('numero_bus')->get();
+
+        return view('terminales.create', compact('departamentos', 'municipiosHonduras', 'buses'));
     }
 
     public function store(Request $request)
@@ -80,6 +86,8 @@ class RegistroTerminalController extends Controller
             'descripcion' => 'required|string',
             'latitud' => 'nullable|numeric|between:-90,90',
             'longitud' => 'nullable|numeric|between:-180,180',
+            'bus_ids' => 'nullable|array',
+            'bus_ids.*' => 'integer|distinct|exists:buses,id',
         ]);
 
         try {
@@ -99,6 +107,12 @@ class RegistroTerminalController extends Controller
                 }
             }
 
+            if (! empty($validatedData['bus_ids'])) {
+                Bus::whereIn('id', $validatedData['bus_ids'])
+                    ->whereNull('terminal_id')
+                    ->update(['terminal_id' => $terminal->id]);
+            }
+
             return redirect()->route('terminales.index')->with('success', 'Terminal creada correctamente.');
 
         } catch (\Exception $e) {
@@ -111,7 +125,13 @@ class RegistroTerminalController extends Controller
     {
         $departamentos = $this->departamentosHonduras;
         $municipiosHonduras = $this->municipiosHonduras;
-        return view('terminales.edit', compact('terminal', 'departamentos', 'municipiosHonduras'));
+        $terminal->load('buses');
+        $buses = Bus::where(function ($query) use ($terminal) {
+            $query->whereNull('terminal_id')
+                ->orWhere('terminal_id', $terminal->id);
+        })->orderBy('numero_bus')->get();
+
+        return view('terminales.edit', compact('terminal', 'departamentos', 'municipiosHonduras', 'buses'));
     }
 
     public function update(Request $request, RegistroTerminal $terminal)
@@ -134,9 +154,18 @@ class RegistroTerminalController extends Controller
                 'descripcion' => 'required|string',
                 'latitud' => 'nullable|numeric|between:-90,90',
                 'longitud' => 'nullable|numeric|between:-180,180',
+                'bus_ids' => 'nullable|array',
+                'bus_ids.*' => 'integer|distinct|exists:buses,id',
             ]);
 
             $terminal->update($validatedData);
+
+            Bus::where('terminal_id', $terminal->id)->update(['terminal_id' => null]);
+            if (! empty($validatedData['bus_ids'])) {
+                Bus::whereIn('id', $validatedData['bus_ids'])
+                    ->whereNull('terminal_id')
+                    ->update(['terminal_id' => $terminal->id]);
+            }
 
             return redirect()->route('terminales.index')->with('success', 'Terminal actualizada correctamente.');
 
@@ -180,7 +209,11 @@ class RegistroTerminalController extends Controller
 
     public function exportarPDF()
     {
-        $terminales = RegistroTerminal::orderBy('nombre')->get();
+        $terminales = RegistroTerminal::with('buses')
+            ->withCount('buses')
+            ->withSum('buses as capacidad_total', 'capacidad_asientos')
+            ->orderBy('nombre')
+            ->get();
 
         $pdf = \PDF::loadView('terminales.pdf', compact('terminales'))
             ->setPaper('a4', 'landscape');

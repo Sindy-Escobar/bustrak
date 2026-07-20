@@ -2,64 +2,92 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ComentarioConductor;
 use App\Models\Empleado;
+use App\Models\Reserva;
+use App\Models\Usuario;
+use Illuminate\Http\Request;
 
 class CalificacionChoferController extends Controller
 {
-    // Esta función debe llamarse 'formulario' para que coincida con tu ruta
     public function formulario($empleadoId)
     {
-        return view('CalificacionChofer.calificarChofer', compact('empleadoId'));
+        Empleado::findOrFail($empleadoId);
+
+        $reserva = $this->reservasElegibles($empleadoId)
+            ->whereDoesntHave('comentarioConductor')
+            ->latest('fecha_reserva')
+            ->first();
+
+        if (! $reserva) {
+            return redirect()->route('cliente.historial')
+                ->with('error', 'No tienes un viaje completado pendiente de calificar con este conductor.');
+        }
+
+        return view('CalificacionChofer.calificarChofer', compact('empleadoId', 'reserva'));
     }
 
     public function guardar(Request $request, $empleadoId)
     {
-        // Validamos todos los campos nuevos de tu vista
-        $request->validate([
-            'calificacion'   => 'required|integer|min:1|max:5',
-            'velocidad'      => 'required|string',
-            'seguridad'      => 'required|string',
-            'comportamientos'=> 'required|string',
-            'positivo'       => 'required|string',
-            'mejoras'        => 'required|string',
-            'comentario'     => 'required|string',
-        ]);
-        //  OBTENER EL USUARIO CORRECTO DE LA TABLA 'usuarios'
-        $user = auth()->user();
-        $usuario = \App\Models\Usuario::where('email', $user->email)->first();
+        Empleado::findOrFail($empleadoId);
 
-        if (!$usuario) {
+        $datos = $request->validate([
+            'reserva_id' => ['required', 'integer', 'exists:reservas,id'],
+            'calificacion' => ['required', 'integer', 'min:1', 'max:5'],
+            'velocidad' => ['required', 'in:si,no'],
+            'seguridad' => ['required', 'in:si,no'],
+            'comportamientos' => ['required', 'string', 'max:500'],
+            'positivo' => ['required', 'string', 'max:500'],
+            'mejoras' => ['required', 'string', 'max:500'],
+            'comentario' => ['required', 'string', 'max:1000'],
+        ]);
+
+        $reserva = $this->reservasElegibles($empleadoId)
+            ->whereKey($datos['reserva_id'])
+            ->first();
+
+        if (! $reserva) {
+            abort(422, 'La reserva no corresponde a un viaje completado con este conductor.');
+        }
+
+        $usuario = Usuario::where('email', auth()->user()->email)->first();
+        if (! $usuario) {
             return back()->withErrors(['error' => 'No se encontró tu perfil de usuario.']);
         }
-        // Guardamos en la base de datos
- $viajeConEsteChofer = \App\Models\Reserva::where('user_id', $user->id)
-            ->where('abordado', true)
-            ->whereHas('viaje', function ($query) use ($empleadoId) {
-                $query->where('empleado_id', $empleadoId);
-            })
-            ->exists();
 
-        if (!$viajeConEsteChofer) {
-            return redirect('/cliente/historial')
-                ->with('error', 'No puedes calificar a este conductor porque no tienes un viaje completado con él.');
+        $comentario = ComentarioConductor::firstOrCreate(
+            ['reserva_id' => $reserva->id],
+            [
+                'usuario_id' => $usuario->id,
+                'empleado_id' => $empleadoId,
+                'calificacion' => $datos['calificacion'],
+                'velocidad' => $datos['velocidad'],
+                'seguridad' => $datos['seguridad'],
+                'comportamientos' => strip_tags($datos['comportamientos']),
+                'positivo' => strip_tags($datos['positivo']),
+                'mejoras' => strip_tags($datos['mejoras']),
+                'comentario' => strip_tags($datos['comentario']),
+            ]
+        );
+
+        if (! $comentario->wasRecentlyCreated) {
+            return redirect()->route('cliente.historial')
+                ->with('error', 'Este viaje ya fue calificado.');
         }
-        \App\Models\ComentarioConductor::create([
-            'usuario_id'     => $usuario->id,
-            'empleado_id'    => $empleadoId,
-            'calificacion'   => $request->calificacion,
-            'velocidad'      => $request->velocidad,
-            'seguridad'      => $request->seguridad,
-            'comportamientos'=> $request->comportamientos,
-            'positivo'       => $request->positivo,
-            'mejoras'        => $request->mejoras,
-            'comentario'     => $request->comentario,
-        ]);
 
-        return redirect('/cliente/historial')
+        return redirect()->route('cliente.historial')
             ->with('success', '¡Tu calificación ha sido enviada con éxito!');
     }
+
+    private function reservasElegibles($empleadoId)
+    {
+        return Reserva::query()
+            ->where('user_id', auth()->id())
+            ->where('abordado', true)
+            ->whereNotIn('estado', ['cancelada', 'reembolsada', 'eliminado'])
+            ->whereHas('viaje', function ($query) use ($empleadoId) {
+                $query->where('empleado_id', $empleadoId)
+                    ->where('fecha_hora_salida', '<', now());
+            });
+    }
 }
-
-

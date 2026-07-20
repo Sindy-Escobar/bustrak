@@ -29,4 +29,9 @@ class RegistroTerminal extends Model
     {
         return $this->hasMany(Servicio::class, 'terminal_id');
     }
+
+    public function buses()
+    {
+        return $this->hasMany(Bus::class, 'terminal_id');
+    }
 }

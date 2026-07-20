@@ -26,6 +26,7 @@
                 {{-- FORMULARIO UNIFICADO --}}
                 <form id="formCalificacion" action="{{ route('calificar.chofer.guardar', $empleadoId) }}" method="POST">
                     @csrf {{-- Token de seguridad obligatorio --}}
+                    <input type="hidden" name="reserva_id" value="{{ $reserva->id }}">
 
                     <div class="text-center mb-4">
                         <div class="rating-stars">
