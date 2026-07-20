@@ -84,6 +84,12 @@ class AutorizacionMenorController extends Controller
     public function mostrar($reserva_id)
     {
         $reserva = Reserva::with('viaje')->findOrFail($reserva_id);
+
+        // Prueba #12 – IDOR: solo el dueño puede ver su autorización
+        if ($reserva->user_id != Auth::id()) {
+            abort(403, 'No tienes permiso para ver esta autorización.');
+        }
+
         $autorizacion = AutorizacionMenor::where('reserva_id', $reserva_id)->firstOrFail();
 
         return view('autorizaciones.mostrar', compact('reserva', 'autorizacion'));

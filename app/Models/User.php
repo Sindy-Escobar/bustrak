@@ -17,7 +17,7 @@ class User extends Authenticatable
         'telefono',
         'email',
         'password',
-        'plain_password',
+        // plain_password eliminado – no debe guardarse texto plano (Auditoría de Seguridad)
         'role',
         'estado',
     ];

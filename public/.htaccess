@@ -23,3 +23,11 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# ── Encabezados de seguridad – Prueba #6 ────────────────────────────────
+# Elimina X-Powered-By que PHP expone a nivel de servidor
+# (el middleware de Laravel no puede borrarlo porque PHP lo emite antes)
+<IfModule mod_headers.c>
+    Header always unset X-Powered-By
+    Header always unset Server
+</IfModule>

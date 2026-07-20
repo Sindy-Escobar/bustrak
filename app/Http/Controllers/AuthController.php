@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class AuthController extends Controller
 {
@@ -107,17 +108,24 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => [
+                'required', 'string', 'confirmed',
+                // Pruebas #7 y #8: complejidad y rechazo de contraseñas débiles
+                PasswordRule::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols(),
+            ],
         ]);
 
         $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
+            'name'   => $validated['name'],
+            'email'  => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'plain_password' => $validated['password'],
-            'role' => 'Cliente', // Importante: con mayúscula según tu migración
+            // plain_password eliminado – prueba de auditoría de seguridad
+            'role'   => 'Cliente',
             'estado' => 'activo',
         ]);
 
@@ -135,7 +143,8 @@ class AuthController extends Controller
     }
 
     /**
-     * Busca el usuario por email y devuelve sus datos para modal
+     * Envía el enlace real de recuperación de contraseña por correo.
+     * Prueba #10: token de un solo uso con expiración configurada en auth.php
      */
     public function sendResetLink(Request $request)
     {
@@ -143,13 +152,17 @@ class AuthController extends Controller
             'email' => 'required|email'
         ], [
             'email.required' => 'El correo electrónico es obligatorio.',
-            'email.email' => 'Debe ser un correo electrónico válido.'
+            'email.email'    => 'Debe ser un correo electrónico válido.'
         ]);
 
-        // Buscar en tabla users
-        $user = User::where('email', $request->email)->first();
+        // Envía el enlace de restablecimiento al correo del usuario.
+        // Laravel maneja internamente si el email existe o no;
+        // la respuesta genérica unificada previene enumeración de usuarios.
+        Password::sendResetLink(
+            $request->only('email')
+        );
 
-        // Respuesta genérica unificada para evitar enumeración y filtración de contraseñas
+        // Respuesta genérica: no revela si el email existe o no en el sistema
         return back()->with('status', 'Si tu correo electrónico está registrado en el sistema, recibirás un enlace de recuperación en breve.');
     }
 
@@ -170,9 +183,12 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         $request->validate([
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|min:8|confirmed',
+            'token'    => 'required',
+            'email'    => 'required|email',
+            'password' => [
+                'required', 'confirmed',
+                PasswordRule::min(8)->mixedCase()->numbers()->symbols(),
+            ],
         ]);
 
         $status = Password::reset(
@@ -180,7 +196,7 @@ class AuthController extends Controller
             function ($user, $password) {
                 $user->forceFill([
                     'password' => Hash::make($password),
-                    'plain_password' => $password
+                    // plain_password eliminado – prueba de auditoría de seguridad
                 ])->setRememberToken(Str::random(60));
 
                 $user->save();
@@ -223,13 +239,16 @@ class AuthController extends Controller
     {
         $request->validate([
             'current_password' => 'required',
-            'password' => 'required|string|min:8|max:64|confirmed',
+            'password' => [
+                'required', 'string', 'max:64', 'confirmed',
+                // Pruebas #7 y #8: complejidad obligatoria
+                PasswordRule::min(8)->mixedCase()->numbers()->symbols(),
+            ],
         ], [
             'current_password.required' => 'La contraseña actual es obligatoria.',
-            'password.required' => 'La nueva contraseña es obligatoria.',
-            'password.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
-            'password.max' => 'La nueva contraseña no puede exceder los 64 caracteres.',
-            'password.confirmed' => 'La confirmación de la nueva contraseña no coincide.',
+            'password.required'         => 'La nueva contraseña es obligatoria.',
+            'password.max'              => 'La nueva contraseña no puede exceder los 64 caracteres.',
+            'password.confirmed'        => 'La confirmación de la nueva contraseña no coincide.',
         ]);
 
         $user = Auth::user();
@@ -239,7 +258,7 @@ class AuthController extends Controller
         }
 
         $user->password = Hash::make($request->password);
-        $user->plain_password = $request->password;
+        // plain_password eliminado – prueba de auditoría de seguridad
         $user->save();
 
         return back()->with('success', 'Contraseña actualizada correctamente');
@@ -256,12 +275,15 @@ class AuthController extends Controller
     {
         $request->validate([
             'password_actual' => 'required',
-            'password_nuevo' => 'required|min:8|max:64|confirmed',
+            'password_nuevo'  => [
+                'required', 'max:64', 'confirmed',
+                // Pruebas #7 y #8: complejidad obligatoria
+                PasswordRule::min(8)->mixedCase()->numbers()->symbols(),
+            ],
         ], [
             'password_actual.required' => 'La contraseña actual es obligatoria.',
-            'password_nuevo.required' => 'La nueva contraseña es obligatoria.',
-            'password_nuevo.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
-            'password_nuevo.max' => 'La nueva contraseña no puede exceder los 64 caracteres.',
+            'password_nuevo.required'  => 'La nueva contraseña es obligatoria.',
+            'password_nuevo.max'       => 'La nueva contraseña no puede exceder los 64 caracteres.',
             'password_nuevo.confirmed' => 'La confirmación de la nueva contraseña no coincide.',
         ]);
 
@@ -272,7 +294,7 @@ class AuthController extends Controller
         }
 
         $user->password = Hash::make($request->password_nuevo);
-        $user->plain_password = $request->password_nuevo;
+        // plain_password eliminado – prueba de auditoría de seguridad
         $user->save();
 
         return back()->with('success', 'Contraseña cambiada correctamente.');

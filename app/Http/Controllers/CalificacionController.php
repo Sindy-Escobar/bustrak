@@ -13,20 +13,21 @@ class CalificacionController extends Controller
     {
         $reserva = Reserva::findOrFail($reserva_id);
 
+        // Prueba #12 – IDOR: solo el dueño de la reserva puede calificar
+        if ($reserva->user_id !== Auth::id()) {
+            abort(403, 'No tienes permiso para calificar esta reserva.');
+        }
+
         if (session('success')) {
             return view('calificacion.create', compact('reserva'));
         }
 
-
         $viaje = $reserva->viaje;
-
 
         if ($reserva->estado !== 'confirmada' || !$viaje->fecha_llegada) {
             return redirect()->route('cliente.historial')
                 ->with('error', 'No puedes calificar. Tu viaje aún no ha terminado ');
         }
-
-
 
         if (Calificacion::where('reserva_id', $reserva->id)->exists()) {
             return redirect()->route('cliente.historial')->with('error', 'Este viaje ya fue calificado.');

@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class RegistroUsuarioController extends Controller
 {
@@ -39,11 +40,15 @@ class RegistroUsuarioController extends Controller
             //  Solo letras (incluye acentos, ñ) y espacios
             'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:60',
             //  DNI: 13 dígitos numéricos, único
-            'dni' => 'required|numeric|digits:13|unique:usuarios,dni',
-            'email' => 'required|email|unique:usuarios,email|unique:users,email',
+            'dni'      => 'required|numeric|digits:13|unique:usuarios,dni',
+            'email'    => 'required|email|unique:usuarios,email|unique:users,email',
             //  Teléfono: 8 dígitos numéricos
             'telefono' => 'required|numeric|digits:8',
-            'password' => 'required|string|min:8|max:64|confirmed',
+            // Pruebas #7 y #8: complejidad y rechazo de contraseñas débiles
+            'password' => [
+                'required', 'string', 'max:64', 'confirmed',
+                PasswordRule::min(8)->mixedCase()->numbers()->symbols(),
+            ],
         ], [
             'nombre_completo.required' => 'El nombre completo es obligatorio.',
             'nombre_completo.regex' => 'El nombre completo solo puede contener letras y espacios.',
@@ -152,11 +157,15 @@ class RegistroUsuarioController extends Controller
 
         $request->validate([
             'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:100',
-            'dni' => ['required', 'numeric', 'digits:13', Rule::unique('usuarios', 'dni')->ignore($usuario->id)],
-            'email' => ['required', 'email', Rule::unique('usuarios', 'email')->ignore($usuario->id)],
+            'dni'      => ['required', 'numeric', 'digits:13', Rule::unique('usuarios', 'dni')->ignore($usuario->id)],
+            'email'    => ['required', 'email', Rule::unique('usuarios', 'email')->ignore($usuario->id)],
             'telefono' => 'required|numeric|digits:8',
-            'password' => 'nullable|string|min:8|max:64|confirmed',
-            'estado' => 'required|in:activo,inactivo',
+            // Pruebas #7 y #8: complejidad obligatoria (nullable permite no cambiar la contraseña)
+            'password' => [
+                'nullable', 'string', 'max:64', 'confirmed',
+                PasswordRule::min(8)->mixedCase()->numbers()->symbols(),
+            ],
+            'estado'   => 'required|in:activo,inactivo',
         ], [
             // Mensajes personalizados
             'nombre_completo.required' => 'El campo nombre completo es obligatorio.',
