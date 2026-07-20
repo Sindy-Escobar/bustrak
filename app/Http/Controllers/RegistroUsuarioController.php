@@ -75,20 +75,6 @@ class RegistroUsuarioController extends Controller
         $usuario->estado = 'activo';
         $usuario->save();
 
-<<<<<<< HEAD
-=======
-        // Crear también en tabla users para login
-        User::create([
-            'name' => $usuario->nombre_completo,
-            'email' => $usuario->email,
-            'password' => Hash::make($request->password),
-            'dni' => $usuario->dni,
-            'telefono' => $usuario->telefono,
-            'role' => 'Cliente', // Debe coincidir exactamente con el enum de la migración (Empleado|Administrador|Cliente)
-            'estado' => 'activo',
-        ]);
-
->>>>>>> upstream/jona-andino
         // Redirigir mostrando mensaje de éxito
         return redirect()
             ->back()
@@ -148,15 +134,9 @@ class RegistroUsuarioController extends Controller
         $usuario = Usuario::findOrFail($id);
 
         $request->validate([
-<<<<<<< HEAD
-            'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
-            'dni' => ['required', 'numeric', 'digits:13', Rule::unique('users', 'dni')->ignore($usuario->id)],
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($usuario->id)],
-=======
             'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:100',
             'dni' => ['required', 'numeric', 'digits:13', Rule::unique('usuarios', 'dni')->ignore($usuario->id)],
             'email' => ['required', 'email', Rule::unique('usuarios', 'email')->ignore($usuario->id)],
->>>>>>> upstream/jona-andino
             'telefono' => 'required|numeric|digits:8',
             'password' => 'nullable|string|min:8|max:64|confirmed',
             'estado' => 'required|in:activo,inactivo',
@@ -195,11 +175,7 @@ class RegistroUsuarioController extends Controller
         $usuario->estado = $request->estado;
 
         if ($request->filled('password')) {
-<<<<<<< HEAD
             $usuario->password = Hash::make($request->password);
-=======
-            $usuario->password = \Illuminate\Support\Facades\Hash::make($request->password); // corregido: antes se guardaba en texto plano
->>>>>>> upstream/jona-andino
         }
 
         $usuario->save();
