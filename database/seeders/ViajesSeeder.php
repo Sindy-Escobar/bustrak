@@ -13,6 +13,14 @@ class ViajesSeeder extends Seeder
 {
     public function run(): void
     {
+        // === PROTECCIÓN IDEMPOTENTE ===
+        // Si ya hay viajes en la base, no duplicamos
+        if (Viaje::count() > 0) {
+            $this->command->warn(" Ya existen viajes en la base. Se omite ViajesSeeder.");
+            return;
+        }
+        // ===============================
+
         // Crear un bus de prueba si no existe
         $bus = Bus::firstOrCreate(
             ['placa' => 'AAA-001'],
