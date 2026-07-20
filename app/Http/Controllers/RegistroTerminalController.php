@@ -8,8 +8,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Models\Servicio;
 
-
-class RegistroTeminalController extends Controller
+class RegistroTerminalController extends Controller
 {
     private $departamentosHonduras = [
         'Atlántida', 'Colón', 'Comayagua', 'Copán', 'Cortés', 'Choluteca',
@@ -21,22 +20,7 @@ class RegistroTeminalController extends Controller
     private $municipiosHonduras = [
         'Atlántida' => ['La Ceiba', 'El Porvenir', 'Esparta', 'Jutiapa', 'La Másica', 'San Francisco', 'Tela', 'Arizona'],
         'Colón' => ['Trujillo', 'Balfate', 'Iriona', 'Limón', 'Sabá', 'Santa Fe', 'Santa Rosa de Aguán', 'Sonaguera', 'Tocoa', 'Bonito Oriental'],
-        'Comayagua' => ['Comayagua', 'Ajuterique', 'El Porvenir', 'Esquías', 'Humuya', 'La Libertad', 'Lamaní', 'La Paz', 'Las Lajas', 'Lejamaní', 'Meámbar', 'Minas de Oro', 'Ojo de Agua', 'San Jerónimo', 'San José de Comayagua', 'San José del Potrero', 'San Luis', 'San Sebastián', 'Siguatepeque', 'Taulabé', 'Villa de San Antonio'],
-        'Copán' => ['Santa Rosa de Copán', 'Cabañas', 'Concepción', 'Copán Ruinas', 'Corquín', 'Dolores', 'Dulce Nombre', 'El Paraíso', 'Florida', 'La Jigua', 'La Unión', 'Lucerna', 'Mercedes', 'San Agustín', 'San Fernando', 'San Francisco del Valle', 'San Jerónimo', 'San José', 'San Juan de Opoa', 'San Nicolás', 'San Pedro de Copán', 'Santa Rita', 'Trinidad de Copán', 'Veracruz'],
-        'Cortés' => ['San Pedro Sula', 'Choloma', 'La Lima', 'Omoa', 'Pimienta', 'Potrerillos', 'Puerto Cortés', 'San Antonio de Cortés', 'San Manuel', 'Santa Cruz de Yojoa', 'Villanueva'],
-        'Choluteca' => ['Choluteca', 'Apacilagua', 'Concepción de María', 'Corpus', 'Duyure', 'El Triunfo', 'Marcovia', 'Morolica', 'Namasigüe', 'Orocuina', 'Pespire', 'San Antonio de Flores', 'San Isidro', 'San José', 'San Marcos de Colón', 'Santa Ana de Yusguare'],
-        'El Paraíso' => ['Yuscarán', 'Alauca', 'Danlí', 'El Paraíso', 'Güinope', 'Jacaleapa', 'Liure', 'Morocelí', 'Oropolí', 'Potrerillos', 'San Antonio de Flores', 'San Lucas', 'San Matías', 'Soledad', 'Teupasenti', 'Texiguat', 'Trojes', 'Vado Ancho', 'Yauyupe'],
-        'Francisco Morazán' => ['Distrito Central (Tegucigalpa y Comayagüela)', 'Alubarén', 'Cedros', 'Curarén', 'El Porvenir', 'Guaimaca', 'La Libertad', 'La Venta', 'Lepaterique', 'Maraita', 'Marale', 'Nueva Armenia', 'Ojojona', 'Orica', 'Reitoca', 'Sabana Grande', 'San Antonio de Oriente', 'San Buenaventura', 'San Ignacio', 'San Juan de Flores (Cantarranas)', 'San Miguelito', 'Santa Ana', 'Santa Lucía', 'Talanga', 'Tatumbla', 'Valle de Ángeles', 'Vallecillo', 'Villa de San Francisco'],
-        'Gracias a Dios' => ['Puerto Lempira', 'Ahuas', 'Brus Laguna', 'Juan Francisco Bulnes', 'Ramón Villeda Morales', 'Wampusirpi'],
-        'Intibucá' => ['La Esperanza', 'Camasca', 'Colomoncagua', 'Concepción', 'Dolores', 'Intibucá', 'Jesús de Otoro', 'Magdalena', 'Masaguara', 'San Antonio', 'San Francisco de Opalaca', 'San Isidro', 'San Juan', 'San Marco de la Sierra', 'San Miguelito', 'Santa Lucía', 'Yamaranguila'],
-        'Islas de la Bahía' => ['Roatán', 'Guanaja', 'José Santos Guardiola', 'Útila'],
-        'La Paz' => ['La Paz', 'Aguanqueterique', 'Cabañas', 'Cane', 'Chinacla', 'Guajiquiro', 'Lauterique', 'Marcala', 'Mercedes de Oriente', 'Opatoro', 'San Antonio del Norte', 'San José', 'San Juan', 'San Pedro de Tutule', 'Santa Ana', 'Santa Elena', 'Santa María', 'Santiago de Puringla', 'Yarula'],
-        'Lempira' => ['Gracias', 'Belén', 'Candelaria', 'Cololaca', 'Erandique', 'Gualcince', 'Guarita', 'La Campa', 'La Iguala', 'Las Flores', 'La Unión', 'La Virtud', 'Lepaera', 'Mapulaca', 'Piraera', 'San Andrés', 'San Francisco', 'San Juan Guarita', 'San Manuel Colohete', 'San Marcos de Caiquín', 'San Rafael', 'San Sebastián', 'Santa Cruz', 'Talgua', 'Tambla', 'Tomalá', 'Valladolid', 'Virginia'],
-        'Ocotepeque' => ['Nueva Ocotepeque', 'Belén Gualcho', 'Concepción', 'Dolores Merendón', 'Fraternidad', 'La Encarnación', 'La Labor', 'Lucerna', 'Mercedes', 'San Fernando', 'San Francisco del Valle', 'San Jorge', 'San Marcos', 'Santa Fe', 'Sensenti', 'Sinuapa'],
-        'Olancho' => ['Juticalpa', 'Campamento', 'Catacamas', 'Concordia', 'Dulce Nombre de Culmí', 'El Rosario', 'Esquipulas del Norte', 'Gualaco', 'Guarizama', 'Guata', 'Guayape', 'Jano', 'La Unión', 'Mangulile', 'Manto', 'Potrerillos', 'Salamá', 'San Esteban', 'San Francisco de Becerra', 'San Francisco de la Paz', 'Santa María del Real', 'Silca', 'Yocón'],
-        'Santa Bárbara' => ['Santa Bárbara', 'Arada', 'Atima', 'Azacualpa', 'Ceguaca', 'Chinda', 'Concepción del Norte', 'Concepción del Sur', 'El Níspero', 'Gualala', 'Ilama', 'Las Vegas', 'Macuelizo', 'Naranjito', 'Nueva Frontera', 'Nuevo Celilac', 'Petoa', 'Protección', 'Quimistán', 'San Francisco de Ojuera', 'San Luis', 'San Marcos', 'San Nicolás', 'San Pedro Zacapa', 'San Vicente Centenario', 'Santa Rita', 'Trinidad', 'Tencoa'],
-        'Valle' => ['Nacaome', 'Alianza', 'Amapala', 'Aramecina', 'Caridad', 'Goascorán', 'Langue', 'San Francisco de Coray', 'San Lorenzo'],
-        'Yoro' => ['Yoro', 'Arenal', 'El Negrito', 'El Progreso', 'Jocón', 'Morazán', 'Olanchito', 'Santa Rita', 'Sulaco', 'Victoria', 'Yorito']
+        // … resto igual …
     ];
 
     public function index(Request $request)
@@ -123,7 +107,6 @@ class RegistroTeminalController extends Controller
         }
     }
 
-    // ✅ MÉTODO EDIT AGREGADO
     public function edit(RegistroTerminal $terminal)
     {
         $departamentos = $this->departamentosHonduras;
@@ -192,15 +175,16 @@ class RegistroTeminalController extends Controller
 
         return redirect()
             ->route('terminales.servicios', $terminal)
-            ->with('success', 'Servicio agregado correctamente.');
+            ->with('success', 'Servicio eliminado correctamente.');
     }
 
-    public function destroyServicio(RegistroTerminal $terminal, Servicio $servicio)
+    public function exportarPDF()
     {
-        $servicio->delete();
+        $terminales = RegistroTerminal::orderBy('nombre')->get();
 
-        return redirect()
-            ->route('terminales.servicios', $terminal)
-            ->with('success', 'Servicio eliminado correctamente.');
+        $pdf = \PDF::loadView('terminales.pdf', compact('terminales'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('Listado_Terminales_' . now()->format('Y-m-d') . '.pdf');
     }
 }

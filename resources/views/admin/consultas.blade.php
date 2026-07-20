@@ -1,338 +1,180 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>@yield('title', 'Panel Administrativo')</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a2e0c8b2b1.js" crossorigin="anonymous"></script>
+@extends('layouts.layoutadmin')
 
-    <style>
-        /* ======== CONFIGURACIÓN GLOBAL ======== */
-        html {
-            height: 100%;
-            overflow-y: scroll;
-        }
+@section('content')
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2 style="margin:0; color:#1e63b8; font-weight:600; font-size:2rem;">
+                    <i class="fas fa-headset me-2"></i>Consultas de Usuarios
+                </h2>
+            </div>
+            <div class="card-body">
+                <!-- Mensajes de éxito -->
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                        <i class="fas fa-circle-check me-2"></i>
+                        <strong>¡Éxito!</strong> {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                    </div>
+                @endif
 
-        body {
-            margin: 0;
-            font-family: "Segoe UI", Roboto, sans-serif;
-            background-color: #f5f7fa;
-            height: 100%;
-        }
+                <!-- Tabla de Consultas -->
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered">
+                        <thead class="table-primary">
+                        <tr>
+                            <th><i class="fas fa-user me-2"></i>Nombre</th>
+                            <th><i class="fas fa-envelope me-2"></i>Correo</th>
+                            <th><i class="fas fa-tag me-2"></i>Asunto</th>
+                            <th><i class="fas fa-comment me-2"></i>Mensaje</th>
+                            <th><i class="fas fa-calendar me-2"></i>Fecha de Envío</th>
+                            <th><i class="fas fa-check-double me-2"></i>Estado</th>
+                            <th class="text-center"><i class="fas fa-cog me-2"></i>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @forelse($consultas as $consulta)
+                            <tr>
+                                <td>{{ $consulta->nombre_completo }}</td>
+                                <td>{{ $consulta->correo }}</td>
+                                <td>{{ $consulta->asunto }}</td>
+                                <td>{{ $consulta->mensaje }}</td>
+                                <td>{{ $consulta->created_at->format('d/m/Y') }}</td>
+                                <td>
+                                    @if($consulta->respuesta)
+                                        <span class="badge bg-success">Respondida</span>
+                                    @else
+                                        <span class="badge bg-warning text-dark">Pendiente</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex gap-1 justify-content-center">
+                                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#responderModal{{ $consulta->id }}">
+                                            <i class="fas fa-reply me-1"></i>{{ $consulta->respuesta ? 'Ver / Editar' : 'Responder' }}
+                                        </button>
+                                        <form action="{{ route('consulta.eliminar', $consulta->id) }}" method="POST" onsubmit="return confirmarAccionModal(this, '¿Eliminar esta consulta?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash me-1"></i>Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
 
-        main {
-            display: flex;
-            min-height: 100vh;
-            overflow: hidden;
-        }
+                            <!-- Modal Responder -->
+                            <div class="modal fade" id="responderModal{{ $consulta->id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="background-color:#1e63b8; color:white;">
+                                            <h5 class="modal-title">
+                                                <i class="fas fa-reply me-2"></i>Responder consulta de {{ $consulta->nombre_completo }}
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                        </div>
+                                        <form action="{{ route('consulta.responder', $consulta->id) }}" method="POST">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <p><strong>Asunto:</strong> {{ $consulta->asunto }}</p>
+                                                <p><strong>Mensaje del usuario:</strong><br>{{ $consulta->mensaje }}</p>
 
-        /* ===== SIDEBAR ===== */
-        .sidebar {
-            width: 260px;
-            background-color: #101827;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            padding-top: 1rem;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            box-shadow: 3px 0 8px rgba(0, 0, 0, 0.3);
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: #5cb3ff #101827;
-        }
+                                                @if($consulta->respuesta)
+                                                    <div class="alert alert-light border">
+                                                        <strong>Última respuesta enviada</strong>
+                                                        ({{ $consulta->respondida_en?->format('d/m/Y H:i') }}):<br>
+                                                        {{ $consulta->respuesta }}
+                                                    </div>
+                                                @endif
 
-        .sidebar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .sidebar::-webkit-scrollbar-thumb {
-            background-color: #5cb3ff;
-            border-radius: 4px;
-        }
+                                                <div class="mb-3">
+                                                    <label for="respuesta{{ $consulta->id }}" class="form-label fw-bold">
+                                                        {{ $consulta->respuesta ? 'Actualizar respuesta' : 'Escribir respuesta' }}
+                                                    </label>
+                                                    <textarea name="respuesta" id="respuesta{{ $consulta->id }}" rows="4"
+                                                              class="form-control @error('respuesta') is-invalid @enderror"
+                                                              maxlength="2000" required>{{ old('respuesta') }}</textarea>
+                                                    @error('respuesta')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                    <small class="text-muted">El usuario verá esta respuesta como notificación dentro del sistema.</small>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-paper-plane me-1"></i>Enviar respuesta
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                                    No hay consultas registradas
+                                </td>
+                            </tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
 
-        .user-info {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .user-info h3 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin: 0;
-        }
-
-        /* ===== NAVEGACIÓN ===== */
-        .nav-section {
-            margin-bottom: 1rem;
-        }
-
-        .btn-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            padding: 0.7rem 1rem;
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: #cfd8e3;
-            background-color: transparent;
-            border: none;
-            border-left: 4px solid transparent;
-            border-radius: 0.4rem;
-            transition: all 0.25s ease;
-        }
-
-        .btn-toggle i {
-            margin-right: 0.7rem;
-            color: #5cb3ff;
-        }
-
-        .btn-toggle:hover,
-        .btn-toggle:focus {
-            color: #fff;
-            border-left: 4px solid #00b7ff;
-        }
-
-        .btn-toggle[aria-expanded="true"] {
-            border-left: 4px solid #00b7ff;
-        }
-
-        .btn-toggle .chevron {
-            transition: transform 0.3s ease;
-        }
-
-        .btn-toggle[aria-expanded="true"] .chevron {
-            transform: rotate(90deg);
-        }
-
-        .btn-toggle-nav a {
-            display: block;
-            padding: 0.45rem 0 0.45rem 2.8rem;
-            font-size: 0.9rem;
-            color: #9ca3af;
-            text-decoration: none;
-            transition: all 0.25s ease;
-        }
-
-        .btn-toggle-nav a:hover {
-            color: #fff;
-        }
-
-        .btn-toggle-nav a.active {
-            color: #00b7ff;
-            font-weight: 600;
-        }
-
-        /* ===== CONTENIDO ===== */
-        .content-area {
-            flex-grow: 1;
-            margin-left: 260px;
-            background-color: #f5f7fa;
-            padding: 28px;
-            min-height: 100vh;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width:768px){
-            .sidebar {
-                position: relative;
-                width: 100%;
-                height: auto;
-            }
-            .content-area {
-                margin-left: 0;
-            }
-        }
-        /* ===== Toggle Sidebar ===== */
-        .sidebar.collapsed {
-            width: 0;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .content-area.expanded {
-            margin-left: 0;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-
-        #toggleSidebar {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-    </style>
-
-</head>
-
-<body>
-<main>
-    <nav class="sidebar">
-        <div class="user-info">
-            <h3>Admin</h3>
-        </div>
-
-        <!-- Empleados -->
-        <div class="nav-section">
-            <button class="btn-toggle d-flex justify-content-between align-items-center"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#empleados"
-                    aria-expanded="{{ request()->routeIs('empleados.*') ? 'true' : 'false' }}">
-                <span><i class="fas fa-user-tie"></i> Empleados</span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-
-            <div class="collapse btn-toggle-nav {{ request()->routeIs('empleados.*') ? 'show' : '' }}" id="empleados">
-                <a href="{{ route('empleados.hu5') }}" class="{{ request()->routeIs('empleados.hu5') ? 'active' : '' }}">
-                    Ver empleados
-                </a>
-                <a href="{{ route('empleados.create') }}" class="{{ request()->routeIs('empleados.create') ? 'active' : '' }}">
-                    Registrar empleado
-                </a>
-                <a href="{{ route('abordajes.historial') }}" class="{{ request()->routeIs('empleados.create') ? 'active' : '' }}">
-                    Check-in
-                </a>
+                <!-- Paginación -->
+                <div class="mt-4">
+                    {{ $consultas->links() }}
+                </div>
             </div>
         </div>
-
-
-        <!-- Usuarios -->
-        <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#usuarios" aria-expanded="false">
-                <span><i class="fas fa-users"></i> Usuarios</span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-            <div class="collapse btn-toggle-nav" id="usuarios">
-                <a href="{{ route('usuarios.consultar') }}" class="{{ request()->routeIs('usuarios.consultar') ? 'active' : '' }}">Consultar usuarios</a>
-            </div>
-        </div>
-
-        <!-- Empresa -->
-        <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#empresa" aria-expanded="false">
-                <span><i class="fas fa-building"></i> Empresa</span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-            <div class="collapse btn-toggle-nav" id="empresa">
-                <a href="{{ route('empresas.index') }}" class="{{ request()->routeIs('empresas.index') ? 'active' : '' }}">Lista de empresas</a>
-                <a href="{{ route('empresas.validar') }}" class="{{ request()->routeIs('empresas.validar') ? 'active' : '' }}">Validar empresas</a>
-                <a href="{{ route('empresa.form') }}" class="{{ request()->routeIs('empresa.form') ? 'active' : '' }}">Registrar empresa</a>
-            </div>
-        </div>
-
-        <!-- Estadísticas -->
-        <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#estadisticas" aria-expanded="{{ request()->routeIs('admin.dashboard') ? 'true' : 'false' }}">
-                <span><i class="fas fa-chart-bar"></i> Estadísticas</span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-            <div class="collapse btn-toggle-nav {{ request()->routeIs('admin.dashboard') ? 'show' : '' }}" id="estadisticas">
-                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                    Ver Estadísticas
-                </a>
-            </div>
-        </div>
-
-        <!-- Terminales -->
-        <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#terminales" aria-expanded="false">
-                <span><i class="fas fa-map-marker-alt"></i> Terminales</span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-            <div class="collapse btn-toggle-nav" id="terminales">
-                <a href="{{ route('terminales.index') }}" class="{{ request()->routeIs('terminales.index') ? 'active' : '' }}">Ver terminales</a>
-                <a href="{{ route('terminales.create') }}" class="{{ request()->routeIs('terminales.create') ? 'active' : '' }}">Agregar terminal</a>
-                <a href="{{ route('terminales.ver_terminales') }}" class="{{ request()->routeIs('terminales.ver_terminales') ? 'active' : '' }}">Visualizar terminales</a>
-            </div>
-        </div>
-
-        <!-- Consultas y Soporte -->
-        <div class="nav-section">
-            <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#consultas" aria-expanded="{{ request()->routeIs('consulta.listar') ? 'true' : 'false' }}">
-                <span><i class="fas fa-headset"></i> Consultas</span>
-                <i class="fas fa-chevron-right chevron"></i>
-            </button>
-            <div class="collapse btn-toggle-nav {{ request()->routeIs('consulta.listar') ? 'show' : '' }}" id="consultas">
-                <a href="{{ route('consulta.listar') }}" class="{{ request()->routeIs('consulta.listar') ? 'active' : '' }}">Ver consultas</a>
-            </div>
-        </div>
-
-        <div class="mt-auto text-center p-3">
-            <a href="{{ route('logout') }}" class="btn btn-sm btn-danger">Cerrar sesión</a>
-        </div>
-    </nav>
-
-    <div class="content-area">
-        <!--  Botón para mostrar/ocultar la barra lateral -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <button id="toggleSidebar" class="btn btn-outline-primary">
-                <i class="fas fa-bars"></i> Menú
-            </button>
-        </div>
-
-        @yield('content')
     </div>
 
-</main>
+    {{-- Modal genérico de confirmación (reemplaza confirm() nativo del navegador) --}}
+    <div class="modal fade" id="modalConfirmacionGenerica" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Confirmar acción</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalConfirmacionMensaje" class="mb-0"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="modalConfirmacionBtnAceptar">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        let openGroups = JSON.parse(localStorage.getItem('sidebarOpenGroups') || '[]');
+    <script>
+        let _confirmacionCallback = null;
 
-        openGroups.forEach(id => {
-            const el = document.querySelector(`#${id}`);
-            if (el) {
-                el.classList.add('show');
-                const btn = el.previousElementSibling;
-                if (btn) btn.setAttribute('aria-expanded', 'true');
-            }
-        });
+        function confirmarAccionModal(elemento, mensaje) {
+            document.getElementById('modalConfirmacionMensaje').textContent = mensaje;
+            const modalEl = document.getElementById('modalConfirmacionGenerica');
+            const modal = new bootstrap.Modal(modalEl);
 
-        document.querySelectorAll('.collapse').forEach(group => {
-            group.addEventListener('shown.bs.collapse', () => {
-                if (!openGroups.includes(group.id)) {
-                    openGroups.push(group.id);
-                    localStorage.setItem('sidebarOpenGroups', JSON.stringify(openGroups));
+            _confirmacionCallback = function () {
+                const form = elemento.closest('form');
+                if (form) {
+                    form.submit();
+                } else if (elemento.tagName === 'A') {
+                    window.location.href = elemento.href;
                 }
-            });
+            };
 
-            group.addEventListener('hidden.bs.collapse', () => {
-                openGroups = openGroups.filter(id => id !== group.id);
-                localStorage.setItem('sidebarOpenGroups', JSON.stringify(openGroups));
+            modal.show();
+            return false; // evita la acción nativa (submit/navegación) hasta confirmar
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('modalConfirmacionBtnAceptar').addEventListener('click', function () {
+                bootstrap.Modal.getInstance(document.getElementById('modalConfirmacionGenerica')).hide();
+                if (_confirmacionCallback) _confirmacionCallback();
             });
         });
-    });
-</script>
-<!-- 🔹 Script para ocultar/mostrar la barra lateral -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const sidebar = document.querySelector('.sidebar');
-        const content = document.querySelector('.content-area');
-        const toggleBtn = document.getElementById('toggleSidebar');
-
-        toggleBtn.addEventListener('click', function () {
-            sidebar.classList.toggle('collapsed');
-            content.classList.toggle('expanded');
-
-            // Cambiar ícono dinámicamente
-            const icon = toggleBtn.querySelector('i');
-            if (sidebar.classList.contains('collapsed')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-xmark');
-            } else {
-                icon.classList.remove('fa-xmark');
-                icon.classList.add('fa-bars');
-            }
-        });
-    });
-</script>
-</body>
-</html>
+    </script>
+@endsection

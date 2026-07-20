@@ -142,6 +142,7 @@
                                 <i class="fas fa-edit me-1"></i>Editar
                             </button>
 
+                            @if(strtolower(auth()->user()->role ?? '') !== 'cliente')
                             {{-- NUEVO: Actualizar Estado (HU10) --}}
                             <button type="button"
                                     class="btn btn-outline-info btn-sm"
@@ -149,6 +150,7 @@
                                     data-bs-target="#modalEstado{{ $reserva->id }}">
                                 <i class="fas fa-sync-alt me-1"></i>Estado
                             </button>
+                            @endif
                         </div>
 
                         {{-- NUEVO: Modal de Estado (HU10) --}}
@@ -274,6 +276,15 @@
                                     @method('PUT')
 
                                     <div class="modal-body">
+                                        @if ($errors->any())
+                                            <div class="alert alert-danger">
+                                                <ul class="mb-0">
+                                                    @foreach ($errors->all() as $error)
+                                                        <li>{{ $error }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endif
 
                                         {{-- Origen --}}
                                         <div class="mb-3">
@@ -312,7 +323,7 @@
                                                 @php
                                                     $fecha = $reserva->viaje->fecha_hora_salida ? \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('Y-m-d') : '';
                                                 @endphp
-                                                <input type="date" name="fecha_salida" id="fecha_salida{{ $reserva->id }}" class="form-control" value="{{ $fecha }}" required>
+                                                <input type="date" name="fecha_salida" id="fecha_salida{{ $reserva->id }}" class="form-control" value="{{ $fecha }}" disabled>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="hora_salida{{ $reserva->id }}" class="form-label">
@@ -321,8 +332,9 @@
                                                 @php
                                                     $hora = $reserva->viaje->fecha_hora_salida ? \Carbon\Carbon::parse($reserva->viaje->fecha_hora_salida)->format('H:i') : '';
                                                 @endphp
-                                                <input type="time" name="hora_salida" id="hora_salida{{ $reserva->id }}" class="form-control" value="{{ $hora }}" required>
+                                                <input type="time" name="hora_salida" id="hora_salida{{ $reserva->id }}" class="form-control" value="{{ $hora }}" disabled>
                                             </div>
+                                            <small class="text-muted">Para cambiar la fecha u hora del viaje, contacta con soporte.</small>
                                         </div>
 
                                         {{-- ASIENTOS - ACTUALIZADO PARA MOSTRAR TODOS --}}

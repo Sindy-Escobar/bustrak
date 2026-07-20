@@ -174,13 +174,26 @@ class ItinerarioController extends Controller
      */
     public function actualizarEstado(Request $request, $reservaId)
     {
+        // Solo conductor (Empleado) o Administrador pueden cambiar el estado
+        // operativo del viaje. Un Cliente no debe poder alterar esto, ni
+        // siquiera sobre su propia reserva.
+        $rol = strtolower(Auth::user()->role ?? '');
+        if (!in_array($rol, ['empleado', 'administrador'])) {
+            abort(403, 'No tienes permiso para cambiar el estado del viaje.');
+        }
+
         $request->validate([
             'estado' => 'required|in:pendiente,en_ruta,finalizado,confirmada'
         ]);
 
         $reserva = Reserva::where('id', $reservaId)
-            ->where('user_id', Auth::id())
             ->firstOrFail();
+
+        // Evita transiciones inválidas (ej. de "cancelada" a "finalizado")
+        if (in_array($reserva->estado, ['cancelada', 'eliminado', 'finalizado'])) {
+            return redirect()->route('itinerario.index')
+                ->with('error', 'No se puede cambiar el estado de un viaje ' . $reserva->estado . '.');
+        }
 
         $reserva->update(['estado' => $request->estado]);
 

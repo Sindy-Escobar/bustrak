@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
 
@@ -27,14 +28,25 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'email' => ['required', 'email', 'max:100'],
+            'password' => ['required', 'max:64'],
         ]);
+
+        // --- Bloqueo por fuerza bruta ---
+        $throttleKey = strtolower($credentials['email']) . '|' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 4)) {
+            $segundos = RateLimiter::availableIn($throttleKey);
+            return back()->withErrors([
+                'email' => "Demasiados intentos fallidos. Por seguridad, tu cuenta quedó bloqueada temporalmente. Intenta de nuevo en {$segundos} segundos.",
+            ])->onlyInput('email');
+        }
 
         $user = User::where('email', $credentials['email'])->first();
 
         // Validación: usuario no encontrado
         if (!$user) {
+            RateLimiter::hit($throttleKey, 60);
             return back()->withErrors([
                 'email' => 'Las credenciales no coinciden.',
             ])->onlyInput('email');
@@ -49,6 +61,7 @@ class AuthController extends Controller
 
         // Intento de autenticación
         if (Auth::attempt($credentials, $request->filled('remember'))) {
+            RateLimiter::clear($throttleKey);
             $request->session()->regenerate();
 
             // Normalizamos el rol
@@ -66,6 +79,8 @@ class AuthController extends Controller
                     return redirect()->route('cliente.perfil');
             }
         }
+
+        RateLimiter::hit($throttleKey, 60);
 
         return back()->withErrors([
             'email' => 'Credenciales inválidas. Por favor, inténtelo otra vez.',
@@ -200,7 +215,13 @@ class AuthController extends Controller
     {
         $request->validate([
             'current_password' => 'required',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|max:64|confirmed',
+        ], [
+            'current_password.required' => 'La contraseña actual es obligatoria.',
+            'password.required' => 'La nueva contraseña es obligatoria.',
+            'password.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
+            'password.max' => 'La nueva contraseña no puede exceder los 64 caracteres.',
+            'password.confirmed' => 'La confirmación de la nueva contraseña no coincide.',
         ]);
 
         $user = Auth::user();
@@ -226,7 +247,13 @@ class AuthController extends Controller
     {
         $request->validate([
             'password_actual' => 'required',
-            'password_nuevo' => 'required|min:8|confirmed',
+            'password_nuevo' => 'required|min:8|max:64|confirmed',
+        ], [
+            'password_actual.required' => 'La contraseña actual es obligatoria.',
+            'password_nuevo.required' => 'La nueva contraseña es obligatoria.',
+            'password_nuevo.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
+            'password_nuevo.max' => 'La nueva contraseña no puede exceder los 64 caracteres.',
+            'password_nuevo.confirmed' => 'La confirmación de la nueva contraseña no coincide.',
         ]);
 
         $user = Auth::user();

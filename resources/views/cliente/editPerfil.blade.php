@@ -22,6 +22,7 @@
                                    id="name"
                                    name="name"
                                    value="{{ old('name', $usuario->name) }}"
+                                   maxlength="100"
                                    required
                                    style="border-radius: 8px; padding: 10px 15px;">
                             @error('name')
@@ -54,6 +55,8 @@
                                    id="password"
                                    name="password"
                                    placeholder="Mínimo 8 caracteres"
+                                   autocomplete="new-password"
+                                   maxlength="64"
                                    style="border-radius: 8px; padding: 10px 15px;">
                             @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -67,6 +70,8 @@
                                    id="password_confirmation"
                                    placeholder="Mínimo 8 caracteres"
                                    name="password_confirmation"
+                                   autocomplete="new-password"
+                                   maxlength="64"
                                    style="border-radius: 8px; padding: 10px 15px;">
                         </div>
 

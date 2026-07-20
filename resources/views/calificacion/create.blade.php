@@ -76,7 +76,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="comentario" class="form-label">Comentario</label>
-                        <textarea name="comentario" id="comentario" class="form-control" rows="4">{{ old('comentario') }}</textarea>
+                        <textarea name="comentario" id="comentario" class="form-control" rows="4" maxlength="500">{{ old('comentario') }}</textarea>
+                        <small class="text-muted">Máximo 500 caracteres.</small>
                         @error('comentario')
                         <small class="text-danger">{{ $message }}</small>
                         @enderror

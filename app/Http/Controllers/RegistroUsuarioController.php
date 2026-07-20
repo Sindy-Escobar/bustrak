@@ -42,7 +42,7 @@ class RegistroUsuarioController extends Controller
             'email' => 'required|email|unique:users,email',
             //  Teléfono: 8 dígitos numéricos
             'telefono' => 'required|numeric|digits:8',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|max:64|confirmed',
         ], [
             'nombre_completo.required' => 'El nombre completo es obligatorio.',
             'nombre_completo.regex' => 'El nombre completo solo puede contener letras y espacios.',
@@ -59,6 +59,7 @@ class RegistroUsuarioController extends Controller
             'telefono.digits' => 'El teléfono debe contener exactamente 8 dígitos.',
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.max' => 'La contraseña no puede exceder los 64 caracteres.',
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
         ]);
 
@@ -74,6 +75,20 @@ class RegistroUsuarioController extends Controller
         $usuario->estado = 'activo';
         $usuario->save();
 
+<<<<<<< HEAD
+=======
+        // Crear también en tabla users para login
+        User::create([
+            'name' => $usuario->nombre_completo,
+            'email' => $usuario->email,
+            'password' => Hash::make($request->password),
+            'dni' => $usuario->dni,
+            'telefono' => $usuario->telefono,
+            'role' => 'Cliente', // Debe coincidir exactamente con el enum de la migración (Empleado|Administrador|Cliente)
+            'estado' => 'activo',
+        ]);
+
+>>>>>>> upstream/jona-andino
         // Redirigir mostrando mensaje de éxito
         return redirect()
             ->back()
@@ -133,17 +148,23 @@ class RegistroUsuarioController extends Controller
         $usuario = Usuario::findOrFail($id);
 
         $request->validate([
+<<<<<<< HEAD
             'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
             'dni' => ['required', 'numeric', 'digits:13', Rule::unique('users', 'dni')->ignore($usuario->id)],
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($usuario->id)],
+=======
+            'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:100',
+            'dni' => ['required', 'numeric', 'digits:13', Rule::unique('usuarios', 'dni')->ignore($usuario->id)],
+            'email' => ['required', 'email', Rule::unique('usuarios', 'email')->ignore($usuario->id)],
+>>>>>>> upstream/jona-andino
             'telefono' => 'required|numeric|digits:8',
-            'password' => 'nullable|string|min:8|confirmed',
+            'password' => 'nullable|string|min:8|max:64|confirmed',
             'estado' => 'required|in:activo,inactivo',
         ], [
             // Mensajes personalizados
             'nombre_completo.required' => 'El campo nombre completo es obligatorio.',
             'nombre_completo.regex' => 'El campo nombre completo solo puede contener letras y espacios.',
-            'nombre_completo.max' => 'El nombre completo no puede tener más de 255 caracteres.',
+            'nombre_completo.max' => 'El nombre completo no puede tener más de 100 caracteres.',
 
             'dni.required' => 'El campo DNI es obligatorio.',
             'dni.numeric' => 'El campo DNI debe ser numérico.',
@@ -159,6 +180,7 @@ class RegistroUsuarioController extends Controller
             'telefono.digits' => 'El teléfono debe tener :digits dígitos.',
 
             'password.min' => 'La contraseña debe tener al menos :min caracteres.',
+            'password.max' => 'La contraseña no puede exceder los 64 caracteres.',
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
 
             'estado.required' => 'El estado es obligatorio.',
@@ -173,7 +195,11 @@ class RegistroUsuarioController extends Controller
         $usuario->estado = $request->estado;
 
         if ($request->filled('password')) {
+<<<<<<< HEAD
             $usuario->password = Hash::make($request->password);
+=======
+            $usuario->password = \Illuminate\Support\Facades\Hash::make($request->password); // corregido: antes se guardaba en texto plano
+>>>>>>> upstream/jona-andino
         }
 
         $usuario->save();

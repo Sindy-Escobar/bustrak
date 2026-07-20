@@ -524,10 +524,12 @@
                             class="@error('password') is-invalid @enderror"
                             placeholder="••••••••"
                             minlength="8"
+                            maxlength="64"
                             required
                         >
                     </div>
-                    <span class="hint-text">Mínimo 8 caracteres</span>
+                    <span class="hint-text">Entre 8 y 64 caracteres</span>
+                    <div class="invalid-feedback" id="password-length-feedback" style="display: none; color: #dc3545; font-size: 13px; margin-top: 5px;">La contraseña debe tener al menos 8 caracteres.</div>
                     @error('password')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -548,6 +550,7 @@
                             id="password_confirmation"
                             placeholder="••••••••"
                             minlength="8"
+                            maxlength="64"
                             required
                         >
                     </div>
@@ -613,6 +616,21 @@
     const passwordInput = document.getElementById('password');
     const passwordConfirmInput = document.getElementById('password_confirmation');
     const passwordFeedback = document.getElementById('password-confirm-feedback');
+    const passwordLengthFeedback = document.getElementById('password-length-feedback');
+
+    function checkPasswordLength() {
+        if (passwordInput.value.length > 0 && passwordInput.value.length < 8) {
+            passwordInput.setCustomValidity("La contraseña debe tener al menos 8 caracteres");
+            passwordInput.classList.add('is-invalid');
+            passwordLengthFeedback.style.display = 'block';
+            return false;
+        } else {
+            passwordInput.setCustomValidity("");
+            passwordInput.classList.remove('is-invalid');
+            passwordLengthFeedback.style.display = 'none';
+            return true;
+        }
+    }
 
     function checkPasswords() {
         if (passwordInput.value !== passwordConfirmInput.value) {
@@ -628,11 +646,16 @@
         }
     }
 
-    passwordInput.addEventListener('input', checkPasswords);
+    passwordInput.addEventListener('input', function () {
+        checkPasswordLength();
+        checkPasswords();
+    });
     passwordConfirmInput.addEventListener('input', checkPasswords);
 
     document.getElementById('registroForm').addEventListener('submit', function(e) {
-        if (!checkPasswords()) {
+        const lengthOk = checkPasswordLength();
+        const matchOk = checkPasswords();
+        if (!lengthOk || !matchOk) {
             e.preventDefault();
             e.stopPropagation();
         }

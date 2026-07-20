@@ -52,14 +52,37 @@
                             <h5 class="border-bottom pb-2"><i class="fas fa-trash text-danger me-2"></i>Limpiar Viajes Pasados</h5>
                             <p class="text-muted">Elimina viajes con fechas pasadas que no tienen reservas.</p>
 
-                            <form action="{{ route('admin.viajes.limpiar') }}" method="POST"
-                                  onsubmit="return confirm('¿Estás seguro de eliminar los viajes pasados sin reservas?')">
+                            <form action="{{ route('admin.viajes.limpiar') }}" method="POST" id="formLimpiarViajes">
                                 @csrf
 
-                                <button type="submit" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalConfirmarLimpieza">
                                     <i class="fas fa-broom me-2"></i>Limpiar Viajes Pasados
                                 </button>
                             </form>
+
+                            {{-- Modal de confirmación propio (reemplaza el confirm() nativo) --}}
+                            <div class="modal fade" id="modalConfirmarLimpieza" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title">
+                                                <i class="fas fa-exclamation-triangle me-2"></i>Confirmar eliminación
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>¿Estás seguro de eliminar los viajes pasados sin reservas?</p>
+                                            <p class="text-danger mb-0"><strong>Esta acción no se puede deshacer.</strong></p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" form="formLimpiarViajes" class="btn btn-danger">
+                                                <i class="fas fa-trash me-1"></i>Sí, eliminar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <hr>
                         {{-- Información --}}

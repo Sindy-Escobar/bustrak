@@ -32,12 +32,12 @@
 
             <div class="mb-3">
                 <label for="password_nuevo" class="form-label">Nueva Contraseña</label>
-                <input type="password" name="password_nuevo" id="password_nuevo" class="form-control" required>
+                <input type="password" name="password_nuevo" id="password_nuevo" class="form-control" minlength="8" maxlength="64" required>
             </div>
 
             <div class="mb-3">
                 <label for="password_nuevo_confirmation" class="form-label">Confirmar Nueva Contraseña</label>
-                <input type="password" name="password_nuevo_confirmation" id="password_nuevo_confirmation" class="form-control" required>
+                <input type="password" name="password_nuevo_confirmation" id="password_nuevo_confirmation" class="form-control" minlength="8" maxlength="64" required>
             </div>
 
             <button type="submit" class="btn btn-primary">Actualizar Contraseña</button>

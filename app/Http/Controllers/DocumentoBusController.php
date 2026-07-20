@@ -82,7 +82,7 @@ class DocumentoBusController extends Controller
         $request->validate([
             'bus_id' => 'required|exists:buses,id',
             'tipo_documento' => 'required|in:permiso_operacion,revision_tecnica,seguro_vehicular,matricula',
-            'numero_documento' => 'required|string|max:100',
+            'numero_documento' => 'required|string|max:30|regex:/^[A-Za-z0-9\-]+$/',
             'fecha_emision' => 'required|date|before_or_equal:today',
             'fecha_vencimiento' => 'required|date|after:fecha_emision',
             'archivo' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120', // 5MB máximo
@@ -92,6 +92,8 @@ class DocumentoBusController extends Controller
             'bus_id.exists' => 'El bus seleccionado no existe',
             'tipo_documento.required' => 'Debe seleccionar el tipo de documento',
             'numero_documento.required' => 'El número de documento es obligatorio',
+            'numero_documento.max' => 'El número de documento no puede exceder los 30 caracteres',
+            'numero_documento.regex' => 'El número de documento solo puede contener letras, números y guiones (ej. ABC-12345-2024)',
             'fecha_emision.required' => 'La fecha de emisión es obligatoria',
             'fecha_emision.before_or_equal' => 'La fecha de emisión no puede ser futura',
             'fecha_vencimiento.required' => 'La fecha de vencimiento es obligatoria',
@@ -101,6 +103,11 @@ class DocumentoBusController extends Controller
         ]);
 
         $documento = new DocumentoBus($request->except('archivo'));
+
+        // Sanitización básica: quitar etiquetas HTML de observaciones (texto libre)
+        if ($request->filled('observaciones')) {
+            $documento->observaciones = trim(preg_replace('/\s+/', ' ', strip_tags($request->observaciones)));
+        }
 
         // Subir archivo si existe
         if ($request->hasFile('archivo')) {

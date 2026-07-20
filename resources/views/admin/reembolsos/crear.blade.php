@@ -197,7 +197,14 @@
 
                 <div class="form-group">
                     <label><i class="fas fa-ticket-alt"></i> Seleccionar Reserva *</label>
-                    <select name="reserva_id" id="reserva" required onchange="cargarDatos()">
+                    @if($reservas->isEmpty())
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No hay reservas canceladas elegibles para un reembolso manual en este momento.
+                            Las reservas canceladas que ya tienen una solicitud de reembolso en proceso no aparecen en esta lista.
+                        </div>
+                    @endif
+                    <select name="reserva_id" id="reserva" required onchange="cargarDatos()" @if($reservas->isEmpty()) disabled @endif>
                         <option value="">-- Seleccione una reserva --</option>
                         @foreach($reservas as $reserva)
                             <option value="{{ $reserva->id }}"
@@ -228,7 +235,8 @@
 
                 <div class="form-group">
                     <label><i class="fas fa-coins"></i> Monto a Reembolsar *</label>
-                    <input type="number" name="monto_reembolso" id="monto_reembolso" placeholder="0.00" step="0.01" required>
+                    <input type="number" name="monto_reembolso" id="monto_reembolso" placeholder="0.00" step="0.01" min="0.01" required>
+                    <div class="invalid-feedback" id="monto-feedback" style="display: none; color: #dc3545; font-size: 13px; margin-top: 5px;">El monto debe ser mayor a cero.</div>
                 </div>
 
                 <div class="form-section-title" style="margin-top: 10px;">
@@ -270,15 +278,15 @@
                 <div id="campos-transferencia" class="campos-dinamicos">
                     <div class="form-group">
                         <label><i class="fas fa-hashtag"></i> Número de Cuenta (14 dígitos)</label>
-                        <input type="text" name="numero_cuenta" placeholder="14 dígitos" maxlength="20">
+                        <input type="text" name="numero_cuenta" placeholder="14 dígitos" maxlength="14" pattern="[0-9]{14}" title="Debe contener exactamente 14 dígitos numéricos" inputmode="numeric">
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-university"></i> Banco</label>
-                        <input type="text" name="banco" placeholder="Nombre del banco">
+                        <input type="text" name="banco" placeholder="Nombre del banco" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\.\-&]+" maxlength="100" title="Solo letras y espacios">
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-user"></i> Titular de Cuenta</label>
-                        <input type="text" name="titular_cuenta" placeholder="Nombre del titular">
+                        <input type="text" name="titular_cuenta" placeholder="Nombre del titular" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" maxlength="150" title="Solo letras y espacios">
                     </div>
                 </div>
 
@@ -286,14 +294,15 @@
 
                 <div class="form-group" style="margin-top: 10px;">
                     <label><i class="fas fa-sticky-note"></i> Notas Adicionales</label>
-                    <textarea name="notas" placeholder="Observaciones..." rows="3"></textarea>
+                    <textarea name="notas" placeholder="Observaciones..." rows="3" maxlength="500"></textarea>
+                    <small class="text-muted">Máximo 500 caracteres.</small>
                 </div>
 
                 <div class="button-group">
                     <a href="{{ route('admin.reembolsos') }}" class="btn-cancelar">
                         <i class="fas fa-times"></i> Cancelar
                     </a>
-                    <button type="submit" class="btn-procesar">
+                    <button type="submit" class="btn-procesar" @if($reservas->isEmpty()) disabled @endif>
                         <i class="fas fa-check"></i> Procesar Reembolso
                     </button>
                 </div>
@@ -334,5 +343,21 @@
             else if (metodo === 'transferencia') document.getElementById('campos-transferencia').classList.add('activo');
             else if (metodo === 'cheque') document.getElementById('campos-cheque').classList.add('activo');
         }
+
+        document.querySelector('form[action="{{ route('admin.reembolsos.procesar') }}"]').addEventListener('submit', function (e) {
+            const montoInput = document.getElementById('monto_reembolso');
+            const montoFeedback = document.getElementById('monto-feedback');
+            const monto = parseFloat(montoInput.value);
+
+            if (isNaN(monto) || monto <= 0) {
+                e.preventDefault();
+                montoFeedback.style.display = 'block';
+                montoInput.classList.add('is-invalid');
+                montoInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                montoFeedback.style.display = 'none';
+                montoInput.classList.remove('is-invalid');
+            }
+        });
     </script>
 @endsection

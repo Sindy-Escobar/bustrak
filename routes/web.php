@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\RegistroRentaController;
-use App\Http\Controllers\RegistroTeminalController;
+use App\Http\Controllers\RegistroTerminalController;
 use App\Http\Controllers\ReservaController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -47,12 +47,11 @@ use App\Http\Controllers\ViajesAdminController;
 use App\Http\Controllers\IncidenteController;
 use App\Http\Controllers\PagoController;
 
-
 // Toggle activar/inactivar
-Route::patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
+Route::middleware(['auth', 'admin'])->patch('/admin/usuarios/{id}/cambiar', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
 
 // Validar usuario
-Route::patch('/admin/usuarios/{id}/validar', [AdminController::class, 'validar'])->name('admin.validar');
+Route::middleware(['auth', 'admin'])->patch('/admin/usuarios/{id}/validar', [AdminController::class, 'validar'])->name('admin.validar');
 
 // ======================================================
 // RUTAS VALIDAR EMPRESAS
@@ -61,7 +60,7 @@ Route::patch('/admin/usuarios/{id}/validar', [AdminController::class, 'validar']
 // ->name('empresas.validar');
 
 // Visualización de terminales
-Route::get('/ver_terminales', [RegistroTeminalController::class, 'ver_terminales'])->name('terminales.ver_terminales');
+Route::get('/ver_terminales', [RegistroTerminalController::class, 'ver_terminales'])->name('terminales.ver_terminales');
 
 // Validación empleados
 Route::get('/validacion-empleados', function () {
@@ -81,6 +80,8 @@ Route::get('empresas', [EmpresaController::class, 'index'])->name('empresas.inde
 
 // Recurso empleados
 Route::resource('empleados', EmpleadoController::class);
+
+
 
 // Activar/desactivar empleados
 Route::get('/empleados/{id}/desactivar', [EmpleadoController::class, 'formDesactivar'])->name('empleados.formDesactivar');
@@ -124,13 +125,13 @@ Route::middleware(['auth', 'user.active'])->prefix('cliente')->group(function ()
 // ======================================================
 // ADMIN
 // ======================================================
-Route::middleware(['auth', 'user.active'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'user.active', 'admin'])->prefix('admin')->group(function () {
     Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios');
     Route::post('/usuarios/{id}/cambiar-estado', [AdminController::class, 'cambiarEstado'])->name('admin.cambiarEstado');
 });
 
 Route::get('/admin/pagina', [EstadisticasController::class, 'index'])
-    ->middleware('auth')
+    ->middleware(['auth', 'admin'])
     ->name('admin.dashboard');
 
 // ======================================================
@@ -147,15 +148,15 @@ Route::put('/empresa-hu11/{id}', [EmpresaHU11Controller::class, 'update'])->name
 // ======================================================
 // TERMINALES
 // ======================================================
-Route::resource('terminales', RegistroTeminalController::class)->parameters([
+Route::resource('terminales', RegistroTerminalController::class)->parameters([
     'terminales' => 'terminal',
 ]);
 
-Route::get('terminales/{terminal}/servicios', [RegistroTeminalController::class, 'servicios'])
+Route::get('terminales/{terminal}/servicios', [RegistroTerminalController::class, 'servicios'])
     ->name('terminales.servicios');
-Route::post('terminales/{terminal}/servicios', [RegistroTeminalController::class, 'storeServicio'])
+Route::post('terminales/{terminal}/servicios', [RegistroTerminalController::class, 'storeServicio'])
     ->name('terminales.servicios.store');
-Route::delete('terminales/{terminal}/servicios/{servicio}', [RegistroTeminalController::class, 'destroyServicio'])
+Route::delete('terminales/{terminal}/servicios/{servicio}', [RegistroTerminalController::class, 'destroyServicio'])
     ->name('terminales.servicios.destroy');
 
 // HU10 - empresas buses
@@ -171,7 +172,7 @@ Route::get('/principal', [PrincipalController::class, 'index'])
 Route::get('/api/departamento/{id}', [PrincipalController::class, 'getDepartamento']);
 
 
-Route::middleware('auth')->prefix('admin/viajes')->name('admin.viajes.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin/viajes')->name('admin.viajes.')->group(function () {
     Route::get('/', [ViajesAdminController::class, 'index'])->name('index');
     Route::post('/', [ViajesAdminController::class, 'store'])->name('store');
     Route::put('{id}', [ViajesAdminController::class, 'update'])->name('update');
@@ -223,6 +224,10 @@ Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.in
 // Consulta/soporte
 Route::get('/ayuda-soporte', [ConsultaController::class, 'index'])->name('consulta.formulario');
 Route::post('/ayuda-soporte', [ConsultaController::class, 'store'])->name('soporte.enviar');
+Route::middleware(['auth', 'admin'])->get('/admin/consultas',
+    [ConsultaController::class, 'listar'])->name('consulta.listar');
+Route::middleware(['auth', 'admin'])->post('/admin/consultas/{id}/responder',
+    [ConsultaController::class, 'responder'])->name('consulta.responder');
 
 // Interfaz empleados
 Route::prefix('empleado')->middleware(['auth', 'user.active'])->group(function() {
@@ -267,7 +272,7 @@ Route::put('/empleados-hu5/{id}/desactivar', [EmpleadoController::class, 'guarda
 
 // Estadísticas
 Route::get('/estadisticahu46', [EstadisticasController::class, 'index'])->name('estadistica');
-Route::get('/admin/estadisticas', [EstadisticasController::class, 'mostrar'])->name('admin.estadisticas');
+Route::middleware(['auth', 'admin'])->get('/admin/estadisticas', [EstadisticasController::class, 'mostrar'])->name('admin.estadisticas');
 
 // Actualizar empresas
 Route::put('empresas/{id}', [EmpresaController::class, 'update'])->name('empresas.update');
@@ -344,7 +349,7 @@ Route::post('/viaje/{reserva}/calificar', [CalificacionController::class, 'store
 // ======================================================
 // RUTAS ADMINS - NOTIFICACIONES
 // ======================================================
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/notificaciones', [NotificacionController::class, 'indexAdmin'])->name('admin.notificaciones');
 });
 
@@ -361,12 +366,12 @@ Route::middleware(['auth'])->prefix('usuario')->group(function () {
 // ======================================================
 // CAMBIO DE CONTRASEÑA (desde main)
 // ======================================================
-Route::get('admin/cambiar-password', [AuthController::class, 'showAdminChangePasswordForm'])->name('admin.change-password');
-Route::post('admin/update-password', [AuthController::class, 'updateAdminPassword'])->name('admin.update-password');
+Route::middleware(['auth', 'admin'])->get('admin/cambiar-password', [AuthController::class, 'showAdminChangePasswordForm'])->name('admin.change-password');
+Route::middleware(['auth', 'admin'])->post('admin/update-password', [AuthController::class, 'updateAdminPassword'])->name('admin.update-password');
 
 // Usuario
-Route::get('usuario/cambiar-password', [AuthController::class, 'showUserChangePasswordForm'])->name('usuario.change-password');
-Route::post('usuario/update-password', [AuthController::class, 'updateUserPassword'])->name('usuario.update-password');
+Route::middleware(['auth'])->get('usuario/cambiar-password', [AuthController::class, 'showUserChangePasswordForm'])->name('usuario.change-password');
+Route::middleware(['auth'])->post('usuario/update-password', [AuthController::class, 'updateUserPassword'])->name('usuario.update-password');
 
 // Solicitudes de constancia
 Route::middleware(['auth'])->group(function () {
@@ -399,6 +404,12 @@ Route::get('/puntos/historial-canjes', [RegistroPuntosController::class, 'histor
 // HU13: Exportar historial a PDF
 Route::get('/puntos/exportar-pdf', [RegistroPuntosController::class, 'exportarHistorialPDF'])
     ->name('puntos.exportar-pdf');
+
+
+Route::get('/terminales/exportar/pdf', [RegistroTerminalController::class, 'exportarPDF'])
+    ->name('terminales.exportarPDF');
+
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DocumentoBusController::class, 'dashboard'])->name('dashboard');
@@ -461,14 +472,14 @@ Route::prefix('api')->group(function () {
 });
 
 //editar pagina principal
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/home-editor', [HomeEditorController::class, 'index'])
         ->name('admin.home.editor');
 
     Route::post('/admin/home-editor/update', [HomeEditorController::class, 'update'])
         ->name('admin.home.update');
 });
-Route::prefix('admin')->name('admin.')->group(function() {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function() {
     Route::resource('departamentos', App\Http\Controllers\Admin\DepartamentoController::class);
     Route::resource('lugares', App\Http\Controllers\Admin\LugarController::class);
     Route::resource('comidas', App\Http\Controllers\Admin\ComidaController::class);
@@ -628,7 +639,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 // Sprint: #1
 // ============================================
 
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/reembolsos', [ReembolsoController::class, 'index'])
         ->name('reembolsos');
@@ -652,7 +663,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 // ============================================
 // GESTIÓN DE VIAJES (Admin)
 // ============================================
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/viajes/gestionar', [\App\Http\Controllers\Admin\ViajesAdminController::class, 'index'])
         ->name('viajes.gestionar');
 

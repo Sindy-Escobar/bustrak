@@ -17,8 +17,8 @@
                     <div style="width: 110px; height: 110px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 50px; font-weight: bold; border: 4px solid rgba(255,255,255,0.4); flex-shrink: 0;">
                         {{ strtoupper(substr($usuario->name, 0, 1)) }}
                     </div>
-                    <div style="flex-grow: 1;">
-                        <h2 style="margin: 0; font-size: 28px; font-weight: 700; text-transform: capitalize;">{{ $usuario->name }}</h2>
+                    <div style="flex-grow: 1; min-width: 0;">
+                        <h2 title="{{ $usuario->name }}" style="margin: 0; font-size: 28px; font-weight: 700; text-transform: capitalize; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $usuario->name }}</h2>
                         <p style="margin: 12px 0 0 0; font-size: 14px; opacity: 0.95;">
                             <i class="fas fa-check-circle me-2"></i> Cliente Verificado
                         </p>
@@ -30,12 +30,12 @@
                     <div class="card-body p-4">
 
                         <!-- Nombre Completo -->
-                        <div style="padding: 20px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
-                            <div>
+                        <div style="padding: 20px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+                            <div style="min-width: 0;">
                                 <p style="margin: 0; font-size: 12px; color: #999; font-weight: 700;">Nombre Completo</p>
-                                <p style="margin: 8px 0 0 0; font-size: 16px; color: #333; font-weight: 600;">{{ $usuario->name }}</p>
+                                <p title="{{ $usuario->name }}" style="margin: 8px 0 0 0; font-size: 16px; color: #333; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $usuario->name }}</p>
                             </div>
-                            <i class="fas fa-user" style="color: #5cb3ff; font-size: 24px;"></i>
+                            <i class="fas fa-user" style="color: #5cb3ff; font-size: 24px; flex-shrink: 0;"></i>
                         </div>
 
                         <!-- Correo Electrónico -->
@@ -117,32 +117,44 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Nombre Completo</label>
                             <input type="text" name="name" id="name"
-                                   class="form-control" value="{{ old('name', $usuario->name) }}">
+                                   class="form-control" value="{{ old('name', $usuario->name) }}" maxlength="100">
+                            @error('name')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Correo Electrónico</label>
                             <input type="email" name="email" id="email"
                                    class="form-control" value="{{ old('email', $usuario->email) }}">
+                            @error('email')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-6">
                             <label for="telefono" class="form-label">Teléfono</label>
-                            <input type="text" name="telefono" id="telefono"
+                            <input type="text" name="telefono" id="telefono" inputmode="numeric" maxlength="8" pattern="[0-9]{8}" title="8 dígitos numéricos"
                                    class="form-control" value="{{ old('telefono', $usuario->telefono) }}">
                         </div>
                         <div class="col-md-6">
                             <label for="dni" class="form-label">DNI</label>
-                            <input type="text" name="dni" id="dni"
+                            <input type="text" name="dni" id="dni" inputmode="numeric" maxlength="13" pattern="[0-9]{13}" title="13 dígitos numéricos"
                                    class="form-control" value="{{ old('dni', $usuario->dni) }}">
                         </div>
                         <div class="col-md-6">
                             <label for="password" class="form-label">Nueva Contraseña (Opcional)</label>
-                            <input type="password" name="password" id="password" class="form-control">
+                            <input type="password" name="password" id="password" class="form-control" autocomplete="new-password" maxlength="64">
+                         @error('password')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="password_confirmation" class="form-label">Confirmar Nueva Contraseña</label>
-                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control">
+                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" autocomplete="new-password" maxlength="64">
+                        @error('password_confirmation')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                         </div>
                         <!-- Puedes agregar más campos aquí -->
                         </div>
@@ -153,6 +165,7 @@
             </div>
         </div>
     </div>
+
 
 
 
