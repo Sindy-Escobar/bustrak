@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\DocumentoBus;
 use App\Models\Bus;
+use App\Models\HistorialDocumentoBus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
@@ -119,6 +121,15 @@ class DocumentoBusController extends Controller
 
         $documento->save();
 
+        // Prueba #4 – Registrar creación en historial de auditoría
+        HistorialDocumentoBus::create([
+            'documento_id' => $documento->id,
+            'usuario_id'   => Auth::id(),
+            'accion'       => 'creacion',
+            'descripcion'  => 'Documento registrado: ' . $documento->tipo_documento . ' #' . $documento->numero_documento,
+            'estado_nuevo' => $documento->estado,
+        ]);
+
         return redirect()->route('documentos-buses.index')
             ->with('success', 'Documento registrado exitosamente');
     }
@@ -189,6 +200,15 @@ class DocumentoBusController extends Controller
         $documento->actualizarEstado();
         $documento->save();
 
+        // Prueba #4 – Registrar actualización en historial de auditoría
+        HistorialDocumentoBus::create([
+            'documento_id' => $documento->id,
+            'usuario_id'   => Auth::id(),
+            'accion'       => 'actualizacion',
+            'descripcion'  => 'Documento actualizado: ' . $documento->tipo_documento . ' #' . $documento->numero_documento,
+            'estado_nuevo' => $documento->estado,
+        ]);
+
         return redirect()->route('documentos-buses.index')
             ->with('success', 'Documento actualizado exitosamente');
     }
@@ -199,6 +219,15 @@ class DocumentoBusController extends Controller
     public function destroy($id)
     {
         $documento = DocumentoBus::findOrFail($id);
+
+        // Prueba #4 – Registrar eliminación en historial ANTES de borrar el documento
+        HistorialDocumentoBus::create([
+            'documento_id' => $documento->id,
+            'usuario_id'   => Auth::id(),
+            'accion'       => 'eliminacion',
+            'descripcion'  => 'Documento eliminado: ' . $documento->tipo_documento . ' #' . $documento->numero_documento,
+            'estado_nuevo' => 'eliminado',
+        ]);
 
         // Eliminar archivo asociado
         if ($documento->archivo_url && Storage::disk('public')->exists($documento->archivo_url)) {

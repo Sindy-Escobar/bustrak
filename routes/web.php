@@ -78,15 +78,16 @@ Route::get('/', function () {
 // CONSULTA DE EMPRESAS
 Route::get('empresas', [EmpresaController::class, 'index'])->name('empresas.index');
 
-// Recurso empleados
-Route::resource('empleados', EmpleadoController::class);
+// Recurso empleados (protegido – solo administradores)
+// Prueba #11: Escalación de privilegios – backend valida rol
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::resource('empleados', EmpleadoController::class);
 
-
-
-// Activar/desactivar empleados
-Route::get('/empleados/{id}/desactivar', [EmpleadoController::class, 'formDesactivar'])->name('empleados.formDesactivar');
-Route::put('/empleados/{id}/desactivar', [EmpleadoController::class, 'guardarDesactivacion'])->name('empleados.desactivar');
-Route::put('/empleados/{id}/activar', [EmpleadoController::class, 'activar'])->name('empleados.activar');
+    // Activar/desactivar empleados
+    Route::get('/empleados/{id}/desactivar', [EmpleadoController::class, 'formDesactivar'])->name('empleados.formDesactivar');
+    Route::put('/empleados/{id}/desactivar', [EmpleadoController::class, 'guardarDesactivacion'])->name('empleados.desactivar');
+    Route::put('/empleados/{id}/activar', [EmpleadoController::class, 'activar'])->name('empleados.activar');
+});
 
 // ======================================================
 // AUTENTICACIÓN
@@ -97,8 +98,12 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/registro', [RegistroUsuarioController::class, 'create'])->name('registro');
 Route::post('/registro', [RegistroUsuarioController::class, 'store']);
 
-Route::get('/usuarios/consultar', [RegistroUsuarioController::class, 'consultar'])->name('usuarios.consultar');
-Route::resource('usuarios', RegistroUsuarioController::class);
+// Consulta y recurso de usuarios (protegido – solo administradores)
+// Prueba #11: Escalación de privilegios – backend valida rol
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/usuarios/consultar', [RegistroUsuarioController::class, 'consultar'])->name('usuarios.consultar');
+    Route::resource('usuarios', RegistroUsuarioController::class)->except(['create', 'store']);
+});
 
 // Password reset
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
