@@ -42,7 +42,7 @@ class ForgotPasswordController extends Controller
             'user_data' => [
                 'name' => $user->nombre_completo ?? $user->name,
                 'email' => $user->email,
-                'password' => $user->plain_password ?? 'No disponible',
+                'password' => 'No disponible',
             ],
         ]);
     }

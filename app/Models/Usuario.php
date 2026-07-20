@@ -9,14 +9,17 @@ class Usuario extends Model
 {
     use HasFactory;
 
-    protected $table = 'usuarios';
+    protected $table = 'users';
 
     protected $fillable = [
+        'name',
         'nombre_completo',
         'dni',
         'email',
         'telefono',
         'password',
+        'role',
+        'estado',
     ];
 
     protected $hidden = [
@@ -27,29 +30,5 @@ class Usuario extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
-
-    /**
-     * Relación con la tabla users (si existe)
-     */
-    public function user()
-    {
-        return $this->hasOne(User::class, 'email', 'email');
-    }
-
-    /**
-     * Obtener el estado del usuario desde la tabla users
-     */
-    public function getEstadoAttribute()
-    {
-        return $this->user ? $this->user->estado : 'activo';
-    }
-
-    /**
-     * Obtener el rol del usuario desde la tabla users
-     */
-    public function getRolAttribute()
-    {
-        return $this->user ? $this->user->role : 'cliente';
-    }
 }
 

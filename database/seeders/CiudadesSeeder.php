@@ -12,7 +12,7 @@ class CiudadesSeeder extends Seeder
         $ciudades = ['Intibuca', 'El Paraiso', 'Copan', 'Cortez', 'Yoro', 'Choluteca', 'Lempira', 'Santa Barbara', 'Olancho', 'Colon', 'Francisco Morazan', 'Valle', 'Ocotepeque'];
 
         foreach ($ciudades as $nombre) {
-            Ciudad::create(['nombre' => $nombre]);
+            Ciudad::firstOrCreate(['nombre' => $nombre]);
         }
     }
 }

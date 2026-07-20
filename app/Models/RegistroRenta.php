@@ -78,9 +78,9 @@ class RegistroRenta extends Model
         return ($totalTarifa + $penalizacion) - $anticipo;
     }
 
-    // Relación con la tabla de Usuarios
-    public function usuarios()
+    // Relación con la tabla de Users - ACTUALIZADO
+    public function usuario()
     {
-        return $this->belongsTo(Usuario::class);
+        return $this->belongsTo(User::class, 'usuario_id');
     }
 }

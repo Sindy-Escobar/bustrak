@@ -55,7 +55,10 @@ class ServiciosAdicionalesSeeder extends Seeder
         ];
 
         foreach ($servicios as $servicio) {
-            ServicioAdicional::create($servicio);
+            ServicioAdicional::firstOrCreate(
+                ['nombre' => $servicio['nombre']],
+                $servicio
+            );
         }
 
         $this->command->info(' 6 servicios adicionales creados');
