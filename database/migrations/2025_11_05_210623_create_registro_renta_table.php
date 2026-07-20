@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('registro_rentas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('usuario_id')->constrained('usuarios')->cascadeOnDelete();
+            $table->foreignId('usuario_id')->constrained('users')->cascadeOnDelete();
             $table->string('nombre_completo'); // NUEVO CAMPO
             $table->enum('tipo_evento', ['familiar', 'campamento', 'excursion', 'educativo', 'empresarial']);
             $table->string('destino');

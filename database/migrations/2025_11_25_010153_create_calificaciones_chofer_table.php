@@ -15,8 +15,8 @@ return new class extends Migration
             $table->string('comentario')->nullable();
             $table->timestamps();
 
-            // Relación opcional con usuarios
-            $table->foreign('usuario_id')->references('id')->on('usuarios')->onDelete('cascade');
+            // Relación opcional con users
+            $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

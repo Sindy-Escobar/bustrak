@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('comentario_conductores', function (Blueprint $table) {
             $table->id();
             // Relaciones
-            $table->foreignId('usuario_id')->constrained('usuarios')->onDelete('cascade');
+            $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('empleado_id')->constrained('empleados')->onDelete('cascade');
 
             // Calificación y comentario principal
