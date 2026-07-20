@@ -39,7 +39,6 @@ class RegistroUsuarioController extends Controller
             //  Solo letras (incluye acentos, ñ) y espacios
             'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:60',
             //  DNI: 13 dígitos numéricos, único
-<<<<<<< HEAD
             'dni' => 'required|numeric|digits:13|unique:users,dni',
             'email' => 'required|email|unique:users,email',
             //  Teléfono: 8 dígitos numéricos
