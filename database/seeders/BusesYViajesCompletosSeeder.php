@@ -77,10 +77,23 @@ class BusesYViajesCompletosSeeder extends Seeder
     /**
      * Crear viajes SOLO para rutas principales
      * 3 horarios al día durante 1 día
+     *
+     * IDEMPOTENTE: Si ya existen viajes para los buses, se salta la creación
+     * para no duplicar datos sobre una base ya importada.
      */
     private function crearViajes()
     {
         $this->command->info("\n🗺️  Creando viajes para rutas principales...");
+
+        // === PROTECCIÓN IDEMPOTENTE ===
+        // Si ya hay viajes registrados en la BD, asumimos que la semilla
+        // ya se ejecutó (o la base fue importada manualmente) y no duplicamos.
+        $totalViajes = Viaje::count();
+        if ($totalViajes > 0) {
+            $this->command->warn(" Ya existen {$totalViajes} viajes en la base de datos. Se omite la creación de viajes para evitar duplicación.");
+            return;
+        }
+        // ===============================
 
         //  DEFINIR SOLO CIUDADES IMPORTANTES (8 ciudades)
         $ciudadesImportantes = [

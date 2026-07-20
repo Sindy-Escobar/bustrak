@@ -43,7 +43,7 @@ use App\Http\Controllers\TipoServicioController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\ReembolsoController;
 use App\Http\Controllers\ClienteReembolsoController;
-use App\Http\Controllers\ViajesAdminController;
+use App\Http\Controllers\Admin\ViajesAdminController;
 use App\Http\Controllers\IncidenteController;
 use App\Http\Controllers\PagoController;
 
@@ -144,11 +144,12 @@ Route::get('/admin/pagina', [EstadisticasController::class, 'index'])
 // ======================================================
 Route::get('/empleados-hu5', [EmpleadoHU5Controller::class, 'index'])->name('empleados.hu5');
 
+//Route::get('/empresa-hu11/{id}/editar', [EmpresaHU11Controller::class, 'edit'])->name('empresa.edit.hu11');
+//Route::put('/empresa-hu11/{id}', [EmpresaHU11Controller::class, 'update'])->name('empresa.update.hu11');
+
 // ======================================================
 // EMPRESAS HU11 (EDITAR)
 // ======================================================
-Route::get('/empresa-hu11/{id}/editar', [EmpresaHU11Controller::class, 'edit'])->name('empresa.edit.hu11');
-Route::put('/empresa-hu11/{id}', [EmpresaHU11Controller::class, 'update'])->name('empresa.update.hu11');
 
 // ======================================================
 // TERMINALES

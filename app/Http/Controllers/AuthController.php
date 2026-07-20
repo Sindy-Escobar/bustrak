@@ -65,12 +65,6 @@ class AuthController extends Controller
             RateLimiter::clear($throttleKey);
             $request->session()->regenerate();
 
-            //  Guardar plain_password si no existe
-            if (!$user->plain_password) {
-                $user->plain_password = $request->password;
-                $user->save();
-            }
-
             // Normalizamos el rol
             $rol = strtolower($user->role);
 
@@ -124,7 +118,6 @@ class AuthController extends Controller
             'name'   => $validated['name'],
             'email'  => $validated['email'],
             'password' => Hash::make($validated['password']),
-            // plain_password eliminado – prueba de auditoría de seguridad
             'role'   => 'Cliente',
             'estado' => 'activo',
         ]);
@@ -196,7 +189,6 @@ class AuthController extends Controller
             function ($user, $password) {
                 $user->forceFill([
                     'password' => Hash::make($password),
-                    // plain_password eliminado – prueba de auditoría de seguridad
                 ])->setRememberToken(Str::random(60));
 
                 $user->save();
@@ -258,7 +250,6 @@ class AuthController extends Controller
         }
 
         $user->password = Hash::make($request->password);
-        // plain_password eliminado – prueba de auditoría de seguridad
         $user->save();
 
         return back()->with('success', 'Contraseña actualizada correctamente');
@@ -294,7 +285,6 @@ class AuthController extends Controller
         }
 
         $user->password = Hash::make($request->password_nuevo);
-        // plain_password eliminado – prueba de auditoría de seguridad
         $user->save();
 
         return back()->with('success', 'Contraseña cambiada correctamente.');

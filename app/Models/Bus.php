@@ -18,13 +18,20 @@ class Bus extends Model
         'capacidad_asientos',
         'estado',
         'tipo_servicio_id',
-        'terminal_id',
+        'empresa_id'
     ];
     public function tipoServicio()
     {
         // Relación: Un Bus pertenece a un Tipo de Servicio
         return $this->belongsTo(TipoServicio::class, 'tipo_servicio_id');
     }
+
+    // Relación con empresa - AGREGADA
+    public function empresa()
+    {
+        return $this->belongsTo(EmpresaBus::class, 'empresa_id');
+    }
+
     public function viajes()
     {
         return $this->hasMany(Viaje::class, 'bus_id');

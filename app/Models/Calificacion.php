@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Calificacion extends Model
 {
-    protected $table = 'calificacions';
+    use HasFactory;
+
+    // IMPORTANTE: Forzar el nombre correcto de la tabla
+    protected $table = 'calificaciones';
 
     protected $fillable = [
         'reserva_id',

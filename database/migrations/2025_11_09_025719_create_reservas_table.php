@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('reservas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('usuario_id')->constrained('usuarios')->onDelete('cascade');
+            $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('viaje_id')->constrained('viajes')->onDelete('cascade');
             $table->string('codigo_reserva')->unique();
             $table->dateTime('fecha_reserva');

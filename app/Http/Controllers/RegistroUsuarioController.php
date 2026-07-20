@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Usuario;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -18,7 +17,7 @@ class RegistroUsuarioController extends Controller
         $usuarios = Usuario::query()
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('nombre_completo', 'like', "%{$search}%")
+                    $q->where('name', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%")
                         ->orWhere('dni', 'like', "%{$search}%");
                 });
@@ -40,8 +39,9 @@ class RegistroUsuarioController extends Controller
             //  Solo letras (incluye acentos, ñ) y espacios
             'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:60',
             //  DNI: 13 dígitos numéricos, único
-            'dni'      => 'required|numeric|digits:13|unique:usuarios,dni',
-            'email'    => 'required|email|unique:usuarios,email|unique:users,email',
+<<<<<<< HEAD
+            'dni' => 'required|numeric|digits:13|unique:users,dni',
+            'email' => 'required|email|unique:users,email',
             //  Teléfono: 8 dígitos numéricos
             'telefono' => 'required|numeric|digits:8',
             // Pruebas #7 y #8: complejidad y rechazo de contraseñas débiles
@@ -69,25 +69,17 @@ class RegistroUsuarioController extends Controller
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
         ]);
 
-        // Guardar en tabla usuarios
+        // Guardar en tabla users directamente
         $usuario = new Usuario();
+        $usuario->name = $request->nombre_completo;
         $usuario->nombre_completo = $request->nombre_completo;
         $usuario->dni = $request->dni;
         $usuario->email = $request->email;
         $usuario->telefono = $request->telefono;
         $usuario->password = Hash::make($request->password);
+        $usuario->role = 'cliente';
+        $usuario->estado = 'activo';
         $usuario->save();
-
-        // Crear también en tabla users para login
-        User::create([
-            'name' => $usuario->nombre_completo,
-            'email' => $usuario->email,
-            'password' => Hash::make($request->password),
-            'dni' => $usuario->dni,
-            'telefono' => $usuario->telefono,
-            'role' => 'Cliente', // Debe coincidir exactamente con el enum de la migración (Empleado|Administrador|Cliente)
-            'estado' => 'activo',
-        ]);
 
         // Redirigir mostrando mensaje de éxito
         return redirect()
@@ -108,33 +100,26 @@ class RegistroUsuarioController extends Controller
         $usuarios = Usuario::query()
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('usuarios.nombre_completo', 'like', "%{$search}%")
-                        ->orWhere('usuarios.email', 'like', "%{$search}%")
-                        ->orWhere('usuarios.dni', 'like', "%{$search}%");
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('dni', 'like', "%{$search}%");
                 });
-            })
-            // El join hace que 'email' sea ambiguo, por eso se corrigió arriba.
-            ->join('users', 'usuarios.email', '=', 'users.email')
-            ->select(
-                'usuarios.*',
-                'users.role as rol',
-                'users.estado'
-            );
+            });
 
         // Filtro por DNI
         if ($request->filled('dni')) {
-            $usuarios->where('usuarios.dni', 'like', '%' . $request->dni . '%');
+            $usuarios->where('dni', 'like', '%' . $request->dni . '%');
         }
 
         // Filtro por estado
         if ($request->filled('estado')) {
-            $usuarios->where('users.estado', $request->estado);
+            $usuarios->where('estado', $request->estado);
         }
 
 
-        //  Filtro por fecha de registro (en tabla usuarios)
+        //  Filtro por fecha de registro
         if ($request->filled('fecha_registro')) {
-            $usuarios->whereDate('usuarios.created_at', $request->fecha_registro);
+            $usuarios->whereDate('created_at', $request->fecha_registro);
         }
 
         //  Paginar y mantener filtros
@@ -153,7 +138,6 @@ class RegistroUsuarioController extends Controller
     public function update(Request $request, $id)
     {
         $usuario = Usuario::findOrFail($id);
-        $originalEmail = $usuario->email;
 
         $request->validate([
             'nombre_completo' => 'required|regex:/^[\pL\s\-]+$/u|max:100',
@@ -193,30 +177,18 @@ class RegistroUsuarioController extends Controller
             'estado.in' => 'El estado seleccionado no es válido.',
         ]);
 
+        $usuario->name = $request->nombre_completo;
         $usuario->nombre_completo = $request->nombre_completo;
         $usuario->dni = $request->dni;
         $usuario->email = $request->email;
         $usuario->telefono = $request->telefono;
+        $usuario->estado = $request->estado;
 
         if ($request->filled('password')) {
-            $usuario->password = \Illuminate\Support\Facades\Hash::make($request->password); // corregido: antes se guardaba en texto plano
+            $usuario->password = Hash::make($request->password);
         }
 
         $usuario->save();
-
-        // Actualizar tabla users
-        $user = User::where('email', $originalEmail)->first();
-        if ($user) {
-            $user->name = $usuario->nombre_completo;
-            $user->email = $usuario->email;
-            $user->estado = $request->estado;
-
-            if ($request->filled('password')) {
-                $user->password = Hash::make($request->password);
-            }
-
-            $user->save();
-        }
 
         return redirect()->route('usuarios.consultar')
             ->with('success', 'Usuario actualizado exitosamente.');
