@@ -1,20 +1,8 @@
 @extends('layouts.layoutuser')
 @section('contenido')
-    <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultar Terminales - BusTrak</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body {
-            background-color: #ecf0f1;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
         .main-content {
             padding: 20px;
             margin-top: 0;
@@ -97,6 +85,8 @@
             border-radius: 8px;
             border: 1px solid #bdc3c7;
             margin-bottom: 20px;
+            z-index: 1; /* Para evitar problemas de sobreposicion en leaflet */
+            position: relative;
         }
 
         .map-section {
@@ -175,8 +165,6 @@
             }
         }
     </style>
-</head>
-<body>
 
 <!-- Contenido Principal -->
 <div class="container main-content">
@@ -351,7 +339,12 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    function inicializarMapa() {
+        if(typeof L === 'undefined') {
+            setTimeout(inicializarMapa, 100);
+            return;
+        }
+        
         const map = L.map('map').setView([14.8378, -86.5375], 7);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors',
@@ -416,17 +409,19 @@
             markers.push(marker);
         });
 
-        if (markers.length > 0) {
-            const group = new L.featureGroup(markers);
-            map.fitBounds(group.getBounds().pad(0.1));
-        } else {
-            map.setView([14.8378, -86.5375], 7);
-        }
+        // Leaflet init workaround
+        setTimeout(() => {
+            map.invalidateSize();
+            if (markers.length > 0) {
+                const group = new L.featureGroup(markers);
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
+        }, 500);
+    }
 
-        setTimeout(() => map.invalidateSize(), 100);
-    });
+    // Inicializar de inmediato cuando Leaflet este listo
+    inicializarMapa();
 </script>
 
-</body>
-</html>
+
 @endsection

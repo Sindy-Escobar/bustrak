@@ -71,7 +71,7 @@ class RegistroUsuarioController extends Controller
         // Guardar en tabla users directamente
         $usuario = new Usuario();
         $usuario->name = $request->nombre_completo;
-        $usuario->nombre_completo = $request->nombre_completo;
+        // $usuario->nombre_completo = $request->nombre_completo; // Removido porque la tabla no lo tiene
         $usuario->dni = $request->dni;
         $usuario->email = $request->email;
         $usuario->telefono = $request->telefono;
@@ -149,6 +149,7 @@ class RegistroUsuarioController extends Controller
                 PasswordRule::min(8)->mixedCase()->numbers()->symbols(),
             ],
             'estado'   => 'required|in:activo,inactivo',
+            'role'     => 'required|in:cliente,empleado,administrador',
         ], [
             // Mensajes personalizados
             'nombre_completo.required' => 'El campo nombre completo es obligatorio.',
@@ -174,10 +175,13 @@ class RegistroUsuarioController extends Controller
 
             'estado.required' => 'El estado es obligatorio.',
             'estado.in' => 'El estado seleccionado no es válido.',
+            'role.required' => 'El rol es obligatorio.',
+            'role.in' => 'El rol seleccionado no es válido.',
         ]);
 
         $usuario->name = $request->nombre_completo;
-        $usuario->nombre_completo = $request->nombre_completo;
+        $usuario->role = $request->role;
+        // $usuario->nombre_completo = $request->nombre_completo; // Removido porque la tabla no lo tiene
         $usuario->dni = $request->dni;
         $usuario->email = $request->email;
         $usuario->telefono = $request->telefono;

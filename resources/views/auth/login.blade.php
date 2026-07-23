@@ -334,7 +334,7 @@
             @csrf
 
             <div class="form-group">
-                <label for="email">Correo Electrónico</label>
+                <label for="email">Correo electrónico</label>
                 <input
                     type="email"
                     id="email"
@@ -368,7 +368,7 @@
                 <a href="{{ route('password.request') }}" class="forgot-link">¿Olvidaste tu contraseña?</a>
             </div>
 
-            <button type="submit" class="btn-login">Iniciar Sesión</button>
+            <button type="submit" class="btn-login">Iniciar sesión</button>
         </form>
 
         <div class="register-section">

@@ -163,7 +163,7 @@
                  id="estadisticas">
                 <a href="{{ route('admin.estadisticas') }}"
                    class="{{ request()->routeIs('admin.estadisticas') ? 'active' : '' }}">
-                    Ver Estadísticas
+                    Ver estadísticas
                 </a>
             </div>
         </div>
@@ -221,13 +221,13 @@
         <!-- Documentacion de buses -->
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#documentacionBuses">
-                <span><i class="fas fa-file-contract"></i> Documentación de Buses</span>
+                <span><i class="fas fa-file-contract"></i> Documentación de buses</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
 
             <div class="collapse btn-toggle-nav" id="documentacionBuses">
                 <a href="{{ route('documentos-buses.index') }}" class="{{ request()->routeIs('documentos-buses.index') ? 'active' : '' }}">
-                    Gestionar Documentacion
+                    Gestionar documentación
                 </a>
             </div>
         </div>
@@ -238,7 +238,7 @@
                     data-bs-target="#gestionarViajes"
                     aria-expanded="{{ request()->routeIs('admin.viajes.*') ? 'true' : 'false' }}">
         <span>
-            <i class="fas fa-file-contract"></i> Gestionar Viajes
+            <i class="fas fa-file-contract"></i> Gestionar viajes
         </span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
@@ -274,13 +274,13 @@
         <div class="nav-section">
             <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#solicitud"
                     aria-expanded="{{ request()->routeIs('solicitudes.*') ? 'true' : 'false' }}">
-                <span><i class="fas fa-file-alt"></i> Gestionar Tramites</span>
+                <span><i class="fas fa-file-alt"></i> Gestionar trámites</span>
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
             <div class="collapse btn-toggle-nav {{ request()->routeIs('solicitudes.*') ? 'show' : '' }}" id="solicitud">
                 <a href="{{ route('solicitudes.index') }}"
                    class="{{ request()->routeIs('solicitudes.index') ? 'active' : '' }}">
-                    Constancias de Trabajo, consultas y solicitudes
+                    Constancias de trabajo, consultas y solicitudes
                 </a>
             </div>
 
@@ -296,7 +296,7 @@
             <div class="collapse btn-toggle-nav {{ request()->routeIs('admin.reembolsos*') ? 'show' : '' }}" id="reembolsos">
                 <a href="{{ route('admin.reembolsos') }}"
                    class="{{ request()->routeIs('admin.reembolsos') ? 'active' : '' }}">
-                    Procesar Reembolsos
+                    Procesar reembolsos
                 </a>
 
             </div>
@@ -310,7 +310,7 @@
                 <i class="fas fa-chevron-right chevron"></i>
             </button>
             <div class="collapse btn-toggle-nav" id="sesion">
-                <a href="{{ route('admin.change-password') }}">Cambiar Contraseña</a>
+                <a href="{{ route('admin.change-password') }}">Cambiar contraseña</a>
 
                 <a href="{{ route('logout') }}"
                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

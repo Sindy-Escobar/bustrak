@@ -198,7 +198,7 @@
 
                     <div class="col-lg-5 col-md-6">
                         <label class="form-label-custom">
-                            <i class="fas fa-toggle-on me-1"></i> Estado de Usuario
+                            <i class="fas fa-toggle-on me-1"></i> Estado de usuario
                         </label>
                         <select name="estado" class="form-select form-control-custom">
                             <option value="">Todos</option>
@@ -234,7 +234,7 @@
                         <i class="fas fa-arrow-up"></i> 12%
                     </span>
                     </div>
-                    <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Usuarios Activos</p>
+                    <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Usuarios activos</p>
                     <h2 class="fw-bold mb-1" style="color: #111827; font-size: 2rem;">{{ $usuariosActivos }}</h2>
                     <small class="text-muted" style="font-size: 0.75rem;">
                         <i class="fas fa-info-circle me-1"></i>En el sistema
@@ -253,7 +253,7 @@
                         <i class="fas fa-arrow-down"></i> 5%
                     </span>
                     </div>
-                    <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Usuarios Inactivos</p>
+                    <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Usuarios inactivos</p>
                     <h2 class="fw-bold mb-1" style="color: #111827; font-size: 2rem;">{{ $usuariosInactivos }}</h2>
                     <small class="text-muted" style="font-size: 0.75rem;">
                         <i class="fas fa-info-circle me-1"></i>Sin actividad
@@ -272,7 +272,7 @@
                         <i class="fas fa-arrow-up"></i> 8%
                     </span>
                     </div>
-                    <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Total Usuarios</p>
+                    <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Total usuarios</p>
                     <h2 class="fw-bold mb-1" style="color: #111827; font-size: 2rem;">{{ $usuariosActivos + $usuariosInactivos }}</h2>
                     <small class="text-muted" style="font-size: 0.75rem;">
                         <i class="fas fa-info-circle me-1"></i>Registrados
@@ -291,7 +291,7 @@
                         <i class="fas fa-arrow-up"></i> 3%
                     </span>
                     </div>
-                    <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Tasa de Actividad</p>
+                    <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Tasa de actividad</p>
                     <h2 class="fw-bold mb-1" style="color: #111827; font-size: 2rem;">
                         @php
                             $total = $usuariosActivos + $usuariosInactivos;

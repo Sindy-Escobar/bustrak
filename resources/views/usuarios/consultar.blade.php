@@ -140,12 +140,12 @@
                         @else
                             @foreach($usuarios as $usuario)
                                 <tr>
-                                    <td>{{ $usuario->nombre_completo }}</td>
+                                    <td>{{ $usuario->name }}</td>
                                     <td>{{ $usuario->email }}</td>
                                     <td>{{ $usuario->dni }}</td>
                                     <td>
-                                        @if($usuario->rol)
-                                            <span class="badge bg-primary">{{ ucfirst($usuario->rol) }}</span>
+                                        @if($usuario->role)
+                                            <span class="badge bg-primary">{{ ucfirst($usuario->role) }}</span>
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
@@ -170,7 +170,7 @@
                                         <div class="modal-content">
                                             <div class="modal-header" style="background-color:#1e63b8; color:white;">
                                                 <h5 class="modal-title" id="editarModalLabel{{ $usuario->id }}">
-                                                    <i class="fas fa-user-edit me-2"></i>Editar Usuario: {{ $usuario->nombre_completo }}
+                                                    <i class="fas fa-user-edit me-2"></i>Editar usuario: {{ $usuario->name }}
                                                 </h5>
                                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                             </div>
@@ -190,13 +190,13 @@
                                                         <div class="row g-3">
                                                             <div class="col-md-6">
                                                                 <label for="nombre_completo{{ $usuario->id }}" class="form-label">
-                                                                    <i class="fas fa-user me-1"></i>Nombre Completo <span class="text-danger">*</span>
+                                                                    <i class="fas fa-user me-1"></i>Nombre completo <span class="text-danger">*</span>
                                                                 </label>
                                                                 <input
                                                                     type="text"
                                                                     name="nombre_completo"
                                                                     id="nombre_completo{{ $usuario->id }}"
-                                                                    value="{{ old('nombre_completo', $usuario->nombre_completo) }}"
+                                                                    value="{{ old('nombre_completo', $usuario->name) }}"
                                                                     class="form-control @error('nombre_completo') is-invalid @enderror"
                                                                     required
                                                                 >
@@ -258,13 +258,13 @@
                                                         </div>
                                                     </div>
 
-                                                    <!-- Estado del Usuario -->
+                                                    <!-- Estado y Rol del Usuario -->
                                                     <div class="mb-4">
                                                         <h6 class="mb-3 text-primary">
-                                                            <i class="fas fa-cog me-2"></i>Estado del Usuario
+                                                            <i class="fas fa-cog me-2"></i>Estado y rol del usuario
                                                         </h6>
                                                         <div class="row g-3">
-                                                            <div class="col-md-12">
+                                                            <div class="col-md-6">
                                                                 <label for="estado{{ $usuario->id }}" class="form-label">
                                                                     <i class="fas fa-toggle-on me-1"></i>Cambiar estado
                                                                 </label>
@@ -277,6 +277,23 @@
                                                                     <option value="inactivo" {{ old('estado', $usuario->estado) == 'inactivo' ? 'selected' : '' }}>Inactivo</option>
                                                                 </select>
                                                                 @error('estado')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                                @enderror
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for="role{{ $usuario->id }}" class="form-label">
+                                                                    <i class="fas fa-user-tag me-1"></i>Cambiar rol
+                                                                </label>
+                                                                <select
+                                                                    name="role"
+                                                                    id="role{{ $usuario->id }}"
+                                                                    class="form-select @error('role') is-invalid @enderror"
+                                                                >
+                                                                    <option value="cliente" {{ old('role', $usuario->role) == 'cliente' ? 'selected' : '' }}>Cliente</option>
+                                                                    <option value="empleado" {{ old('role', $usuario->role) == 'empleado' ? 'selected' : '' }}>Empleado</option>
+                                                                    <option value="administrador" {{ old('role', $usuario->role) == 'administrador' ? 'selected' : '' }}>Administrador</option>
+                                                                </select>
+                                                                @error('role')
                                                                 <div class="invalid-feedback">{{ $message }}</div>
                                                                 @enderror
                                                             </div>
